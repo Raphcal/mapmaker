@@ -1,0 +1,409 @@
+package fr.rca.mapmaker.ui;
+
+import fr.rca.mapmaker.model.HasSelectionListeners;
+import fr.rca.mapmaker.model.HasSizeChangeListeners;
+import fr.rca.mapmaker.model.map.Layer;
+import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.LayerChangeListener;
+import fr.rca.mapmaker.model.SelectionListener;
+import fr.rca.mapmaker.model.SizeChangeListener;
+import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.model.selection.DefaultSelectionStyle;
+import fr.rca.mapmaker.model.selection.SelectionStyle;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Composite;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.List;
+import javax.swing.JViewport;
+
+/**
+ *
+ * @author Raphaël Calabro (rcalabro@ideia.fr)
+ */
+public class Grid extends AbstractLayerPainter {
+	
+	/**
+	 * Mode de composition pour les couches supérieures au focus.
+	 */
+	private static final AlphaComposite ALPHA_COMPOSITE = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.33f);
+	/**
+	 * Couleur du voile recouvrant les couches inférieures au focus.
+	 */
+	private static final Color DARK_LAYER_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.66f);
+	
+	/**
+	 * Données à afficher
+	 */
+	private TileMap tileMap;
+	private final LayerChangeListener layerChangeListener;
+	private final SelectionListener selectionListener;
+	private final SizeChangeListener sizeChangeListener;
+	
+	private SelectionStyle selectionStyle;
+	
+	private TileLayer overlay;
+
+	/**
+	 * Gestion du scrolling.
+	 */
+	private JViewport viewport;
+	
+	/**
+	 * Taille des carreaux (non obligatoire)
+	 */
+	private Integer customTileSize;
+	
+	/**
+	 * Indice de la couche mise en focus.
+	 */
+	private boolean focus;
+	private int activeLayer;
+
+	public Grid() {
+		setOpaque(true);
+		
+		selectionStyle = new DefaultSelectionStyle();
+		
+		layerChangeListener = new LayerChangeListener() {
+			@Override
+			public void layerChanged(TileLayer layer, Rectangle dirtyRectangle) {
+				final int tileSize = getTileSize();
+				final Point origin = getLayerOrigin(layer);
+
+				// Rafraîchissement de la vue
+				repaint(origin.x + dirtyRectangle.x * tileSize, origin.y + dirtyRectangle.y * tileSize,
+						dirtyRectangle.width * tileSize, dirtyRectangle.height * tileSize);
+			}
+		};
+		
+		selectionListener = new SelectionListener() {
+			@Override
+			public void selectionChanged(Point oldSelection, Point newSelection) {
+				final int tileSize = getTileSize();
+				
+				repaint(oldSelection.x * tileSize, oldSelection.y * tileSize,
+						tileSize, tileSize);
+				
+				repaint(newSelection.x * tileSize, newSelection.y * tileSize,
+						tileSize, tileSize);
+			}
+		};
+		
+		sizeChangeListener = new SizeChangeListener() {
+
+			@Override
+			public void sizeChanged(Object source, Dimension oldSize, Dimension newSize) {
+				updateSize();
+			}
+		};
+		
+		overlay = new TileLayer(0, 0);
+		overlay.addLayerChangeListener(layerChangeListener);
+	}
+	
+
+	public TileMap getTileMap() {
+		return tileMap;
+	}
+
+	public void setTileMap(TileMap tileMap) {
+		
+		if(this.tileMap != null) {
+			// Suppression des listeners
+			this.tileMap.removeLayerChangeListener(layerChangeListener);
+			
+			if(this.tileMap instanceof HasSelectionListeners)
+				((HasSelectionListeners)this.tileMap).removeSelectionListener(selectionListener);
+			
+			if(this.tileMap instanceof HasSizeChangeListeners)
+				((HasSizeChangeListeners)this.tileMap).removeSizeChangeListener(sizeChangeListener);
+		}
+		
+		this.tileMap = tileMap;
+
+		// Ajout des listeners
+		if(tileMap != null)
+			tileMap.addLayerChangeListener(layerChangeListener);
+
+		if(tileMap instanceof HasSelectionListeners)
+			((HasSelectionListeners)tileMap).addSelectionListener(selectionListener);
+
+		if(tileMap instanceof HasSizeChangeListeners)
+			((HasSizeChangeListeners)tileMap).addSizeChangeListener(sizeChangeListener);
+		
+		updateSize();
+	}
+
+	public void setViewport(JViewport viewport) {
+		this.viewport = viewport;
+	}
+
+	public void setSelectionStyle(SelectionStyle selectionStyle) {
+		this.selectionStyle = selectionStyle;
+	}
+
+	public TileLayer getOverlay() {
+		return overlay;
+	}
+
+	private void drawBackground(Graphics g, Rectangle clipBounds, Dimension size) {
+		g.setColor(getBackground());
+		g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+
+		if(tileMap != null) {
+			// Choix de la couleur de fond
+			final Color color = tileMap.getBackgroundColor();
+			if(color != null)
+				g.setColor(color);
+			else
+				((Graphics2D)g).setPaint(Paints.TRANSPARENT_PAINT);
+
+			// Affichage
+			g.fillRect(clipBounds.x, clipBounds.y, 
+					Math.min(size.width - clipBounds.x, clipBounds.width),
+					Math.min(size.height - clipBounds.y, clipBounds.height));
+		}
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		
+		final Graphics2D graphics2d = (Graphics2D) g;
+		final Rectangle clipBounds = g.getClipBounds();
+		final Composite orignalComposite = graphics2d.getComposite();
+		
+		final Dimension size = getPreferredSize();
+		
+		// Affichage du fond
+		if(isOpaque())
+			drawBackground(g, clipBounds, size);
+		
+		if(tileMap == null)
+			return;
+		
+		// Liste des calques
+		final List<Layer> layers = tileMap.getLayers();
+		
+		// Préparation du focus
+		final int darkLayerIndex;
+		final int transparentIndex;
+		
+		if(focus) {
+			darkLayerIndex = activeLayer - 1;
+			transparentIndex = activeLayer + 1;
+			
+		} else {
+			darkLayerIndex = layers.size() + 1;
+			transparentIndex = layers.size() + 1;
+		}
+		
+		// Récupération de la taille des tuiles.
+		final int tileSize = getTileSize();
+		
+		final Point viewPoint;
+		
+		if(viewport != null)
+			viewPoint = viewport.getViewPosition();
+		else
+			viewPoint = new Point(0, 0);
+		
+		final Palette palette = tileMap.getPalette();
+		
+		// Affichage des couches
+		for(int index = 0; index <= layers.size(); index++) {
+			final Layer layer;
+			
+			if(index == layers.size())
+				layer = overlay;
+			else
+				layer = layers.get(index);
+			
+			// Si une couche est mise en avant (focus) affichage par
+			// transparence des couches supérieures.
+			if(index == transparentIndex)
+				graphics2d.setComposite(ALPHA_COMPOSITE);
+
+			if(layer.isVisible())
+				paintLayer(layer, palette, clipBounds, tileSize, viewPoint, g);
+			
+			// Si une couche est mise en avant (focus) affichage grisé
+			// des couches inférieures.
+			if(index == darkLayerIndex) {
+				g.setColor(DARK_LAYER_COLOR);
+				g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+			}
+		}
+		
+		// Restauration du mode d'affichage
+		graphics2d.setComposite(orignalComposite);
+		
+		// Contours
+		g.setColor(Color.BLACK);
+		g.drawRect(-1, -1, size.width, size.height);
+		
+		// Sélection
+		paintSelection(tileSize, g);
+		
+		g.dispose();
+	}
+	
+	public void repaint(Point p) {
+		
+		// TODO: prendre en compte le scrolling
+		final int tileSize = getTileSize();
+		repaint(new Rectangle(p.x * tileSize, p.y * tileSize, tileSize, tileSize));
+	}
+
+	protected void paintSelection(int tileSize, Graphics g) {
+		
+		if(tileMap instanceof HasSelectionListeners) {
+			final Point selectedPoint = ((HasSelectionListeners)tileMap).getSelection();
+			
+			if(selectedPoint != null) {
+				final int x = selectedPoint.x * tileSize;
+				final int y = selectedPoint.y * tileSize;
+				final Point origin = getLayerOrigin(tileMap.getLayers().get(activeLayer));
+				
+				selectionStyle.paintCursor(g, origin.x + x, origin.y + y, tileSize);
+			}
+		}
+	}
+	
+	private Point getLayerOrigin(final Layer layer) {
+		
+		final Point origin = new Point();
+		
+		if(viewport != null) {
+			final Point viewPoint = viewport.getViewPosition();
+			
+			// Emplacement du point supérieur gauche de la couche.
+			origin.x = (int) (viewPoint.x * (1 - layer.getScrollRate()));
+			origin.y = (int) (viewPoint.y * (1 - layer.getScrollRate()));
+
+		} else {
+			origin.x = 0;
+			origin.y = 0;
+		}
+		
+		return origin;
+	}
+	
+	protected void updateSize() {
+		
+		final int width;
+		final int height;
+		
+		if(tileMap != null) {
+			width = tileMap.getWidth();
+			height = tileMap.getHeight();
+			
+		} else {
+			width = 5;
+			height = 5;
+		}
+		
+		overlay.resize(width, height);
+		
+		final int tileSize = getTileSize();
+		final Dimension dimension = new Dimension(width * tileSize, height * tileSize);
+		
+		setSize(dimension);
+		setPreferredSize(dimension);
+		
+		invalidate();
+		
+		final Component parent = getParent();
+		if(parent != null)
+			parent.validate();
+	}
+	
+	public void setCustomTileSize(Integer tileSize) {
+		this.customTileSize = tileSize;
+		
+		updateSize();
+	}
+
+	public Integer getCustomTileSize() {
+		return customTileSize;
+	}
+	
+	public int getTileSize() {
+		
+		if(this.customTileSize != null)
+			return customTileSize;
+		
+		else if(tileMap != null && tileMap.getPalette() != null)
+			return tileMap.getPalette().getTileSize();
+		
+		else
+			return 1;
+	}
+	
+	/**
+	 * Récupère les coordonnées du point affiché à l'emplacement donné.
+	 * 
+	 * @param x Abscisse relatif à la grille.
+	 * @param y Ordonnée relatif à la grille.
+	 * @return Le point correspondant sur la couche en focus.
+	 */
+	public Point getLayerLocation(int x, int y) {
+		
+		final int tileSize = getTileSize();
+		
+		if(tileMap != null && viewport != null &&
+				activeLayer >= 0 && activeLayer < tileMap.getSize()) {
+			
+			final Layer layer = tileMap.getLayers().get(activeLayer);
+			final Point viewPoint = viewport.getViewPosition();
+			
+			// Décalage du point pour prendre en compte le parallaxe.
+			x -= (int) (viewPoint.x * (1 - layer.getScrollRate()));
+			y -= (int) (viewPoint.y * (1 - layer.getScrollRate()));
+		}
+		
+		return new Point(x / tileSize, y / tileSize);
+	}
+
+	public boolean isFocusVisible() {
+		return focus;
+	}
+	
+	public void setFocusVisible(boolean visible) {
+		focus = visible;
+	}
+	
+	public void setActiveLayer(TileLayer layer) {
+		setActiveLayer(tileMap.getLayers().indexOf(layer));
+	}
+	
+	public void setActiveLayer(int index) {
+		
+		if(index < 0)
+			index = 0;
+		
+		else if(index >= tileMap.getLayers().size())
+			index = tileMap.getLayers().size() - 1;
+		
+		this.activeLayer = index;
+	}
+
+	public int getActiveLayerIndex() {
+		return activeLayer;
+	}
+	
+	public Layer getActiveLayer() {
+		
+		if(activeLayer >= 0 && activeLayer < tileMap.getSize())
+			return tileMap.getLayers().get(activeLayer);
+		else
+			return null;
+	}
+}
