@@ -1,6 +1,8 @@
 
 package fr.rca.mapmaker.editor;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
@@ -29,6 +31,7 @@ public class SpriteDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         heightTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
+        frameGrid = new fr.rca.mapmaker.ui.Grid();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -42,6 +45,8 @@ public class SpriteDialog extends javax.swing.JDialog {
 
         heightTextField.setText("1024");
         heightTextField.setToolTipText("");
+
+        jScrollPane1.setViewportView(frameGrid);
 
         jButton1.setText("Annuler");
 
@@ -82,7 +87,7 @@ public class SpriteDialog extends javax.swing.JDialog {
                     .addComponent(jLabel2)
                     .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -97,31 +102,9 @@ public class SpriteDialog extends javax.swing.JDialog {
 	 * @param args the command line arguments
 	 */
 	public static void main(String args[]) {
-		/* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-		 * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-		 */
-		try {
-			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					javax.swing.UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
-			}
-		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(SpriteDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(SpriteDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(SpriteDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(SpriteDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		}
-        //</editor-fold>
-
 		/* Create and display the dialog */
 		java.awt.EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				SpriteDialog dialog = new SpriteDialog(new javax.swing.JFrame(), true);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -136,6 +119,7 @@ public class SpriteDialog extends javax.swing.JDialog {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private fr.rca.mapmaker.ui.Grid frameGrid;
     private javax.swing.JTextField heightTextField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

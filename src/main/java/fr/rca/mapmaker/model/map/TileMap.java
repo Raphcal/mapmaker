@@ -45,16 +45,16 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	/**
 	 * Liste des couches de la grille.
 	 */
-	private ArrayList<Layer> layers = new ArrayList<Layer>();
+	private final ArrayList<Layer> layers = new ArrayList<Layer>();
 	/**
 	 * Couleur de fond.
 	 */
 	private Color backgroundColor;
 
 	private final SizeChangeListener sizeChangeListener;
-	private ArrayList<LayerChangeListener> layerChangeListeners = new ArrayList<LayerChangeListener>();
-	private ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
-	private ArrayList<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
+	private final ArrayList<LayerChangeListener> layerChangeListeners = new ArrayList<LayerChangeListener>();
+	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	private final ArrayList<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
 
 	public TileMap() {
 		sizeChangeListener = new SizeChangeListener() {
@@ -85,8 +85,9 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 
 	public void setParent(Project parent) {
-		if(palette instanceof PaletteReference)
+		if(palette instanceof PaletteReference) {
 			((PaletteReference)palette).setProject(parent);
+		}
 		
 		this.parent = parent;
 	}
@@ -118,8 +119,9 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 
 	public void setPalette(Palette palette) {
-//		if(palette instanceof PaletteReference)
-//			((PaletteReference)palette).setProject(parent);
+		if(parent != null && palette instanceof PaletteReference) {
+			((PaletteReference)palette).setProject(parent);
+		}
 		
 		this.palette = palette;
 	}
@@ -144,7 +146,6 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 
 	private void updateSizeForLayer(Layer layer) {
-		
 		final int layerWidth = (int) (layer.getWidth() / Math.max(layer.getScrollRate(), 1.0f));
 		final int layerHeight = (int) (layer.getHeight() / Math.max(layer.getScrollRate(), 1.0f));
 
@@ -156,7 +157,6 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 	
 	private void updateSize() {
-		
 		if(layers.size() > 0) {
 			final Dimension oldDimension = new Dimension(width, height);
 

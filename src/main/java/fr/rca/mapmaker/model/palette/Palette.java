@@ -11,8 +11,5 @@ public interface Palette {
 	void setSelectedTile(int tile);
 	int getSelectedTile();
 	
-	// int getForegroundTile();
-	// int getBackgroundTile();
-	
 	boolean isEditable();
 }

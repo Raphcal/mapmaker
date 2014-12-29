@@ -8,7 +8,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 /**
- *
+ * Couche d'une grille dessinée à partir d'une palette.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class PaletteLayer implements Layer, HasSizeChangeListeners {
@@ -16,7 +17,7 @@ public class PaletteLayer implements Layer, HasSizeChangeListeners {
 	private final Palette palette;
 	private int width;
 	
-	private ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
 
 	public PaletteLayer(Palette palette, int width) {
 		this.palette = palette;

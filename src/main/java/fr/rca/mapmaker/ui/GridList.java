@@ -48,13 +48,14 @@ public class GridList extends JComponent {
 	}
 
 	public final void setMaps(List<TileMap> maps) {
-		
-		if(maps == null)
+		if(maps == null) {
 			maps = Collections.emptyList();
+		}
 		
 		if(this.maps != null) {
-			for(final TileLayer layer : indexes.keySet())
+			for(final TileLayer layer : indexes.keySet()) {
 				layer.removeLayerChangeListener(listener);
+			}
 			indexes.clear();
 		}
 		
@@ -80,8 +81,9 @@ public class GridList extends JComponent {
 		
 		invalidate();
 		
-		if(getParent() != null)
+		if(getParent() != null) {
 			getParent().validate();
+		}
 		
 		repaint();
 	}

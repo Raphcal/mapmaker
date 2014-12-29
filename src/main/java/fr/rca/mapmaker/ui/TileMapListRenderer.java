@@ -30,7 +30,7 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 	private TileMap map;
 	private boolean selected;
 	
-	private Color selectedColor = new Color(180, 198, 221);
+	private final Color selectionColor = new Color(180, 198, 221);
 
 	public TileMapListRenderer() {
 		final Dimension size = new Dimension(HORIZONTAL_PADDING + THUMBNAIL_SIZE + HORIZONTAL_PADDING,
@@ -42,11 +42,10 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		
 		final Rectangle clipBounds = g.getClipBounds();
 		
 		if(selected) {
-			g.setColor(selectedColor); //Color.DARK_GRAY);
+			g.setColor(selectionColor);
 			g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 		}
 		
@@ -66,14 +65,15 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 				origin.x - (int) (7.0f * ratio), origin.y - (int) (4.0f * ratio),
 				width + (int) (14.0f * ratio), height + (int) (14.0f * ratio)), (Graphics2D) g);
 		
-		if(map.getBackgroundColor() != null)
+		if(map.getBackgroundColor() != null) {
 			g.setColor(map.getBackgroundColor());
 		
-		else if(selected)
-			g.setColor(selectedColor);
+		} else if(selected) {
+			g.setColor(selectionColor);
 		
-		else
+		} else {
 			g.setColor(getBackground());
+		}
 			
 		g.fillRect(origin.x, origin.y, width, height);
 		
@@ -95,7 +95,6 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 	
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		
 		this.selected = isSelected;
 		this.map = (TileMap) value;
 		

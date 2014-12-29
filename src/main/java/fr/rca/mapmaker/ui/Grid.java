@@ -48,7 +48,7 @@ public class Grid extends AbstractLayerPainter {
 	
 	private SelectionStyle selectionStyle;
 	
-	private TileLayer overlay;
+	private final TileLayer overlay;
 
 	/**
 	 * Gestion du scrolling.
@@ -119,24 +119,29 @@ public class Grid extends AbstractLayerPainter {
 			// Suppression des listeners
 			this.tileMap.removeLayerChangeListener(layerChangeListener);
 			
-			if(this.tileMap instanceof HasSelectionListeners)
+			if(this.tileMap instanceof HasSelectionListeners) {
 				((HasSelectionListeners)this.tileMap).removeSelectionListener(selectionListener);
+			}
 			
-			if(this.tileMap instanceof HasSizeChangeListeners)
+			if(this.tileMap instanceof HasSizeChangeListeners) {
 				((HasSizeChangeListeners)this.tileMap).removeSizeChangeListener(sizeChangeListener);
+			}
 		}
 		
 		this.tileMap = tileMap;
 
 		// Ajout des listeners
-		if(tileMap != null)
+		if(tileMap != null) {
 			tileMap.addLayerChangeListener(layerChangeListener);
+		}
 
-		if(tileMap instanceof HasSelectionListeners)
+		if(tileMap instanceof HasSelectionListeners) {
 			((HasSelectionListeners)tileMap).addSelectionListener(selectionListener);
+		}
 
-		if(tileMap instanceof HasSizeChangeListeners)
+		if(tileMap instanceof HasSizeChangeListeners) {
 			((HasSizeChangeListeners)tileMap).addSizeChangeListener(sizeChangeListener);
+		}
 		
 		updateSize();
 	}
@@ -160,10 +165,11 @@ public class Grid extends AbstractLayerPainter {
 		if(tileMap != null) {
 			// Choix de la couleur de fond
 			final Color color = tileMap.getBackgroundColor();
-			if(color != null)
+			if(color != null) {
 				g.setColor(color);
-			else
+			} else {
 				((Graphics2D)g).setPaint(Paints.TRANSPARENT_PAINT);
+			}
 
 			// Affichage
 			g.fillRect(clipBounds.x, clipBounds.y, 
@@ -221,18 +227,21 @@ public class Grid extends AbstractLayerPainter {
 		for(int index = 0; index <= layers.size(); index++) {
 			final Layer layer;
 			
-			if(index == layers.size())
+			if(index == layers.size()) {
 				layer = overlay;
-			else
+			} else {
 				layer = layers.get(index);
+			}
 			
 			// Si une couche est mise en avant (focus) affichage par
 			// transparence des couches supérieures.
-			if(index == transparentIndex)
+			if(index == transparentIndex) {
 				graphics2d.setComposite(ALPHA_COMPOSITE);
+			}
 
-			if(layer.isVisible())
+			if(layer.isVisible()) {
 				paintLayer(layer, palette, clipBounds, tileSize, viewPoint, g);
+			}
 			
 			// Si une couche est mise en avant (focus) affichage grisé
 			// des couches inférieures.
@@ -256,14 +265,12 @@ public class Grid extends AbstractLayerPainter {
 	}
 	
 	public void repaint(Point p) {
-		
 		// TODO: prendre en compte le scrolling
 		final int tileSize = getTileSize();
 		repaint(new Rectangle(p.x * tileSize, p.y * tileSize, tileSize, tileSize));
 	}
 
 	protected void paintSelection(int tileSize, Graphics g) {
-		
 		if(tileMap instanceof HasSelectionListeners) {
 			final Point selectedPoint = ((HasSelectionListeners)tileMap).getSelection();
 			
@@ -278,7 +285,6 @@ public class Grid extends AbstractLayerPainter {
 	}
 	
 	private Point getLayerOrigin(final Layer layer) {
-		
 		final Point origin = new Point();
 		
 		if(viewport != null) {
@@ -297,7 +303,6 @@ public class Grid extends AbstractLayerPainter {
 	}
 	
 	protected void updateSize() {
-		
 		final int width;
 		final int height;
 		
@@ -336,7 +341,6 @@ public class Grid extends AbstractLayerPainter {
 	}
 	
 	public int getTileSize() {
-		
 		if(this.customTileSize != null)
 			return customTileSize;
 		
@@ -355,7 +359,6 @@ public class Grid extends AbstractLayerPainter {
 	 * @return Le point correspondant sur la couche en focus.
 	 */
 	public Point getLayerLocation(int x, int y) {
-		
 		final int tileSize = getTileSize();
 		
 		if(tileMap != null && viewport != null &&
@@ -385,12 +388,12 @@ public class Grid extends AbstractLayerPainter {
 	}
 	
 	public void setActiveLayer(int index) {
-		
-		if(index < 0)
+		if(index < 0) {
 			index = 0;
-		
-		else if(index >= tileMap.getLayers().size())
+			
+		} else if(index >= tileMap.getLayers().size()) {
 			index = tileMap.getLayers().size() - 1;
+		}
 		
 		this.activeLayer = index;
 	}
@@ -400,7 +403,6 @@ public class Grid extends AbstractLayerPainter {
 	}
 	
 	public Layer getActiveLayer() {
-		
 		if(activeLayer >= 0 && activeLayer < tileMap.getSize())
 			return tileMap.getLayers().get(activeLayer);
 		else
