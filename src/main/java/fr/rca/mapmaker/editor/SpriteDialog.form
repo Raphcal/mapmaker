@@ -97,7 +97,12 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Container class="fr.rca.mapmaker.ui.Grid" name="frameGrid">
+        <Container class="fr.rca.mapmaker.ui.GridList" name="gridList">
+          <Properties>
+            <Property name="orientation" type="fr.rca.mapmaker.ui.GridListOrientation" editor="org.netbeans.modules.form.editors.EnumEditor">
+              <Value id="HORIZONTAL"/>
+            </Property>
+          </Properties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
             <Property name="useNullLayout" type="boolean" value="true"/>

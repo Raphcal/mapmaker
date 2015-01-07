@@ -5,9 +5,12 @@ import fr.rca.mapmaker.model.LayerChangeListener;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,79 +22,18 @@ import javax.swing.JComponent;
  */
 public class GridList extends JComponent {
 	
-	public enum Orientation {
-		VERTICAL {
-			@Override
-			public Dimension getDimension(GridList list) {
-				return new Dimension(
-					list.padding + list.thumbnailSize + list.padding, 
-					list.padding + list.maps.size() * (list.thumbnailSize + list.padding));
-			}
-
-			@Override
-			public int getX(GridList list, int index) {
-				return list.padding;
-			}
-
-			@Override
-			public int getY(GridList list, int index) {
-				return list.padding + (list.thumbnailSize + list.padding) * index;
-			}
-
-			@Override
-			public int getStart(Rectangle rectangle) {
-				return rectangle.y;
-			}
-
-			@Override
-			public int getLength(Rectangle rectangle) {
-				return rectangle.height;
-			}
-		}, 
-		HORIZONTAL {
-			@Override
-			public Dimension getDimension(GridList list) {
-				return new Dimension(
-					list.padding + list.maps.size() * (list.thumbnailSize + list.padding),
-					list.padding + list.thumbnailSize + list.padding);
-			}
-			
-			@Override
-			public int getX(GridList list, int index) {
-				return list.padding + (list.thumbnailSize + list.padding) * index;
-			}
-
-			@Override
-			public int getY(GridList list, int index) {
-				return list.padding;
-			}
-			
-			@Override
-			public int getStart(Rectangle rectangle) {
-				return rectangle.x;
-			}
-
-			@Override
-			public int getLength(Rectangle rectangle) {
-				return rectangle.width;
-			}
-		};
-		
-		public abstract Dimension getDimension(GridList list);
-		public abstract int getX(GridList list, int index);
-		public abstract int getY(GridList list, int index);
-		public abstract int getStart(Rectangle rectangle);
-		public abstract int getLength(Rectangle rectangle);
-	}
-	
-	private Orientation orientation = Orientation.VERTICAL;
+	private GridListOrientation orientation = GridListOrientation.VERTICAL;
 	private final int tileSize = 6;
-	private final int thumbnailSize = 72;
-	private final int padding = 4;
+	final int thumbnailSize = 72;
+	final int padding = 4;
 	private List<TileMap> maps;
 	
 	private LayerChangeListener listener;
-	private HashMap<TileLayer, Integer> indexes = new HashMap<TileLayer, Integer>();
+	private final HashMap<TileLayer, Integer> indexes = new HashMap<TileLayer, Integer>();
+	
+	private boolean editable = true;
+	
+	private Integer selection;
 
 	public GridList() {
 		this(null);
@@ -112,6 +54,28 @@ public class GridList extends JComponent {
 		};
 		
 		setMaps(maps);
+		
+		addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				switch(e.getClickCount()) {
+					case 1:
+						int element = orientation.indexOfElementAtPoint(GridList.this, e.getPoint());
+						if(element >= 0 && element <= GridList.this.maps.size()) {
+							selection = element;
+						} else {
+							selection = null;
+						}
+						repaint();
+						break;
+						
+					case 2:
+						
+						break;
+				}
+			}
+		});
 	}
 
 	public final void setMaps(List<TileMap> maps) {
@@ -158,14 +122,26 @@ public class GridList extends JComponent {
 		
 		invalidate();
 	}
+	
+	int getNumberOfElements() {
+		int count = maps.size();
+		if(editable) {
+			count++;
+		}
+		return count;
+	}
 
 	public List<TileMap> getMaps() {
 		return maps;
 	}
-
-	public void setOrientation(Orientation orientation) {
-		this.orientation = orientation;
+	
+	public void setOrientation(GridListOrientation orientation) {
+		this.orientation = orientation != null ? orientation : GridListOrientation.VERTICAL;
 		updateSize();
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 	
 	@Override
@@ -178,11 +154,21 @@ public class GridList extends JComponent {
 		}
 		
 		final int firstMap = (orientation.getStart(clipBounds) - padding) / (thumbnailSize + padding);
-		final int lastMap = firstMap + orientation.getLength(clipBounds) / (thumbnailSize + padding);
+		final int lastMap = Math.min(
+			firstMap + orientation.getLength(clipBounds) / (thumbnailSize + padding),
+			maps.size() - 1);
 		
 		for(int index = firstMap; index <= lastMap; index++) {
 			paintMap(index, g);
 		}
+		
+		if(selection != null && selection == maps.size()) {
+			g.setColor(Color.BLUE);
+			g.fillRect(orientation.getX(this, maps.size()) - padding, orientation.getY(this, maps.size()) - padding, thumbnailSize + padding + padding, thumbnailSize + padding + padding);
+		}
+		
+		g.setColor(Color.red);
+		g.drawRect(orientation.getX(this, maps.size()), orientation.getY(this, maps.size()), thumbnailSize, thumbnailSize);
 		
 		g.dispose();
 	}
@@ -199,9 +185,14 @@ public class GridList extends JComponent {
 		final int originX = orientation.getX(this, index);
 		final int originY = orientation.getY(this, index);
 		
+		if(selection != null && selection == index) {
+			g.setColor(Color.BLUE);
+			g.fillRect(originX - padding, originY - padding, thumbnailSize + padding + padding, thumbnailSize + padding + padding);
+		}
+		
 		if(map.getBackgroundColor() != null) {
 			g.setColor(map.getBackgroundColor());
-			g.fillRect(padding, originY, thumbnailSize, thumbnailSize);
+			g.fillRect(originX, originY, thumbnailSize, thumbnailSize);
 		}
 		
 		for(final Layer layer : map.getLayers()) {

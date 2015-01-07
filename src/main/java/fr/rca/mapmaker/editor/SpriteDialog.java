@@ -1,8 +1,6 @@
 
 package fr.rca.mapmaker.editor;
 
-import javax.swing.JFrame;
-
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
@@ -31,7 +29,7 @@ public class SpriteDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         heightTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        frameGrid = new fr.rca.mapmaker.ui.Grid();
+        gridList = new fr.rca.mapmaker.ui.GridList();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -46,7 +44,8 @@ public class SpriteDialog extends javax.swing.JDialog {
         heightTextField.setText("1024");
         heightTextField.setToolTipText("");
 
-        jScrollPane1.setViewportView(frameGrid);
+        gridList.setOrientation(fr.rca.mapmaker.ui.GridListOrientation.HORIZONTAL);
+        jScrollPane1.setViewportView(gridList);
 
         jButton1.setText("Annuler");
 
@@ -119,7 +118,7 @@ public class SpriteDialog extends javax.swing.JDialog {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private fr.rca.mapmaker.ui.Grid frameGrid;
+    private fr.rca.mapmaker.ui.GridList gridList;
     private javax.swing.JTextField heightTextField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
