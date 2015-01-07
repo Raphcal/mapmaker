@@ -1,6 +1,5 @@
 package fr.rca.mapmaker;
 
-import com.apple.eawt.Application;
 import fr.rca.mapmaker.editor.MapEditor;
 import java.io.IOException;
 
@@ -24,10 +23,10 @@ public class MapMaker {
 		System.setProperty("apple.awt.brushMetalLook", "true");
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MapMaker");
 		
-		final Application application = Application.getApplication();
-		if(application != null) {
+//		final Application application = Application.getApplication();
+//		if(application != null) {
 //			application.setDockIconImage(null);
-		}
+//		}
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
