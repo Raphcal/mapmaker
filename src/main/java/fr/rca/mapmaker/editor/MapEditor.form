@@ -220,6 +220,7 @@
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -243,10 +244,10 @@
               </Group>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="mapScrollPane" pref="546" max="32767" attributes="0"/>
+                  <Component id="mapScrollPane" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
-                      <Component id="gridToolBar" min="-2" pref="100" max="-2" attributes="0"/>
-                      <EmptySpace pref="479" max="32767" attributes="0"/>
+                      <Component id="gridToolBar" min="-2" pref="210" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" pref="385" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -262,7 +263,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <Component id="paletteToolBar" min="-2" pref="25" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Component id="paletteScrollPane" pref="0" max="32767" attributes="0"/>
@@ -271,7 +272,7 @@
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Component id="layerListScrollPane" min="-2" max="-2" attributes="0"/>
           </Group>
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="mapToolBar" min="-2" pref="25" max="-2" attributes="0"/>
                   <Component id="gridToolBar" min="-2" pref="25" max="-2" attributes="0"/>
@@ -320,7 +321,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="577" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="571" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -360,7 +361,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="128" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="131" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -699,6 +700,41 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="redoButtonActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator1">
+        </Component>
+        <Component class="javax.swing.JButton" name="devicePreviewButton">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/resources/preview.png"/>
+            </Property>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="devicePreviewButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="zoomSeparator">
+        </Component>
+        <Component class="javax.swing.JLabel" name="zoomLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Zoom"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="zoomTextField">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="100"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoomTextFieldActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="zoomPercentLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="%"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

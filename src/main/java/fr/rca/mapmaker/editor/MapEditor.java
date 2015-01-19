@@ -191,6 +191,12 @@ public class MapEditor extends javax.swing.JFrame {
         gridToolBar = new javax.swing.JToolBar();
         undoButton = new javax.swing.JButton();
         redoButton = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        devicePreviewButton = new javax.swing.JButton();
+        zoomSeparator = new javax.swing.JToolBar.Separator();
+        zoomLabel = new javax.swing.JLabel();
+        zoomTextField = new javax.swing.JTextField();
+        zoomPercentLabel = new javax.swing.JLabel();
         javax.swing.JMenuBar menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem newProjectMenuItem = new javax.swing.JMenuItem();
@@ -260,7 +266,7 @@ public class MapEditor extends javax.swing.JFrame {
         mapGrid.setLayout(mapGridLayout);
         mapGridLayout.setHorizontalGroup(
             mapGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 577, Short.MAX_VALUE)
+            .addGap(0, 571, Short.MAX_VALUE)
         );
         mapGridLayout.setVerticalGroup(
             mapGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,7 +300,7 @@ public class MapEditor extends javax.swing.JFrame {
         paletteGrid.setLayout(paletteGridLayout);
         paletteGridLayout.setHorizontalGroup(
             paletteGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 128, Short.MAX_VALUE)
+            .addGap(0, 131, Short.MAX_VALUE)
         );
         paletteGridLayout.setVerticalGroup(
             paletteGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -511,6 +517,33 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         gridToolBar.add(redoButton);
+        gridToolBar.add(jSeparator1);
+
+        devicePreviewButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/preview.png"))); // NOI18N
+        devicePreviewButton.setFocusable(false);
+        devicePreviewButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        devicePreviewButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        devicePreviewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                devicePreviewButtonActionPerformed(evt);
+            }
+        });
+        gridToolBar.add(devicePreviewButton);
+        gridToolBar.add(zoomSeparator);
+
+        zoomLabel.setText("Zoom");
+        gridToolBar.add(zoomLabel);
+
+        zoomTextField.setText("100");
+        zoomTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomTextFieldActionPerformed(evt);
+            }
+        });
+        gridToolBar.add(zoomTextField);
+
+        zoomPercentLabel.setText("%");
+        gridToolBar.add(zoomPercentLabel);
 
         fileMenu.setText(bundle.getString("menu.file")); // NOI18N
 
@@ -594,10 +627,10 @@ public class MapEditor extends javax.swing.JFrame {
                     .addComponent(mapListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mapScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+                    .addComponent(mapScrollPane)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 479, Short.MAX_VALUE)))
+                        .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 385, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(paletteToolBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(layerToolBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -911,10 +944,29 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_importMenuItemActionPerformed
 
+    private void devicePreviewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_devicePreviewButtonActionPerformed
+        // TODO add your handling code here:
+		final GamePreviewDialog gamePreviewDialog = new GamePreviewDialog(this, true);
+		gamePreviewDialog.setTileMap(mapGrid.getTileMap());
+		gamePreviewDialog.setVisible(true);
+    }//GEN-LAST:event_devicePreviewButtonActionPerformed
+
+    private void zoomTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomTextFieldActionPerformed
+        // TODO add your handling code here:
+		try {
+			final int size = Integer.parseInt(zoomTextField.getText());
+			mapGrid.setZoom((double)size/100.0);
+			
+		} catch(NumberFormatException e) {
+			// Ignoré.
+		}
+    }//GEN-LAST:event_zoomTextFieldActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayerButton;
     private javax.swing.JToggleButton bucketFillToggleButton;
+    private javax.swing.JButton devicePreviewButton;
     private javax.swing.JMenuItem editLayerMenuItem;
     private javax.swing.JMenuItem editMapMenuItem;
     private javax.swing.JFileChooser fileChooser;
@@ -923,6 +975,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JPopupMenu.Separator importSeparator;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JButton layerDownButton;
     private javax.swing.JList layerList;
     private javax.swing.JScrollPane layerListScrollPane;
@@ -948,6 +1001,10 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private fr.rca.mapmaker.ui.TileMapListRenderer tileMapListRenderer;
     private javax.swing.ButtonGroup toolGroup;
     private javax.swing.JButton undoButton;
+    private javax.swing.JLabel zoomLabel;
+    private javax.swing.JLabel zoomPercentLabel;
+    private javax.swing.JToolBar.Separator zoomSeparator;
+    private javax.swing.JTextField zoomTextField;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

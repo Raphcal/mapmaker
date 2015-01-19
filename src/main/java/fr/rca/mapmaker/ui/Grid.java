@@ -56,7 +56,7 @@ public class Grid extends AbstractLayerPainter {
 	private JViewport viewport;
 	
 	/**
-	 * Taille des carreaux (non obligatoire)
+	 * Taille des carreaux (non obligatoire).
 	 */
 	private Integer customTileSize;
 	
@@ -65,6 +65,11 @@ public class Grid extends AbstractLayerPainter {
 	 */
 	private boolean focus;
 	private int activeLayer;
+	
+	/**
+	 * Niveau de zoom des carreaux.
+	 */
+	private double zoom = 1.0;
 
 	public Grid() {
 		setOpaque(true);
@@ -158,6 +163,16 @@ public class Grid extends AbstractLayerPainter {
 		return overlay;
 	}
 
+	public double getZoom() {
+		return zoom;
+	}
+
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+		updateSize();
+		repaint();
+	}
+
 	private void drawBackground(Graphics g, Rectangle clipBounds, Dimension size) {
 		g.setColor(getBackground());
 		g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
@@ -189,11 +204,13 @@ public class Grid extends AbstractLayerPainter {
 		final Dimension size = getPreferredSize();
 		
 		// Affichage du fond
-		if(isOpaque())
+		if(isOpaque()) {
 			drawBackground(g, clipBounds, size);
+		}
 		
-		if(tileMap == null)
+		if(tileMap == null) {
 			return;
+		}
 		
 		// Liste des calques
 		final List<Layer> layers = tileMap.getLayers();
@@ -216,10 +233,11 @@ public class Grid extends AbstractLayerPainter {
 		
 		final Point viewPoint;
 		
-		if(viewport != null)
+		if(viewport != null) {
 			viewPoint = viewport.getViewPosition();
-		else
+		} else {
 			viewPoint = new Point(0, 0);
+		}
 		
 		final Palette palette = tileMap.getPalette();
 		
@@ -326,8 +344,9 @@ public class Grid extends AbstractLayerPainter {
 		invalidate();
 		
 		final Component parent = getParent();
-		if(parent != null)
+		if(parent != null) {
 			parent.validate();
+		}
 	}
 	
 	public void setCustomTileSize(Integer tileSize) {
@@ -341,14 +360,19 @@ public class Grid extends AbstractLayerPainter {
 	}
 	
 	public int getTileSize() {
-		if(this.customTileSize != null)
-			return customTileSize;
+		final int baseSize;
 		
-		else if(tileMap != null && tileMap.getPalette() != null)
-			return tileMap.getPalette().getTileSize();
+		if(this.customTileSize != null) {
+			baseSize = customTileSize;
 		
-		else
-			return 1;
+		} else if(tileMap != null && tileMap.getPalette() != null) {
+			baseSize = tileMap.getPalette().getTileSize();
+		
+		} else {
+			baseSize = 1;
+		}
+		
+		return (int) (zoom * baseSize);
 	}
 	
 	/**
