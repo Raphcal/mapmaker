@@ -17,13 +17,11 @@ public class SelectionTool extends AbstractSelectionTool {
 
 	@Override
 	protected void handleMousePressed(MouseEvent e) {
-		
 		grid.setFocusVisible(true);
 	}
 
 	@Override
 	protected void handleMouseReleased(MouseEvent e) {
-		
 		final TileLayer drawingLayer = (TileLayer) grid.getActiveLayer();
 		
 		final Point endPoint = grid.getLayerLocation(e.getX(), e.getY());
@@ -46,7 +44,6 @@ public class SelectionTool extends AbstractSelectionTool {
 	
 	@Override
 	protected void handleMouseDragged(MouseEvent e) {
-		
 		final TileLayer previewLayer = grid.getOverlay();
 		
 		final Point point = grid.getLayerLocation(e.getX(), e.getY());
@@ -58,7 +55,6 @@ public class SelectionTool extends AbstractSelectionTool {
 				Math.abs(startPoint.y - point.y) + 1);
 		
 		if(lastDragPoint != null) {
-			
 			final Rectangle lastRectangle = new Rectangle(
 					Math.min(startPoint.x, lastDragPoint.x),
 					Math.min(startPoint.y, lastDragPoint.y),
