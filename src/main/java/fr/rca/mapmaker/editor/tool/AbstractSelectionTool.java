@@ -66,25 +66,31 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if(!selected)
+		if(!selected) {
 			handleMouseReleased(e);
+		}
 	}
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if(startPoint == null)
+		if(startPoint == null) {
 			return;
+		}
 		
 		if(!selected) {
 			handleMouseDragged(e);
 			
 		} else {
-			final Point point = grid.getLayerLocation(e.getX(), e.getY());
+			moveLayer(grid.getOverlay(), e);
+		}
+	}
+	
+	protected void moveLayer(TileLayer layer, MouseEvent event) {
+		final Point point = grid.getLayerLocation(event.getX(), event.getY());
 			
-			if(!point.equals(startPoint)) { 
-				grid.getOverlay().translate(point.x - startPoint.x, point.y - startPoint.y);
-				startPoint = point;
-			}
+		if(!point.equals(startPoint)) { 
+			layer.translate(point.x - startPoint.x, point.y - startPoint.y);
+			startPoint = point;
 		}
 	}
 	
