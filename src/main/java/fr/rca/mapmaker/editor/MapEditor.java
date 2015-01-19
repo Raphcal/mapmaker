@@ -888,12 +888,14 @@ public void openFile(final File file) {
 
 			currentFormat = format;
 			setCurrentFile(file);
+			mapList.setSelectedIndex(0);
 			project.morphTo(thisProject);
 		}
 	}
 }
 
 	private void newProjectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectMenuItemActionPerformed
+		mapList.setSelectedIndex(0);
 		project.morphTo(Project.createEmptyProject());
 		
 		setCurrentFile(null);
