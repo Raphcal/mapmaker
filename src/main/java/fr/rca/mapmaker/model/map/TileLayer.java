@@ -107,8 +107,7 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	/**
 	 * Défini la tuile à l'emplacement donné.
 	 * 
-	 * @param x Abscisse de la tuile.
-	 * @param y Ordonnée de la tuile.
+	 * @param p Position de la tuile.
 	 * @param tile Numéro de la tuile.
 	 */
 	public void setTile(Point p, int tile) {
@@ -165,7 +164,9 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 		
 		final int max = (int) Math.ceil(length);
 		for(int i = 0; i < max; i++) {
-			tiles[(int) (Math.round(y) * this.width + Math.round(x))] = tile;
+			if(y >= 0 && y < height && x >= 0 && x < width) {
+				tiles[(int) (Math.round(y) * this.width + Math.round(x))] = tile;
+			}
 			
 			x += stepX;
 			y += stepY;
