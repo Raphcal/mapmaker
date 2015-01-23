@@ -54,8 +54,8 @@ public class TileMapDataHandler implements DataHandler<TileMap> {
 		tileMap.setBackgroundColor(colorHandler.read(inputStream));
 		
 		// Palette
-		final DataHandler<Palette> paletteHandler = format.getHandler(Palette.class);
-		tileMap.setPalette(paletteHandler.read(inputStream));
+//		final DataHandler<Palette> paletteHandler = format.getHandler(Palette.class);
+//		tileMap.setPalette(paletteHandler.read(inputStream));
 		
 		// Layers
 		final DataHandler<TileLayer> layerHandler = format.getHandler(TileLayer.class);
