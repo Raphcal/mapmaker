@@ -2,11 +2,9 @@ package fr.rca.mapmaker.io.mkz;
 
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
-import fr.rca.mapmaker.model.map.PaletteLayer;
-import fr.rca.mapmaker.model.palette.Flip;
+import fr.rca.mapmaker.io.Streams;
 import fr.rca.mapmaker.model.palette.ImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
-import fr.rca.mapmaker.ui.ImageRenderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -22,6 +20,8 @@ import java.util.zip.ZipOutputStream;
  */
 public class ImagePaletteDataHandler implements DataHandler<Palette> {
 	
+	private static final int PADDING = 4;
+	
 	private final Format format;
 
 	public ImagePaletteDataHandler(Format format) {
@@ -31,6 +31,11 @@ public class ImagePaletteDataHandler implements DataHandler<Palette> {
 	@Override
 	public void write(Palette t, OutputStream outputStream) throws IOException {
 		final ZipOutputStream zipOutputStream = (ZipOutputStream)outputStream;
+		
+		Streams.write(t.toString(), outputStream);
+		Streams.write(calculateColumns(t), outputStream);
+		Streams.write(t.getTileSize(), outputStream);
+		Streams.write(PADDING, outputStream);
 		
 		final BufferedImage palette = renderPalette(t, t.getTileSize());
 		
@@ -64,13 +69,20 @@ public class ImagePaletteDataHandler implements DataHandler<Palette> {
 		}
 	}
 	
+	private int calculateColumns(Palette p) {
+		final long neededSurface = (p.getTileSize() + PADDING) * (p.getTileSize() + PADDING) * p.size();
+		final int size = getNearestUpperPowerOfTwoForSurface(neededSurface);
+		
+		return (size - PADDING) / (p.getTileSize() + PADDING);
+	}
+	
 	@Override
 	public ImagePalette read(InputStream inputStream) throws IOException {
 		throw new UnsupportedOperationException("NIY");
 	}
 	
 	private BufferedImage renderPalette(Palette p, int tileSize) {
-		final int space = 4;
+		final int space = PADDING;
 		// Calcul de l'espace total
 		// TODO: il manque la bordure droite et la bordure basse, ajouter "space * space * p.size()" ?
 		final long neededSurface = (tileSize + space) * (tileSize + space) * p.size();
