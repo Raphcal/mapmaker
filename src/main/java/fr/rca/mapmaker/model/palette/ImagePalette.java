@@ -58,7 +58,6 @@ public class ImagePalette implements Palette, Flippable {
 	}
 	
 	private static BufferedImage readAndConvertImage(BufferedImage rawImage) throws IOException {
-		
 		// Conversion de l'image de base au format ARGB (0xAARRGGBB)
 		final BufferedImage image = new BufferedImage(rawImage.getWidth(), rawImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		image.setAccelerationPriority(1.0f);
@@ -71,7 +70,6 @@ public class ImagePalette implements Palette, Flippable {
 	}
 	
 	private static BufferedImage readAndFilterImage(File file, Color transparentColor) throws IOException {
-		
 		// Conversion de l'image de base au format ARGB (0xAARRGGBB)
 		final BufferedImage rawTiles = ImageIO.read(file);
 		final BufferedImage opaqueImage = new BufferedImage(rawTiles.getWidth(), rawTiles.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -109,14 +107,13 @@ public class ImagePalette implements Palette, Flippable {
 	
 	@Override
 	public void paintTile(Graphics g, int tile, int x, int y, int size) {
-		
 		if(tile >= 0 && tile < length) {
 			final int sourceX = (tile % width) * tileSize;
 			final int sourceY = (tile / width) * tileSize;
 			
 			g.drawImage(
 					tiles, x + deformX1, y + deformY1,
-					x + size + + deformX2, y + size + + deformY2,
+					x + size + deformX2, y + size + deformY2,
 					sourceX, sourceY, sourceX + tileSize, sourceY + tileSize, null);
 		}
 	}
