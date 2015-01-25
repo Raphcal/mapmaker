@@ -1,11 +1,15 @@
 
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.model.sprite.Sprite;
+
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SpriteDialog extends javax.swing.JDialog {
+	
+	private Sprite sprite;
 
 	/**
 	 * Creates new form SpriteDialog
@@ -24,25 +28,37 @@ public class SpriteDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        sizeLabel = new javax.swing.JLabel();
         widthTextField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        xLabel = new javax.swing.JLabel();
         heightTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         gridList = new fr.rca.mapmaker.ui.GridList();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        animationComboBox = new javax.swing.JComboBox();
+        animationLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setText("Taille :");
+        sizeLabel.setText("Taille :");
 
         widthTextField.setText("1024");
+        widthTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                widthTextFieldActionPerformed(evt);
+            }
+        });
 
-        jLabel2.setText("x");
+        xLabel.setText("x");
 
         heightTextField.setText("1024");
         heightTextField.setToolTipText("");
+        heightTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                heightTextFieldActionPerformed(evt);
+            }
+        });
 
         gridList.setOrientation(fr.rca.mapmaker.ui.GridListOrientation.HORIZONTAL);
         jScrollPane1.setViewportView(gridList);
@@ -51,26 +67,34 @@ public class SpriteDialog extends javax.swing.JDialog {
 
         jButton2.setText("OK");
 
+        animationComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "À l'arrêt", "Marche", "Course", "Saute", "Tombe", "Attaque", "Blessé", "Meurt" }));
+
+        animationLabel.setText("Animation : ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(jLabel1)
+                .addComponent(sizeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
+                .addComponent(xLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(animationLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 299, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)))
@@ -81,12 +105,14 @@ public class SpriteDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(sizeLabel)
                     .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xLabel)
+                    .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(animationLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                .addComponent(jScrollPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -97,6 +123,18 @@ public class SpriteDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void widthTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_widthTextFieldActionPerformed
+		updateSize();
+    }//GEN-LAST:event_widthTextFieldActionPerformed
+
+    private void heightTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_heightTextFieldActionPerformed
+		updateSize();
+    }//GEN-LAST:event_heightTextFieldActionPerformed
+
+	private void updateSize() {
+		
+	}
+	
 	/**
 	 * @param args the command line arguments
 	 */
@@ -118,13 +156,15 @@ public class SpriteDialog extends javax.swing.JDialog {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox animationComboBox;
+    private javax.swing.JLabel animationLabel;
     private fr.rca.mapmaker.ui.GridList gridList;
     private javax.swing.JTextField heightTextField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel sizeLabel;
     private javax.swing.JTextField widthTextField;
+    private javax.swing.JLabel xLabel;
     // End of variables declaration//GEN-END:variables
 }

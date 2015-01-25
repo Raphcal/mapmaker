@@ -53,7 +53,6 @@ public class Project implements ListModel {
 	}
 	
 	public void morphTo(Project project) {
-		
 		final TileMap oldMap = getCurrentMap();
 		final TileMap oldPaletteMap = getCurrentPaletteMap();
 		final boolean oldSelected = isSelected();
@@ -181,7 +180,6 @@ public class Project implements ListModel {
 	}
 	
 	public void addMap(TileMap map) {
-		
 		map.setParent(this);
 		
 		final int index = maps.size();
@@ -191,7 +189,6 @@ public class Project implements ListModel {
 	}
 	
 	public void removeMap(int index) {
-		
 		if(index >= 0 && index < maps.size()) {
 			maps.remove(index);
 			fireIntervalRemoved(index, index);
@@ -199,7 +196,6 @@ public class Project implements ListModel {
 	}
 	
 	protected void fireIntervalAdded(int from, int to) {
-		
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, from, to);
 		
 		for(final ListDataListener listener : listeners)
@@ -207,7 +203,6 @@ public class Project implements ListModel {
 	}
 	
 	protected void fireIntervalRemoved(int from, int to) {
-		
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, from, to);
 		
 		for(final ListDataListener listener : listeners)
@@ -215,7 +210,6 @@ public class Project implements ListModel {
 	}
 	
 	protected void fireContentsChanged(int from, int to) {
-		
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, from, to);
 		
 		for(final ListDataListener listener : listeners)

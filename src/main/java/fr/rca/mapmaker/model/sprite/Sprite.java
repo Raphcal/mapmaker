@@ -9,4 +9,9 @@ import java.util.ArrayList;
  */
 public class Sprite {
 	private ArrayList<Layer> frames;
+	private int size;
+
+	public int getSize() {
+		return size;
+	}
 }
