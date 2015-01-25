@@ -31,7 +31,6 @@ public class PenTool extends MouseAdapter implements Tool {
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
 		button = e.getButton();
 		final Point point = grid.getLayerLocation(e.getX(), e.getY());
 		
@@ -40,7 +39,6 @@ public class PenTool extends MouseAdapter implements Tool {
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
 		final Point point = grid.getLayerLocation(e.getX(), e.getY());
 		
 		if(lastPoint != null && lastPoint.equals(point))
@@ -58,7 +56,6 @@ public class PenTool extends MouseAdapter implements Tool {
 	}
 	
 	private void draw(Point point) {
-		
 		final TileLayer layer = (TileLayer) grid.getActiveLayer();
 		
 		if(button == MouseEvent.BUTTON1)
