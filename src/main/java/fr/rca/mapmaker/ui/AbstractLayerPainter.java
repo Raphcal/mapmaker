@@ -8,7 +8,8 @@ import java.awt.Rectangle;
 import javax.swing.JComponent;
 
 /**
- *
+ * Classe de base pour dessiner un Layer.
+ * 
  * @author daeke
  */
 public abstract class AbstractLayerPainter extends JComponent {
@@ -41,9 +42,10 @@ public abstract class AbstractLayerPainter extends JComponent {
 	 */
 	protected void paintLayer(final Layer layer, Palette palette, final Rectangle clipBounds,
 			final int tileSize, final int padding, Point viewpoint, Graphics g) {
-		
-		if(viewpoint == null)
+		// Définition du point de vue, si aucun n'a été donné.
+		if(viewpoint == null) {
 			viewpoint = new Point(0, 0);
+		}
 		
 		// Emplacement du point supérieur gauche de la couche.
 		// Utilisé pour centrer correctement les plans ayant une vitesse
@@ -64,8 +66,10 @@ public abstract class AbstractLayerPainter extends JComponent {
 		final int spaceY = tileSize + padding + padding;
 		
 		// Affichage de la couche
-		for(int y = startY; y < maxY; y++)
-			for(int x = startX; x < maxX; x++)
+		for(int y = startY; y < maxY; y++) {
+			for(int x = startX; x < maxX; x++) {
 				palette.paintTile(g, layer.getTile(x, y), originX + x * spaceX, originY + y * spaceY, tileSize);
+			}
+		}
 	}
 }
