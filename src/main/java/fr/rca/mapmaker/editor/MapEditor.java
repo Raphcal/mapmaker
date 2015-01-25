@@ -72,7 +72,6 @@ public class MapEditor extends javax.swing.JFrame {
 	}
 	
 	private void setUpMacOSXStyle() {
-		
 		final String osName = System.getProperty("os.name");
 		
 		if(osName != null && osName.startsWith("Mac OS X")) {
@@ -102,7 +101,6 @@ public class MapEditor extends javax.swing.JFrame {
 	}
 	
 	private void configureButton(final JToggleButton button, final Tool tool) {
-		
 		button.addItemListener(new ItemListener() {
 			
 			@Override
@@ -664,14 +662,14 @@ public class MapEditor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void addMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMapButtonActionPerformed
-			
 	final TileMapPropertiesDialog dialog = new TileMapPropertiesDialog(this, true);
 	dialog.setTitle(language.getString("dialog.map.title.new"));
 	dialog.setProject(project);
 	dialog.setVisible(true);
 	
-	if(dialog.hasBeenConfirmed())
+	if(dialog.hasBeenConfirmed()) {
 		project.addMap(dialog.getTileMap());
+	}
 }//GEN-LAST:event_addMapButtonActionPerformed
 
 private void mapListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_mapListValueChanged
@@ -721,7 +719,6 @@ private void quitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 }//GEN-LAST:event_quitMenuItemActionPerformed
 
 private void addLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLayerButtonActionPerformed
-	
 	final TileMap tileMap = project.getCurrentMap();
 	
 	final TileLayerPropertiesDialog dialog = new TileLayerPropertiesDialog("Calque " + (tileMap.getSize() + 1), this, true);
@@ -742,7 +739,6 @@ private void addLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
 }//GEN-LAST:event_addLayerButtonActionPerformed
 
 private void removeLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeLayerButtonActionPerformed
-	
 	final TileMap tileMap = project.getCurrentMap();
 	tileMap.remove(layerList.getSelectedIndex());
 	
@@ -750,7 +746,6 @@ private void removeLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {/
 }//GEN-LAST:event_removeLayerButtonActionPerformed
 
 private void removeMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMapButtonActionPerformed
-	
 	project.removeMap(mapList.getSelectedIndex());
 }//GEN-LAST:event_removeMapButtonActionPerformed
 
@@ -858,11 +853,11 @@ private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GE
 }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
 private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
-	
-	if(currentFile == null || currentFormat == null)
+	if(currentFile == null || currentFormat == null) {
 		saveAsMenuItemActionPerformed(evt);
-	else
+	} else {
 		currentFormat.saveProject(project, currentFile);
+	}
 }//GEN-LAST:event_saveMenuItemActionPerformed
 
 private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
