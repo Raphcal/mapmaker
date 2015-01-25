@@ -47,8 +47,8 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	/**
 	 * Liste de listeners.
 	 */
-	private ArrayList<LayerChangeListener> listeners = new ArrayList<LayerChangeListener>();
-	private ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	private final ArrayList<LayerChangeListener> listeners = new ArrayList<LayerChangeListener>();
+	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
 	
 	/**
 	 * Créé une nouvelle couche de la taille donnée.
