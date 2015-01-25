@@ -64,9 +64,7 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 
 	@Override
 	public void paintTile(Graphics g, int tile, int x, int y, int size) {
-		
 		if(tile >= 0 && tile < tiles.size()) {
-			
 			g.drawImage(tiles.get(tile), x, y, size, size, null);
 		}
 	}
@@ -104,7 +102,6 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	}
 	
 	private void renderTile(int index) {
-		
 		final BufferedImage image = renderer.renderImage(sources.get(index), palette, 1);
 		
 		if(tiles.size() == index)
@@ -136,9 +133,7 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	}
 	
 	public void refreshSource(int index) {
-		
 		if(index >= sources.size() - columns) {
-		
 			final Dimension oldSize = new Dimension(columns, sources.size() / columns);
 			
 			for(int i = 0; i < columns; i++) {
@@ -165,9 +160,9 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	}
 	
 	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
-		
-		for(final SizeChangeListener listener : sizeChangeListeners)
+		for(final SizeChangeListener listener : sizeChangeListeners) {
 			listener.sizeChanged(this, oldSize, newSize);
+		}
 	}
 
 	@Override
