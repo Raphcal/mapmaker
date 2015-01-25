@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class PaletteMap extends TileMap implements HasSelectionListeners {
 
-	private int width;
+	private final int width;
 	private Point selectedPoint;
 	private final ArrayList<SelectionListener> listeners;
 
@@ -26,7 +26,6 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 	
 	@Override
 	public final void setPalette(Palette palette) {
-		
 		clear();
 		add(new PaletteLayer(palette, width));
 		
@@ -56,7 +55,6 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 	}
 	
 	public void setSelection(Point selectedPoint) {
-
 		normalizePoint(selectedPoint);
 		
 		final int tile = getTileFromPoint(selectedPoint);
@@ -83,19 +81,19 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 	}
 
 	private void normalizePoint(Point p) {
-		
-		if(p.x < 0)
+		if(p.x < 0) {
 			p.x = 0;
 		
-		else if (p.x >= width)
+		} else if (p.x >= width) {
 			p.x = width - 1;
+		}
 		
-		if(p.y < 0)
+		if(p.y < 0) {
 			p.y = 0;
+		}
 	}
 	
 	protected void fireSelectionChanged(Point oldSelection, Point newSelection) {
-		
 		for(final SelectionListener listener : listeners)
 			listener.selectionChanged(oldSelection, newSelection);
 	}
