@@ -75,7 +75,6 @@ public class MapEditor extends javax.swing.JFrame {
 		final String osName = System.getProperty("os.name");
 		
 		if(osName != null && osName.startsWith("Mac OS X")) {
-			
 			mapGrid.setBackground(Color.LIGHT_GRAY);
 			paletteGrid.setBackground(Color.DARK_GRAY);
 			
