@@ -14,7 +14,11 @@ import java.util.List;
 
 public class TileLayer implements Layer, HasSizeChangeListeners {
 
+	/**
+	 * Nom de la couche.
+	 */
 	private String name;
+	
 	/**
 	 * Largeur de la couche.
 	 */
@@ -61,6 +65,8 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 
 	/**
 	 * Modifie le nom de ce calque.
+	 * 
+	 * @param name Nom du calque.
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -97,7 +103,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param tile Numéro de la tuile.
 	 */
 	public void setTile(int x, int y, int tile) {
-		
 		if(y >= 0 && y < height && x >= 0 && x < width) {
 			tiles[y * width + x] = tile;
 			fireLayerChanged(new Rectangle(x, y, 1, 1));
@@ -123,7 +128,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param tile Numéro de la tuile.
 	 */
 	public void setTiles(Shape shape, int tile) {
-		
 		final Rectangle bounds = shape.getBounds();
 		
 		final int minX = Math.max(0, bounds.x);
@@ -151,7 +155,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param tile Numéro de la tuile.
 	 */
 	public void setTiles(Point p1, Point p2, int tile) {
-		
 		final int w = p2.x - p1.x;
 		final int h = p2.y - p1.y;
 		final double length = Math.sqrt(w * w + h * h);
@@ -244,7 +247,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param height Nouvelle hauteur.
 	 */
 	public void resize(int width, int height) {
-		
 		final int[] resizedTiles = new int[width * height];
 		Arrays.fill(resizedTiles, -1);
 
@@ -273,7 +275,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param offsetY Décalage vertical.
 	 */
 	public void translate(int offsetX, int offsetY) {
-		
 		final int[] translatedTiles = new int[width * height];
 		Arrays.fill(translatedTiles, -1);
 		
@@ -298,7 +299,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * Vide le contenu de la couche.
 	 */
 	public void clear() {
-		
 		Arrays.fill(this.tiles, -1);
 		fireLayerChanged(new Rectangle(0, 0, width, height));
 	}
@@ -309,7 +309,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param shape Forme à vider.
 	 */
 	public void clear(Shape shape) {
-		
 		setTiles(shape, -1);
 	}
 	
@@ -320,7 +319,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param y Ordonnée de la tuile.
 	 */
 	public void clear(int x, int y) {
-		
 		setTile(x, y, -1);
 	}
 	
@@ -331,7 +329,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param layer Couche à recopier.
 	 */
 	public void merge(TileLayer layer) {
-		
 		final int minHeight = Math.min(this.height, layer.height);
 		final int minWidth = Math.min(this.width, layer.width);
 		
@@ -373,7 +370,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param layer Couche à exclure.
 	 */
 	public void clear(TileLayer layer) {
-		
 		final int minHeight = Math.min(this.height, layer.height);
 		final int minWidth = Math.min(this.width, layer.width);
 		
@@ -414,7 +410,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @return Les couches redimensionnées sous forme de liste. 
 	 */
 	public static List<TileLayer> normalize(TileLayer... layers) {
-		
 		int width = 0;
 		int height = 0;
 		
@@ -441,7 +436,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param listener Nouveau listener.
 	 */
 	public void addLayerChangeListener(LayerChangeListener listener) {
-		
 		listeners.add(listener);
 	}
 	
@@ -451,7 +445,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param listener Le listener à supprimer.
 	 */
 	public void removeLayerChangeListener(LayerChangeListener listener) {
-		
 		listeners.remove(listener);
 	}
 	
@@ -461,7 +454,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param dirtyRectangle Rectangle modifié.
 	 */
 	protected void fireLayerChanged(Rectangle dirtyRectangle) {
-		
 		for(int index = listeners.size() - 1; index >= 0; index--)
 			listeners.get(index).layerChanged(this, dirtyRectangle);
 	}
@@ -477,7 +469,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	}
 	
 	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
-		
 		for(final SizeChangeListener listener : sizeChangeListeners)
 			listener.sizeChanged(this, oldSize, newSize);
 	}
@@ -488,7 +479,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @return Une copie des données.
 	 */
 	public int[] copyData() {
-		
 		return this.tiles.clone();
 	}
 	
@@ -496,13 +486,14 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * Restaure les données à partir du tableau donné en argument. 
 	 * 
 	 * @param tiles Données à restaurer.
+	 * @param source Surface à copier.
 	 */
 	public void restoreData(int[] tiles, Rectangle source) {
-		
 		this.tiles = tiles.clone();
 		
-		if(source == null)
+		if(source == null) {
 			source = new Rectangle(0, 0, width, height);
+		}
 			
 		fireLayerChanged(source);
 	}
@@ -545,7 +536,6 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 
 	@Override
 	public String toString() {
-		
 		if(name == null)
 			return super.toString();
 		else
