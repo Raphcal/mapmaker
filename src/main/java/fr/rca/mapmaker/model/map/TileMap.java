@@ -60,18 +60,6 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 		sizeChangeListener = new SizeChangeListener() {
 			@Override
 			public void sizeChanged(Object source, Dimension oldSize, Dimension newSize) {
-				
-//				final Layer layer = (Layer) source;
-//				
-//				final int layerWidth = (int) (layer.getWidth() / layer.getScrollRate());
-//				final int layerHeight = (int) (layer.getHeight() / layer.getScrollRate());
-//
-//				if(layerWidth > width)
-//					width = layerWidth;
-//
-//				if(layerHeight > height)
-//					height = layerHeight;
-				
 				updateSize();
 			}
 		};
@@ -149,11 +137,13 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 		final int layerWidth = (int) (layer.getWidth() / Math.max(layer.getScrollRate(), 1.0f));
 		final int layerHeight = (int) (layer.getHeight() / Math.max(layer.getScrollRate(), 1.0f));
 
-		if(layerWidth > width)
+		if(layerWidth > width) {
 			setWidth(layerWidth);
+		}
 
-		if(layerHeight > height)
+		if(layerHeight > height) {
 			setHeight(layerHeight);
+		}
 	}
 	
 	private void updateSize() {
@@ -163,13 +153,15 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 			width = 0;
 			height = 0;
 
-			for(final Layer layer : layers)
+			for(final Layer layer : layers) {
 				updateSizeForLayer(layer);
+			}
 
 			final Dimension newDimension = new Dimension(width, height);
 
-			if(!oldDimension.equals(newDimension))
+			if(!oldDimension.equals(newDimension)) {
 				fireSizeChanged(oldDimension, newDimension);
+			}
 		}
 	}
 	
@@ -183,12 +175,14 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 		if(layer instanceof TileLayer) {
 //			((TileLayer)layer).setParent(this);
 			
-			for(final LayerChangeListener listener : layerChangeListeners)
+			for(final LayerChangeListener listener : layerChangeListeners) {
 				((TileLayer)layer).addLayerChangeListener(listener);
+			}
 		}
 		
-		if(layer instanceof HasSizeChangeListeners)
+		if(layer instanceof HasSizeChangeListeners) {
 			((HasSizeChangeListeners)layer).addSizeChangeListener(sizeChangeListener);
+		}
 		
 		fireIntervalAdded(index);
 	}
@@ -210,8 +204,9 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 					((TileLayer)layer).removeLayerChangeListener(listener);
 			}
 
-			if(layer instanceof HasSizeChangeListeners)
+			if(layer instanceof HasSizeChangeListeners) {
 				((HasSizeChangeListeners)layer).removeSizeChangeListener(sizeChangeListener);
+			}
 			
 			updateSize();
 			fireIntervalRemoved(index);
@@ -224,10 +219,10 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 	
 	public void addAll(Collection<Layer> layers) {
-		
 		final Iterator<Layer> iterator = layers.iterator();
-		while(iterator.hasNext())
+		while(iterator.hasNext()) {
 			add(iterator.next());
+		}
 	}
 	
 	public void swapLayers(int first, int second) {
@@ -241,21 +236,23 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 	
 	public void addLayerChangeListener(LayerChangeListener listener) {
-		
-		for(Layer layer : layers)
-			if(layer instanceof TileLayer)
+		for(Layer layer : layers) {
+			if(layer instanceof TileLayer) {
 				((TileLayer)layer).addLayerChangeListener(listener);
+			}
+		}
 			
 		layerChangeListeners.add(listener);
 	}
 	
 	public void removeLayerChangeListener(LayerChangeListener listener) {
-		
 		layerChangeListeners.remove(listener);
 		
-		for(Layer layer : layers)
-			if(layer instanceof TileLayer)
+		for(Layer layer : layers) {
+			if(layer instanceof TileLayer) {
 				((TileLayer)layer).removeLayerChangeListener(listener);
+			}
+		}
 	}
 	
 	@Override
@@ -269,28 +266,29 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 	
 	public void clear() {
-		
 		final Iterator<Layer> iterator = layers.iterator();
 		
 		while(iterator.hasNext()) {
 			final Layer layer = iterator.next();
 			
 			if(layer instanceof TileLayer) {
-				for(final LayerChangeListener listener : layerChangeListeners)
+				for(final LayerChangeListener listener : layerChangeListeners) {
 					((TileLayer)layer).removeLayerChangeListener(listener);
+				}
 			}
 			
-			if(layer instanceof HasSizeChangeListeners)
+			if(layer instanceof HasSizeChangeListeners) {
 				((HasSizeChangeListeners)layer).removeSizeChangeListener(sizeChangeListener);
+			}
 			
 			iterator.remove();
 		}
 	}
 	
 	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
-		
-		for(final SizeChangeListener listener : sizeChangeListeners)
+		for(final SizeChangeListener listener : sizeChangeListeners) {
 			listener.sizeChanged(this, oldSize, newSize);
+		}
 	}
 
 	protected void fireIntervalAdded(int index) {
@@ -305,16 +303,18 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 		
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index, index);
 		
-		for(final ListDataListener listener : listDataListeners)
+		for(final ListDataListener listener : listDataListeners) {
 			listener.intervalRemoved(event);
+		}
 	}
 	
 	protected void fireContentChanged(int from, int to) {
 		
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, from, to);
 		
-		for(final ListDataListener listener : listDataListeners)
+		for(final ListDataListener listener : listDataListeners) {
 			listener.contentsChanged(event);
+		}
 	}
 	
 	@Override
