@@ -2,6 +2,9 @@
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.sprite.Sprite;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,7 +22,9 @@ public class SpriteDialog extends javax.swing.JDialog {
 		initComponents();
 		widthTextField.setText("32");
 		heightTextField.setText("32");
-		gridList.setThumbnailSize(32);
+		gridList.setGridWidth(32);
+		gridList.setGridHeight(32);
+		pack();
 	}
 
 	/**
@@ -30,6 +35,7 @@ public class SpriteDialog extends javax.swing.JDialog {
 	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         sizeLabel = new javax.swing.JLabel();
         widthTextField = new javax.swing.JTextField();
@@ -37,18 +43,22 @@ public class SpriteDialog extends javax.swing.JDialog {
         heightTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         gridList = new fr.rca.mapmaker.ui.GridList();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
+        okButton = new javax.swing.JButton();
         animationComboBox = new javax.swing.JComboBox();
         animationLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         sizeLabel.setText("Taille :");
 
-        widthTextField.setText("1024");
+        widthTextField.setMinimumSize(new java.awt.Dimension(46, 28));
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gridList, org.jdesktop.beansbinding.ELProperty.create("${gridWidth}"), widthTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         widthTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 widthTextFieldActionPerformed(evt);
@@ -57,8 +67,12 @@ public class SpriteDialog extends javax.swing.JDialog {
 
         xLabel.setText("x");
 
-        heightTextField.setText("1024");
         heightTextField.setToolTipText("");
+        heightTextField.setMinimumSize(new java.awt.Dimension(46, 28));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gridList, org.jdesktop.beansbinding.ELProperty.create("${gridHeight}"), heightTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         heightTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 heightTextFieldActionPerformed(evt);
@@ -66,11 +80,21 @@ public class SpriteDialog extends javax.swing.JDialog {
         });
 
         gridList.setOrientation(fr.rca.mapmaker.ui.GridListOrientation.HORIZONTAL);
+        gridList.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                gridListComponentResized(evt);
+            }
+        });
         jScrollPane1.setViewportView(gridList);
 
-        jButton1.setText("Annuler");
+        cancelButton.setText("Annuler");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("OK");
+        okButton.setText("OK");
 
         animationComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "À l'arrêt", "Marche", "Course", "Saute", "Tombe", "Attaque", "Blessé", "Meurt" }));
 
@@ -110,9 +134,9 @@ public class SpriteDialog extends javax.swing.JDialog {
                             .addComponent(jScrollPane1)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButton1)
+                                .addComponent(cancelButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2)))))
+                                .addComponent(okButton)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -132,10 +156,12 @@ public class SpriteDialog extends javax.swing.JDialog {
                 .addComponent(jScrollPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(cancelButton)
+                    .addComponent(okButton))
                 .addContainerGap())
         );
+
+        bindingGroup.bind();
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -147,6 +173,15 @@ public class SpriteDialog extends javax.swing.JDialog {
     private void heightTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_heightTextFieldActionPerformed
 		updateSize();
     }//GEN-LAST:event_heightTextFieldActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+		setVisible(false);
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void gridListComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_gridListComponentResized
+        // TODO add your handling code here:
+		pack();
+    }//GEN-LAST:event_gridListComponentResized
 
 	private void updateSize() {
 		
@@ -167,6 +202,13 @@ public class SpriteDialog extends javax.swing.JDialog {
 						System.exit(0);
 					}
 				});
+				dialog.gridList.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JOptionPane.showConfirmDialog(null, e.getActionCommand());
+					}
+				});
 				dialog.setVisible(true);
 			}
 		});
@@ -175,15 +217,16 @@ public class SpriteDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox animationComboBox;
     private javax.swing.JLabel animationLabel;
+    private javax.swing.JButton cancelButton;
     private fr.rca.mapmaker.ui.GridList gridList;
     private javax.swing.JTextField heightTextField;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton okButton;
     private javax.swing.JLabel sizeLabel;
     private javax.swing.JTextField widthTextField;
     private javax.swing.JLabel xLabel;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
