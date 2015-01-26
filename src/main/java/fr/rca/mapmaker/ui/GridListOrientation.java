@@ -12,17 +12,22 @@ public enum GridListOrientation {
 	VERTICAL {
 		@Override
 		public Dimension getDimension(GridList list) {
-			return new Dimension(list.padding + list.thumbnailSize + list.padding, list.padding + list.getNumberOfElements() * (list.thumbnailSize + list.padding));
+			final int padding = list.getPadding();
+			final int thumbnailSize = list.getThumbnailSize();
+			return new Dimension(padding + thumbnailSize + padding, padding + list.getNumberOfElements() * (thumbnailSize + padding));
 		}
 
 		@Override
 		public int getX(GridList list, int index) {
-			return list.padding;
+			final int padding = list.getPadding();
+			return padding;
 		}
 
 		@Override
 		public int getY(GridList list, int index) {
-			return list.padding + (list.thumbnailSize + list.padding) * index;
+			final int padding = list.getPadding();
+			final int thumbnailSize = list.getThumbnailSize();
+			return padding + (thumbnailSize + padding) * index;
 		}
 
 		@Override
@@ -37,23 +42,30 @@ public enum GridListOrientation {
 
 		@Override
 		public int indexOfElementAtPoint(GridList list, Point point) {
-			return point.y / (list.thumbnailSize + list.padding);
+			final int padding = list.getPadding();
+			final int thumbnailSize = list.getThumbnailSize();
+			return point.y / (thumbnailSize + padding);
 		}
 		
 	}, HORIZONTAL {
 		@Override
 		public Dimension getDimension(GridList list) {
-			return new Dimension(list.padding + list.getNumberOfElements() * (list.thumbnailSize + list.padding), list.padding + list.thumbnailSize + list.padding);
+			final int padding = list.getPadding();
+			final int thumbnailSize = list.getThumbnailSize();
+			return new Dimension(padding + list.getNumberOfElements() * (thumbnailSize + padding), padding + thumbnailSize + padding);
 		}
 
 		@Override
 		public int getX(GridList list, int index) {
-			return list.padding + (list.thumbnailSize + list.padding) * index;
+			final int padding = list.getPadding();
+			final int thumbnailSize = list.getThumbnailSize();
+			return padding + (thumbnailSize + padding) * index;
 		}
 
 		@Override
 		public int getY(GridList list, int index) {
-			return list.padding;
+			final int padding = list.getPadding();
+			return padding;
 		}
 
 		@Override
@@ -68,7 +80,9 @@ public enum GridListOrientation {
 
 		@Override
 		public int indexOfElementAtPoint(GridList list, Point point) {
-			return point.x / (list.thumbnailSize + list.padding);
+			final int padding = list.getPadding();
+			final int thumbnailSize = list.getThumbnailSize();
+			return point.x / (thumbnailSize + padding);
 		}
 		
 	};

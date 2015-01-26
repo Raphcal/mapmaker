@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.ui;
 
+import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.LayerChangeListener;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -11,9 +12,12 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 /**
@@ -24,12 +28,14 @@ public class GridList extends JComponent {
 	
 	private GridListOrientation orientation = GridListOrientation.VERTICAL;
 	private final int tileSize = 6;
-	final int thumbnailSize = 72;
-	final int padding = 4;
+	private int thumbnailSize = 72;
+	private int padding = 4;
 	private List<TileMap> maps;
 	
 	private LayerChangeListener listener;
 	private final HashMap<TileLayer, Integer> indexes = new HashMap<TileLayer, Integer>();
+	
+	private BufferedImage addImage;
 	
 	private boolean editable = true;
 	
@@ -41,6 +47,12 @@ public class GridList extends JComponent {
 
 	public GridList(List<TileMap> maps) {
 		setOpaque(true);
+		
+		try {
+			addImage = ImageIO.read(GridList.class.getResourceAsStream("/resources/add.png"));
+		} catch (IOException ex) {
+			Exceptions.showStackTrace(ex, null);
+		}
 		
 		listener = new LayerChangeListener() {
 			@Override
@@ -115,6 +127,14 @@ public class GridList extends JComponent {
 		repaint();
 	}
 
+	public int getPadding() {
+		return padding;
+	}
+
+	public int getThumbnailSize() {
+		return thumbnailSize;
+	}
+
 	private void updateSize() {
 		final Dimension size = orientation.getDimension(this);
 		setPreferredSize(size);
@@ -169,6 +189,9 @@ public class GridList extends JComponent {
 		
 		g.setColor(Color.red);
 		g.drawRect(orientation.getX(this, maps.size()), orientation.getY(this, maps.size()), thumbnailSize, thumbnailSize);
+		g.drawImage(addImage, 
+			orientation.getX(this, maps.size()) + thumbnailSize / 2 - addImage.getWidth() / 2, 
+			orientation.getY(this, maps.size()) + thumbnailSize / 2 - addImage.getHeight()/ 2, null);
 		
 		g.dispose();
 	}
