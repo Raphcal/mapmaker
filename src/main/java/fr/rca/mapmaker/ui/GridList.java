@@ -135,6 +135,11 @@ public class GridList extends JComponent {
 		return thumbnailSize;
 	}
 
+	public void setThumbnailSize(int thumbnailSize) {
+		this.thumbnailSize = thumbnailSize;
+		updateSize();
+	}
+
 	private void updateSize() {
 		final Dimension size = orientation.getDimension(this);
 		setPreferredSize(size);
@@ -187,7 +192,6 @@ public class GridList extends JComponent {
 			g.fillRect(orientation.getX(this, maps.size()) - padding, orientation.getY(this, maps.size()) - padding, thumbnailSize + padding + padding, thumbnailSize + padding + padding);
 		}
 		
-		g.setColor(Color.red);
 		g.drawRect(orientation.getX(this, maps.size()), orientation.getY(this, maps.size()), thumbnailSize, thumbnailSize);
 		g.drawImage(addImage, 
 			orientation.getX(this, maps.size()) + thumbnailSize / 2 - addImage.getWidth() / 2, 
