@@ -35,7 +35,7 @@ public class SpritePalette implements Palette {
 	public int getTileSize() {
 		if(!sprites.isEmpty() && selectedTile >= 0 && selectedTile < sprites.size()) {
 			final Sprite sprite = sprites.get(selectedTile);
-			return sprite.getSize();
+			return 1; //sprite.getSize();
 		}
 		return 1;
 	}

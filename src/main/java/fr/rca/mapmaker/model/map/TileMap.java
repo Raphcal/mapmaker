@@ -71,6 +71,14 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 		this.height = height;
 		this.backgroundColor = backgroundColor;
 	}
+	
+	public TileMap(Layer layer, Palette palette) {
+		this();
+		this.width = layer.getWidth();
+		this.height = layer.getHeight();
+		this.layers.add(layer);
+		this.palette = palette;
+	}
 
 	public void setParent(Project parent) {
 		if(palette instanceof PaletteReference) {

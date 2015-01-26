@@ -1,10 +1,13 @@
 
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import fr.rca.mapmaker.ui.GridList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -12,7 +15,7 @@ import javax.swing.JOptionPane;
  */
 public class SpriteDialog extends javax.swing.JDialog {
 	
-	private Sprite sprite;
+	private Sprite sprite = new Sprite();
 
 	/**
 	 * Creates new form SpriteDialog
@@ -20,11 +23,6 @@ public class SpriteDialog extends javax.swing.JDialog {
 	public SpriteDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
-		widthTextField.setText("32");
-		heightTextField.setText("32");
-		gridList.setGridWidth(32);
-		gridList.setGridHeight(32);
-		pack();
 	}
 
 	/**
@@ -83,6 +81,11 @@ public class SpriteDialog extends javax.swing.JDialog {
         gridList.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 gridListComponentResized(evt);
+            }
+        });
+        gridList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gridListActionPerformed(evt);
             }
         });
         jScrollPane1.setViewportView(gridList);
@@ -179,9 +182,28 @@ public class SpriteDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void gridListComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_gridListComponentResized
-        // TODO add your handling code here:
 		pack();
     }//GEN-LAST:event_gridListComponentResized
+
+    private void gridListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gridListActionPerformed
+		final TileLayer layer;
+		if(GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
+			layer = new TileLayer(gridList.getGridWidth(), gridList.getGridHeight());
+		} else {
+			layer = (TileLayer) sprite.get(animationComboBox.getName(), evt.getID());
+		}
+		final int index = evt.getID();
+		TileEditor.createEditorDialog(layer, ColorPalette.getDefaultColorPalette(), null, new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Update
+				sprite.set(animationComboBox.getName(), index, layer);
+				gridList.getMaps().add(new TileMap(layer, ColorPalette.getDefaultColorPalette()));
+				gridList.repaint();
+			}
+		}).setVisible(true);
+    }//GEN-LAST:event_gridListActionPerformed
 
 	private void updateSize() {
 		
@@ -200,13 +222,6 @@ public class SpriteDialog extends javax.swing.JDialog {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
 						System.exit(0);
-					}
-				});
-				dialog.gridList.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						JOptionPane.showConfirmDialog(null, e.getActionCommand());
 					}
 				});
 				dialog.setVisible(true);

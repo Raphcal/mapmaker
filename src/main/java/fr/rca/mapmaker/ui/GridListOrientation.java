@@ -86,7 +86,7 @@ public enum GridListOrientation {
 
 		@Override
 		public int getSize(GridList list) {
-			return list.getWidth();
+			return list.getGridWidth();
 		}
 		
 	};

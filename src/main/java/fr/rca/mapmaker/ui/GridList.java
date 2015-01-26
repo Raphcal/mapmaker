@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -35,7 +36,7 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 	public static final String EDIT_COMMAND = "edit";
 	
 	private GridListOrientation orientation = GridListOrientation.VERTICAL;
-	private final int tileSize = 6;
+	private final int tileSize = 1;
 	private int gridWidth = 72;
 	private int gridHeight = 72;
 	private int padding = 4;
@@ -106,7 +107,7 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 
 	public final void setMaps(List<TileMap> maps) {
 		if(maps == null) {
-			maps = Collections.emptyList();
+			maps = new ArrayList<TileMap>();
 		}
 		
 		if(this.maps != null) {
@@ -140,7 +141,7 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 		
 		repaint();
 	}
-
+	
 	public int getPadding() {
 		return padding;
 	}
@@ -212,11 +213,10 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 		}
 		
 		if(selection != null && selection == maps.size()) {
-			g.setColor(Color.BLUE);
+			g.setColor(SystemColor.textHighlight);
 			g.fillRect(orientation.getX(this, maps.size()) - padding, orientation.getY(this, maps.size()) - padding, gridWidth + padding + padding, gridHeight + padding + padding);
 		}
 		
-		g.drawRect(orientation.getX(this, maps.size()), orientation.getY(this, maps.size()), gridWidth, gridHeight);
 		g.drawImage(addImage, 
 			orientation.getX(this, maps.size()) + gridWidth / 2 - addImage.getWidth() / 2, 
 			orientation.getY(this, maps.size()) + gridHeight / 2 - addImage.getHeight()/ 2, null);
@@ -232,13 +232,13 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 		final TileMap map = maps.get(index);
 		final Palette palette = map.getPalette();
 		
-		final int width = gridWidth / tileSize;
-		final int height = gridHeight / tileSize;
+		final int width = gridWidth;
+		final int height = gridHeight;
 		final int originX = orientation.getX(this, index);
 		final int originY = orientation.getY(this, index);
 		
 		if(selection != null && selection == index) {
-			g.setColor(Color.BLUE);
+			g.setColor(SystemColor.textHighlight);
 			g.fillRect(originX - padding, originY - padding, gridWidth + padding + padding, gridHeight + padding + padding);
 		}
 		
