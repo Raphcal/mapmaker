@@ -176,6 +176,17 @@ public class GridList extends JComponent {
 		return maps;
 	}
 	
+	public void addMap(TileMap tileMap) {
+		this.maps.add(tileMap);
+		repaint();
+		updateSize();
+	}
+	
+	public void updateMap(int index) {
+		repaintMap(index);
+		updateSize();
+	}
+	
 	public void setOrientation(GridListOrientation orientation) {
 		this.orientation = orientation != null ? orientation : GridListOrientation.VERTICAL;
 		updateSize();

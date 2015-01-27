@@ -44,7 +44,13 @@ public enum GridListOrientation {
 		@Override
 		public int indexOfElementAtPoint(GridList list, Point point) {
 			final int padding = list.getPadding();
+			final int width = list.getGridSize();
 			final int height = list.getGridSize();
+			
+			if(point.getX() <= padding || point.getX() >= padding + width) {
+				return -1;
+			}
+			
 			return point.y / (height + padding);
 		}
 
@@ -90,6 +96,12 @@ public enum GridListOrientation {
 		public int indexOfElementAtPoint(GridList list, Point point) {
 			final int padding = list.getPadding();
 			final int width = list.getGridSize();
+			final int height = list.getGridSize();
+			
+			if(point.getY() <= padding || point.getY() >= padding + height) {
+				return -1;
+			}
+			
 			return point.x / (width + padding);
 		}
 

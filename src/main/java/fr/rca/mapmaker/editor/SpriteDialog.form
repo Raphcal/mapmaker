@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
-  <Properties>
-    <Property name="resizable" type="boolean" value="false"/>
-  </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
@@ -46,7 +43,7 @@
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="animationComboBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="87" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="183" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -81,7 +78,7 @@
                   <Component id="directionChooser1" min="-2" pref="100" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="gridScrollPane" max="32767" attributes="0"/>
+              <Component id="gridScrollPane" pref="101" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -112,10 +109,6 @@
       </BindingProperties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="gridScrollPane">
-      <Properties>
-        <Property name="horizontalScrollBarPolicy" type="int" value="32"/>
-        <Property name="verticalScrollBarPolicy" type="int" value="21"/>
-      </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
@@ -126,7 +119,6 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="componentResized" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="gridListComponentResized"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gridListActionPerformed"/>
           </Events>
 
