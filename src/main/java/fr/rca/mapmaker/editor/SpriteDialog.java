@@ -8,6 +8,7 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.GridList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  *
@@ -37,16 +38,14 @@ public class SpriteDialog extends javax.swing.JDialog {
 
         sizeLabel = new javax.swing.JLabel();
         widthTextField = new javax.swing.JTextField();
-        xLabel = new javax.swing.JLabel();
-        heightTextField = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        gridScrollPane = new javax.swing.JScrollPane();
         gridList = new fr.rca.mapmaker.ui.GridList();
         cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
         animationComboBox = new javax.swing.JComboBox();
         animationLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        directionChooser1 = new fr.rca.mapmaker.ui.DirectionChooser();
 
         setResizable(false);
 
@@ -54,28 +53,11 @@ public class SpriteDialog extends javax.swing.JDialog {
 
         widthTextField.setMinimumSize(new java.awt.Dimension(46, 28));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gridList, org.jdesktop.beansbinding.ELProperty.create("${gridWidth}"), widthTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gridList, org.jdesktop.beansbinding.ELProperty.create("${gridSize}"), widthTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"), "gridList.gridWidth");
         bindingGroup.addBinding(binding);
 
-        widthTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                widthTextFieldActionPerformed(evt);
-            }
-        });
-
-        xLabel.setText("x");
-
-        heightTextField.setToolTipText("");
-        heightTextField.setMinimumSize(new java.awt.Dimension(46, 28));
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gridList, org.jdesktop.beansbinding.ELProperty.create("${gridHeight}"), heightTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
-
-        heightTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                heightTextFieldActionPerformed(evt);
-            }
-        });
+        gridScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        gridScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         gridList.setOrientation(fr.rca.mapmaker.ui.GridListOrientation.HORIZONTAL);
         gridList.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -88,7 +70,7 @@ public class SpriteDialog extends javax.swing.JDialog {
                 gridListActionPerformed(evt);
             }
         });
-        jScrollPane1.setViewportView(gridList);
+        gridScrollPane.setViewportView(gridList);
 
         cancelButton.setText("Annuler");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -105,58 +87,55 @@ public class SpriteDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Direction :");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Haut", "Haut-droite", "Droite", "Bas-droite", "Bas", "Bas-gauche", "Gauche", "Haut-gauche" }));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(sizeLabel)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cancelButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(animationLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(okButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(cancelButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(okButton)))))
+                            .addComponent(animationLabel)
+                            .addComponent(sizeLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 87, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(directionChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(gridScrollPane)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(sizeLabel)
-                    .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xLabel)
-                    .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(animationLabel)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(sizeLabel)
+                            .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(animationLabel)
+                            .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(directionChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(gridScrollPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -169,14 +148,6 @@ public class SpriteDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void widthTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_widthTextFieldActionPerformed
-		updateSize();
-    }//GEN-LAST:event_widthTextFieldActionPerformed
-
-    private void heightTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_heightTextFieldActionPerformed
-		updateSize();
-    }//GEN-LAST:event_heightTextFieldActionPerformed
-
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
 		setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
@@ -188,7 +159,7 @@ public class SpriteDialog extends javax.swing.JDialog {
     private void gridListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gridListActionPerformed
 		final TileLayer layer;
 		if(GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
-			layer = new TileLayer(gridList.getGridWidth(), gridList.getGridHeight());
+			layer = new TileLayer(gridList.getGridSize(), gridList.getGridSize());
 		} else {
 			layer = (TileLayer) sprite.get(animationComboBox.getName(), evt.getID());
 		}
@@ -199,16 +170,18 @@ public class SpriteDialog extends javax.swing.JDialog {
 			public void actionPerformed(ActionEvent e) {
 				// Update
 				sprite.set(animationComboBox.getName(), index, layer);
-				gridList.getMaps().add(new TileMap(layer, ColorPalette.getDefaultColorPalette()));
-				gridList.repaint();
+				
+				final List<TileMap> maps = gridList.getMaps();
+				if(index == maps.size()) {
+					maps.add(new TileMap(layer, ColorPalette.getDefaultColorPalette()));
+					gridList.repaint();
+				} else {
+					gridList.repaint(index);
+				}
 			}
 		}).setVisible(true);
     }//GEN-LAST:event_gridListActionPerformed
 
-	private void updateSize() {
-		
-	}
-	
 	/**
 	 * @param args the command line arguments
 	 */
@@ -233,15 +206,13 @@ public class SpriteDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox animationComboBox;
     private javax.swing.JLabel animationLabel;
     private javax.swing.JButton cancelButton;
+    private fr.rca.mapmaker.ui.DirectionChooser directionChooser1;
     private fr.rca.mapmaker.ui.GridList gridList;
-    private javax.swing.JTextField heightTextField;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JScrollPane gridScrollPane;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton okButton;
     private javax.swing.JLabel sizeLabel;
     private javax.swing.JTextField widthTextField;
-    private javax.swing.JLabel xLabel;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

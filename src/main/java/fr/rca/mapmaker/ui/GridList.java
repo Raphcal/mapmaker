@@ -1,14 +1,13 @@
 package fr.rca.mapmaker.ui;
 
 import fr.rca.mapmaker.exception.Exceptions;
-import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.LayerChangeListener;
-import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -20,7 +19,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -30,15 +28,14 @@ import javax.swing.JComponent;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class GridList extends JComponent implements HasSizeChangeListeners {
+public class GridList extends JComponent {
 	
 	public static final String ADD_COMMAND = "add";
 	public static final String EDIT_COMMAND = "edit";
 	
 	private GridListOrientation orientation = GridListOrientation.VERTICAL;
 	private final int tileSize = 1;
-	private int gridWidth = 72;
-	private int gridHeight = 72;
+	private int gridSize = 72;
 	private int padding = 4;
 	private List<TileMap> maps;
 	
@@ -52,7 +49,6 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 	private Integer selection;
 	
 	private final List<ActionListener> actionListeners = new ArrayList<ActionListener>();
-	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
 
 	public GridList() {
 		this(null);
@@ -146,31 +142,26 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 		return padding;
 	}
 
-	public int getGridWidth() {
-		return gridWidth;
+	public int getGridSize() {
+		return gridSize;
 	}
-
-	public void setGridWidth(int gridWidth) {
-		this.gridWidth = gridWidth;
-		updateSize();
-	}
-
-	public int getGridHeight() {
-		return gridHeight;
-	}
-
-	public void setGridHeight(int gridHeight) {
-		this.gridHeight = gridHeight;
+	
+	public void setGridSize(int gridSize) {
+		this.gridSize = gridSize;
 		updateSize();
 	}
 
 	private void updateSize() {
-		final Dimension oldSize = getSize();
 		final Dimension newSize = orientation.getDimension(this);
 		setPreferredSize(newSize);
 		setSize(newSize);
 		
-		fireSizeChanged(oldSize, newSize);
+		invalidate();
+		
+		final Component parent = getParent();
+		if(parent != null) {
+			parent.validate();
+		}
 	}
 	
 	int getNumberOfElements() {
@@ -203,6 +194,13 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 			g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 		}
 		
+		// Selection
+		if(selection != null) {
+			g.setColor(SystemColor.textHighlight);
+			g.fillRect(orientation.getX(this, selection) - padding, orientation.getY(this, selection) - padding, gridSize + padding + padding, gridSize + padding + padding);
+		}
+		
+		// Maps
 		final int firstMap = (orientation.getStart(clipBounds) - padding) / (orientation.getSize(this) + padding);
 		final int lastMap = Math.min(
 			firstMap + orientation.getLength(clipBounds) / (orientation.getSize(this) + padding),
@@ -211,15 +209,13 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 		for(int index = firstMap; index <= lastMap; index++) {
 			paintMap(index, g);
 		}
-		
-		if(selection != null && selection == maps.size()) {
-			g.setColor(SystemColor.textHighlight);
-			g.fillRect(orientation.getX(this, maps.size()) - padding, orientation.getY(this, maps.size()) - padding, gridWidth + padding + padding, gridHeight + padding + padding);
+
+		// Plus
+		if(editable) {
+			g.drawImage(addImage, 
+				orientation.getX(this, maps.size()) + gridSize / 2 - addImage.getWidth() / 2, 
+				orientation.getY(this, maps.size()) + gridSize / 2 - addImage.getHeight()/ 2, null);
 		}
-		
-		g.drawImage(addImage, 
-			orientation.getX(this, maps.size()) + gridWidth / 2 - addImage.getWidth() / 2, 
-			orientation.getY(this, maps.size()) + gridHeight / 2 - addImage.getHeight()/ 2, null);
 		
 		g.dispose();
 	}
@@ -232,25 +228,21 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 		final TileMap map = maps.get(index);
 		final Palette palette = map.getPalette();
 		
-		final int width = gridWidth;
-		final int height = gridHeight;
 		final int originX = orientation.getX(this, index);
 		final int originY = orientation.getY(this, index);
 		
-		if(selection != null && selection == index) {
-			g.setColor(SystemColor.textHighlight);
-			g.fillRect(originX - padding, originY - padding, gridWidth + padding + padding, gridHeight + padding + padding);
-		}
-		
 		if(map.getBackgroundColor() != null) {
 			g.setColor(map.getBackgroundColor());
-			g.fillRect(originX, originY, gridWidth, gridHeight);
+			g.fillRect(originX, originY, gridSize, gridSize);
 		}
+		
+		g.setColor(Color.BLACK);
+		g.drawRect(originX - 1, originY - 1, gridSize + 1, gridSize + 1);
 		
 		for(final Layer layer : map.getLayers()) {
 			if(layer.isVisible()) {
-				final int maxX = Math.min(width, layer.getWidth());
-				final int maxY = Math.min(height, layer.getHeight());
+				final int maxX = Math.min(gridSize / tileSize, layer.getWidth());
+				final int maxY = Math.min(gridSize / tileSize, layer.getHeight());
 				
 				for(int y = 0; y < maxY; y++) {
 					for(int x = 0; x < maxX; x++) {
@@ -268,7 +260,7 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 			// Y
 			orientation.getY(this, index) - padding,
 			// Width, Height
-			gridWidth + padding + padding, gridHeight + padding + padding));
+			gridSize + padding + padding, gridSize + padding + padding));
 	}
 	
 	public void addActionListener(ActionListener listener) {
@@ -282,22 +274,6 @@ public class GridList extends JComponent implements HasSizeChangeListeners {
 	protected void fireActionPerformed(String command) {
 		for(final ActionListener listener : actionListeners) {
 			listener.actionPerformed(new ActionEvent(this, selection, command));
-		}
-	}
-	
-	@Override
-	public void addSizeChangeListener(SizeChangeListener listener) {
-		sizeChangeListeners.add(listener);
-	}
-	
-	@Override
-	public void removeSizeChangeListener(SizeChangeListener listener) {
-		sizeChangeListeners.remove(listener);
-	}
-	
-	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
-		for(final SizeChangeListener listener : sizeChangeListeners) {
-			listener.sizeChanged(this, oldSize, newSize);
 		}
 	}
 }

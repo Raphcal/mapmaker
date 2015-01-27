@@ -11,8 +11,7 @@ import java.util.Map;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class Sprite {
-	private int width;
-	private int height;
+	private int size;
 	private final Map<String, List<Layer>> animations = new HashMap<String, List<Layer>>();
 
 	public Sprite() {
@@ -53,20 +52,7 @@ public class Sprite {
 		return animations.get(animation).get(index);
 	}
 
-	public int getWidth() {
-		return width;
+	public int getSize() {
+		return size;
 	}
-
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
 }
