@@ -16,12 +16,22 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 	private Point selectedPoint;
 	private final ArrayList<SelectionListener> listeners;
 
+	public PaletteMap() {
+		this.width = 0;
+		this.listeners = null;
+	}
+	
 	public PaletteMap(Palette palette, int width) {
 		this.width = width;
 		this.selectedPoint = new Point();
 		setPalette(palette);
 		
 		this.listeners = new ArrayList<SelectionListener>();
+	}
+
+	@Override
+	public void setWidth(int width) {
+		super.setWidth(width);
 	}
 	
 	@Override

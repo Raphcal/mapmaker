@@ -26,8 +26,12 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 	private int length;
 	private int tileSize;
 	
-	public EditableColorPalette(int tileSize) {
-		this(tileSize, COLUMN_LENGTH);
+	public EditableColorPalette() {
+		this(16, COLUMN_LENGTH);
+	}
+	
+	public EditableColorPalette(int length) {
+		this(16, length);
 	}
 	
 	public EditableColorPalette(int tileSize, int length) {
@@ -41,6 +45,10 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 		this.name = name;
 	}
 
+	public void setTileSize(int tileSize) {
+		this.tileSize = tileSize;
+	}
+	
 	@Override
 	public boolean isEditable() {
 		return true;

@@ -230,7 +230,8 @@ private void addPaletteButtonActionPerformed(java.awt.event.ActionEvent evt) {//
 			palette = new EditableImagePalette(tileSize, 4);
 			
 		} else if(newPaletteDialog.getPaletteType() == NewPaletteDialog.TYPE_COLOR_PALETTE) {
-			palette = new EditableColorPalette(tileSize);
+			palette = new EditableColorPalette();
+			((EditableColorPalette)palette).setTileSize(tileSize);
 			
 		} else
 			throw new IllegalArgumentException("Type de palette invalide : " + newPaletteDialog.getPaletteType());

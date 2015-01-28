@@ -273,8 +273,8 @@ public class Grid extends AbstractLayerPainter {
 		graphics2d.setComposite(orignalComposite);
 		
 		// Contours
-		g.setColor(Color.BLACK);
-		g.drawRect(-1, -1, size.width, size.height);
+//		g.setColor(Color.BLACK);
+//		g.drawRect(-1, -1, size.width, size.height);
 		
 		// Sélection
 		paintSelection(tileSize, g);
