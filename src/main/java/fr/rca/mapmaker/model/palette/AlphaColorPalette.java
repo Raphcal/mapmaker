@@ -52,11 +52,15 @@ public class AlphaColorPalette extends ColorPalette {
 		return new AlphaColorPalette(ColorPalette.getDefaultColors());
 	}
 	
-	public static ColorPalette getAlphaPalette() {
+	public static Color[] getAlphaColors() {
 		final Color[] colors = new Color[ALPHAS.length];
 		for(int index = 0; index < ALPHAS.length; index++) {
 			colors[index] = new Color(ALPHAS[index], ALPHAS[index], ALPHAS[index]);
 		}
-		return new ColorPalette(colors);
+		return colors;
+	}
+	
+	public static ColorPalette getAlphaPalette() {
+		return new ColorPalette(getAlphaColors());
 	}
 }

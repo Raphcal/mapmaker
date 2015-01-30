@@ -172,6 +172,14 @@ public class Grid extends AbstractLayerPainter {
 		updateSize();
 		repaint();
 	}
+	
+	public void setZoomAsInteger(int zoom) {
+		setZoom((double)zoom / 100.0);
+	}
+	
+	public int getZoomAsInteger() {
+		return (int) (zoom * 100.0);
+	}
 
 	private void drawBackground(Graphics g, Rectangle clipBounds, Dimension size) {
 		g.setColor(getBackground());
@@ -297,7 +305,7 @@ public class Grid extends AbstractLayerPainter {
 				final int y = selectedPoint.y * tileSize;
 				final Point origin = getLayerOrigin(tileMap.getLayers().get(activeLayer));
 				
-				selectionStyle.paintCursor(g, origin.x + x, origin.y + y, tileSize);
+				selectionStyle.paintCursor(g, tileMap.getPalette(), origin.x + x, origin.y + y, tileSize);
 			}
 		}
 	}

@@ -49,6 +49,8 @@ public class SpriteDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         directionChooser1 = new fr.rca.mapmaker.ui.DirectionChooser();
 
+        setTitle("Sprite");
+
         sizeLabel.setText("Taille :");
 
         widthTextField.setMinimumSize(new java.awt.Dimension(46, 28));

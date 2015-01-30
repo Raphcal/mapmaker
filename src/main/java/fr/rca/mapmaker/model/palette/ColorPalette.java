@@ -5,8 +5,8 @@ import java.awt.Graphics;
 
 public class ColorPalette implements Palette {
 
-	private final Color[] colors;
-	private final Color[] inverses;
+	private Color[] colors;
+	private Color[] inverses;
 	private int selectedTile = -1;
 
 	public ColorPalette() {
@@ -19,14 +19,9 @@ public class ColorPalette implements Palette {
 	}
 	
 	public ColorPalette(Color... colors) {
-		this.colors = colors;
-		this.inverses = new Color[colors.length];
-		
-		for(int index = 0; index < colors.length; index++) {
-			inverse(index);
-		}
+		setColorsAndInverses(colors);
 	}
-
+	
 	@Override
 	public boolean isEditable() {
 		return false;
@@ -45,12 +40,26 @@ public class ColorPalette implements Palette {
 		inverse(index);
 	}
 	
-	public void setColors(int index, Color... color) {
+	public void setColors(int index, Color... colors) {
 		System.arraycopy(colors, 0, this.colors, index, colors.length);
 		
-		final int len = index + color.length;
-		for(int i = index; i < len; i++)
+		final int length = index + colors.length;
+		for(int i = index; i < length; i++) {
 			inverse(i);
+		}
+	}
+	
+	public void setColors(Color... colors) {
+		setColorsAndInverses(colors);
+	}
+	
+	private void setColorsAndInverses(Color[] colors) {
+		this.colors = colors;
+		this.inverses = new Color[colors.length];
+		
+		for(int index = 0; index < colors.length; index++) {
+			inverse(index);
+		}
 	}
 	
 	@Override

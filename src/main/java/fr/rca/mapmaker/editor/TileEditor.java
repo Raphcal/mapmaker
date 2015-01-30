@@ -90,7 +90,7 @@ public class TileEditor {
 		final PaletteMap paletteMap = new PaletteMap(palette, PALETTE_WIDTH);
 		paletteGrid.setTileMap(paletteMap);
 		paletteGrid.setCustomTileSize(8);
-		paletteGrid.setSelectionStyle(new SmallSelectionStyle(palette));
+		paletteGrid.setSelectionStyle(new SmallSelectionStyle());
 		paletteMap.setSelection(new Point());
 		
 		// Sélection des couleurs
@@ -121,7 +121,7 @@ public class TileEditor {
 			final PaletteMap alphaPaletteMap = new PaletteMap(alphaPalette, PALETTE_WIDTH);
 			alphaPaletteGrid.setTileMap(alphaPaletteMap);
 			alphaPaletteGrid.setCustomTileSize(8);
-			alphaPaletteGrid.setSelectionStyle(new SmallSelectionStyle(alphaPalette));
+			alphaPaletteGrid.setSelectionStyle(new SmallSelectionStyle());
 			alphaPaletteMap.setSelection(new Point());
 
 			// Sélection des couleurs

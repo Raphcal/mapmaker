@@ -531,6 +531,7 @@ public class MapEditor extends javax.swing.JFrame {
         zoomLabel.setText("Zoom");
         gridToolBar.add(zoomLabel);
 
+        zoomTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         zoomTextField.setText("100");
         zoomTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -12,12 +12,12 @@ import java.util.ArrayList;
  */
 public class PaletteMap extends TileMap implements HasSelectionListeners {
 
-	private final int width;
+	private int width;
 	private Point selectedPoint;
 	private final ArrayList<SelectionListener> listeners;
 
 	public PaletteMap() {
-		this.width = 0;
+		this.width = 1;
 		this.listeners = null;
 	}
 	
@@ -29,9 +29,13 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 		this.listeners = new ArrayList<SelectionListener>();
 	}
 
-	@Override
-	public void setWidth(int width) {
-		super.setWidth(width);
+	public void setPaletteWidth(int width) {
+		this.width = width;
+		
+		if(!getLayers().isEmpty()) {
+			final PaletteLayer paletteLayer = (PaletteLayer) getLayers().get(0);
+			paletteLayer.setWidth(width);
+		}
 	}
 	
 	@Override
@@ -83,7 +87,11 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 	}
 
 	private int getTileFromPoint(Point point) {
-		return point.y * width + point.x;
+		if(point != null) {
+			return point.y * width + point.x;
+		} else {
+			return 0;
+		}
 	}
 	
 	private Point getPointFromTile(int tile) {

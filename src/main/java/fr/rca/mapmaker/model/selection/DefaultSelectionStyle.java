@@ -6,8 +6,7 @@ import java.awt.Graphics;
 public class DefaultSelectionStyle implements SelectionStyle {
 
 	@Override
-	public void paintCursor(Graphics g, int x, int y, int size) {
-		
+	public void paintCursor(Graphics g, fr.rca.mapmaker.model.palette.Palette palette, int x, int y, int size) {
 		size--;
 		
 		g.setColor(Color.BLACK);
