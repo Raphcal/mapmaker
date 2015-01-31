@@ -65,6 +65,13 @@
     </Component>
     <Component class="fr.rca.mapmaker.model.selection.SmallSelectionStyle" name="selectionStyle">
     </Component>
+    <Component class="fr.rca.mapmaker.editor.undo.LayerMemento" name="memento">
+      <Properties>
+        <Property name="layers" type="java.util.List" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="Collections.singletonList(drawLayer)" type="code"/>
+        </Property>
+      </Properties>
+    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="title" type="java.lang.String" value="&#xc9;diteur"/>
@@ -540,6 +547,9 @@
           <Dimension value="[32, 32]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="undoButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="redoButton">
       <Properties>
@@ -551,6 +561,9 @@
           <Dimension value="[32, 32]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="redoButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="zoomTextField">
       <Properties>

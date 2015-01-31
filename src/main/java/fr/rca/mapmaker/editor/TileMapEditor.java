@@ -19,6 +19,7 @@ import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
+import java.util.Collections;
 import javax.swing.JToggleButton;
 
 /**
@@ -61,6 +62,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         previewMap = new fr.rca.mapmaker.model.map.TileMap();
         previewMap.add(drawLayer);
         selectionStyle = new fr.rca.mapmaker.model.selection.SmallSelectionStyle();
+        memento = new fr.rca.mapmaker.editor.undo.LayerMemento();
         gridScrollPane = new javax.swing.JScrollPane();
         centerPanel = new javax.swing.JPanel();
         drawGrid = new fr.rca.mapmaker.ui.Grid();
@@ -103,6 +105,8 @@ public class TileMapEditor extends javax.swing.JDialog {
         previewMap.setHeight(32);
         previewMap.setPalette(colorPalette);
         previewMap.setWidth(32);
+
+        memento.setLayers(Collections.singletonList(drawLayer));
 
         setTitle("Éditeur");
 
@@ -234,10 +238,20 @@ public class TileMapEditor extends javax.swing.JDialog {
         undoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_undo.png"))); // NOI18N
         undoButton.setToolTipText("Annuler");
         undoButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        undoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                undoButtonActionPerformed(evt);
+            }
+        });
 
         redoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_redo.png"))); // NOI18N
         redoButton.setToolTipText("Refaire");
         redoButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        redoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                redoButtonActionPerformed(evt);
+            }
+        });
 
         zoomTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         zoomTextField.setPreferredSize(new java.awt.Dimension(36, 28));
@@ -379,6 +393,14 @@ public class TileMapEditor extends javax.swing.JDialog {
 		gridScrollPane.revalidate();
     }//GEN-LAST:event_drawGridComponentResized
 
+    private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redoButtonActionPerformed
+		memento.redo();
+    }//GEN-LAST:event_redoButtonActionPerformed
+
+    private void undoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoButtonActionPerformed
+		memento.undo();
+    }//GEN-LAST:event_undoButtonActionPerformed
+
 	private void selectColor(MouseEvent event) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 		colorPaletteMap.setSelection(point);
@@ -455,6 +477,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private javax.swing.JButton horizontalMirrorButton;
     private javax.swing.JToggleButton lineToggleButton;
     private javax.swing.JToggleButton magicWandToggleButton;
+    private fr.rca.mapmaker.editor.undo.LayerMemento memento;
     private javax.swing.JButton okButton;
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JButton pasteButton;
