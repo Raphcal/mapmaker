@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.editor.tool;
 
+import fr.rca.mapmaker.editor.undo.LayerMemento;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,9 +15,20 @@ public class PenTool extends MouseAdapter implements Tool {
 	
 	private Point lastPoint;
 	
+	private LayerMemento memento;
+	
 	public PenTool(Grid grid) {
 		// TODO: Utiliser un numéro de calque (ou le calque actif) plutôt que la référence.
 		this.grid = grid;
+	}
+	
+	public PenTool(Grid grid, LayerMemento memento) {
+		this.grid = grid;
+		this.memento = memento;
+	}
+
+	public void setMemento(LayerMemento memento) {
+		this.memento = memento;
 	}
 	
 	@Override
@@ -27,6 +39,11 @@ public class PenTool extends MouseAdapter implements Tool {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		button = 0;
+		lastPoint = null;
+		
+		if(memento != null) {
+			memento.end();
+		}
 	}
 	
 	@Override
@@ -41,8 +58,14 @@ public class PenTool extends MouseAdapter implements Tool {
 	public void mouseDragged(MouseEvent e) {
 		final Point point = grid.getLayerLocation(e.getX(), e.getY());
 		
-		if(lastPoint != null && lastPoint.equals(point))
+		if(lastPoint == null) {
+			if(memento != null) {
+				memento.begin();
+			}
+			
+		} else if(lastPoint != null && lastPoint.equals(point)) {
 			return;
+		}
 		
 		final TileLayer layer = (TileLayer) grid.getActiveLayer();
 		

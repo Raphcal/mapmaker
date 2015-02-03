@@ -176,7 +176,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         toolButtonGroup.add(penToggleButton);
         penToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_pen.png"))); // NOI18N
         penToggleButton.setToolTipText("Stylo");
-        wireTool(penToggleButton, new PenTool(drawGrid));
+        wireTool(penToggleButton, new PenTool(drawGrid, memento));
         penToggleButton.setSelected(true);
 
         toolButtonGroup.add(bucketFillToggleButton);
