@@ -15,6 +15,7 @@ import fr.rca.mapmaker.editor.tool.Tool;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
+import fr.rca.mapmaker.model.palette.ColorPalette;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +32,7 @@ import javax.swing.JToggleButton;
 public class TileMapEditor extends javax.swing.JDialog {
 	
 	private static final int PALETTE_WIDTH = 8;
-
+	
 	/**
 	 * Creates new form TileMapEditor
 	 */
@@ -42,6 +43,15 @@ public class TileMapEditor extends javax.swing.JDialog {
 		paletteGrid.setTileMap(colorPaletteMap);
 	}
 
+	public void setLayerAndPalette(TileLayer layer, ColorPalette palette) {
+		editedLayer = layer;
+		drawLayer.restoreData(layer.copyData(), layer.getWidth(), layer.getHeight());
+		drawMap.setPalette(palette);
+		colorPaletteMap.setPalette(palette);
+		
+		alphaPaletteGrid.setVisible(palette instanceof AlphaColorPalette);
+	}
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,6 +75,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         previewMap.add(drawLayer);
         selectionStyle = new fr.rca.mapmaker.model.selection.SmallSelectionStyle();
         memento = new fr.rca.mapmaker.editor.undo.LayerMemento();
+        editedLayer = new fr.rca.mapmaker.model.map.TileLayer();
         gridScrollPane = new javax.swing.JScrollPane();
         centerPanel = new javax.swing.JPanel();
         drawGrid = new fr.rca.mapmaker.ui.Grid();
@@ -162,6 +173,11 @@ public class TileMapEditor extends javax.swing.JDialog {
         previewGrid.setTileMap(previewMap);
 
         okButton.setText("OK");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
 
         cancelButton.setText("Annuler");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -420,6 +436,11 @@ public class TileMapEditor extends javax.swing.JDialog {
 		setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+		editedLayer.restoreData(drawLayer.copyData(), null);
+		setVisible(false);
+    }//GEN-LAST:event_okButtonActionPerformed
+
 	private void selectColor(MouseEvent event) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 		colorPaletteMap.setSelection(point);
@@ -497,6 +518,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private fr.rca.mapmaker.ui.Grid drawGrid;
     private fr.rca.mapmaker.model.map.TileLayer drawLayer;
     private fr.rca.mapmaker.model.map.TileMap drawMap;
+    private fr.rca.mapmaker.model.map.TileLayer editedLayer;
     private javax.swing.JToggleButton ellipseFillToggleButton;
     private javax.swing.JToggleButton ellipseToggleButton;
     private javax.swing.JScrollPane gridScrollPane;

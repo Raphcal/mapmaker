@@ -470,8 +470,9 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param dirtyRectangle Rectangle modifié.
 	 */
 	protected void fireLayerChanged(Rectangle dirtyRectangle) {
-		for(int index = listeners.size() - 1; index >= 0; index--)
+		for(int index = listeners.size() - 1; index >= 0; index--) {
 			listeners.get(index).layerChanged(this, dirtyRectangle);
+		}
 	}
 	
 	@Override
@@ -485,8 +486,9 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	}
 	
 	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
-		for(final SizeChangeListener listener : sizeChangeListeners)
+		for(final SizeChangeListener listener : sizeChangeListeners) {
 			listener.sizeChanged(this, oldSize, newSize);
+		}
 	}
 	
 	/**
@@ -512,6 +514,25 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 		}
 			
 		fireLayerChanged(source);
+	}
+	
+	/**
+	 * Restaure les données à partir du tableau donné en argument et 
+	 * redimensionne la couche à partir des tailles données. 
+	 * 
+	 * @param tiles Données à restaurer.
+	 * @param width Nouvelle largeur.
+	 * @param height Nouvelle hauteur.
+	 */
+	public void restoreData(int[] tiles, int width, int height) {
+		final Dimension oldDimension = new Dimension(this.width, this.height);
+		
+		this.tiles = tiles.clone();
+		this.width = width;
+		this.height = height;
+		
+		fireSizeChanged(oldDimension, new Dimension(width, height));
+		fireLayerChanged(new Rectangle(0, 0, width, height));
 	}
 	
 	/**
