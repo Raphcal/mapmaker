@@ -17,7 +17,6 @@ public abstract class AbstractShapeFillTool extends AbstractShapeTool {
 	
 	@Override
 	protected void drawShape(Rectangle rectangle, int tile, TileLayer layer) {
-		
 		final Shape shape = createShape(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 		
 		layer.setTiles(shape, tile);

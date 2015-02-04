@@ -108,9 +108,21 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 */
 	public void setTile(int x, int y, int tile) {
 		if(y >= 0 && y < height && x >= 0 && x < width) {
-			tiles[y * width + x] = tile;
+			setRawTile(x, y, tile);
 			fireLayerChanged(new Rectangle(x, y, 1, 1));
 		}
+	}
+	
+	/**
+	 * Défini directement la tuile à l'emplacement donné sans faire aucun
+	 * contrôle ni activer d'événement.
+	 * 
+	 * @param x Abscisse de la tuile.
+	 * @param y Ordonnée de la tuile.
+	 * @param tile Numéro de la tuile.
+	 */
+	public void setRawTile(int x, int y, int tile) {
+		tiles[y * width + x] = tile;
 	}
 	
 	/**
