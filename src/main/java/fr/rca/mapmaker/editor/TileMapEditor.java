@@ -16,6 +16,8 @@ import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -162,6 +164,11 @@ public class TileMapEditor extends javax.swing.JDialog {
         okButton.setText("OK");
 
         cancelButton.setText("Annuler");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         toolButtonGroup.add(selectionToggleButton);
         selectionToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_selection.png"))); // NOI18N
@@ -409,6 +416,10 @@ public class TileMapEditor extends javax.swing.JDialog {
 		memento.undo();
     }//GEN-LAST:event_undoButtonActionPerformed
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+		setVisible(false);
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
 	private void selectColor(MouseEvent event) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 		colorPaletteMap.setSelection(point);
@@ -455,6 +466,13 @@ public class TileMapEditor extends javax.swing.JDialog {
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
+						System.exit(0);
+					}
+				});
+				dialog.cancelButton.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
 						System.exit(0);
 					}
 				});
