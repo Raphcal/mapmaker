@@ -178,7 +178,7 @@ public class MapEditor extends javax.swing.JFrame {
         layerDownButton = new javax.swing.JButton();
         javax.swing.JToolBar paletteToolBar = new javax.swing.JToolBar();
         penToggleButton = new javax.swing.JToggleButton();
-        configureButton(penToggleButton, new PenTool(mapGrid));
+        configureButton(penToggleButton, new PenTool(mapGrid, layerMemento));
         bucketFillToggleButton = new javax.swing.JToggleButton();
         rectangleToggleButton = new javax.swing.JToggleButton();
         selectionToggleButton = new javax.swing.JToggleButton();
@@ -497,6 +497,10 @@ public class MapEditor extends javax.swing.JFrame {
         undoButton.setFocusable(false);
         undoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         undoButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, layerMemento, org.jdesktop.beansbinding.ELProperty.create("${undoable}"), undoButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
         undoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 undoButtonActionPerformed(evt);
@@ -508,6 +512,10 @@ public class MapEditor extends javax.swing.JFrame {
         redoButton.setFocusable(false);
         redoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         redoButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, layerMemento, org.jdesktop.beansbinding.ELProperty.create("${redoable}"), redoButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
         redoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 redoButtonActionPerformed(evt);

@@ -560,7 +560,7 @@
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="configureButton(penToggleButton, new PenTool(mapGrid));"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="configureButton(penToggleButton, new PenTool(mapGrid, layerMemento));"/>
           </AuxValues>
         </Component>
         <Component class="javax.swing.JToggleButton" name="bucketFillToggleButton">
@@ -684,6 +684,9 @@
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="enabled" source="layerMemento" sourcePath="${undoable}" target="undoButton" targetPath="enabled" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="undoButtonActionPerformed"/>
           </Events>
@@ -697,6 +700,9 @@
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="enabled" source="layerMemento" sourcePath="${redoable}" target="redoButton" targetPath="enabled" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="redoButtonActionPerformed"/>
           </Events>
