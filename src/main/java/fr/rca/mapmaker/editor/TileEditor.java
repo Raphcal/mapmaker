@@ -60,6 +60,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.filechooser.FileFilter;
 
+@Deprecated
 public class TileEditor {
     
 	private static final int PALETTE_WIDTH = 8;

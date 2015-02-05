@@ -22,7 +22,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collections;
+import javax.swing.JButton;
 import javax.swing.JToggleButton;
 
 /**
@@ -33,6 +35,8 @@ public class TileMapEditor extends javax.swing.JDialog {
 	
 	private static final int PALETTE_WIDTH = 8;
 	
+	private ArrayList<ActionListener> listeners;
+	
 	/**
 	 * Creates new form TileMapEditor
 	 */
@@ -40,6 +44,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 		super(parent, modal);
 		initComponents();
 		
+		listeners = new ArrayList<ActionListener>();
 		paletteGrid.setTileMap(colorPaletteMap);
 	}
 
@@ -50,6 +55,12 @@ public class TileMapEditor extends javax.swing.JDialog {
 		colorPaletteMap.setPalette(palette);
 		
 		alphaPaletteGrid.setVisible(palette instanceof AlphaColorPalette);
+		
+		pack();
+	}
+
+	public void addActionListener(ActionListener listener) {
+		listeners.add(listener);
 	}
 	
 	/**
@@ -439,6 +450,10 @@ public class TileMapEditor extends javax.swing.JDialog {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
 		editedLayer.restoreData(drawLayer.copyData(), null);
 		setVisible(false);
+		
+		for(final ActionListener listener : listeners) {
+			listener.actionPerformed(evt);
+		}
     }//GEN-LAST:event_okButtonActionPerformed
 
 	private void selectColor(MouseEvent event) {

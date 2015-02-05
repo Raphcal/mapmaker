@@ -155,23 +155,25 @@ public class SpriteDialog extends javax.swing.JDialog {
 			layer = (TileLayer) sprite.get(animationComboBox.getName(), evt.getID());
 		}
 		final int index = evt.getID();
-		TileEditor.createEditorDialog(layer, ColorPalette.getDefaultColorPalette(), null, new ActionListener() {
+		
+		final TileMapEditor editor = new TileMapEditor(null, true);
+		editor.setLayerAndPalette(layer, ColorPalette.getDefaultColorPalette());
+		editor.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if("OK".equals(((JButton)e.getSource()).getText())) {
-					// Update
-					sprite.set(animationComboBox.getName(), index, layer);
+				// Update
+				sprite.set(animationComboBox.getName(), index, layer);
 
-					final List<TileMap> maps = gridList.getMaps();
-					if(index == maps.size()) {
-						gridList.addMap(new TileMap(layer, ColorPalette.getDefaultColorPalette()));
-					} else {
-						gridList.updateMap(index);
-					}
+				final List<TileMap> maps = gridList.getMaps();
+				if(index == maps.size()) {
+					gridList.addMap(new TileMap(layer, ColorPalette.getDefaultColorPalette()));
+				} else {
+					gridList.updateMap(index);
 				}
 			}
-		}).setVisible(true);
+		});
+		editor.setVisible(true);
     }//GEN-LAST:event_gridListActionPerformed
 
 	/**

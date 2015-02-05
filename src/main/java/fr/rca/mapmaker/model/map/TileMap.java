@@ -119,7 +119,19 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 			((PaletteReference)palette).setProject(parent);
 		}
 		
+		final Integer oldTileSize;
+		if(this.palette != null) {
+			oldTileSize = this.palette.getTileSize();
+		} else {
+			oldTileSize = null;
+		}
+		
 		this.palette = palette;
+		
+		if(oldTileSize != null && oldTileSize != palette.getTileSize()) {
+			final Dimension dimension = new Dimension(width, height);
+			fireSizeChanged(dimension, dimension);
+		}
 	}
 
 	public List<Layer> getLayers() {

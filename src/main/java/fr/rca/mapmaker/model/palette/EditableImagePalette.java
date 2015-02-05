@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.model.palette;
 
 import fr.rca.mapmaker.editor.TileEditor;
+import fr.rca.mapmaker.editor.TileMapEditor;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -124,12 +125,16 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 
 	@Override
 	public void editTile(final int index, JFrame parent) {
-		TileEditor.createEditorDialog(sources.get(index), palette, parent, new ActionListener() {
+		final TileMapEditor editor = new TileMapEditor(parent, true);
+		editor.setLayerAndPalette(sources.get(index), palette);
+		editor.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				refreshSource(index);
 			}
-		}).setVisible(true);
+		});
+		editor.setVisible(true);
 	}
 	
 	public void refreshSource(int index) {
