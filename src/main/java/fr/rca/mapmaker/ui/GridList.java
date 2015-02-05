@@ -208,7 +208,7 @@ public class GridList extends JComponent {
 		// Selection
 		if(selection != null) {
 			g.setColor(SystemColor.textHighlight);
-			g.fillRect(orientation.getX(this, selection) - padding, orientation.getY(this, selection) - padding, gridSize + padding + padding, gridSize + padding + padding);
+			g.fillRect(orientation.getX(this, selection), orientation.getY(this, selection), gridSize, gridSize);
 		}
 		
 		// Maps
