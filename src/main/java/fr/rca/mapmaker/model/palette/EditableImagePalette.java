@@ -125,7 +125,7 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 
 	@Override
 	public void editTile(final int index, JFrame parent) {
-		final TileMapEditor editor = new TileMapEditor(parent, true);
+		final TileMapEditor editor = new TileMapEditor(parent);
 		editor.setLayerAndPalette(sources.get(index), palette);
 		editor.addActionListener(new ActionListener() {
 

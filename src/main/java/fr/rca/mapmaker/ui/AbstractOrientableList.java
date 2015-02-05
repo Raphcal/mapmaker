@@ -126,6 +126,10 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 		repaint();
 	}
 	
+	public List<E> getElements() {
+		return elements;
+	}
+	
 	protected abstract void elementAdded(int index, E element);
 	
 	@Override
@@ -165,10 +169,6 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 		return count;
 	}
 
-	public List<E> getAll() {
-		return elements;
-	}
-	
 	public void add(E element) {
 		this.elements.add(element);
 		repaint();

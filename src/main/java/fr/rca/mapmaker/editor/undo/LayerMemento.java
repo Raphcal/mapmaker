@@ -34,14 +34,7 @@ public class LayerMemento {
 		states = new int[layers.size()][];
 		transactionObjects = new Change[layers.size()];
 		
-		final boolean oldUndoable = isUndoable();
-		final boolean oldRedoable = isRedoable();
-		
-		undoStack.clear();
-		redoStack.clear();
-		
-		propertyChangeSupport.firePropertyChange("undoable", oldUndoable, false);
-		propertyChangeSupport.firePropertyChange("redoable", oldRedoable, false);
+		clear();
 		
 		for(int i = 0; i < layers.size(); i++) {
 			final int index = i;
@@ -85,6 +78,65 @@ public class LayerMemento {
 				}
 			});
 		}
+	}
+	
+	public void undo() {
+		restore(undoStack, redoStack);
+	}
+	
+	public void redo() {
+		restore(redoStack, undoStack);
+	}
+	
+	public boolean isUndoable() {
+		return !undoStack.isEmpty();
+	}
+	
+	public boolean isRedoable() {
+		return !redoStack.isEmpty();
+	}
+	
+	public void clear() {
+		final boolean oldUndoable = isUndoable();
+		final boolean oldRedoable = isRedoable();
+		
+		undoStack.clear();
+		redoStack.clear();
+		
+		propertyChangeSupport.firePropertyChange("undoable", oldUndoable, false);
+		propertyChangeSupport.firePropertyChange("redoable", oldRedoable, false);
+	}
+	
+	public void begin() {
+		transactionActive = true;
+	}
+	
+	public void end() {
+		transactionActive = false;
+		
+		boolean changed = false;
+		
+		for(int index = 0; index < transactionObjects.length; index++) {
+			if(transactionObjects[index] != null) {
+				pushOnUndoStack(transactionObjects[index]);
+				states[index] = transactionObjects[index].getLayer().copyData();
+				
+				transactionObjects[index] = null;
+				changed = true;
+			}
+		}
+		
+		if(changed) {
+			clearRedoStack();
+		}
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener pl) {
+		propertyChangeSupport.addPropertyChangeListener(pl);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener pl) {
+		propertyChangeSupport.removePropertyChangeListener(pl);
 	}
 	
 	private void restore(ArrayDeque<Change> source, ArrayDeque<Change> destination) {
@@ -132,53 +184,5 @@ public class LayerMemento {
 		if(oldUndoable != undoable) {
 			propertyChangeSupport.firePropertyChange("undoable", oldUndoable, undoable);
 		}
-	}
-	
-	public void undo() {
-		restore(undoStack, redoStack);
-	}
-	
-	public void redo() {
-		restore(redoStack, undoStack);
-	}
-	
-	public boolean isUndoable() {
-		return !undoStack.isEmpty();
-	}
-	
-	public boolean isRedoable() {
-		return !redoStack.isEmpty();
-	}
-	
-	public void begin() {
-		transactionActive = true;
-	}
-	
-	public void end() {
-		transactionActive = false;
-		
-		boolean changed = false;
-		
-		for(int index = 0; index < transactionObjects.length; index++) {
-			if(transactionObjects[index] != null) {
-				pushOnUndoStack(transactionObjects[index]);
-				states[index] = transactionObjects[index].getLayer().copyData();
-				
-				transactionObjects[index] = null;
-				changed = true;
-			}
-		}
-		
-		if(changed) {
-			clearRedoStack();
-		}
-	}
-	
-	public void addPropertyChangeListener(PropertyChangeListener pl) {
-		propertyChangeSupport.addPropertyChangeListener(pl);
-	}
-
-	public void removePropertyChangeListener(PropertyChangeListener pl) {
-		propertyChangeSupport.removePropertyChangeListener(pl);
 	}
 }

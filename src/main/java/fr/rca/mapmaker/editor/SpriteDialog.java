@@ -2,10 +2,10 @@
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.TileLayer;
-import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.ui.GridList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +22,10 @@ public class SpriteDialog extends javax.swing.JDialog {
 		initComponents();
 	}
 
+	public List<TileLayer> getCurrentAnimation() {
+		return sprite.get(animationComboBox.getSelectedItem().toString());
+	}
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,6 +61,10 @@ public class SpriteDialog extends javax.swing.JDialog {
         tileLayerList.setGridSize(32);
         tileLayerList.setOrientation(fr.rca.mapmaker.ui.Orientation.HORIZONTAL);
         tileLayerList.setPalette(sprite.getPalette());
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentAnimation}"), tileLayerList, org.jdesktop.beansbinding.BeanProperty.create("elements"));
+        bindingGroup.addBinding(binding);
+
         tileLayerList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tileLayerListActionPerformed(evt);
@@ -74,6 +82,11 @@ public class SpriteDialog extends javax.swing.JDialog {
         okButton.setText("OK");
 
         animationComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "À l'arrêt", "Marche", "Course", "Saute", "Tombe", "Se baisse", "Se lève", "Attaque", "Blessé", "Meurt" }));
+        animationComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                animationComboBoxActionPerformed(evt);
+            }
+        });
 
         animationLabel.setText("Animation : ");
 
@@ -142,26 +155,21 @@ public class SpriteDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void tileLayerListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tileLayerListActionPerformed
-		final TileLayer layer;
+		final ArrayList<TileLayer> layers = new ArrayList<TileLayer>(tileLayerList.getElements());
+		
 		if(GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
-			layer = new TileLayer(tileLayerList.getGridSize(), tileLayerList.getGridSize());
-		} else {
-			layer = (TileLayer) sprite.get(animationComboBox.getName(), evt.getID());
+			layers.add(new TileLayer(tileLayerList.getGridSize(), tileLayerList.getGridSize()));
 		}
 		final int index = evt.getID();
 		
-		final TileMapEditor editor = new TileMapEditor(null, true);
-		editor.setLayerAndPalette(layer, ColorPalette.getDefaultColorPalette());
+		final TileMapEditor editor = new TileMapEditor(null);
+		editor.setLayers(layers, index, sprite.getPalette());
 		editor.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Update
-				sprite.set(animationComboBox.getName(), index, layer);
-
-				final List<TileLayer> maps = tileLayerList.getAll();
-				if(index == maps.size()) {
-					tileLayerList.add(layer);
+				if(layers.size() > tileLayerList.getElements().size()) {
+					tileLayerList.add(layers.get(index));
 				} else {
 					tileLayerList.updateElement(index);
 				}
@@ -169,6 +177,10 @@ public class SpriteDialog extends javax.swing.JDialog {
 		});
 		editor.setVisible(true);
     }//GEN-LAST:event_tileLayerListActionPerformed
+
+    private void animationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationComboBoxActionPerformed
+		firePropertyChange("currentAnimation", null, animationComboBox.getSelectedItem().toString());
+    }//GEN-LAST:event_animationComboBoxActionPerformed
 
 	/**
 	 * @param args the command line arguments

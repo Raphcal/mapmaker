@@ -37,14 +37,16 @@ public class TileMapEditor extends javax.swing.JDialog {
 	
 	private final ArrayList<ActionListener> listeners;
 	private final ArrayList<TileLayer> layers;
-	private int[][] edition;
+	private int[][] tiles;
 	private int layerIndex;
 	
 	/**
-	 * Creates new form TileMapEditor
+	 * Créé un nouvel éditeur de dessin.
+	 * 
+	 * @param parent Fenêtre parente.
 	 */
-	public TileMapEditor(java.awt.Frame parent, boolean modal) {
-		super(parent, modal);
+	public TileMapEditor(java.awt.Frame parent) {
+		super(parent, true);
 		initComponents();
 		
 		listeners = new ArrayList<ActionListener>();
@@ -56,17 +58,23 @@ public class TileMapEditor extends javax.swing.JDialog {
 	public void setLayerAndPalette(TileLayer layer, ColorPalette palette) {
 		editedLayer = layer;
 		drawLayer.restoreData(layer.copyData(), layer.getWidth(), layer.getHeight());
+		memento.clear();
+		layers.clear();
+		
 		setPalette(palette);
 		
 		pack();
 	}
 	
-	public void setLayers(List<TileLayer> layers, ColorPalette palette) {
+	public void setLayers(List<TileLayer> layers, int index, ColorPalette palette) {
 		this.layers.clear();
 		this.layers.addAll(layers);
+		this.editedLayer = null;
+		
+		tiles = new int[layers.size()][];
 		
 		setPalette(palette);
-		setLayerIndex(0);
+		setLayerIndex(index);
 		pack();
 	}
 	
@@ -78,23 +86,29 @@ public class TileMapEditor extends javax.swing.JDialog {
 	}
 
 	public void setLayerIndex(int layerIndex) {
-		final boolean oldFirstLayer = isFirstLayer();
-		final boolean oldLastLayer = isLastLayer();
+		copyDrawLayerDataToCurrentTile();
 		
 		this.layerIndex = layerIndex;
-		editedLayer = layers.get(layerIndex);
-		drawLayer.restoreData(editedLayer.copyData(), editedLayer.getWidth(), editedLayer.getHeight());
 		
-		firePropertyChange("firstLayer", oldFirstLayer, isFirstLayer());
-		firePropertyChange("lastLayer", oldLastLayer, isLastLayer());
+		final TileLayer layer = layers.get(layerIndex);
+		
+		if(tiles[layerIndex] == null) {
+			tiles[layerIndex] = layer.copyData();
+		}
+		
+		drawLayer.restoreData(tiles[layerIndex], layer.getWidth(), layer.getHeight());
+		memento.clear();
+		
+		firePropertyChange("previousAvailable", null, isPreviousAvailable());
+		firePropertyChange("nextAvailable", null, isNextAvailable());
 	}
 
-	public boolean isFirstLayer() {
-		return layerIndex == 0;
+	public boolean isPreviousAvailable() {
+		return layers != null && layerIndex > 0;
 	}
 	
-	public boolean isLastLayer() {
-		return layerIndex >= layers.size() - 1;
+	public boolean isNextAvailable() {
+		return layers != null && layerIndex < layers.size() - 1;
 	}
 	
 	public void addActionListener(ActionListener listener) {
@@ -346,14 +360,26 @@ public class TileMapEditor extends javax.swing.JDialog {
         previousLayerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_left.png"))); // NOI18N
         previousLayerButton.setPreferredSize(new java.awt.Dimension(32, 32));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("!${firstLayer}"), previousLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${previousAvailable}"), previousLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
+
+        previousLayerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousLayerButtonActionPerformed(evt);
+            }
+        });
 
         nextLayerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_right.png"))); // NOI18N
         nextLayerButton.setPreferredSize(new java.awt.Dimension(32, 32));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("!${lastLayer}"), nextLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${nextAvailable}"), nextLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
+
+        nextLayerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextLayerButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -508,13 +534,31 @@ public class TileMapEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-		editedLayer.restoreData(drawLayer.copyData(), null);
+		if(editedLayer != null) {
+			editedLayer.restoreData(drawLayer.copyData(), null);
+		}
+		if(!layers.isEmpty()) {
+			copyDrawLayerDataToCurrentTile();
+			
+			for(int index = 0; index < layers.size(); index++) {
+				if(tiles[index] != null) {
+					layers.get(index).restoreData(tiles[index], null);
+				}
+			}
+		}
 		setVisible(false);
-		
 		for(final ActionListener listener : listeners) {
 			listener.actionPerformed(evt);
 		}
     }//GEN-LAST:event_okButtonActionPerformed
+
+    private void previousLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousLayerButtonActionPerformed
+		setLayerIndex(layerIndex - 1);
+    }//GEN-LAST:event_previousLayerButtonActionPerformed
+
+    private void nextLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextLayerButtonActionPerformed
+        setLayerIndex(layerIndex + 1);
+    }//GEN-LAST:event_nextLayerButtonActionPerformed
 
 	private void selectColor(MouseEvent event) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
@@ -550,6 +594,12 @@ public class TileMapEditor extends javax.swing.JDialog {
 		});
 	}
 	
+	private void copyDrawLayerDataToCurrentTile() {
+		if(layerIndex >= 0 && layerIndex < tiles.length && tiles[layerIndex] != null) {
+			tiles[layerIndex] = drawLayer.copyData();
+		}
+	}
+	
 	/**
 	 * @param args the command line arguments
 	 */
@@ -558,7 +608,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				TileMapEditor dialog = new TileMapEditor(new javax.swing.JFrame(), true);
+				TileMapEditor dialog = new TileMapEditor(new javax.swing.JFrame());
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
