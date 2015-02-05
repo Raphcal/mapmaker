@@ -1,6 +1,8 @@
 package fr.rca.mapmaker.model.sprite;
 
 import fr.rca.mapmaker.model.map.Layer;
+import fr.rca.mapmaker.model.palette.AlphaColorPalette;
+import fr.rca.mapmaker.model.palette.Palette;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,10 +13,16 @@ import java.util.Map;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class Sprite {
+	private Palette palette;
 	private int size;
 	private final Map<String, List<Layer>> animations = new HashMap<String, List<Layer>>();
 
 	public Sprite() {
+		palette = AlphaColorPalette.getDefaultColorPalette();
+	}
+
+	public Palette getPalette() {
+		return palette;
 	}
 	
 	public void add(String animation, Layer layer) {

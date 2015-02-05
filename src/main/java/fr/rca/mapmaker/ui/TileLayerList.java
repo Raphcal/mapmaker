@@ -12,6 +12,10 @@ import java.awt.Graphics;
 public class TileLayerList extends AbstractOrientableList<TileLayer> implements Orientable {
 	private final int tileSize = 1;
 	private Palette palette;
+
+	public void setPalette(Palette palette) {
+		this.palette = palette;
+	}
 	
 	@Override
 	protected void elementAdded(int index, TileLayer element) {

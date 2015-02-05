@@ -2,15 +2,11 @@
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.TileLayer;
-import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.ColorPalette;
-import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.GridList;
-import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import javax.swing.JButton;
 
 /**
  *
@@ -18,8 +14,6 @@ import javax.swing.JButton;
  */
 public class SpriteDialog extends javax.swing.JDialog {
 	
-	private Sprite sprite = new Sprite();
-
 	/**
 	 * Creates new form SpriteDialog
 	 */
@@ -38,34 +32,37 @@ public class SpriteDialog extends javax.swing.JDialog {
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        sprite = new fr.rca.mapmaker.model.sprite.Sprite();
         sizeLabel = new javax.swing.JLabel();
         widthTextField = new javax.swing.JTextField();
         gridScrollPane = new javax.swing.JScrollPane();
-        gridList = new fr.rca.mapmaker.ui.GridList();
+        tileLayerList = new fr.rca.mapmaker.ui.TileLayerList();
         cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
         animationComboBox = new javax.swing.JComboBox();
         animationLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        directionChooser1 = new fr.rca.mapmaker.ui.DirectionChooser();
+        directionLabel = new javax.swing.JLabel();
+        directionChooser = new fr.rca.mapmaker.ui.DirectionChooser();
 
         setTitle("Sprite");
 
         sizeLabel.setText("Taille :");
 
+        widthTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         widthTextField.setMinimumSize(new java.awt.Dimension(46, 28));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gridList, org.jdesktop.beansbinding.ELProperty.create("${gridSize}"), widthTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"), "gridList.gridWidth");
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileLayerList, org.jdesktop.beansbinding.ELProperty.create("${gridSize}"), widthTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"), "gridList.gridWidth");
         bindingGroup.addBinding(binding);
 
-        gridList.setGridSize(32);
-        gridList.setOrientation(fr.rca.mapmaker.ui.Orientation.HORIZONTAL);
-        gridList.addActionListener(new java.awt.event.ActionListener() {
+        tileLayerList.setGridSize(32);
+        tileLayerList.setOrientation(fr.rca.mapmaker.ui.Orientation.HORIZONTAL);
+        tileLayerList.setPalette(sprite.getPalette());
+        tileLayerList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                gridListActionPerformed(evt);
+                tileLayerListActionPerformed(evt);
             }
         });
-        gridScrollPane.setViewportView(gridList);
+        gridScrollPane.setViewportView(tileLayerList);
 
         cancelButton.setText("Annuler");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -80,7 +77,7 @@ public class SpriteDialog extends javax.swing.JDialog {
 
         animationLabel.setText("Animation : ");
 
-        jLabel1.setText("Direction :");
+        directionLabel.setText("Direction :");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -99,16 +96,13 @@ public class SpriteDialog extends javax.swing.JDialog {
                             .addComponent(animationLabel)
                             .addComponent(sizeLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 174, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(widthTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(animationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
+                        .addComponent(directionLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(directionChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(directionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(gridScrollPane)))
@@ -123,12 +117,12 @@ public class SpriteDialog extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(sizeLabel)
                             .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
+                            .addComponent(directionLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(animationLabel)
                             .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(directionChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(directionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -147,10 +141,10 @@ public class SpriteDialog extends javax.swing.JDialog {
 		setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void gridListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gridListActionPerformed
+    private void tileLayerListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tileLayerListActionPerformed
 		final TileLayer layer;
 		if(GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
-			layer = new TileLayer(gridList.getGridSize(), gridList.getGridSize());
+			layer = new TileLayer(tileLayerList.getGridSize(), tileLayerList.getGridSize());
 		} else {
 			layer = (TileLayer) sprite.get(animationComboBox.getName(), evt.getID());
 		}
@@ -165,16 +159,16 @@ public class SpriteDialog extends javax.swing.JDialog {
 				// Update
 				sprite.set(animationComboBox.getName(), index, layer);
 
-				final List<TileMap> maps = gridList.getAll();
+				final List<TileLayer> maps = tileLayerList.getAll();
 				if(index == maps.size()) {
-					gridList.add(new TileMap(layer, ColorPalette.getDefaultColorPalette()));
+					tileLayerList.add(layer);
 				} else {
-					gridList.updateElement(index);
+					tileLayerList.updateElement(index);
 				}
 			}
 		});
 		editor.setVisible(true);
-    }//GEN-LAST:event_gridListActionPerformed
+    }//GEN-LAST:event_tileLayerListActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -207,12 +201,13 @@ public class SpriteDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox animationComboBox;
     private javax.swing.JLabel animationLabel;
     private javax.swing.JButton cancelButton;
-    private fr.rca.mapmaker.ui.DirectionChooser directionChooser1;
-    private fr.rca.mapmaker.ui.GridList gridList;
+    private fr.rca.mapmaker.ui.DirectionChooser directionChooser;
+    private javax.swing.JLabel directionLabel;
     private javax.swing.JScrollPane gridScrollPane;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JButton okButton;
     private javax.swing.JLabel sizeLabel;
+    private fr.rca.mapmaker.model.sprite.Sprite sprite;
+    private fr.rca.mapmaker.ui.TileLayerList tileLayerList;
     private javax.swing.JTextField widthTextField;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables

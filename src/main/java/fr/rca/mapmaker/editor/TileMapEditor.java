@@ -24,7 +24,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
-import javax.swing.JButton;
+import java.util.List;
 import javax.swing.JToggleButton;
 
 /**
@@ -35,7 +35,10 @@ public class TileMapEditor extends javax.swing.JDialog {
 	
 	private static final int PALETTE_WIDTH = 8;
 	
-	private ArrayList<ActionListener> listeners;
+	private final ArrayList<ActionListener> listeners;
+	private final ArrayList<TileLayer> layers;
+	private int[][] edition;
+	private int layerIndex;
 	
 	/**
 	 * Creates new form TileMapEditor
@@ -45,20 +48,55 @@ public class TileMapEditor extends javax.swing.JDialog {
 		initComponents();
 		
 		listeners = new ArrayList<ActionListener>();
+		layers = new ArrayList<TileLayer>();
+		
 		paletteGrid.setTileMap(colorPaletteMap);
 	}
 
 	public void setLayerAndPalette(TileLayer layer, ColorPalette palette) {
 		editedLayer = layer;
 		drawLayer.restoreData(layer.copyData(), layer.getWidth(), layer.getHeight());
+		setPalette(palette);
+		
+		pack();
+	}
+	
+	public void setLayers(List<TileLayer> layers, ColorPalette palette) {
+		this.layers.clear();
+		this.layers.addAll(layers);
+		
+		setPalette(palette);
+		setLayerIndex(0);
+		pack();
+	}
+	
+	public void setPalette(ColorPalette palette) {
 		drawMap.setPalette(palette);
 		colorPaletteMap.setPalette(palette);
 		
 		alphaPaletteGrid.setVisible(palette instanceof AlphaColorPalette);
-		
-		pack();
 	}
 
+	public void setLayerIndex(int layerIndex) {
+		final boolean oldFirstLayer = isFirstLayer();
+		final boolean oldLastLayer = isLastLayer();
+		
+		this.layerIndex = layerIndex;
+		editedLayer = layers.get(layerIndex);
+		drawLayer.restoreData(editedLayer.copyData(), editedLayer.getWidth(), editedLayer.getHeight());
+		
+		firePropertyChange("firstLayer", oldFirstLayer, isFirstLayer());
+		firePropertyChange("lastLayer", oldLastLayer, isLastLayer());
+	}
+
+	public boolean isFirstLayer() {
+		return layerIndex == 0;
+	}
+	
+	public boolean isLastLayer() {
+		return layerIndex >= layers.size() - 1;
+	}
+	
 	public void addActionListener(ActionListener listener) {
 		listeners.add(listener);
 	}
@@ -116,6 +154,8 @@ public class TileMapEditor extends javax.swing.JDialog {
         redoButton = new javax.swing.JButton();
         zoomTextField = new javax.swing.JTextField();
         zoomPercentLabel = new javax.swing.JLabel();
+        previousLayerButton = new javax.swing.JButton();
+        nextLayerButton = new javax.swing.JButton();
 
         drawMap.setBackgroundColor(new java.awt.Color(0, 153, 153));
         drawMap.setHeight(32);
@@ -303,13 +343,25 @@ public class TileMapEditor extends javax.swing.JDialog {
 
         zoomPercentLabel.setText("%");
 
+        previousLayerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_left.png"))); // NOI18N
+        previousLayerButton.setPreferredSize(new java.awt.Dimension(32, 32));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("!${firstLayer}"), previousLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        nextLayerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_right.png"))); // NOI18N
+        nextLayerButton.setPreferredSize(new java.awt.Dimension(32, 32));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("!${lastLayer}"), nextLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(selectionToggleButton)
@@ -342,10 +394,14 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addComponent(pasteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(zoomTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2)
+                        .addComponent(zoomPercentLabel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(previousLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(zoomPercentLabel)))
+                        .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
+                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(alphaPaletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -398,7 +454,11 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(zoomTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(zoomPercentLabel))
-                        .addGap(0, 10, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(previousLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(paletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -541,12 +601,14 @@ public class TileMapEditor extends javax.swing.JDialog {
     private javax.swing.JToggleButton lineToggleButton;
     private javax.swing.JToggleButton magicWandToggleButton;
     private fr.rca.mapmaker.editor.undo.LayerMemento memento;
+    private javax.swing.JButton nextLayerButton;
     private javax.swing.JButton okButton;
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JButton pasteButton;
     private javax.swing.JToggleButton penToggleButton;
     private fr.rca.mapmaker.ui.Grid previewGrid;
     private fr.rca.mapmaker.model.map.TileMap previewMap;
+    private javax.swing.JButton previousLayerButton;
     private javax.swing.JToggleButton rectangleFillToggleButton;
     private javax.swing.JToggleButton rectangleToggleButton;
     private javax.swing.JButton redoButton;

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+  <NonVisualComponents>
+    <Component class="fr.rca.mapmaker.model.sprite.Sprite" name="sprite">
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="title" type="java.lang.String" value="Sprite"/>
   </Properties>
@@ -38,19 +42,14 @@
                           <Component id="sizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="widthTextField" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Component id="animationComboBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="174" max="32767" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="widthTextField" max="32767" attributes="0"/>
+                          <Component id="animationComboBox" max="32767" attributes="0"/>
                       </Group>
+                      <EmptySpace pref="108" max="32767" attributes="0"/>
+                      <Component id="directionLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="directionChooser1" min="-2" pref="100" max="-2" attributes="0"/>
+                      <Component id="directionChooser" min="-2" pref="100" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
@@ -70,7 +69,7 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="sizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="widthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="directionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -78,7 +77,7 @@
                           <Component id="animationComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="directionChooser1" min="-2" pref="100" max="-2" attributes="0"/>
+                  <Component id="directionChooser" min="-2" pref="100" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="gridScrollPane" pref="101" max="32767" attributes="0"/>
@@ -100,12 +99,13 @@
     </Component>
     <Component class="javax.swing.JTextField" name="widthTextField">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[46, 28]"/>
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="gridList" sourcePath="${gridSize}" target="widthTextField" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="tileLayerList" sourcePath="${gridSize}" target="widthTextField" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_ACTION_OR_FOCUS_LOST"/>
           <Property name="name" type="java.lang.String" value="gridList.gridWidth"/>
         </BindingProperty>
@@ -115,15 +115,18 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Container class="fr.rca.mapmaker.ui.GridList" name="gridList">
+        <Container class="fr.rca.mapmaker.ui.TileLayerList" name="tileLayerList">
           <Properties>
             <Property name="gridSize" type="int" value="32"/>
             <Property name="orientation" type="fr.rca.mapmaker.ui.Orientation" editor="org.netbeans.modules.form.editors.EnumEditor">
               <Value id="HORIZONTAL"/>
             </Property>
+            <Property name="palette" type="fr.rca.mapmaker.model.palette.Palette" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection component="sprite" name="palette" type="property"/>
+            </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gridListActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tileLayerListActionPerformed"/>
           </Events>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -168,12 +171,12 @@
         <Property name="text" type="java.lang.String" value="Animation : "/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="directionLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Direction :"/>
       </Properties>
     </Component>
-    <Container class="fr.rca.mapmaker.ui.DirectionChooser" name="directionChooser1">
+    <Container class="fr.rca.mapmaker.ui.DirectionChooser" name="directionChooser">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
         <Property name="useNullLayout" type="boolean" value="true"/>
