@@ -1,6 +1,5 @@
 package fr.rca.mapmaker.model.palette;
 
-import fr.rca.mapmaker.editor.TileEditor;
 import fr.rca.mapmaker.editor.TileMapEditor;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
@@ -19,8 +18,8 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 
 	private final ArrayList<BufferedImage> tiles = new ArrayList<BufferedImage>();
 	private final ArrayList<TileLayer> sources = new ArrayList<TileLayer>();
-	private int tileSize;
-	private int columns;
+	private final int tileSize;
+	private final int columns;
 	private int selectedTile;
 	
 	private String name;
@@ -105,14 +104,15 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	private void renderTile(int index) {
 		final BufferedImage image = renderer.renderImage(sources.get(index), palette, 1);
 		
-		if(tiles.size() == index)
+		if(tiles.size() == index) {
 			tiles.add(image);
 		
-		else if(tiles.size() > index)
+		} else if(tiles.size() > index) {
 			tiles.set(index, image);
 		
-		else
+		} else {
 			throw new IndexOutOfBoundsException("L'index " + index + " n'existe pas.");
+		}
 	}
 	
 	public TileLayer getSource(int index) {
@@ -172,9 +172,10 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 
 	@Override
 	public String toString() {
-		if(name != null)
+		if(name != null) {
 			return name;
-		else
+		} else {
 			return super.toString();
+		}
 	}
 }
