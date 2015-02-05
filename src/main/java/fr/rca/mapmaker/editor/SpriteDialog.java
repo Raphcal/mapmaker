@@ -59,7 +59,7 @@ public class SpriteDialog extends javax.swing.JDialog {
         bindingGroup.addBinding(binding);
 
         gridList.setGridSize(32);
-        gridList.setOrientation(fr.rca.mapmaker.ui.GridListOrientation.HORIZONTAL);
+        gridList.setOrientation(fr.rca.mapmaker.ui.Orientation.HORIZONTAL);
         gridList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 gridListActionPerformed(evt);
@@ -165,11 +165,11 @@ public class SpriteDialog extends javax.swing.JDialog {
 				// Update
 				sprite.set(animationComboBox.getName(), index, layer);
 
-				final List<TileMap> maps = gridList.getMaps();
+				final List<TileMap> maps = gridList.getAll();
 				if(index == maps.size()) {
-					gridList.addMap(new TileMap(layer, ColorPalette.getDefaultColorPalette()));
+					gridList.add(new TileMap(layer, ColorPalette.getDefaultColorPalette()));
 				} else {
-					gridList.updateMap(index);
+					gridList.updateElement(index);
 				}
 			}
 		});

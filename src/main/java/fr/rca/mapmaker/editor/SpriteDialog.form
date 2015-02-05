@@ -118,7 +118,7 @@
         <Container class="fr.rca.mapmaker.ui.GridList" name="gridList">
           <Properties>
             <Property name="gridSize" type="int" value="32"/>
-            <Property name="orientation" type="fr.rca.mapmaker.ui.GridListOrientation" editor="org.netbeans.modules.form.editors.EnumEditor">
+            <Property name="orientation" type="fr.rca.mapmaker.ui.Orientation" editor="org.netbeans.modules.form.editors.EnumEditor">
               <Value id="HORIZONTAL"/>
             </Property>
           </Properties>
