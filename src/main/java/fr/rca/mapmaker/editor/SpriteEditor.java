@@ -3,6 +3,7 @@ package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
+import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.GridList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,12 +18,19 @@ import javax.swing.DefaultComboBoxModel;
  */
 public class SpriteEditor extends javax.swing.JDialog {
 	
+	private final ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
+	
 	/**
 	 * Creates new form SpriteDialog
 	 */
 	public SpriteEditor(java.awt.Frame parent) {
 		super(parent, true);
 		initComponents();
+	}
+
+	public void setSprite(Sprite sprite) {
+		this.sprite = sprite;
+		this.tileLayerList.setPalette(sprite.getPalette());
 	}
 
 	public List<TileLayer> getCurrentAnimation() {
@@ -236,10 +244,26 @@ public class SpriteEditor extends javax.swing.JDialog {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         setVisible(false);
 		animationPreview.stop();
+		
+		fireActionPerformed();
     }//GEN-LAST:event_okButtonActionPerformed
 
 	private void animationChanged() {
 		firePropertyChange("currentAnimation", null, getCurrentAnimation());
+	}
+	
+	public void addActionListener(ActionListener listener) {
+		actionListeners.add(listener);
+	}
+	
+	public void removeActionListener(ActionListener listener) {
+		actionListeners.remove(listener);
+	}
+	
+	protected void fireActionPerformed() {
+		for(final ActionListener listener : actionListeners) {
+			listener.actionPerformed(new ActionEvent(this, 0, "DIRECTION_CHANGED"));
+		}
 	}
 	
 	/**

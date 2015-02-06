@@ -47,10 +47,6 @@ public class Sprite {
 		}
 	}
 	
-	public List<TileLayer> get(String animation, double direction) {
-		return get(animation + '-' + direction);
-	}
-	
 	public List<TileLayer> get(String animation) {
 		List<TileLayer> layers = animations.get(animation);
 		if(layers == null) {
@@ -62,6 +58,21 @@ public class Sprite {
 	
 	public TileLayer get(String animation, int index) {
 		return animations.get(animation).get(index);
+	}
+	
+	public TileLayer getDefaultLayer() {
+		final double[] favoriteDirections = {0.0, 3.14, 4.71, 1.57};
+		
+		for(final Animation animation : Animation.getDefaultAnimations()) {
+			for(final double direction : favoriteDirections) {
+				final List<TileLayer> layers = get(animation.getNameForDirection(direction));
+				if(layers != null) {
+					return layers.get(0);
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	public int getSize() {

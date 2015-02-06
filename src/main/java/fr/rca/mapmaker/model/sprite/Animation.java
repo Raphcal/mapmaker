@@ -22,7 +22,7 @@ public class Animation {
 	}
 	
 	public String getNameForDirection(double direction) {
-		return code + '-' + direction;
+		return code + '-' + ((int)(direction * 100.0)) / 100.0;
 	}
 
 	public String getName() {

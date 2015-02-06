@@ -7,6 +7,8 @@ import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
+import fr.rca.mapmaker.model.palette.SpritePalette;
+import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -22,11 +24,18 @@ import javax.swing.event.ListDataListener;
  */
 public class Project implements ListModel {
 	
+	public static final String CURRENT_MAP = "currentMap";
+	public static final String CURRENT_PALETTE_MAP = "currentPaletteMap";
+	public static final String CURRENT_SPRITE_PALETTE_MAP = "currentSpritePaletteMap";
+	public static final String CURRENT_LAYER_MODEL = "currentLayerModel";
+	public static final String CURRENT_SELECTED = "selected";
+	
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	private int selectedIndex;
 	
 	private ArrayList<TileMap> maps = new ArrayList<TileMap>();
+	private ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	private ArrayList<Palette> palettes = new ArrayList<Palette>();
 	
 	private ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
@@ -55,6 +64,7 @@ public class Project implements ListModel {
 	public void morphTo(Project project) {
 		final TileMap oldMap = getCurrentMap();
 		final TileMap oldPaletteMap = getCurrentPaletteMap();
+		final TileMap oldSpritePaletteMap = getCurrentSpritePaletteMap();
 		final boolean oldSelected = isSelected();
 		
 		// Nettoyage
@@ -83,10 +93,11 @@ public class Project implements ListModel {
 		
 		// Sélection + événement de modification
 		selectedIndex = 0;
-		propertyChangeSupport.firePropertyChange("currentMap", oldMap, getCurrentMap());
-		propertyChangeSupport.firePropertyChange("currentPaletteMap", oldPaletteMap, getCurrentPaletteMap());
-		propertyChangeSupport.firePropertyChange("currentLayerModel", oldPaletteMap, getCurrentPaletteMap());
-		propertyChangeSupport.firePropertyChange("selected", oldSelected, isSelected());
+		propertyChangeSupport.firePropertyChange(CURRENT_MAP, oldMap, getCurrentMap());
+		propertyChangeSupport.firePropertyChange(CURRENT_PALETTE_MAP, oldPaletteMap, getCurrentPaletteMap());
+		propertyChangeSupport.firePropertyChange(CURRENT_SPRITE_PALETTE_MAP, oldSpritePaletteMap, getCurrentSpritePaletteMap());
+		propertyChangeSupport.firePropertyChange(CURRENT_LAYER_MODEL, oldPaletteMap, getCurrentPaletteMap());
+		propertyChangeSupport.firePropertyChange(CURRENT_SELECTED, oldSelected, isSelected());
 	}
 	
 	public void setSelectedIndex(int selectedIndex) {
@@ -96,14 +107,14 @@ public class Project implements ListModel {
 		
 		this.selectedIndex = selectedIndex;
 		
-		propertyChangeSupport.firePropertyChange("currentMap", oldMap, getCurrentMap());
-		propertyChangeSupport.firePropertyChange("currentPaletteMap", oldPaletteMap, getCurrentPaletteMap());
-		propertyChangeSupport.firePropertyChange("currentLayerModel", oldPaletteMap, getCurrentPaletteMap());
-		propertyChangeSupport.firePropertyChange("selected", oldSelected, isSelected());
+		propertyChangeSupport.firePropertyChange(CURRENT_MAP, oldMap, getCurrentMap());
+		propertyChangeSupport.firePropertyChange(CURRENT_PALETTE_MAP, oldPaletteMap, getCurrentPaletteMap());
+		propertyChangeSupport.firePropertyChange(CURRENT_LAYER_MODEL, oldPaletteMap, getCurrentPaletteMap());
+		propertyChangeSupport.firePropertyChange(CURRENT_SELECTED, oldSelected, isSelected());
 	}
 	
 	public void currentPaletteChanged() {
-		propertyChangeSupport.firePropertyChange("currentPaletteMap", null, getCurrentPaletteMap());
+		propertyChangeSupport.firePropertyChange(CURRENT_PALETTE_MAP, null, getCurrentPaletteMap());
 	}
 	
 	public int getSelectedIndex() {
@@ -124,19 +135,25 @@ public class Project implements ListModel {
 	public TileMap getCurrentPaletteMap() {
 		final TileMap currentMap = getCurrentMap();
 		
-		if(currentMap == null || currentMap.getPalette() == null)
+		if(currentMap == null || currentMap.getPalette() == null) {
 			return null;
-		else
+		} else {
 			return new PaletteMap(currentMap.getPalette(), 4);
+		}
 	}
 	
 	public TileMap getCurrentLayerModel() {
 		final TileMap currentMap = getCurrentMap();
 		
-		if(currentMap == null)
+		if(currentMap == null) {
 			return new TileMap();
-		else
+		} else {
 			return currentMap;
+		}
+	}
+	
+	public TileMap getCurrentSpritePaletteMap() {
+		return new PaletteMap(new SpritePalette(sprites), 4);
 	}
 	
 	public List<TileMap> getMaps() {

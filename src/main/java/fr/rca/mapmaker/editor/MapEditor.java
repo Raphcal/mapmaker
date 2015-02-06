@@ -77,6 +77,7 @@ public class MapEditor extends javax.swing.JFrame {
 		if(osName != null && osName.startsWith("Mac OS X")) {
 			mapGrid.setBackground(Color.LIGHT_GRAY);
 			paletteGrid.setBackground(Color.DARK_GRAY);
+			spritePaletteGrid.setBackground(Color.DARK_GRAY);
 			
 			final MatteBorder border = new MatteBorder(1, 0, 0, 0, Color.GRAY);
 			
@@ -164,24 +165,8 @@ public class MapEditor extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         mapScrollPane = new javax.swing.JScrollPane();
         mapGrid = new fr.rca.mapmaker.ui.Grid();
-        paletteScrollPane = new javax.swing.JScrollPane();
-        paletteGrid = new fr.rca.mapmaker.ui.Grid();
-        layerListScrollPane = new javax.swing.JScrollPane();
-        layerList = new javax.swing.JList();
         mapListScrollPane = new javax.swing.JScrollPane();
         mapList = new javax.swing.JList();
-        javax.swing.JToolBar layerToolBar = new javax.swing.JToolBar();
-        addLayerButton = new javax.swing.JButton();
-        removeLayerButton = new javax.swing.JButton();
-        javax.swing.JToggleButton focusToggleButton = new javax.swing.JToggleButton();
-        layerUpButton = new javax.swing.JButton();
-        layerDownButton = new javax.swing.JButton();
-        javax.swing.JToolBar paletteToolBar = new javax.swing.JToolBar();
-        penToggleButton = new javax.swing.JToggleButton();
-        configureButton(penToggleButton, new PenTool(mapGrid, layerMemento));
-        bucketFillToggleButton = new javax.swing.JToggleButton();
-        rectangleToggleButton = new javax.swing.JToggleButton();
-        selectionToggleButton = new javax.swing.JToggleButton();
         javax.swing.JToolBar mapToolBar = new javax.swing.JToolBar();
         javax.swing.JButton addMapButton = new javax.swing.JButton();
         javax.swing.JButton removeMapButton = new javax.swing.JButton();
@@ -194,6 +179,28 @@ public class MapEditor extends javax.swing.JFrame {
         zoomLabel = new javax.swing.JLabel();
         zoomTextField = new javax.swing.JTextField();
         zoomPercentLabel = new javax.swing.JLabel();
+        paletteTabbedPane = new javax.swing.JTabbedPane();
+        mapPanel = new javax.swing.JPanel();
+        paletteScrollPane = new javax.swing.JScrollPane();
+        paletteGrid = new fr.rca.mapmaker.ui.Grid();
+        javax.swing.JToolBar layerToolBar = new javax.swing.JToolBar();
+        addLayerButton = new javax.swing.JButton();
+        removeLayerButton = new javax.swing.JButton();
+        javax.swing.JToggleButton focusToggleButton = new javax.swing.JToggleButton();
+        layerUpButton = new javax.swing.JButton();
+        layerDownButton = new javax.swing.JButton();
+        layerListScrollPane = new javax.swing.JScrollPane();
+        layerList = new javax.swing.JList();
+        javax.swing.JToolBar paletteToolBar = new javax.swing.JToolBar();
+        penToggleButton = new javax.swing.JToggleButton();
+        configureButton(penToggleButton, new PenTool(mapGrid, layerMemento));
+        bucketFillToggleButton = new javax.swing.JToggleButton();
+        rectangleToggleButton = new javax.swing.JToggleButton();
+        selectionToggleButton = new javax.swing.JToggleButton();
+        spritePanel = new javax.swing.JPanel();
+        spritePaletteScrollPane = new javax.swing.JScrollPane();
+        spritePaletteGrid = new fr.rca.mapmaker.ui.Grid();
+        spritePaletteToolBar = new javax.swing.JToolBar();
         javax.swing.JMenuBar menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem newProjectMenuItem = new javax.swing.JMenuItem();
@@ -263,72 +270,14 @@ public class MapEditor extends javax.swing.JFrame {
         mapGrid.setLayout(mapGridLayout);
         mapGridLayout.setHorizontalGroup(
             mapGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 571, Short.MAX_VALUE)
+            .addGap(0, 597, Short.MAX_VALUE)
         );
         mapGridLayout.setVerticalGroup(
             mapGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 429, Short.MAX_VALUE)
+            .addGap(0, 440, Short.MAX_VALUE)
         );
 
         mapScrollPane.setViewportView(mapGrid);
-
-        paletteScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        paletteScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-        paletteGrid.setMaximumSize(new java.awt.Dimension(128, 32767));
-        paletteGrid.setMinimumSize(new java.awt.Dimension(128, 5));
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentPaletteMap}"), paletteGrid, org.jdesktop.beansbinding.BeanProperty.create("tileMap"));
-        bindingGroup.addBinding(binding);
-
-        paletteGrid.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                selectTile(evt);
-                editTile(evt);
-            }
-        });
-        paletteGrid.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                selectTile(evt);
-            }
-        });
-
-        javax.swing.GroupLayout paletteGridLayout = new javax.swing.GroupLayout(paletteGrid);
-        paletteGrid.setLayout(paletteGridLayout);
-        paletteGridLayout.setHorizontalGroup(
-            paletteGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 131, Short.MAX_VALUE)
-        );
-        paletteGridLayout.setVerticalGroup(
-            paletteGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 268, Short.MAX_VALUE)
-        );
-
-        paletteScrollPane.setViewportView(paletteGrid);
-
-        layerListScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        layerListScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-        layerList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        layerList.setSelectedIndex(0);
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentLayerModel}"), layerList, org.jdesktop.beansbinding.BeanProperty.create("model"));
-        bindingGroup.addBinding(binding);
-
-        layerList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                mayShowLayerPopup(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                mayShowLayerPopup(evt);
-            }
-        });
-        layerList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                layerListValueChanged(evt);
-            }
-        });
-        layerListScrollPane.setViewportView(layerList);
 
         mapListScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         mapListScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -352,116 +301,6 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         mapListScrollPane.setViewportView(mapList);
-
-        layerToolBar.setFloatable(false);
-        layerToolBar.setRollover(true);
-
-        addLayerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
-        addLayerButton.setToolTipText(bundle.getString("layer.add")); // NOI18N
-        addLayerButton.setFocusable(false);
-        addLayerButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        addLayerButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, project, org.jdesktop.beansbinding.ELProperty.create("${selected}"), addLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-        bindingGroup.addBinding(binding);
-
-        addLayerButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addLayerButtonActionPerformed(evt);
-            }
-        });
-        layerToolBar.add(addLayerButton);
-
-        removeLayerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/remove.png"))); // NOI18N
-        removeLayerButton.setToolTipText(bundle.getString("layer.remove")); // NOI18N
-        removeLayerButton.setFocusable(false);
-        removeLayerButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        removeLayerButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, project, org.jdesktop.beansbinding.ELProperty.create("${selected}"), removeLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-        bindingGroup.addBinding(binding);
-
-        removeLayerButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeLayerButtonActionPerformed(evt);
-            }
-        });
-        layerToolBar.add(removeLayerButton);
-
-        focusToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/focus.png"))); // NOI18N
-        focusToggleButton.setToolTipText(bundle.getString("focus.visible")); // NOI18N
-        focusToggleButton.setFocusable(false);
-        focusToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        focusToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${selected}"), focusToggleButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-        bindingGroup.addBinding(binding);
-
-        focusToggleButton.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                focusToggleButtonItemStateChanged(evt);
-            }
-        });
-        layerToolBar.add(focusToggleButton);
-
-        layerUpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_up.png"))); // NOI18N
-        layerUpButton.setToolTipText(bundle.getString("layer.moveUp")); // NOI18N
-        layerUpButton.setFocusable(false);
-        layerUpButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        layerUpButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        layerUpButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                layerUpButtonActionPerformed(evt);
-            }
-        });
-        layerToolBar.add(layerUpButton);
-
-        layerDownButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_down.png"))); // NOI18N
-        layerDownButton.setToolTipText(bundle.getString("layer.moveDown")); // NOI18N
-        layerDownButton.setFocusable(false);
-        layerDownButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        layerDownButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        layerDownButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                layerDownButtonActionPerformed(evt);
-            }
-        });
-        layerToolBar.add(layerDownButton);
-
-        paletteToolBar.setFloatable(false);
-        paletteToolBar.setRollover(true);
-
-        toolGroup.add(penToggleButton);
-        penToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_pen.png"))); // NOI18N
-        penToggleButton.setSelected(true);
-        penToggleButton.setFocusable(false);
-        penToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        penToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        paletteToolBar.add(penToggleButton);
-
-        toolGroup.add(bucketFillToggleButton);
-        bucketFillToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_bucket_fill.png"))); // NOI18N
-        bucketFillToggleButton.setFocusable(false);
-        bucketFillToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        bucketFillToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        configureButton(bucketFillToggleButton, new BucketFillTool(mapGrid));
-        paletteToolBar.add(bucketFillToggleButton);
-
-        toolGroup.add(rectangleToggleButton);
-        rectangleToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_rectangle_fill.png"))); // NOI18N
-        rectangleToggleButton.setFocusable(false);
-        rectangleToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        rectangleToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        configureButton(rectangleToggleButton, new RectangleFillTool(mapGrid));
-        paletteToolBar.add(rectangleToggleButton);
-
-        toolGroup.add(selectionToggleButton);
-        selectionToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_selection.png"))); // NOI18N
-        selectionToggleButton.setFocusable(false);
-        selectionToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        selectionToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        configureButton(selectionToggleButton, new SelectionTool(mapGrid));
-        paletteToolBar.add(selectionToggleButton);
 
         mapToolBar.setFloatable(false);
         mapToolBar.setRollover(true);
@@ -551,6 +390,231 @@ public class MapEditor extends javax.swing.JFrame {
         zoomPercentLabel.setText("%");
         gridToolBar.add(zoomPercentLabel);
 
+        mapPanel.setPreferredSize(new java.awt.Dimension(150, 423));
+
+        paletteScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        paletteScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        paletteGrid.setMaximumSize(new java.awt.Dimension(128, 32767));
+        paletteGrid.setMinimumSize(new java.awt.Dimension(128, 5));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentPaletteMap}"), paletteGrid, org.jdesktop.beansbinding.BeanProperty.create("tileMap"));
+        bindingGroup.addBinding(binding);
+
+        paletteGrid.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                selectTile(evt);
+            }
+        });
+        paletteGrid.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                selectTile(evt);
+                editTile(evt);
+            }
+        });
+
+        javax.swing.GroupLayout paletteGridLayout = new javax.swing.GroupLayout(paletteGrid);
+        paletteGrid.setLayout(paletteGridLayout);
+        paletteGridLayout.setHorizontalGroup(
+            paletteGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 131, Short.MAX_VALUE)
+        );
+        paletteGridLayout.setVerticalGroup(
+            paletteGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 219, Short.MAX_VALUE)
+        );
+
+        paletteScrollPane.setViewportView(paletteGrid);
+
+        layerToolBar.setFloatable(false);
+        layerToolBar.setRollover(true);
+
+        addLayerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
+        addLayerButton.setToolTipText(bundle.getString("layer.add")); // NOI18N
+        addLayerButton.setFocusable(false);
+        addLayerButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        addLayerButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, project, org.jdesktop.beansbinding.ELProperty.create("${selected}"), addLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        addLayerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addLayerButtonActionPerformed(evt);
+            }
+        });
+        layerToolBar.add(addLayerButton);
+
+        removeLayerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/remove.png"))); // NOI18N
+        removeLayerButton.setToolTipText(bundle.getString("layer.remove")); // NOI18N
+        removeLayerButton.setFocusable(false);
+        removeLayerButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        removeLayerButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, project, org.jdesktop.beansbinding.ELProperty.create("${selected}"), removeLayerButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        removeLayerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeLayerButtonActionPerformed(evt);
+            }
+        });
+        layerToolBar.add(removeLayerButton);
+
+        focusToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/focus.png"))); // NOI18N
+        focusToggleButton.setToolTipText(bundle.getString("focus.visible")); // NOI18N
+        focusToggleButton.setFocusable(false);
+        focusToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        focusToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${selected}"), focusToggleButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        focusToggleButton.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                focusToggleButtonItemStateChanged(evt);
+            }
+        });
+        layerToolBar.add(focusToggleButton);
+
+        layerUpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_up.png"))); // NOI18N
+        layerUpButton.setToolTipText(bundle.getString("layer.moveUp")); // NOI18N
+        layerUpButton.setFocusable(false);
+        layerUpButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        layerUpButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        layerUpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                layerUpButtonActionPerformed(evt);
+            }
+        });
+        layerToolBar.add(layerUpButton);
+
+        layerDownButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_down.png"))); // NOI18N
+        layerDownButton.setToolTipText(bundle.getString("layer.moveDown")); // NOI18N
+        layerDownButton.setFocusable(false);
+        layerDownButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        layerDownButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        layerDownButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                layerDownButtonActionPerformed(evt);
+            }
+        });
+        layerToolBar.add(layerDownButton);
+
+        layerListScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        layerListScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        layerList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        layerList.setSelectedIndex(0);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentLayerModel}"), layerList, org.jdesktop.beansbinding.BeanProperty.create("model"));
+        bindingGroup.addBinding(binding);
+
+        layerList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                mayShowLayerPopup(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                mayShowLayerPopup(evt);
+            }
+        });
+        layerList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                layerListValueChanged(evt);
+            }
+        });
+        layerListScrollPane.setViewportView(layerList);
+
+        paletteToolBar.setFloatable(false);
+        paletteToolBar.setRollover(true);
+
+        toolGroup.add(penToggleButton);
+        penToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_pen.png"))); // NOI18N
+        penToggleButton.setSelected(true);
+        penToggleButton.setFocusable(false);
+        penToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        penToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        paletteToolBar.add(penToggleButton);
+
+        toolGroup.add(bucketFillToggleButton);
+        bucketFillToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_bucket_fill.png"))); // NOI18N
+        bucketFillToggleButton.setFocusable(false);
+        bucketFillToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        bucketFillToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        configureButton(bucketFillToggleButton, new BucketFillTool(mapGrid));
+        paletteToolBar.add(bucketFillToggleButton);
+
+        toolGroup.add(rectangleToggleButton);
+        rectangleToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_rectangle_fill.png"))); // NOI18N
+        rectangleToggleButton.setFocusable(false);
+        rectangleToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        rectangleToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        configureButton(rectangleToggleButton, new RectangleFillTool(mapGrid));
+        paletteToolBar.add(rectangleToggleButton);
+
+        toolGroup.add(selectionToggleButton);
+        selectionToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_selection.png"))); // NOI18N
+        selectionToggleButton.setFocusable(false);
+        selectionToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        selectionToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        configureButton(selectionToggleButton, new SelectionTool(mapGrid));
+        paletteToolBar.add(selectionToggleButton);
+
+        javax.swing.GroupLayout mapPanelLayout = new javax.swing.GroupLayout(mapPanel);
+        mapPanel.setLayout(mapPanelLayout);
+        mapPanelLayout.setHorizontalGroup(
+            mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(paletteScrollPane)
+            .addComponent(layerListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(layerToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(paletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        mapPanelLayout.setVerticalGroup(
+            mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mapPanelLayout.createSequentialGroup()
+                .addComponent(paletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(paletteScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(layerToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(layerListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        paletteTabbedPane.addTab("Fond", mapPanel);
+
+        spritePanel.setPreferredSize(new java.awt.Dimension(144, 423));
+
+        spritePaletteScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        spritePaletteScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentSpritePaletteMap}"), spritePaletteGrid, org.jdesktop.beansbinding.BeanProperty.create("tileMap"));
+        bindingGroup.addBinding(binding);
+
+        spritePaletteScrollPane.setViewportView(spritePaletteGrid);
+
+        spritePaletteToolBar.setFloatable(false);
+        spritePaletteToolBar.setRollover(true);
+
+        javax.swing.GroupLayout spritePanelLayout = new javax.swing.GroupLayout(spritePanel);
+        spritePanel.setLayout(spritePanelLayout);
+        spritePanelLayout.setHorizontalGroup(
+            spritePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(spritePaletteScrollPane)
+            .addGroup(spritePanelLayout.createSequentialGroup()
+                .addComponent(spritePaletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 50, Short.MAX_VALUE))
+        );
+        spritePanelLayout.setVerticalGroup(
+            spritePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, spritePanelLayout.createSequentialGroup()
+                .addComponent(spritePaletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spritePaletteScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE))
+        );
+
+        paletteTabbedPane.addTab("Actifs", spritePanel);
+
         fileMenu.setText(bundle.getString("menu.file")); // NOI18N
 
         newProjectMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.META_MASK));
@@ -636,32 +700,22 @@ public class MapEditor extends javax.swing.JFrame {
                     .addComponent(mapScrollPane)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 385, Short.MAX_VALUE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(paletteToolBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(layerToolBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(paletteScrollPane, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(layerListScrollPane, 0, 0, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 411, Short.MAX_VALUE)))
+                .addGap(0, 0, 0)
+                .addComponent(paletteTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(paletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(paletteScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(layerToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(layerListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(mapToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mapScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
-                    .addComponent(mapListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)))
+                    .addComponent(mapScrollPane)
+                    .addComponent(mapListScrollPane)))
+            .addComponent(paletteTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING)
         );
 
         bindingGroup.bind();
@@ -836,10 +890,11 @@ private void setCurrentFile(File file) {
 	currentFile = file;
 	getRootPane().putClientProperty("Window.documentFile", file);
 	
-	if(file != null)
+	if(file != null) {
 		setTitle(file.getName().substring(0, file.getName().lastIndexOf('.')) + " - MapMaker");
-	else
+	} else {
 		setTitle("MapMaker");
+	}
 }
 
 private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
@@ -990,10 +1045,12 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private fr.rca.mapmaker.ui.Grid mapGrid;
     private javax.swing.JList mapList;
     private javax.swing.JScrollPane mapListScrollPane;
+    private javax.swing.JPanel mapPanel;
     private javax.swing.JPopupMenu mapPopupMenu;
     private javax.swing.JScrollPane mapScrollPane;
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JScrollPane paletteScrollPane;
+    private javax.swing.JTabbedPane paletteTabbedPane;
     private javax.swing.JToggleButton penToggleButton;
     private fr.rca.mapmaker.model.project.Project project;
     private javax.swing.JMenuItem quitMenuItem;
@@ -1003,6 +1060,10 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton removeLayerButton;
     private javax.swing.JPopupMenu.Separator saveSeparator;
     private javax.swing.JToggleButton selectionToggleButton;
+    private fr.rca.mapmaker.ui.Grid spritePaletteGrid;
+    private javax.swing.JScrollPane spritePaletteScrollPane;
+    private javax.swing.JToolBar spritePaletteToolBar;
+    private javax.swing.JPanel spritePanel;
     private fr.rca.mapmaker.ui.TileMapListRenderer tileMapListRenderer;
     private javax.swing.ButtonGroup toolGroup;
     private javax.swing.JButton undoButton;
