@@ -2,9 +2,14 @@
 package fr.rca.mapmaker.model.palette;
 
 import fr.rca.mapmaker.editor.SpriteEditor;
+import fr.rca.mapmaker.model.HasSizeChangeListeners;
+import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import fr.rca.mapmaker.ui.Paints;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -15,7 +20,7 @@ import javax.swing.JFrame;
  *
  * @author Raphaël Calabro <raph_kun at yahoo.fr>
  */
-public class SpritePalette implements EditablePalette {
+public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	
 	/**
 	 * Sprite actuellement sélectionné.
@@ -26,18 +31,29 @@ public class SpritePalette implements EditablePalette {
 	 * Nom de la palette.
 	 */
 	private String name;
+	
+	/**
+	 * Nombre de sprites alloués quand la palette est vide ou presque pleine.
+	 */
+	private int columns = 4;
 
 	/**
 	 * Liste des sprites présents dans la palette.
 	 */
 	private List<Sprite> sprites;
+	
+	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
 
 	public SpritePalette() {
 		sprites = new ArrayList<Sprite>();
+		
+		expand(columns - 1);
 	}
 
 	public SpritePalette(List<Sprite> sprites) {
 		this.sprites = sprites;
+		
+		expand(columns - 1);
 	}
 	
 	@Override
@@ -46,6 +62,11 @@ public class SpritePalette implements EditablePalette {
 			final Sprite sprite = sprites.get(tile);
 			final ColorPalette palette = sprite.getPalette();
 			
+			// Fond
+			((Graphics2D)g).setPaint(Paints.TRANSPARENT_PAINT);
+			g.fillRect(refX, refY, size, size);
+
+			// Sprite
 			final TileLayer defaultLayer = sprite.getDefaultLayer();
 			
 			if(defaultLayer != null) {
@@ -100,16 +121,46 @@ public class SpritePalette implements EditablePalette {
 	}
 
 	@Override
-	public void editTile(int index, JFrame parent) {
+	public void editTile(final int index, JFrame parent) {
 		final SpriteEditor editor = new SpriteEditor(parent);
+		editor.setSprite(sprites.get(index));
 		editor.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				expand(index);
 			}
 		});
 		editor.setVisible(true);
 	}
 	
+	private void expand(int index) {
+		if(index >= sprites.size() - columns) {
+			final Dimension oldSize = new Dimension(columns, sprites.size() / columns);
+			
+			for(int i = 0; i < columns; i++) {
+				sprites.add(new Sprite());
+			}
+			
+			final Dimension newSize = new Dimension(columns, sprites.size() / columns);
+			
+			fireSizeChanged(oldSize, newSize);
+		}
+	}
+	
+	@Override
+	public void addSizeChangeListener(SizeChangeListener listener) {
+		sizeChangeListeners.add(listener);
+	}
+	
+	@Override
+	public void removeSizeChangeListener(SizeChangeListener listener) {
+		sizeChangeListeners.remove(listener);
+	}
+	
+	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
+		for(final SizeChangeListener listener : sizeChangeListeners) {
+			listener.sizeChanged(this, oldSize, newSize);
+		}
+	}
 }

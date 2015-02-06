@@ -23,6 +23,7 @@ import fr.rca.mapmaker.io.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.ui.Grid;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ItemEvent;
@@ -591,6 +592,17 @@ public class MapEditor extends javax.swing.JFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentSpritePaletteMap}"), spritePaletteGrid, org.jdesktop.beansbinding.BeanProperty.create("tileMap"));
         bindingGroup.addBinding(binding);
 
+        spritePaletteGrid.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                selectSprite(evt);
+            }
+        });
+        spritePaletteGrid.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                selectSprite(evt);
+                editSprite(evt);
+            }
+        });
         spritePaletteScrollPane.setViewportView(spritePaletteGrid);
 
         spritePaletteToolBar.setFloatable(false);
@@ -857,28 +869,11 @@ private void layerListValueChanged(javax.swing.event.ListSelectionEvent evt) {//
 }//GEN-LAST:event_layerListValueChanged
 
 private void selectTile(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectTile
-	final Point point = paletteGrid.getLayerLocation(evt.getX(), evt.getY());
-				
-	final PaletteMap paletteMap = (PaletteMap) paletteGrid.getTileMap();
-	paletteMap.setSelection(point);
+	select(evt, paletteGrid);
 }//GEN-LAST:event_selectTile
 
 private void editTile(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editTile
-	if(evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2) {
-		final PaletteMap paletteMap = (PaletteMap) paletteGrid.getTileMap();
-		final int tileIndex = paletteMap.getSelectedTile();
-		final Palette palette = paletteMap.getPalette();
-
-		if(tileIndex > -1 && palette.isEditable()) {
-			final EditablePalette editablePalette = (EditablePalette) palette;
-			final Point selection = paletteMap.getSelection();
-
-			editablePalette.editTile(tileIndex, this);
-			
-			paletteGrid.repaint(selection);
-			mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
-		}
-	}
+	edit(evt, paletteGrid);
 }//GEN-LAST:event_editTile
 
 private void managePalettesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_managePalettesMenuItemActionPerformed
@@ -1005,14 +1000,12 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }//GEN-LAST:event_importMenuItemActionPerformed
 
     private void devicePreviewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_devicePreviewButtonActionPerformed
-        // TODO add your handling code here:
 		final GamePreviewDialog gamePreviewDialog = new GamePreviewDialog(this, true);
 		gamePreviewDialog.setTileMap(mapGrid.getTileMap());
 		gamePreviewDialog.setVisible(true);
     }//GEN-LAST:event_devicePreviewButtonActionPerformed
 
     private void zoomTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomTextFieldActionPerformed
-        // TODO add your handling code here:
 		try {
 			final int size = Integer.parseInt(zoomTextField.getText());
 			mapGrid.setZoom((double)size/100.0);
@@ -1022,6 +1015,38 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_zoomTextFieldActionPerformed
 
+    private void selectSprite(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectSprite
+		select(evt, spritePaletteGrid);
+    }//GEN-LAST:event_selectSprite
+
+    private void editSprite(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editSprite
+        edit(evt, spritePaletteGrid);
+    }//GEN-LAST:event_editSprite
+
+	private void select(MouseEvent event, Grid grid) {
+		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
+				
+		final PaletteMap paletteMap = (PaletteMap) grid.getTileMap();
+		paletteMap.setSelection(point);
+	}
+	
+	private void edit(MouseEvent event, Grid grid) {
+		if(event.getButton() == MouseEvent.BUTTON1 && event.getClickCount() == 2) {
+			final PaletteMap paletteMap = (PaletteMap) grid.getTileMap();
+			final int tileIndex = paletteMap.getSelectedTile();
+			final Palette palette = paletteMap.getPalette();
+
+			if(tileIndex > -1 && palette.isEditable()) {
+				final EditablePalette editablePalette = (EditablePalette) palette;
+				final Point selection = paletteMap.getSelection();
+
+				editablePalette.editTile(tileIndex, this);
+
+				grid.repaint(selection);
+				mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
+			}
+		}
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayerButton;

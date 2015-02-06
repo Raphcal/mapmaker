@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class Sprite {
 	private ColorPalette palette;
-	private int size;
+	private int size = 32;
 	private final Map<String, List<TileLayer>> animations = new HashMap<String, List<TileLayer>>();
 
 	public Sprite() {
@@ -66,7 +66,7 @@ public class Sprite {
 		for(final Animation animation : Animation.getDefaultAnimations()) {
 			for(final double direction : favoriteDirections) {
 				final List<TileLayer> layers = get(animation.getNameForDirection(direction));
-				if(layers != null) {
+				if(layers != null && !layers.isEmpty()) {
 					return layers.get(0);
 				}
 			}

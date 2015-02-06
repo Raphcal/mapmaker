@@ -823,6 +823,10 @@
                   <BindingProperties>
                     <BindingProperty name="tileMap" source="project" sourcePath="${currentSpritePaletteMap}" target="spritePaletteGrid" targetPath="tileMap" updateStrategy="0" immediately="false"/>
                   </BindingProperties>
+                  <Events>
+                    <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="selectSprite"/>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="selectSprite,editSprite"/>
+                  </Events>
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
                     <Property name="useNullLayout" type="boolean" value="true"/>
