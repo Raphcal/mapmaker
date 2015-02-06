@@ -57,6 +57,10 @@ public class SpriteEditor extends javax.swing.JDialog {
         animationLabel = new javax.swing.JLabel();
         directionLabel = new javax.swing.JLabel();
         directionChooser = new fr.rca.mapmaker.ui.DirectionChooser();
+        animationPreview = new fr.rca.mapmaker.ui.AnimatedGrid();
+        animationPreview.start();
+        frequencyLabel = new javax.swing.JLabel();
+        frequencyTextField = new javax.swing.JTextField();
 
         setTitle("Sprite");
 
@@ -90,6 +94,11 @@ public class SpriteEditor extends javax.swing.JDialog {
         });
 
         okButton.setText("OK");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
 
         animationComboBox.setModel(animationComboBoxModel);
         animationComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -108,6 +117,17 @@ public class SpriteEditor extends javax.swing.JDialog {
             }
         });
 
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentAnimation}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("frames"));
+        bindingGroup.addBinding(binding);
+
+        frequencyLabel.setText("Vitesse : ");
+
+        frequencyTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        frequencyTextField.setMinimumSize(new java.awt.Dimension(46, 28));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, animationPreview, org.jdesktop.beansbinding.ELProperty.create("${frequency}"), frequencyTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -123,12 +143,16 @@ public class SpriteEditor extends javax.swing.JDialog {
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(animationLabel)
-                            .addComponent(sizeLabel))
+                            .addComponent(sizeLabel)
+                            .addComponent(frequencyLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(widthTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(animationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
+                            .addComponent(animationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(frequencyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(animationPreview, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 157, Short.MAX_VALUE)
                         .addComponent(directionLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(directionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -143,14 +167,20 @@ public class SpriteEditor extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(sizeLabel)
-                            .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(directionLabel))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(sizeLabel)
+                                .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(directionLabel))
+                            .addComponent(animationPreview, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(animationLabel)
-                            .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(frequencyLabel)
+                            .addComponent(frequencyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(directionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
@@ -168,6 +198,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
 		setVisible(false);
+		animationPreview.stop();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void tileLayerListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tileLayerListActionPerformed
@@ -201,6 +232,11 @@ public class SpriteEditor extends javax.swing.JDialog {
     private void directionChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_directionChooserActionPerformed
 		animationChanged();
     }//GEN-LAST:event_directionChooserActionPerformed
+
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        setVisible(false);
+		animationPreview.stop();
+    }//GEN-LAST:event_okButtonActionPerformed
 
 	private void animationChanged() {
 		firePropertyChange("currentAnimation", null, getCurrentAnimation());
@@ -237,9 +273,12 @@ public class SpriteEditor extends javax.swing.JDialog {
     private javax.swing.JComboBox<Animation> animationComboBox;
     private javax.swing.DefaultComboBoxModel<Animation> animationComboBoxModel;
     private javax.swing.JLabel animationLabel;
+    private fr.rca.mapmaker.ui.AnimatedGrid animationPreview;
     private javax.swing.JButton cancelButton;
     private fr.rca.mapmaker.ui.DirectionChooser directionChooser;
     private javax.swing.JLabel directionLabel;
+    private javax.swing.JLabel frequencyLabel;
+    private javax.swing.JTextField frequencyTextField;
     private javax.swing.JScrollPane gridScrollPane;
     private javax.swing.JButton okButton;
     private javax.swing.JLabel sizeLabel;

@@ -46,15 +46,19 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="animationLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="sizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="frequencyLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="widthTextField" max="32767" attributes="0"/>
                           <Component id="animationComboBox" max="32767" attributes="0"/>
+                          <Component id="frequencyTextField" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="170" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="animationPreview" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="157" max="32767" attributes="0"/>
                       <Component id="directionLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="directionChooser" min="-2" pref="100" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
@@ -72,15 +76,23 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="sizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="widthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="directionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="sizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="widthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="directionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="animationPreview" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="animationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="animationComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="frequencyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="frequencyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="directionChooser" min="-2" pref="100" max="-2" attributes="0"/>
@@ -156,6 +168,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="OK"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="animationComboBox">
       <Properties>
@@ -189,5 +204,35 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
     </Container>
+    <Container class="fr.rca.mapmaker.ui.AnimatedGrid" name="animationPreview">
+      <BindingProperties>
+        <BindingProperty name="frames" source="Form" sourcePath="${currentAnimation}" target="animationPreview" targetPath="frames" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="animationPreview.start();&#xa;"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="true"/>
+      </Layout>
+    </Container>
+    <Component class="javax.swing.JLabel" name="frequencyLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Vitesse : "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="frequencyTextField">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="4"/>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[46, 28]"/>
+        </Property>
+      </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="animationPreview" sourcePath="${frequency}" target="frequencyTextField" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
+    </Component>
   </SubComponents>
 </Form>

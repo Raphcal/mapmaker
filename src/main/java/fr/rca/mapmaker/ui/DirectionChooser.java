@@ -144,6 +144,8 @@ public class DirectionChooser extends JComponent {
 				g.drawRect((int)(x - SQUARE_SIZE/2), (int)(y - SQUARE_SIZE/2), SQUARE_SIZE, SQUARE_SIZE);
 			}
 		}
+		
+		g.dispose();
 	}
 	
 	public void addActionListener(ActionListener listener) {
