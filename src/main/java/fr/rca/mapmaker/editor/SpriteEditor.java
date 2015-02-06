@@ -2,28 +2,37 @@
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.ui.GridList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class SpriteDialog extends javax.swing.JDialog {
+public class SpriteEditor extends javax.swing.JDialog {
 	
 	/**
 	 * Creates new form SpriteDialog
 	 */
-	public SpriteDialog(java.awt.Frame parent, boolean modal) {
-		super(parent, modal);
+	public SpriteEditor(java.awt.Frame parent) {
+		super(parent, true);
 		initComponents();
 	}
 
 	public List<TileLayer> getCurrentAnimation() {
-		return sprite.get(animationComboBox.getSelectedItem().toString());
+		final Animation animation = (Animation) animationComboBoxModel.getSelectedItem();
+		if(animation != null) {
+			return sprite.get(animation.getNameForDirection(directionChooser.getDirection()));
+			
+		} else {
+			return Collections.<TileLayer>emptyList();
+		}
 	}
 	
 	/**
@@ -37,13 +46,14 @@ public class SpriteDialog extends javax.swing.JDialog {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         sprite = new fr.rca.mapmaker.model.sprite.Sprite();
+        animationComboBoxModel = new DefaultComboBoxModel<Animation>(Animation.getDefaultAnimations());
         sizeLabel = new javax.swing.JLabel();
         widthTextField = new javax.swing.JTextField();
         gridScrollPane = new javax.swing.JScrollPane();
         tileLayerList = new fr.rca.mapmaker.ui.TileLayerList();
         cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
-        animationComboBox = new javax.swing.JComboBox();
+        animationComboBox = new javax.swing.JComboBox<Animation>();
         animationLabel = new javax.swing.JLabel();
         directionLabel = new javax.swing.JLabel();
         directionChooser = new fr.rca.mapmaker.ui.DirectionChooser();
@@ -81,7 +91,7 @@ public class SpriteDialog extends javax.swing.JDialog {
 
         okButton.setText("OK");
 
-        animationComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "À l'arrêt", "Marche", "Course", "Saute", "Tombe", "Se baisse", "Se lève", "Attaque", "Blessé", "Meurt" }));
+        animationComboBox.setModel(animationComboBoxModel);
         animationComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 animationComboBoxActionPerformed(evt);
@@ -91,6 +101,12 @@ public class SpriteDialog extends javax.swing.JDialog {
         animationLabel.setText("Animation : ");
 
         directionLabel.setText("Direction :");
+
+        directionChooser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                directionChooserActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -112,7 +128,7 @@ public class SpriteDialog extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(widthTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(animationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
                         .addComponent(directionLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(directionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -179,9 +195,17 @@ public class SpriteDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_tileLayerListActionPerformed
 
     private void animationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_animationComboBoxActionPerformed
-		firePropertyChange("currentAnimation", null, animationComboBox.getSelectedItem().toString());
+		animationChanged();
     }//GEN-LAST:event_animationComboBoxActionPerformed
 
+    private void directionChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_directionChooserActionPerformed
+		animationChanged();
+    }//GEN-LAST:event_directionChooserActionPerformed
+
+	private void animationChanged() {
+		firePropertyChange("currentAnimation", null, getCurrentAnimation());
+	}
+	
 	/**
 	 * @param args the command line arguments
 	 */
@@ -190,7 +214,7 @@ public class SpriteDialog extends javax.swing.JDialog {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				SpriteDialog dialog = new SpriteDialog(new javax.swing.JFrame(), true);
+				SpriteEditor dialog = new SpriteEditor(new javax.swing.JFrame());
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
@@ -210,7 +234,8 @@ public class SpriteDialog extends javax.swing.JDialog {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox animationComboBox;
+    private javax.swing.JComboBox<Animation> animationComboBox;
+    private javax.swing.DefaultComboBoxModel<Animation> animationComboBoxModel;
     private javax.swing.JLabel animationLabel;
     private javax.swing.JButton cancelButton;
     private fr.rca.mapmaker.ui.DirectionChooser directionChooser;

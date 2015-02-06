@@ -63,6 +63,9 @@ public class TileMapEditor extends javax.swing.JDialog {
 		
 		setPalette(palette);
 		
+		previousLayerButton.setVisible(false);
+		nextLayerButton.setVisible(false);
+		
 		pack();
 	}
 	
@@ -75,6 +78,10 @@ public class TileMapEditor extends javax.swing.JDialog {
 		
 		setPalette(palette);
 		setLayerIndex(index);
+		
+		previousLayerButton.setVisible(true);
+		nextLayerButton.setVisible(true);
+		
 		pack();
 	}
 	
@@ -101,6 +108,10 @@ public class TileMapEditor extends javax.swing.JDialog {
 		
 		firePropertyChange("previousAvailable", null, isPreviousAvailable());
 		firePropertyChange("nextAvailable", null, isNextAvailable());
+	}
+	
+	public boolean isList() {
+		return editedLayer == null;
 	}
 
 	public boolean isPreviousAvailable() {

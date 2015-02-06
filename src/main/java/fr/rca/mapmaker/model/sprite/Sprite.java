@@ -47,6 +47,10 @@ public class Sprite {
 		}
 	}
 	
+	public List<TileLayer> get(String animation, double direction) {
+		return get(animation + '-' + direction);
+	}
+	
 	public List<TileLayer> get(String animation) {
 		List<TileLayer> layers = animations.get(animation);
 		if(layers == null) {

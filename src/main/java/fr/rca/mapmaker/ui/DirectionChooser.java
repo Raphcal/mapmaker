@@ -5,9 +5,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JComponent;
@@ -25,6 +28,7 @@ public class DirectionChooser extends JComponent {
 	private double direction = 0.0;
 	
 	private final Set<Double> anglesWithValue = new HashSet<Double>();
+	private final ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
 
 	public DirectionChooser() {
 		addMouseListener(new MouseAdapter() {
@@ -33,6 +37,8 @@ public class DirectionChooser extends JComponent {
 			public void mouseClicked(MouseEvent e) {
 				setDirection(angleAtPoint(e.getPoint()));
 				repaint();
+				
+				fireActionPerformed();
 			}
 		});
 	}
@@ -137,6 +143,20 @@ public class DirectionChooser extends JComponent {
 				g.drawRect((int)x, (int)y, 1, 1);
 				g.drawRect((int)(x - SQUARE_SIZE/2), (int)(y - SQUARE_SIZE/2), SQUARE_SIZE, SQUARE_SIZE);
 			}
+		}
+	}
+	
+	public void addActionListener(ActionListener listener) {
+		actionListeners.add(listener);
+	}
+	
+	public void removeActionListener(ActionListener listener) {
+		actionListeners.remove(listener);
+	}
+	
+	protected void fireActionPerformed() {
+		for(final ActionListener listener : actionListeners) {
+			listener.actionPerformed(new ActionEvent(this, 0, "DIRECTION_CHANGED"));
 		}
 	}
 }
