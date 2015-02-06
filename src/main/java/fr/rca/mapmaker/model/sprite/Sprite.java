@@ -3,6 +3,8 @@ package fr.rca.mapmaker.model.sprite;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +19,27 @@ public class Sprite {
 	private int size = 32;
 	private final Map<String, List<TileLayer>> animations = new HashMap<String, List<TileLayer>>();
 
+	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+	
 	public Sprite() {
 		palette = AlphaColorPalette.getDefaultColorPalette();
 	}
 
+	public void morphTo(Sprite sprite) {
+		final ColorPalette oldPalette = getPalette();
+		final int oldSize = getSize();
+		
+		this.palette = sprite.palette;
+		this.size = sprite.size;
+		this.animations.clear();
+		
+		// TODO: Copier plutôt que simplement tout mettre.
+		this.animations.putAll(sprite.animations);
+		
+		propertyChangeSupport.firePropertyChange("palette", oldPalette, getPalette());
+		propertyChangeSupport.firePropertyChange("size", oldSize, getSize());
+	}
+	
 	public ColorPalette getPalette() {
 		return palette;
 	}
@@ -77,5 +96,13 @@ public class Sprite {
 	
 	public int getSize() {
 		return size;
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener pl) {
+		propertyChangeSupport.addPropertyChangeListener(pl);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener pl) {
+		propertyChangeSupport.removePropertyChangeListener(pl);
 	}
 }
