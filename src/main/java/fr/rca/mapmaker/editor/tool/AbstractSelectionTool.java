@@ -10,13 +10,25 @@ import fr.rca.mapmaker.model.map.TileLayer;
 public class AbstractSelectionTool extends MouseAdapter implements Tool {
 
 	protected final Grid grid;
+	protected TileLayer selectionLayer;
 	
 	protected Point startPoint;
+	protected Point translation;
 	
 	protected boolean selected = false;
 	
 	public AbstractSelectionTool(Grid grid) {
 		this.grid = grid;
+		this.selectionLayer = new TileLayer(grid.getOverlay().getWidth(), grid.getOverlay().getHeight());
+	}
+	
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+		
+		if(selected) {
+			translation = new Point(0, 0);
+			grid.getOverlay().copyAndTranslate(selectionLayer, 0, 0);
+		}
 	}
 	
 	protected void handleMouseClicked(MouseEvent e) {
@@ -37,6 +49,7 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 		
 		drawingLayer.merge(previewLayer);
 		previewLayer.clear();
+		selectionLayer.clear();
 		grid.setFocusVisible(false);
 		selected = false;
 	}
@@ -68,6 +81,10 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 	public void mouseReleased(MouseEvent e) {
 		if(!selected) {
 			handleMouseReleased(e);
+		} else {
+			final Point releasePoint = grid.getLayerLocation(e.getX(), e.getY());
+			translation.x += releasePoint.x - startPoint.x;
+			translation.y += releasePoint.y - startPoint.y;
 		}
 	}
 	
@@ -81,16 +98,20 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 			handleMouseDragged(e);
 			
 		} else {
-			moveLayer(grid.getOverlay(), e);
+			moveLayer(grid.getOverlay(), e, false);
 		}
 	}
 	
-	protected void moveLayer(TileLayer layer, MouseEvent event) {
+	protected void moveLayer(TileLayer layer, MouseEvent event, boolean directly) {
 		final Point point = grid.getLayerLocation(event.getX(), event.getY());
 			
-		if(!point.equals(startPoint)) { 
-			layer.translate(point.x - startPoint.x, point.y - startPoint.y);
-			startPoint = point;
+		if(!point.equals(startPoint)) {
+			if(!directly) {
+				layer.copyAndTranslate(selectionLayer, point.x - startPoint.x + translation.x, point.y - startPoint.y + translation.y);
+			} else {
+				layer.translate(point.x - startPoint.x, point.y - startPoint.y);
+				startPoint = point;
+			}
 		}
 	}
 	

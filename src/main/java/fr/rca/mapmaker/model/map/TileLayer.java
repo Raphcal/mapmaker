@@ -291,6 +291,14 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param offsetY Décalage vertical.
 	 */
 	public void translate(int offsetX, int offsetY) {
+		translate(this.tiles, offsetX, offsetY);
+	}
+	
+	public void copyAndTranslate(TileLayer layer, int offsetX, int offsetY) {
+		translate(layer.tiles, offsetX, offsetY);
+	}
+	
+	private void translate(int[] source, int offsetX, int offsetY) {
 		final int[] translatedTiles = new int[width * height];
 		Arrays.fill(translatedTiles, -1);
 		
@@ -303,7 +311,7 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 		
 		for(int j = 0; j < copyHeight; j++) {
 			System.arraycopy(
-					this.tiles, (j + sourceY) * width + sourceX,
+					source, (j + sourceY) * width + sourceX,
 					translatedTiles, (j + destinationY) * width + destinationX, copyWidth);
 		}
 		

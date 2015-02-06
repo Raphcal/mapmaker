@@ -34,15 +34,17 @@ public class SelectionTool extends AbstractSelectionTool {
 			final int endX = Math.min(startX + Math.abs(endPoint.x - startPoint.x) + 1, drawingLayer.getWidth());
 			final int endY = Math.min(startY + Math.abs(endPoint.y - startPoint.y) + 1, drawingLayer.getHeight());
 
-			for(int y = startY; y < endY; y++)
-				for(int x = startX; x < endX; x++)
-					grid.getOverlay().setTile(x, y, drawingLayer.getTile(x, y));
+			for(int y = startY; y < endY; y++) {
+				for(int x = startX; x < endX; x++) {
+					selectionLayer.setTile(x, y, drawingLayer.getTile(x, y));
+				}
+			}
 
 			drawingLayer.clear(new Rectangle(startX, startY,
 					Math.abs(endPoint.x - startPoint.x) + 1, Math.abs(endPoint.y - startPoint.y) + 1));
 
 			startPoint = null;
-			selected = true;
+			setSelected(true);
 		}
 	}
 	
@@ -84,8 +86,16 @@ public class SelectionTool extends AbstractSelectionTool {
 		if(moveOverlay) {
 			super.mouseDragged(e);
 		} else {
-			moveLayer((TileLayer) grid.getActiveLayer(), e);
+			moveLayer((TileLayer) grid.getActiveLayer(), e, true);
 		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if(e.getButton() != MouseEvent.BUTTON1) {
+			startPoint = grid.getLayerLocation(e.getX(), e.getY());
+		}
+		super.mousePressed(e);
 	}
 	
 }

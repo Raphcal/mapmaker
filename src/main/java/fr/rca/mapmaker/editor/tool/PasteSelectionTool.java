@@ -1,6 +1,5 @@
 package fr.rca.mapmaker.editor.tool;
 
-import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.ui.Grid;
 import java.awt.Rectangle;
 
@@ -15,11 +14,10 @@ public class PasteSelectionTool extends AbstractSelectionTool {
 	}
 	
 	public void setSelection(final int[] tiles, Rectangle rectangle) {
-		final TileLayer overlay = grid.getOverlay();
-		overlay.restoreData(tiles, rectangle);
+		selectionLayer.restoreData(tiles, rectangle);
 		
 		grid.setFocusVisible(true);
-		selected = true;
+		setSelected(true);
 	}
 
 	@Override

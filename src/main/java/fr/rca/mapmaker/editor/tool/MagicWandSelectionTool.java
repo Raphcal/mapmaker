@@ -22,15 +22,15 @@ public class MagicWandSelectionTool extends AbstractSelectionTool {
 		
 		expandSelectionRecursive(point.x, point.y, tile);
 		
-		drawingLayer.clear(grid.getOverlay());
+		drawingLayer.clear(selectionLayer);
 		
 		grid.setFocusVisible(true);
-		selected = true;
+		setSelected(true);
 	}
 	
 	private void expandSelectionRecursive(int x, int y, int tile) {
 		
-		grid.getOverlay().setTile(x, y, tile);
+		selectionLayer.setTile(x, y, tile);
 		
 		if(canExpandSelection(x - 1, y, tile))
 			expandSelectionRecursive(x - 1, y, tile);
@@ -48,7 +48,7 @@ public class MagicWandSelectionTool extends AbstractSelectionTool {
 	private boolean canExpandSelection(int x, int y, int tile) {
 		
 		final TileLayer drawingLayer = (TileLayer) grid.getActiveLayer();
-		final TileLayer previewLayer = grid.getOverlay();
+		final TileLayer previewLayer = selectionLayer;
 		
 		return x >= 0 && x < drawingLayer.getWidth() &&
 			   y >= 0 && y < drawingLayer.getHeight() &&

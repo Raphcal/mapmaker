@@ -7,6 +7,7 @@ import fr.rca.mapmaker.editor.tool.EllipseFillTool;
 import fr.rca.mapmaker.editor.tool.EllipseStrokeTool;
 import fr.rca.mapmaker.editor.tool.LineTool;
 import fr.rca.mapmaker.editor.tool.MagicWandSelectionTool;
+import fr.rca.mapmaker.editor.tool.PasteSelectionTool;
 import fr.rca.mapmaker.editor.tool.PenTool;
 import fr.rca.mapmaker.editor.tool.RectangleFillTool;
 import fr.rca.mapmaker.editor.tool.RectangleStrokeTool;
@@ -17,6 +18,7 @@ import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -33,6 +35,11 @@ import javax.swing.JToggleButton;
 public class TileMapEditor extends javax.swing.JDialog {
 	
 	private static final int PALETTE_WIDTH = 8;
+	
+	private static int[] clipboardData;
+	private static Rectangle clipboardSurface;
+
+	private final PasteSelectionTool pasteSelectionTool;
 	
 	private final ArrayList<ActionListener> listeners;
 	private final ArrayList<TileLayer> layers;
@@ -52,6 +59,8 @@ public class TileMapEditor extends javax.swing.JDialog {
 		layers = new ArrayList<TileLayer>();
 		
 		paletteGrid.setTileMap(colorPaletteMap);
+		
+		pasteSelectionTool = new PasteSelectionTool(drawGrid);
 	}
 
 	public void setLayerAndPalette(TileLayer layer, ColorPalette palette) {
@@ -119,6 +128,10 @@ public class TileMapEditor extends javax.swing.JDialog {
 	
 	public boolean isNextAvailable() {
 		return layers != null && layerIndex < layers.size() - 1;
+	}
+	
+	public boolean isClipboardFull() {
+		return clipboardData != null;
 	}
 	
 	public void addActionListener(ActionListener listener) {
@@ -328,16 +341,30 @@ public class TileMapEditor extends javax.swing.JDialog {
         copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/copy.png"))); // NOI18N
         copyButton.setToolTipText("Copier");
         copyButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        copyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyButtonActionPerformed(evt);
+            }
+        });
 
         pasteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/paste.png"))); // NOI18N
         pasteButton.setToolTipText("Coller");
         pasteButton.setPreferredSize(new java.awt.Dimension(32, 32));
 
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${clipboardFull}"), pasteButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        pasteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pasteButtonActionPerformed(evt);
+            }
+        });
+
         undoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_undo.png"))); // NOI18N
         undoButton.setToolTipText("Annuler");
         undoButton.setPreferredSize(new java.awt.Dimension(32, 32));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, memento, org.jdesktop.beansbinding.ELProperty.create("${undoable}"), undoButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, memento, org.jdesktop.beansbinding.ELProperty.create("${undoable}"), undoButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
         undoButton.addActionListener(new java.awt.event.ActionListener() {
@@ -569,6 +596,23 @@ public class TileMapEditor extends javax.swing.JDialog {
     private void nextLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextLayerButtonActionPerformed
         setLayerIndex(layerIndex + 1);
     }//GEN-LAST:event_nextLayerButtonActionPerformed
+
+    private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
+		final boolean oldClipboardFull = isClipboardFull();
+		
+		clipboardData = drawLayer.copyData();
+		clipboardSurface = new Rectangle(drawLayer.getWidth(), drawLayer.getHeight());
+		
+		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());
+    }//GEN-LAST:event_copyButtonActionPerformed
+
+    private void pasteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteButtonActionPerformed
+		toolButtonGroup.clearSelection();
+		pasteSelectionTool.setSelection(clipboardData, clipboardSurface);
+
+		drawGrid.addMouseListener(pasteSelectionTool);
+		drawGrid.addMouseMotionListener(pasteSelectionTool);
+    }//GEN-LAST:event_pasteButtonActionPerformed
 
 	private void selectColor(MouseEvent event) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
