@@ -1,13 +1,16 @@
 package fr.rca.mapmaker;
 
 import fr.rca.mapmaker.editor.MapEditor;
+import fr.rca.mapmaker.exception.Exceptions;
 import java.io.IOException;
 
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 public class MapMaker {
@@ -41,6 +44,7 @@ public class MapMaker {
 			@Override
 			public void run() {
 				final MapEditor editor = new MapEditor();
+				editor.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				
 				editor.addWindowListener(new WindowAdapter() {
 					@Override
@@ -48,6 +52,14 @@ public class MapMaker {
 						preferences.putInt(PREFERENCES_WIDTH, editor.getWidth());
 						preferences.putInt(PREFERENCES_HEIGHT, editor.getHeight());
 						preferences.putInt(PREFERENCES_EXTENDED_STATE, editor.getExtendedState());
+						
+						try {
+							preferences.sync();
+						} catch (BackingStoreException ex) {
+							Exceptions.showStackTrace(ex, editor);
+						}
+						
+						System.exit(0);
 					}
 				});
 				

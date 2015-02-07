@@ -18,10 +18,10 @@ import javax.swing.Timer;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class AnimatedGrid extends JComponent {
+public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	private int index;
-	private List<Layer> frames = Collections.<Layer>emptyList();
+	private List<L> frames = Collections.<L>emptyList();
 	private Palette palette = ColorPalette.getDefaultColorPalette();
 	
 	private Timer timer;
@@ -33,14 +33,16 @@ public class AnimatedGrid extends JComponent {
 	}
 	
 	public void start() {
-		timer = new Timer((int) (1000.0 / (double)frequency), new ActionListener() {
+		if(timer == null) {
+			timer = new Timer((int) (1000.0 / (double)frequency), new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				nextFrame();
-			}
-		});
-		timer.start();
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					nextFrame();
+				}
+			});
+			timer.start();
+		}
 	}
 	
 	public void stop() {
@@ -60,7 +62,7 @@ public class AnimatedGrid extends JComponent {
 		return frequency;
 	}
 	
-	public void setFrames(List<Layer> frames) {
+	public void setFrames(List<L> frames) {
 		this.frames = frames;
 		
 		if(frames != null && !frames.isEmpty()) {

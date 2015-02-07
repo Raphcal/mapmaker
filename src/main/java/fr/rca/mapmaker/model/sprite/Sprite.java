@@ -31,13 +31,14 @@ public class Sprite {
 		
 		this.palette = sprite.palette;
 		this.size = sprite.size;
-		this.animations.clear();
-		
-		// TODO: Copier plutôt que simplement tout mettre.
-		this.animations.putAll(sprite.animations);
 		
 		propertyChangeSupport.firePropertyChange("palette", oldPalette, getPalette());
 		propertyChangeSupport.firePropertyChange("size", oldSize, getSize());
+	}
+	
+	public void merge(Sprite sprite) {
+		this.animations.putAll(sprite.animations);
+		morphTo(sprite);
 	}
 	
 	public ColorPalette getPalette() {
@@ -53,17 +54,9 @@ public class Sprite {
 		layers.add(layer);
 	}
 	
-	public void set(String animation, int index, TileLayer layer) {
-		List<TileLayer> layers = animations.get(animation);
-		if(layers == null) {
-			layers = new ArrayList<TileLayer>();
-			animations.put(animation, layers);
-		}
-		if(index == layers.size()) {
-			layers.add(layer);
-		} else {
-			layers.set(index, layer);
-		}
+	
+	public boolean contains(String animation) {
+		return animations.containsKey(animation);
 	}
 	
 	public List<TileLayer> get(String animation) {
@@ -75,8 +68,12 @@ public class Sprite {
 		return layers;
 	}
 	
-	public TileLayer get(String animation, int index) {
-		return animations.get(animation).get(index);
+	public void set(String animation, List<TileLayer> frames) {
+		animations.put(animation, frames);
+	}
+	
+	public void clear() {
+		animations.clear();
 	}
 	
 	public TileLayer getDefaultLayer() {
@@ -84,7 +81,7 @@ public class Sprite {
 		
 		for(final Animation animation : Animation.getDefaultAnimations()) {
 			for(final double direction : favoriteDirections) {
-				final List<TileLayer> layers = get(animation.getNameForDirection(direction));
+				final List<TileLayer> layers = animations.get(animation.getNameForDirection(direction));
 				if(layers != null && !layers.isEmpty()) {
 					return layers.get(0);
 				}
@@ -105,4 +102,5 @@ public class Sprite {
 	public void removePropertyChangeListener(PropertyChangeListener pl) {
 		propertyChangeSupport.removePropertyChangeListener(pl);
 	}
+	
 }

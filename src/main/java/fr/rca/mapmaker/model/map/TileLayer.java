@@ -183,8 +183,10 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 		
 		final int max = (int) Math.ceil(length);
 		for(int i = 0; i < max; i++) {
-			if(y >= 0 && y < height && x >= 0 && x < width) {
-				tiles[(int) (Math.round(y) * this.width + Math.round(x))] = tile;
+			final int index = (int) (Math.round(y) * this.width + Math.round(x));
+			
+			if(y >= 0 && y < height && x >= 0 && x < width && index < tiles.length) {
+				tiles[index] = tile;
 			}
 			
 			x += stepX;

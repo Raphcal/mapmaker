@@ -20,6 +20,8 @@ public class SpriteEditor extends javax.swing.JDialog {
 	
 	private final ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	
+	private Sprite editedSprite;
+	
 	/**
 	 * Creates new form SpriteDialog
 	 */
@@ -29,14 +31,30 @@ public class SpriteEditor extends javax.swing.JDialog {
 	}
 
 	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
+		this.editedSprite = sprite;
+		this.sprite.morphTo(sprite);
+		this.sprite.clear();
 		this.tileLayerList.setPalette(sprite.getPalette());
+		
+		animationChanged();
 	}
 
 	public List<TileLayer> getCurrentAnimation() {
 		final Animation animation = (Animation) animationComboBoxModel.getSelectedItem();
 		if(animation != null) {
-			return sprite.get(animation.getNameForDirection(directionChooser.getDirection()));
+			final String animationAndDirection = animation.getNameForDirection(directionChooser.getDirection());
+			
+			if(editedSprite != null && !sprite.contains(animationAndDirection) && editedSprite.contains(animationAndDirection)) {
+				final ArrayList<TileLayer> frames = new ArrayList<TileLayer>();
+				for(final TileLayer frame : editedSprite.get(animationAndDirection)) {
+					final TileLayer copy = new TileLayer(frame.getWidth(), frame.getHeight());
+					copy.restoreData(frame.copyData(), null);
+					frames.add(copy);
+				}
+				sprite.set(animationAndDirection, frames);
+			}
+			
+			return sprite.get(animationAndDirection);
 			
 		} else {
 			return Collections.<TileLayer>emptyList();
@@ -65,7 +83,7 @@ public class SpriteEditor extends javax.swing.JDialog {
         animationLabel = new javax.swing.JLabel();
         directionLabel = new javax.swing.JLabel();
         directionChooser = new fr.rca.mapmaker.ui.DirectionChooser();
-        animationPreview = new fr.rca.mapmaker.ui.AnimatedGrid();
+        animationPreview = new fr.rca.mapmaker.ui.AnimatedGrid<TileLayer>();
         animationPreview.start();
         frequencyLabel = new javax.swing.JLabel();
         frequencyTextField = new javax.swing.JTextField();
@@ -83,10 +101,6 @@ public class SpriteEditor extends javax.swing.JDialog {
         tileLayerList.setGridSize(32);
         tileLayerList.setOrientation(fr.rca.mapmaker.ui.Orientation.HORIZONTAL);
         tileLayerList.setPalette(sprite.getPalette());
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentAnimation}"), tileLayerList, org.jdesktop.beansbinding.BeanProperty.create("elements"));
-        bindingGroup.addBinding(binding);
-
         tileLayerList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tileLayerListActionPerformed(evt);
@@ -124,9 +138,6 @@ public class SpriteEditor extends javax.swing.JDialog {
                 directionChooserActionPerformed(evt);
             }
         });
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentAnimation}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("frames"));
-        bindingGroup.addBinding(binding);
 
         frequencyLabel.setText("Vitesse : ");
 
@@ -245,11 +256,15 @@ public class SpriteEditor extends javax.swing.JDialog {
         setVisible(false);
 		animationPreview.stop();
 		
+		editedSprite.merge(sprite);
+		
 		fireActionPerformed();
     }//GEN-LAST:event_okButtonActionPerformed
 
 	private void animationChanged() {
-		firePropertyChange("currentAnimation", null, getCurrentAnimation());
+		final List<TileLayer> currentAnimation = getCurrentAnimation();
+		tileLayerList.setElements(currentAnimation);
+		animationPreview.setFrames(currentAnimation);
 	}
 	
 	public void addActionListener(ActionListener listener) {
@@ -292,12 +307,12 @@ public class SpriteEditor extends javax.swing.JDialog {
 			}
 		});
 	}
-
+	
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<Animation> animationComboBox;
     private javax.swing.DefaultComboBoxModel<Animation> animationComboBoxModel;
     private javax.swing.JLabel animationLabel;
-    private fr.rca.mapmaker.ui.AnimatedGrid animationPreview;
+    private fr.rca.mapmaker.ui.AnimatedGrid<TileLayer> animationPreview;
     private javax.swing.JButton cancelButton;
     private fr.rca.mapmaker.ui.DirectionChooser directionChooser;
     private javax.swing.JLabel directionLabel;

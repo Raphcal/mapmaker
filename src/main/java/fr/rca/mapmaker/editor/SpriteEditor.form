@@ -143,9 +143,6 @@
               <Connection component="sprite" name="palette" type="property"/>
             </Property>
           </Properties>
-          <BindingProperties>
-            <BindingProperty name="elements" source="Form" sourcePath="${currentAnimation}" target="tileLayerList" targetPath="elements" updateStrategy="0" immediately="false"/>
-          </BindingProperties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tileLayerListActionPerformed"/>
           </Events>
@@ -205,11 +202,9 @@
       </Layout>
     </Container>
     <Container class="fr.rca.mapmaker.ui.AnimatedGrid" name="animationPreview">
-      <BindingProperties>
-        <BindingProperty name="frames" source="Form" sourcePath="${currentAnimation}" target="animationPreview" targetPath="frames" updateStrategy="0" immediately="false"/>
-      </BindingProperties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="animationPreview.start();&#xa;"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;TileLayer&gt;"/>
       </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">

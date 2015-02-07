@@ -2,7 +2,6 @@ package fr.rca.mapmaker.ui;
 
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.Palette;
-import java.awt.Color;
 import java.awt.Graphics;
 
 /**
@@ -31,8 +30,8 @@ public class TileLayerList extends AbstractOrientableList<TileLayer> implements 
 		
 		final int gridSize = getGridSize();
 		
-		g.setColor(Color.BLACK);
-		g.drawRect(originX - 1, originY - 1, gridSize + 1, gridSize + 1);
+		g.setColor(javax.swing.UIManager.getDefaults().getColor("TextComponent.selectionBackgroundInactive"));
+		g.drawRect(originX, originY, gridSize, gridSize);
 		
 		final int maxX = Math.min(gridSize / tileSize, layer.getWidth());
 		final int maxY = Math.min(gridSize / tileSize, layer.getHeight());
