@@ -39,6 +39,8 @@ public class Project implements ListModel {
 	private ArrayList<Palette> palettes = new ArrayList<Palette>();
 	
 	private ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
+	
+	private PaletteMap spritePaletteMap;
 
 	
 	public static Project createEmptyProject() {
@@ -71,12 +73,16 @@ public class Project implements ListModel {
 		final int oldSize = getSize();
 		maps.clear();
 		palettes.clear();
+		sprites.clear();
 		
 		// Palettes
 		palettes.addAll(project.getPalettes());
 		
 		// Cartes
 		maps.addAll(project.getMaps());
+		
+		// Sprites
+		sprites.addAll(project.getSprites());
 		
 		final int newSize = getSize();
 		
@@ -95,8 +101,8 @@ public class Project implements ListModel {
 		selectedIndex = 0;
 		propertyChangeSupport.firePropertyChange(CURRENT_MAP, oldMap, getCurrentMap());
 		propertyChangeSupport.firePropertyChange(CURRENT_PALETTE_MAP, oldPaletteMap, getCurrentPaletteMap());
-		propertyChangeSupport.firePropertyChange(CURRENT_SPRITE_PALETTE_MAP, oldSpritePaletteMap, getCurrentSpritePaletteMap());
 		propertyChangeSupport.firePropertyChange(CURRENT_LAYER_MODEL, oldPaletteMap, getCurrentPaletteMap());
+		propertyChangeSupport.firePropertyChange(CURRENT_SPRITE_PALETTE_MAP, oldSpritePaletteMap, getCurrentSpritePaletteMap());
 		propertyChangeSupport.firePropertyChange(CURRENT_SELECTED, oldSelected, isSelected());
 	}
 	
@@ -153,7 +159,10 @@ public class Project implements ListModel {
 	}
 	
 	public TileMap getCurrentSpritePaletteMap() {
-		return new PaletteMap(new SpritePalette(sprites), 4);
+		if(spritePaletteMap == null) {
+			spritePaletteMap = new PaletteMap(new SpritePalette(sprites), 4);
+		}
+		return spritePaletteMap;
 	}
 	
 	public List<TileMap> getMaps() {
@@ -176,6 +185,10 @@ public class Project implements ListModel {
 		return new PaletteComboBoxModel(palettes);
 	}
 
+	public List<Sprite> getSprites() {
+		return sprites;
+	}
+	
 	@Override
 	public int getSize() {
 		return maps.size();
@@ -229,8 +242,9 @@ public class Project implements ListModel {
 	protected void fireContentsChanged(int from, int to) {
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, from, to);
 		
-		for(final ListDataListener listener : listeners)
+		for(final ListDataListener listener : listeners) {
 			listener.contentsChanged(event);
+		}
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener pl) {

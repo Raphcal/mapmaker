@@ -22,7 +22,6 @@ public class PaletteDataHandler implements DataHandler<Palette> {
 
 	@Override
 	public void write(Palette t, OutputStream outputStream) throws IOException {
-		
 		final DataHandler<Palette> paletteHandler = format.getHandler(t.getClass());
 		Streams.write(t.getClass(), outputStream);
 		
@@ -31,7 +30,6 @@ public class PaletteDataHandler implements DataHandler<Palette> {
 
 	@Override
 	public Palette read(InputStream inputStream) throws IOException {
-		
 		final String paletteClass = Streams.readString(inputStream);
 		final DataHandler<Palette> paletteHandler = format.getHandler(paletteClass);
 		

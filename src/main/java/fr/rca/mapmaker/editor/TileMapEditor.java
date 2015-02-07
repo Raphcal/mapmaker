@@ -333,10 +333,20 @@ public class TileMapEditor extends javax.swing.JDialog {
         horizontalMirrorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_horizontal_mirror.png"))); // NOI18N
         horizontalMirrorButton.setToolTipText("Inverser horizontalement");
         horizontalMirrorButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        horizontalMirrorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                horizontalMirrorButtonActionPerformed(evt);
+            }
+        });
 
         verticalMirrorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_vertical_mirror.png"))); // NOI18N
         verticalMirrorButton.setToolTipText("Inverser verticalement");
         verticalMirrorButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        verticalMirrorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verticalMirrorButtonActionPerformed(evt);
+            }
+        });
 
         copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/copy.png"))); // NOI18N
         copyButton.setToolTipText("Copier");
@@ -613,6 +623,14 @@ public class TileMapEditor extends javax.swing.JDialog {
 		drawGrid.addMouseListener(pasteSelectionTool);
 		drawGrid.addMouseMotionListener(pasteSelectionTool);
     }//GEN-LAST:event_pasteButtonActionPerformed
+
+    private void horizontalMirrorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalMirrorButtonActionPerformed
+		drawLayer.flipHorizontally();
+    }//GEN-LAST:event_horizontalMirrorButtonActionPerformed
+
+    private void verticalMirrorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalMirrorButtonActionPerformed
+		drawLayer.flipVertically();
+    }//GEN-LAST:event_verticalMirrorButtonActionPerformed
 
 	private void selectColor(MouseEvent event) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());

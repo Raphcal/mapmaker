@@ -17,12 +17,19 @@ import java.util.Map;
 public class Sprite {
 	private ColorPalette palette;
 	private int size = 32;
-	private final Map<String, List<TileLayer>> animations = new HashMap<String, List<TileLayer>>();
+	private final Map<String, List<TileLayer>> animations;
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	public Sprite() {
-		palette = AlphaColorPalette.getDefaultColorPalette();
+		this.palette = AlphaColorPalette.getDefaultColorPalette();
+		this.animations = new HashMap<String, List<TileLayer>>();
+	}
+
+	public Sprite(int size, Map<String, List<TileLayer>> animations) {
+		this.palette = AlphaColorPalette.getDefaultColorPalette();
+		this.size = size;
+		this.animations = animations;
 	}
 
 	public void morphTo(Sprite sprite) {
@@ -41,10 +48,6 @@ public class Sprite {
 		morphTo(sprite);
 	}
 	
-	public ColorPalette getPalette() {
-		return palette;
-	}
-	
 	public void add(String animation, TileLayer layer) {
 		List<TileLayer> layers = animations.get(animation);
 		if(layers == null) {
@@ -53,7 +56,6 @@ public class Sprite {
 		}
 		layers.add(layer);
 	}
-	
 	
 	public boolean contains(String animation) {
 		return animations.containsKey(animation);
@@ -91,8 +93,16 @@ public class Sprite {
 		return null;
 	}
 	
+	public ColorPalette getPalette() {
+		return palette;
+	}
+	
 	public int getSize() {
 		return size;
+	}
+
+	public Map<String, List<TileLayer>> getAnimations() {
+		return animations;
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener pl) {

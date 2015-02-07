@@ -943,6 +943,9 @@ public void openFile(final File file) {
 			setCurrentFile(file);
 			mapList.setSelectedIndex(0);
 			project.morphTo(thisProject);
+			
+			((PaletteMap)spritePaletteGrid.getTileMap()).refresh();
+			spritePaletteGrid.refresh();
 		}
 	}
 }
@@ -950,6 +953,9 @@ public void openFile(final File file) {
 	private void newProjectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectMenuItemActionPerformed
 		mapList.setSelectedIndex(0);
 		project.morphTo(Project.createEmptyProject());
+		
+		((PaletteMap)spritePaletteGrid.getTileMap()).refresh();
+		spritePaletteGrid.refresh();
 		
 		setCurrentFile(null);
 		currentFormat = null;

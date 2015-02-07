@@ -357,6 +357,11 @@ public class Grid extends AbstractLayerPainter {
 		}
 	}
 	
+	public void refresh() {
+		updateSize();
+		repaint();
+	}
+	
 	public void setCustomTileSize(Integer tileSize) {
 		this.customTileSize = tileSize;
 		

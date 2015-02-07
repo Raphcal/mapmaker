@@ -3,6 +3,7 @@ package fr.rca.mapmaker.io.internal;
 import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
+import fr.rca.mapmaker.io.Streams;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -14,12 +15,14 @@ import fr.rca.mapmaker.model.palette.ImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.EnumSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -33,6 +36,10 @@ public class InternalFormat extends AbstractFormat {
 	
 	private static final String EXTENSION = ".mmk";
 	private static final String DATA_ENTRY = "data";
+	
+	private static final int HEADER_LENGTH = 4;
+	private static final int HEADER_LAST_VERSION = 3;
+	private static final String HEADER_VERSION_3 = "MMK3";
 			
 
 	public InternalFormat() {
@@ -50,32 +57,29 @@ public class InternalFormat extends AbstractFormat {
 		addHandler(BufferedImage.class, new BufferedImageDataHandler());
 		addHandler(TileLayer.class, new LayerDataHandler());
 		addHandler(TileMap.class, new TileMapDataHandler(this));
+		addHandler(Sprite.class, new SpriteDataHandler(this));
 	}
 
 	@Override
 	public void saveProject(Project project, File file) {
 		final DataHandler<Project> handler = getHandler(project.getClass());
 		
-		ZipOutputStream outputStream = null;
+		((ProjectDataHandler)handler).setVersion(HEADER_LAST_VERSION);
+		
 		try {
-			outputStream = new ZipOutputStream(new FileOutputStream(file));
-			
-			outputStream.putNextEntry(new ZipEntry(DATA_ENTRY));
-			handler.write(project, outputStream);
-			outputStream.closeEntry();
+			final ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(file));
+			try {
+				outputStream.putNextEntry(new ZipEntry(DATA_ENTRY));
+				writeHeader(HEADER_VERSION_3, outputStream);
+				handler.write(project, outputStream);
+				outputStream.closeEntry();
+				
+			} finally {
+				outputStream.close();
+			}
 
 		} catch (IOException ex) {
 			Exceptions.showStackTrace(ex, null);
-
-		} finally {
-			if(outputStream != null) {
-				try {
-					outputStream.finish();
-					outputStream.close();
-				} catch (IOException ex) {
-					Exceptions.showStackTrace(ex, null);
-				}
-			}
 		}
 	}
 
@@ -84,44 +88,73 @@ public class InternalFormat extends AbstractFormat {
 		Project project = null;
 		final DataHandler<Project> handler = getHandler(Project.class);
 		
-		ZipFile zipFile = null;
-		try {
-			zipFile = new ZipFile(file);
-			final ZipEntry entry = zipFile.getEntry(DATA_ENTRY);
+		// Définition du numéro de version.
+		final int version = getVersion(file);
+		((ProjectDataHandler)handler).setVersion(version);
 		
-			InputStream inputStream = null;
+		try {
+			final ZipFile zipFile = new ZipFile(file);
 			try {
+				final ZipEntry entry = zipFile.getEntry(DATA_ENTRY);
 
-				inputStream = zipFile.getInputStream(entry);
-
-				project = handler.read(inputStream);
-
-			} catch (IOException ex) {
-				Exceptions.showStackTrace(ex, null);
-
-			} finally {
-				if(inputStream != null) {
-					try {
-						inputStream.close();
-					} catch (IOException ex) {
-						Exceptions.showStackTrace(ex, null);
+				final InputStream inputStream = zipFile.getInputStream(entry);
+				try {
+					if(version == 3) {
+						readHeader(inputStream);
 					}
+					project = handler.read(inputStream);
+
+				} finally {
+					inputStream.close();
 				}
+			} finally {
+				zipFile.close();
 			}
 			
 		} catch(IOException e) {
 			Exceptions.showStackTrace(e, null);
-			
-		} finally {
-			if(zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException ex) {
-					Exceptions.showStackTrace(ex, null);
-				}
-			}
 		}
 		
 		return project;
+	}
+	
+	private void writeHeader(String header, OutputStream outputStream) throws IOException {
+		for(final char c : header.toCharArray()) {
+			Streams.write(c, outputStream);
+		}
+	}
+	
+	private String readHeader(InputStream inputStream) throws IOException {
+		final char[] header = new char[HEADER_LENGTH];
+		for(int index = 0; index < HEADER_LENGTH; index++) {
+			header[index] = Streams.readChar(inputStream);
+		}
+		return new String(header);
+	}
+	
+	private int getVersion(File file) {
+		try {
+			final ZipFile zipFile = new ZipFile(file);
+			try {
+				final ZipEntry entry = zipFile.getEntry(DATA_ENTRY);
+				final InputStream inputStream = zipFile.getInputStream(entry);
+				try {
+					final String header = readHeader(inputStream);
+					if(HEADER_VERSION_3.equals(header)) {
+						return 3;
+					}
+					
+				} finally {
+					inputStream.close();
+				}
+				
+			} finally {
+				zipFile.close();
+			}
+			
+		} catch(IOException e) {
+			Exceptions.showStackTrace(e, null);
+		}
+		return 0;
 	}
 }

@@ -48,6 +48,10 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 		// TODO: Vérifier que la tuile existe dans la palette
 		palette.setSelectedTile(getSelectedTile());
 	}
+	
+	public void refresh() {
+		setPalette(getPalette());
+	}
 
 	@Override
 	public void addSelectionListener(SelectionListener listener) {
@@ -112,7 +116,8 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 	}
 	
 	protected void fireSelectionChanged(Point oldSelection, Point newSelection) {
-		for(final SelectionListener listener : listeners)
+		for(final SelectionListener listener : listeners) {
 			listener.selectionChanged(oldSelection, newSelection);
+		}
 	}
 }
