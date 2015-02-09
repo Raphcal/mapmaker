@@ -66,6 +66,8 @@ public class SpriteTool extends MouseAdapter implements Tool {
 		grid.add(instance);
 		instances.add(instance);
 		registerInstance(instance);
+		
+		grid.repaint(x, y, size, size);
 	}
 	
 	@Override
