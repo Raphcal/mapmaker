@@ -109,6 +109,14 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	public int getSelectedTile() {
 		return selectedTile;
 	}
+	
+	public Sprite getSelectedSprite() {
+		if(selectedTile >= 0 && selectedTile < sprites.size()) {
+			return sprites.get(selectedTile);
+		} else {
+			return null;
+		}
+	}
 
 	@Override
 	public boolean isEditable() {

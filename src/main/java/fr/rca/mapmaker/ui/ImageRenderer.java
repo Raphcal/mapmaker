@@ -28,7 +28,6 @@ public class ImageRenderer extends AbstractLayerPainter {
 	 * @return Une image contenant la grille.
 	 */
 	public BufferedImage renderImage(Grid grid, boolean opaque) {
-		
 		final int tileSize = grid.getTileSize();
 		
 		final TileMap tileMap = grid.getTileMap();
@@ -49,15 +48,29 @@ public class ImageRenderer extends AbstractLayerPainter {
 	 * @return Une image contenant la couche.
 	 */
 	public BufferedImage renderImage(Layer layer, Palette palette, int tileSize) {
-		
 		return renderImage(Collections.singletonList(layer), palette,
 				new Dimension(layer.getWidth() * (tileSize + padding + padding), layer.getHeight() * (tileSize + padding + padding)), tileSize, false);
 	}
 	
 	/**
+	 * Dessine une image transparente de la taille donnée.
+	 * 
+	 * @param width Largeur de la couche.
+	 * @param height Hauteur de la couche.
+	 * @param tileSize Taille des tuiles.
+	 * @return Une image contenant la couche.
+	 */
+	public BufferedImage renderImage(int width, int height, int tileSize) {
+		return renderImage(Collections.<Layer>emptyList(), null,
+				new Dimension(width * (tileSize + padding + padding), height * (tileSize + padding + padding)), tileSize, false);
+	}
+	
+	/**
 	 * Dessine la grille dans une image.
 	 * 
-	 * @param bounds Rectangle à afficher.
+	 * @param layers Liste des couches à dessiner.
+	 * @param palette Palette à utiliser.
+	 * @param size Taille de l'image.
 	 * @param tileSize taille des tuiles.
 	 * @param opaque <code>true</code> pour afficher la couleur de fond,
 	 * <code>false</code> pour garder le fond transparent.
