@@ -51,7 +51,6 @@ public class ProjectDataHandler implements DataHandler<Project> {
 		if(version == 3) {
 			// Sprites
 			final List<Sprite> sprites = t.getSprites();
-			sprites.clear();
 			
 			final DataHandler<Sprite> spriteHandler = format.getHandler(Sprite.class);
 			Streams.write(sprites.size(), outputStream);
@@ -85,6 +84,7 @@ public class ProjectDataHandler implements DataHandler<Project> {
 			// Sprites
 			final DataHandler<Sprite> spriteHandler = format.getHandler(Sprite.class);
 			final List<Sprite> sprites = project.getSprites();
+			sprites.clear();
 			
 			final int spriteCount = Streams.readInt(inputStream);
 			for(int index = 0; index < spriteCount; index++) {

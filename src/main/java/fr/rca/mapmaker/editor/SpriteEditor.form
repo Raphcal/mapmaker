@@ -77,17 +77,19 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="sizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="widthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="directionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="sizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="widthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="directionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="animationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="animationComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
-                          <Component id="animationPreview" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="animationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="animationComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="animationPreview" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -123,7 +125,7 @@
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="tileLayerList" sourcePath="${gridSize}" target="widthTextField" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="sprite" sourcePath="${size}" target="widthTextField" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_ACTION_OR_FOCUS_LOST"/>
           <Property name="name" type="java.lang.String" value="gridList.gridWidth"/>
         </BindingProperty>
@@ -135,7 +137,6 @@
       <SubComponents>
         <Container class="fr.rca.mapmaker.ui.TileLayerList" name="tileLayerList">
           <Properties>
-            <Property name="gridSize" type="int" value="32"/>
             <Property name="orientation" type="fr.rca.mapmaker.ui.Orientation" editor="org.netbeans.modules.form.editors.EnumEditor">
               <Value id="HORIZONTAL"/>
             </Property>
@@ -143,6 +144,9 @@
               <Connection component="sprite" name="palette" type="property"/>
             </Property>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="gridSize" source="sprite" sourcePath="${size}" target="tileLayerList" targetPath="gridSize" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tileLayerListActionPerformed"/>
           </Events>
@@ -202,6 +206,9 @@
       </Layout>
     </Container>
     <Container class="fr.rca.mapmaker.ui.AnimatedGrid" name="animationPreview">
+      <BindingProperties>
+        <BindingProperty name="layerSize" source="sprite" sourcePath="${size}" target="animationPreview" targetPath="layerSize" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="animationPreview.start();&#xa;"/>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;TileLayer&gt;"/>

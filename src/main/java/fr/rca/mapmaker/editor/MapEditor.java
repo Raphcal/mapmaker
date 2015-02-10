@@ -171,6 +171,7 @@ public class MapEditor extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         mapScrollPane = new javax.swing.JScrollPane();
         mapBackgroundPanel = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
+        spriteLayerPanel = new javax.swing.JPanel();
         mapGrid = new fr.rca.mapmaker.ui.Grid();
         mapListScrollPane = new javax.swing.JScrollPane();
         mapList = new javax.swing.JList();
@@ -269,6 +270,24 @@ public class MapEditor extends javax.swing.JFrame {
         mapScrollPane.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5), mapScrollPane.getBorder()));
 
         mapBackgroundPanel.setBackground(new java.awt.Color(128, 128, 128));
+
+        spriteLayerPanel.setOpaque(false);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, mapGrid, org.jdesktop.beansbinding.ELProperty.create("${preferredSize}"), spriteLayerPanel, org.jdesktop.beansbinding.BeanProperty.create("preferredSize"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout spriteLayerPanelLayout = new javax.swing.GroupLayout(spriteLayerPanel);
+        spriteLayerPanel.setLayout(spriteLayerPanelLayout);
+        spriteLayerPanelLayout.setHorizontalGroup(
+            spriteLayerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 5, Short.MAX_VALUE)
+        );
+        spriteLayerPanelLayout.setVerticalGroup(
+            spriteLayerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 5, Short.MAX_VALUE)
+        );
+
+        mapBackgroundPanel.add(spriteLayerPanel);
 
         mapGrid.setViewport(mapScrollPane.getViewport());
 
@@ -623,7 +642,7 @@ public class MapEditor extends javax.swing.JFrame {
         spriteToggleButton.setFocusable(false);
         spriteToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         spriteToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        configureButton(spriteToggleButton, new SpriteTool(mapGrid, spritePaletteGrid, new ArrayList<Instance>()));
+        configureButton(spriteToggleButton, new SpriteTool(spriteLayerPanel, spritePaletteGrid, new ArrayList<Instance>()));
         spritePaletteToolBar.add(spriteToggleButton);
 
         javax.swing.GroupLayout spritePanelLayout = new javax.swing.GroupLayout(spritePanel);
@@ -948,6 +967,8 @@ private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 		
 		final Project newProject = currentFormat.openProject(currentFile);
 		project.morphTo(newProject);
+		
+		spritePaletteGrid.refresh();
 	}
 }//GEN-LAST:event_openMenuItemActionPerformed
 
@@ -963,7 +984,6 @@ public void openFile(final File file) {
 			mapList.setSelectedIndex(0);
 			project.morphTo(thisProject);
 			
-			((PaletteMap)spritePaletteGrid.getTileMap()).refresh();
 			spritePaletteGrid.refresh();
 		}
 	}
@@ -973,7 +993,6 @@ public void openFile(final File file) {
 		mapList.setSelectedIndex(0);
 		project.morphTo(Project.createEmptyProject());
 		
-		((PaletteMap)spritePaletteGrid.getTileMap()).refresh();
 		spritePaletteGrid.refresh();
 		
 		setCurrentFile(null);
@@ -1111,6 +1130,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton removeLayerButton;
     private javax.swing.JPopupMenu.Separator saveSeparator;
     private javax.swing.JToggleButton selectionToggleButton;
+    private javax.swing.JPanel spriteLayerPanel;
     private fr.rca.mapmaker.ui.Grid spritePaletteGrid;
     private javax.swing.JScrollPane spritePaletteScrollPane;
     private javax.swing.JToolBar spritePaletteToolBar;

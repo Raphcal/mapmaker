@@ -57,6 +57,10 @@ public class ImagePalette implements Palette, Flippable {
 		return false;
 	}
 	
+	@Override
+	public void refresh() {
+	}
+	
 	private static BufferedImage readAndConvertImage(BufferedImage rawImage) throws IOException {
 		// Conversion de l'image de base au format ARGB (0xAARRGGBB)
 		final BufferedImage image = new BufferedImage(rawImage.getWidth(), rawImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -121,6 +125,11 @@ public class ImagePalette implements Palette, Flippable {
 	@Override
 	public int getTileSize() {
 		return tileSize;
+	}
+
+	@Override
+	public int getTileSize(int tile) {
+		return getTileSize();
 	}
 	
 	@Override

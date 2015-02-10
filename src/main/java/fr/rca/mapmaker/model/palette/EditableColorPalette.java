@@ -86,6 +86,11 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 	}
 
 	@Override
+	public int getTileSize(int tile) {
+		return getTileSize();
+	}
+
+	@Override
 	public void setColor(int index, Color color) {
 		
 		if(index >= length && index < MAX_LENGTH)

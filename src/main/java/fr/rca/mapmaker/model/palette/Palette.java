@@ -6,10 +6,13 @@ public interface Palette {
 
 	void paintTile(Graphics g, int tile, int x, int y, int size);
 	int getTileSize();
+	int getTileSize(int tile);
 	int size();
 	
 	void setSelectedTile(int tile);
 	int getSelectedTile();
 	
 	boolean isEditable();
+	
+	void refresh();
 }

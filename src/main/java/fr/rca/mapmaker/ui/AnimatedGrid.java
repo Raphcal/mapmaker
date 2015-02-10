@@ -26,6 +26,8 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	private Timer timer;
 	private int frequency = 24;
+	
+	private int layerSize = 32;
 
 	public AnimatedGrid() {
 		setSize(32, 32);
@@ -75,6 +77,15 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 
 	public void setPalette(Palette palette) {
 		this.palette = palette;
+	}
+
+	public int getLayerSize() {
+		return layerSize;
+	}
+	
+	public void setLayerSize(int layerSize) {
+		this.layerSize = layerSize;
+		setPreferredSize(new Dimension(layerSize, layerSize));
 	}
 	
 	public void nextFrame() {

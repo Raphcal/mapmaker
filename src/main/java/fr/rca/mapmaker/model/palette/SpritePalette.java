@@ -70,10 +70,11 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 			final TileLayer defaultLayer = sprite.getDefaultLayer();
 			
 			if(defaultLayer != null) {
-				final int tileSize = size / defaultLayer.getWidth();
+				final int layerSize = Math.min(defaultLayer.getWidth(), size);
+				final int tileSize = layerSize / defaultLayer.getWidth();
 				
-				for(int y = 0; y < size; y++) {
-					for(int x = 0; x < size; x++) {
+				for(int y = 0; y < layerSize; y++) {
+					for(int x = 0; x < layerSize; x++) {
 						palette.paintTile(g, defaultLayer.getTile(x, y), x * tileSize + refX, y * tileSize + refY, tileSize);
 					}
 				}
@@ -88,11 +89,13 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 
 	@Override
 	public int getTileSize() {
-		if(!sprites.isEmpty() && selectedTile >= 0 && selectedTile < sprites.size()) {
-			final Sprite sprite = sprites.get(selectedTile);
-			return sprite.getSize();
-		}
 		return 32;
+	}
+
+	@Override
+	public int getTileSize(int tile) {
+		final Sprite sprite = sprites.get(tile);
+		return sprite.getSize();
 	}
 
 	@Override
@@ -140,6 +143,11 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 			}
 		});
 		editor.setVisible(true);
+	}
+	
+	@Override
+	public void refresh() {
+		expand(columns - 1);
 	}
 	
 	private void expand(int index) {

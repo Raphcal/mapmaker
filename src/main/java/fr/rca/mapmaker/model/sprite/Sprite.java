@@ -16,13 +16,14 @@ import java.util.Map;
  */
 public class Sprite {
 	private ColorPalette palette;
-	private int size = 32;
+	private int size;
 	private final Map<String, List<TileLayer>> animations;
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	public Sprite() {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
+		this.size = 32;
 		this.animations = new HashMap<String, List<TileLayer>>();
 	}
 
@@ -99,6 +100,13 @@ public class Sprite {
 	
 	public int getSize() {
 		return size;
+	}
+
+	public void setSize(int size) {
+		final int oldSize = this.size;
+		this.size = size;
+		
+		propertyChangeSupport.firePropertyChange("size", oldSize, size);
 	}
 
 	public Map<String, List<TileLayer>> getAnimations() {

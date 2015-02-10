@@ -133,6 +133,9 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 			fireSizeChanged(dimension, dimension);
 		}
 	}
+	
+	public void refresh() {
+	}
 
 	public List<Layer> getLayers() {
 		return layers;

@@ -75,6 +75,11 @@ public class ColorPalette implements Palette {
 	public int getTileSize() {
 		return 1;
 	}
+
+	@Override
+	public int getTileSize(int tile) {
+		return getTileSize();
+	}
 	
 	@Override
 	public int size() {
@@ -101,6 +106,10 @@ public class ColorPalette implements Palette {
 
 	public Color[] getColors() {
 		return colors;
+	}
+
+	@Override
+	public void refresh() {
 	}
 	
 	protected static Color[] getDefaultColors() {

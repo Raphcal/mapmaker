@@ -79,6 +79,11 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 	}
 
 	@Override
+	public int getTileSize(int tile) {
+		return getPalette().getTileSize(tile);
+	}
+
+	@Override
 	public int size() {
 		return getPalette().size();
 	}
@@ -108,6 +113,11 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 		getEditablePalette().editTile(index, parent);
 	}
 
+	@Override
+	public void refresh() {
+		getPalette().refresh();
+	}
+	
 	@Override
 	public void addSizeChangeListener(SizeChangeListener listener) {
 		

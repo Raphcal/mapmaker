@@ -73,6 +73,11 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	public int getTileSize() {
 		return tileSize;
 	}
+
+	@Override
+	public int getTileSize(int tile) {
+		return getTileSize();
+	}
 	
 	@Override
 	public int size() {
@@ -87,6 +92,10 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	@Override
 	public void setSelectedTile(int tile) {
 		this.selectedTile = tile;
+	}
+	
+	@Override
+	public void refresh() {
 	}
 
 	public int getColumns() {

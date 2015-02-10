@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import javax.swing.JComponent;
 import javax.swing.border.LineBorder;
 
 /**
@@ -16,12 +17,12 @@ import javax.swing.border.LineBorder;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SpriteTool extends MouseAdapter implements Tool {
-	private Grid grid;
+	private JComponent spriteLayer;
 	private Grid spritePaletteGrid;
 	private List<Instance> instances;
 
-	public SpriteTool(Grid grid, Grid spritePaletteGrid, List<Instance> instances) {
-		this.grid = grid;
+	public SpriteTool(JComponent spriteLayer, Grid spritePaletteGrid, List<Instance> instances) {
+		this.spriteLayer = spriteLayer;
 		this.spritePaletteGrid = spritePaletteGrid;
 		this.instances = instances;
 	}
@@ -64,11 +65,11 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			final int y = (e.getY() / size) * size;
 
 			final Instance instance = new Instance(sprite, new Point(x, y));
-			grid.add(instance);
+			spriteLayer.add(instance);
 			instances.add(instance);
 			registerInstance(instance);
 
-			grid.repaint(x, y, size, size);
+			spriteLayer.repaint(x, y, size, size);
 		}
 	}
 	

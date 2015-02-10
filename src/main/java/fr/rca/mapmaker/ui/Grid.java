@@ -351,6 +351,9 @@ public class Grid extends AbstractLayerPainter {
 	}
 	
 	public void refresh() {
+		if(tileMap != null) {
+			tileMap.refresh();
+		}
 		updateSize();
 		repaint();
 	}

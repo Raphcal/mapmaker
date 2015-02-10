@@ -49,7 +49,9 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 		palette.setSelectedTile(getSelectedTile());
 	}
 	
+	@Override
 	public void refresh() {
+		getPalette().refresh();
 		setPalette(getPalette());
 	}
 
