@@ -1,5 +1,8 @@
 package fr.rca.mapmaker.model.sprite;
 
+import fr.rca.mapmaker.model.map.TileLayer;
+import java.util.List;
+
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
@@ -7,6 +10,8 @@ package fr.rca.mapmaker.model.sprite;
 public class Animation {
 	private String name;
 	private String code;
+	private int frequency;
+	private List<TileLayer> frames;
 
 	public Animation() {
 	}
