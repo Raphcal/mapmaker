@@ -26,6 +26,7 @@ import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.ui.Grid;
+import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ItemEvent;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JViewport;
@@ -168,6 +170,7 @@ public class MapEditor extends javax.swing.JFrame {
         layerMemento = new fr.rca.mapmaker.editor.undo.LayerMemento();
         jMenuItem1 = new javax.swing.JMenuItem();
         mapScrollPane = new javax.swing.JScrollPane();
+        mapBackgroundPanel = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
         mapGrid = new fr.rca.mapmaker.ui.Grid();
         mapListScrollPane = new javax.swing.JScrollPane();
         mapList = new javax.swing.JList();
@@ -265,7 +268,8 @@ public class MapEditor extends javax.swing.JFrame {
 
         mapScrollPane.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5), mapScrollPane.getBorder()));
 
-        mapGrid.setBackground(new java.awt.Color(128, 128, 128));
+        mapBackgroundPanel.setBackground(new java.awt.Color(128, 128, 128));
+
         mapGrid.setViewport(mapScrollPane.getViewport());
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentMap}"), mapGrid, org.jdesktop.beansbinding.BeanProperty.create("tileMap"), "");
@@ -275,14 +279,16 @@ public class MapEditor extends javax.swing.JFrame {
         mapGrid.setLayout(mapGridLayout);
         mapGridLayout.setHorizontalGroup(
             mapGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 597, Short.MAX_VALUE)
+            .addGap(0, 5, Short.MAX_VALUE)
         );
         mapGridLayout.setVerticalGroup(
             mapGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 440, Short.MAX_VALUE)
+            .addGap(0, 5, Short.MAX_VALUE)
         );
 
-        mapScrollPane.setViewportView(mapGrid);
+        mapBackgroundPanel.add(mapGrid);
+
+        mapScrollPane.setViewportView(mapBackgroundPanel);
 
         mapListScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         mapListScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -721,10 +727,10 @@ public class MapEditor extends javax.swing.JFrame {
                     .addComponent(mapListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mapScrollPane)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 411, Short.MAX_VALUE)))
+                        .addGap(0, 411, Short.MAX_VALUE))
+                    .addComponent(mapScrollPane))
                 .addGap(0, 0, 0)
                 .addComponent(paletteTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
@@ -737,7 +743,7 @@ public class MapEditor extends javax.swing.JFrame {
                     .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mapScrollPane)
+                    .addComponent(mapScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(mapListScrollPane)))
             .addComponent(paletteTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING)
         );
@@ -760,6 +766,7 @@ private void addMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void mapListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_mapListValueChanged
 	project.setSelectedIndex(mapList.getSelectedIndex());
+	mapBackgroundPanel.repaint();
 }//GEN-LAST:event_mapListValueChanged
 
 private void editMapMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editMapMenuItemActionPerformed
@@ -1085,6 +1092,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private fr.rca.mapmaker.editor.undo.LayerMemento layerMemento;
     private javax.swing.JPopupMenu layerPopupMenu;
     private javax.swing.JButton layerUpButton;
+    private javax.swing.JPanel mapBackgroundPanel;
     private fr.rca.mapmaker.ui.Grid mapGrid;
     private javax.swing.JList mapList;
     private javax.swing.JScrollPane mapListScrollPane;

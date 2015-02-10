@@ -1,7 +1,10 @@
 package fr.rca.mapmaker;
 
+import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -22,6 +25,20 @@ public class LayoutPreview {
 		blue.setPreferredSize(new Dimension(50, 50));
 //		green.setOpaque(false);
 		blue.setBackground(new Color(0.0f, 0.0f, 1.0f, 0.5f));
+		
+		blue.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("blue");
+			}
+		});
+		
+		red.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("red");
+			}
+		});
 		
 		final JPanel gridBag = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
 		gridBag.setOpaque(true);

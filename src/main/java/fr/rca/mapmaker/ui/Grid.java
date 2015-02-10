@@ -13,7 +13,6 @@ import fr.rca.mapmaker.model.selection.DefaultSelectionStyle;
 import fr.rca.mapmaker.model.selection.SelectionStyle;
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -119,7 +118,6 @@ public class Grid extends AbstractLayerPainter {
 	}
 
 	public void setTileMap(TileMap tileMap) {
-		
 		if(this.tileMap != null) {
 			// Suppression des listeners
 			this.tileMap.removeLayerChangeListener(layerChangeListener);
@@ -149,6 +147,7 @@ public class Grid extends AbstractLayerPainter {
 		}
 		
 		updateSize();
+		repaint();
 	}
 
 	public void setViewport(JViewport viewport) {
@@ -346,15 +345,9 @@ public class Grid extends AbstractLayerPainter {
 		final int tileSize = getTileSize();
 		final Dimension dimension = new Dimension(width * tileSize, height * tileSize);
 		
-		setSize(dimension);
 		setPreferredSize(dimension);
 		
-		invalidate();
-		
-		final Component parent = getParent();
-		if(parent != null) {
-			parent.validate();
-		}
+		revalidate();
 	}
 	
 	public void refresh() {

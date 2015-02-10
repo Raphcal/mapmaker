@@ -1,4 +1,4 @@
-package fr.rca.mapmaker;
+package fr.rca.mapmaker.ui;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -41,7 +41,7 @@ public class LayerLayout implements LayoutManager {
 		public abstract Rectangle getBounds(Container parent, Component component);
 	}
 	
-	private Disposition disposition;
+	private final Disposition disposition;
 	
 	public LayerLayout() {
 		disposition = Disposition.CENTER;
