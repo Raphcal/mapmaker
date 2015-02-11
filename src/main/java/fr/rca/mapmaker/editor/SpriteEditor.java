@@ -21,6 +21,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 	private final ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	
 	private Sprite editedSprite;
+	private Animation currentAnimation;
 	
 	/**
 	 * Creates new form SpriteDialog
@@ -33,31 +34,51 @@ public class SpriteEditor extends javax.swing.JDialog {
 	public void setSprite(Sprite sprite) {
 		this.editedSprite = sprite;
 		this.sprite.morphTo(sprite);
-		this.sprite.clear();
 		this.tileLayerList.setPalette(sprite.getPalette());
+		
+		this.sprite.clear();
+		this.currentAnimation = null;
 		
 		animationChanged();
 	}
-
-	public List<TileLayer> getCurrentAnimation() {
+	
+	private void updateAnimation() {
 		final Animation animation = (Animation) animationComboBoxModel.getSelectedItem();
 		if(animation != null) {
-			final String animationAndDirection = animation.getNameForDirection(directionChooser.getDirection());
+			final String name = animation.getName();
 			
-			if(editedSprite != null && !sprite.contains(animationAndDirection) && editedSprite.contains(animationAndDirection)) {
-				final ArrayList<TileLayer> frames = new ArrayList<TileLayer>();
-				for(final TileLayer frame : editedSprite.get(animationAndDirection)) {
-					final TileLayer copy = new TileLayer(frame.getWidth(), frame.getHeight());
-					copy.restoreData(frame.copyData(), null);
-					frames.add(copy);
-				}
-				sprite.set(animationAndDirection, frames);
+			if(editedSprite != null && !sprite.contains(animation) && editedSprite.contains(animation)) {
+				sprite.getAnimations().add(editedSprite.get(name).copy());
 			}
 			
-			return sprite.get(animationAndDirection);
+			currentAnimation = sprite.get(name);
+			
+		} else {
+			currentAnimation = null;
+		}
+	}
+
+	public List<TileLayer> getCurrentAnimation() {
+		if(currentAnimation != null) {
+			return currentAnimation.getOrCreateFrames(directionChooser.getDirection());
 			
 		} else {
 			return Collections.<TileLayer>emptyList();
+		}
+	}
+	
+	public int getCurrentFrequency() {
+		if(currentAnimation != null) {
+			return currentAnimation.getFrequency();
+			
+		} else {
+			return 24;
+		}
+	}
+	
+	public void setCurrentFrequency(int frequency) {
+		if(currentAnimation != null) {
+			currentAnimation.setFrequency(frequency);
 		}
 	}
 	
@@ -142,6 +163,8 @@ public class SpriteEditor extends javax.swing.JDialog {
             }
         });
 
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFrequency}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("frequency"));
+        bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${size}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("layerSize"));
         bindingGroup.addBinding(binding);
 
@@ -150,7 +173,7 @@ public class SpriteEditor extends javax.swing.JDialog {
         frequencyTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         frequencyTextField.setMinimumSize(new java.awt.Dimension(46, 28));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, animationPreview, org.jdesktop.beansbinding.ELProperty.create("${frequency}"), frequencyTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFrequency}"), frequencyTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -269,9 +292,15 @@ public class SpriteEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_okButtonActionPerformed
 
 	private void animationChanged() {
-		final List<TileLayer> currentAnimation = getCurrentAnimation();
-		tileLayerList.setElements(currentAnimation);
-		animationPreview.setFrames(currentAnimation);
+		final int oldFrequency = getCurrentFrequency();
+		
+		updateAnimation();
+		
+		final List<TileLayer> tiles = getCurrentAnimation();
+		tileLayerList.setElements(tiles);
+		animationPreview.setFrames(tiles);
+		
+		firePropertyChange("currentFrequency", oldFrequency, getCurrentFrequency());
 	}
 	
 	public void addActionListener(ActionListener listener) {
@@ -284,7 +313,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 	
 	protected void fireActionPerformed() {
 		for(final ActionListener listener : actionListeners) {
-			listener.actionPerformed(new ActionEvent(this, 0, "DIRECTION_CHANGED"));
+			listener.actionPerformed(new ActionEvent(this, 0, "SPRITE_EDITED"));
 		}
 	}
 	

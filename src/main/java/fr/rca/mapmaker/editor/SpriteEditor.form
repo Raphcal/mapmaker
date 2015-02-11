@@ -207,6 +207,7 @@
     </Container>
     <Container class="fr.rca.mapmaker.ui.AnimatedGrid" name="animationPreview">
       <BindingProperties>
+        <BindingProperty name="frequency" source="Form" sourcePath="${currentFrequency}" target="animationPreview" targetPath="frequency" updateStrategy="0" immediately="false"/>
         <BindingProperty name="layerSize" source="sprite" sourcePath="${size}" target="animationPreview" targetPath="layerSize" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
@@ -231,7 +232,7 @@
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="animationPreview" sourcePath="${frequency}" target="frequencyTextField" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="Form" sourcePath="${currentFrequency}" target="frequencyTextField" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
         </BindingProperty>
       </BindingProperties>

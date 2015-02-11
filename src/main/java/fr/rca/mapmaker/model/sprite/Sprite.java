@@ -5,10 +5,9 @@ import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -17,17 +16,17 @@ import java.util.Map;
 public class Sprite {
 	private ColorPalette palette;
 	private int size;
-	private final Map<String, List<TileLayer>> animations;
+	private Set<Animation> animations;
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	public Sprite() {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
 		this.size = 32;
-		this.animations = new HashMap<String, List<TileLayer>>();
+		this.animations = new HashSet<Animation>();
 	}
 
-	public Sprite(int size, Map<String, List<TileLayer>> animations) {
+	public Sprite(int size, Set<Animation> animations) {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
 		this.size = size;
 		this.animations = animations;
@@ -45,34 +44,34 @@ public class Sprite {
 	}
 	
 	public void merge(Sprite sprite) {
-		this.animations.putAll(sprite.animations);
+		this.animations.removeAll(sprite.animations);
+		this.animations.addAll(sprite.animations);
 		morphTo(sprite);
 	}
 	
-	public void add(String animation, TileLayer layer) {
-		List<TileLayer> layers = animations.get(animation);
-		if(layers == null) {
-			layers = new ArrayList<TileLayer>();
-			animations.put(animation, layers);
+	public boolean contains(Animation animation) {
+		return animations.contains(animation);
+	}
+	
+	public Animation get(String name) {
+		Animation animation = findByName(name);
+		if(animation == null) {
+			animation = new Animation(name);
+			animations.add(animation);
 		}
-		layers.add(layer);
+		return animation;
 	}
 	
-	public boolean contains(String animation) {
-		return animations.containsKey(animation);
-	}
-	
-	public List<TileLayer> get(String animation) {
-		List<TileLayer> layers = animations.get(animation);
-		if(layers == null) {
-			layers = new ArrayList<TileLayer>();
-			animations.put(animation, layers);
+	private Animation findByName(String name) {
+		if(name == null) {
+			return null;
 		}
-		return layers;
-	}
-	
-	public void set(String animation, List<TileLayer> frames) {
-		animations.put(animation, frames);
+		for(final Animation animation : animations) {
+			if(name.equals(animation.getName())) {
+				return animation;
+			}
+		}
+		return null;
 	}
 	
 	public void clear() {
@@ -82,11 +81,14 @@ public class Sprite {
 	public TileLayer getDefaultLayer() {
 		final double[] favoriteDirections = {0.0, 3.14, 4.71, 1.57};
 		
-		for(final Animation animation : Animation.getDefaultAnimations()) {
-			for(final double direction : favoriteDirections) {
-				final List<TileLayer> layers = animations.get(animation.getNameForDirection(direction));
-				if(layers != null && !layers.isEmpty()) {
-					return layers.get(0);
+		for(final Animation defaultAnimation : Animation.getDefaultAnimations()) {
+			final Animation animation = findByName(defaultAnimation.getName());
+			if(animation != null) {
+				for(final double direction : favoriteDirections) {
+					final List<TileLayer> layers = animation.getFrames(direction);
+					if(layers != null && !layers.isEmpty()) {
+						return layers.get(0);
+					}
 				}
 			}
 		}
@@ -109,7 +111,7 @@ public class Sprite {
 		propertyChangeSupport.firePropertyChange("size", oldSize, size);
 	}
 
-	public Map<String, List<TileLayer>> getAnimations() {
+	public Set<Animation> getAnimations() {
 		return animations;
 	}
 	

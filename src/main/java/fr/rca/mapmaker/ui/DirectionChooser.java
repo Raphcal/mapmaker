@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JComponent;
@@ -26,6 +27,7 @@ public class DirectionChooser extends JComponent {
 	
 	private int numberOfDirections = 8;
 	private double direction = 0.0;
+	private boolean simplified = true;
 	
 	private final Set<Double> anglesWithValue = new HashSet<Double>();
 	private final ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
@@ -60,9 +62,22 @@ public class DirectionChooser extends JComponent {
 
 	public void setDirection(double direction) {
 		final double oldDirection = this.direction;
+		
+		if(simplified) {
+			direction = ((int)(direction * 100.0)) / 100.0;
+		}
+		
 		this.direction = direction;
 		
 		firePropertyChange("direction", oldDirection, direction);
+	}
+	
+	public boolean isSimplified() {
+		return simplified;
+	}
+
+	public void setSimplified(boolean simplified) {
+		this.simplified = simplified;
 	}
 	
 	public void setHasValue(double angle, boolean value) {
@@ -71,6 +86,11 @@ public class DirectionChooser extends JComponent {
 		} else {
 			anglesWithValue.remove(angle);
 		}
+	}
+	
+	public void setAnglesWithValue(Collection<Double> angles) {
+		anglesWithValue.clear();
+		anglesWithValue.addAll(angles);
 	}
 	
 	public void clearValues() {
@@ -113,7 +133,7 @@ public class DirectionChooser extends JComponent {
 	private double getStep() {
 		return 2.0 * Math.PI / (double)numberOfDirections;
 	}
-	
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
