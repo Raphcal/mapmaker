@@ -52,7 +52,7 @@ import javax.swing.filechooser.FileFilter;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class MapEditor extends javax.swing.JFrame {
-	private static final ResourceBundle language = ResourceBundle.getBundle("resources/language");
+	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
 
 	private TileMap selectedTileMap;
 	private TileLayer selectedLayer;
@@ -235,7 +235,7 @@ public class MapEditor extends javax.swing.JFrame {
             .addGap(0, 92, Short.MAX_VALUE)
         );
 
-        editMapMenuItem.setText(language.getString("popupmenu.map.edit")); // NOI18N
+        editMapMenuItem.setText(LANGUAGE.getString("popupmenu.map.edit")); // NOI18N
         editMapMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editMapMenuItemActionPerformed(evt);
@@ -265,7 +265,7 @@ public class MapEditor extends javax.swing.JFrame {
         jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(language.getString("app.title")); // NOI18N
+        setTitle(LANGUAGE.getString("app.title")); // NOI18N
 
         mapScrollPane.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5), mapScrollPane.getBorder()));
 
@@ -774,7 +774,7 @@ public class MapEditor extends javax.swing.JFrame {
 
 private void addMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMapButtonActionPerformed
 	final TileMapPropertiesDialog dialog = new TileMapPropertiesDialog(this, true);
-	dialog.setTitle(language.getString("dialog.map.title.new"));
+	dialog.setTitle(LANGUAGE.getString("dialog.map.title.new"));
 	dialog.setProject(project);
 	dialog.setVisible(true);
 	
@@ -791,7 +791,7 @@ private void mapListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GE
 private void editMapMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editMapMenuItemActionPerformed
 	final TileMapPropertiesDialog dialog = new TileMapPropertiesDialog(
 			selectedTileMap, this, true);
-	dialog.setTitle(language.getString("dialog.map.title.edit"));
+	dialog.setTitle(LANGUAGE.getString("dialog.map.title.edit"));
 	dialog.setProject(project);
 	dialog.setVisible(true);
 	
@@ -834,7 +834,7 @@ private void addLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
 	final TileMap tileMap = project.getCurrentMap();
 	
 	final TileLayerPropertiesDialog dialog = new TileLayerPropertiesDialog("Calque " + (tileMap.getSize() + 1), this, true);
-	dialog.setTitle(language.getString("dialog.layer.title.new"));
+	dialog.setTitle(LANGUAGE.getString("dialog.layer.title.new"));
 	dialog.setVisible(true);
 	
 	if(dialog.hasBeenConfirmed()) {
@@ -864,7 +864,7 @@ private void removeMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//G
 private void editLayerMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editLayerMenuItemActionPerformed
 	final TileLayerPropertiesDialog dialog = new TileLayerPropertiesDialog(
 			selectedLayer, this, true);
-	dialog.setTitle(language.getString("dialog.layer.title.edit"));
+	dialog.setTitle(LANGUAGE.getString("dialog.layer.title.edit"));
 	dialog.setVisible(true);
 	
 	if(dialog.hasBeenConfirmed()) {
