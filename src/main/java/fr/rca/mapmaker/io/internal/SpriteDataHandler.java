@@ -12,8 +12,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,25 +31,11 @@ public class SpriteDataHandler implements DataHandler<Sprite> {
 		Streams.write(t.getSize(), outputStream);
 		
 		final Set<Animation> animations = t.getAnimations();
+		Streams.write(animations.size(), outputStream);
 		
-		final HashMap<String, List<TileLayer>> allAnimations = new HashMap<String, List<TileLayer>>();
+		final DataHandler<Animation> animationHandler = format.getHandler(Animation.class);
 		for(final Animation animation : animations) {
-			for(final Map.Entry<Double, List<TileLayer>> entry : animation.getFrames().entrySet()) {
-				allAnimations.put(animation.getName() + '-' + entry.getKey(), entry.getValue());
-			}
-		}
-		
-		Streams.write(allAnimations.size(), outputStream);
-		
-		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
-		
-		for(Map.Entry<String, List<TileLayer>> animation : allAnimations.entrySet()) {
-			Streams.write(animation.getKey(), outputStream);
-			Streams.write(animation.getValue().size(), outputStream);
-			
-			for(final TileLayer frame : animation.getValue()) {
-				tileLayerHandler.write(frame, outputStream);
-			}
+			animationHandler.write(animation, outputStream);
 		}
 	}
 	
@@ -86,6 +70,17 @@ public class SpriteDataHandler implements DataHandler<Sprite> {
 		}
 		
 		return new Sprite(size, animations);
+		
+//		final int size = Streams.readInt(inputStream);
+//		
+//		final HashSet<Animation> animations = new HashSet<Animation>();
+//		
+//		final DataHandler<Animation> animationHandler = format.getHandler(Animation.class);
+//		for(int animationCount = Streams.readInt(inputStream); animationCount > 0; animationCount--) {
+//			animations.add(animationHandler.read(inputStream));
+//		}
+//		
+//		return new Sprite(size, animations);
 	}
 	
 }

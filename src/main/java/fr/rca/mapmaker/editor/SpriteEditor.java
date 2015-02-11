@@ -77,9 +77,13 @@ public class SpriteEditor extends javax.swing.JDialog {
 	}
 	
 	public void setCurrentFrequency(int frequency) {
+		final int oldFrequency = getCurrentFrequency();
+		
 		if(currentAnimation != null) {
 			currentAnimation.setFrequency(frequency);
 		}
+		
+		firePropertyChange("currentFrequency", oldFrequency, getCurrentFrequency());
 	}
 	
 	/**
@@ -299,6 +303,10 @@ public class SpriteEditor extends javax.swing.JDialog {
 		final List<TileLayer> tiles = getCurrentAnimation();
 		tileLayerList.setElements(tiles);
 		animationPreview.setFrames(tiles);
+		
+		if(currentAnimation != null) {
+			directionChooser.setAnglesWithValue(currentAnimation.getAnglesWithValue());
+		}
 		
 		firePropertyChange("currentFrequency", oldFrequency, getCurrentFrequency());
 	}
