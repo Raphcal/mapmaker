@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -31,7 +32,10 @@ public class AnimationDataHandler implements DataHandler<Animation> {
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
 		
-		for(Map.Entry<Double, List<TileLayer>> entry : t.getFrames().entrySet()) {
+		final Set<Map.Entry<Double, List<TileLayer>>> entries = t.getFrames().entrySet();
+		Streams.write(entries.size(), outputStream);
+		
+		for(Map.Entry<Double, List<TileLayer>> entry : entries) {
 			Streams.write(entry.getKey(), outputStream);
 			Streams.write(entry.getValue().size(), outputStream);
 			
