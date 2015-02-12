@@ -785,6 +785,7 @@ private void addMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void mapListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_mapListValueChanged
 	project.setSelectedIndex(mapList.getSelectedIndex());
+	spriteLayerPanel.removeAll();
 	mapBackgroundPanel.repaint();
 }//GEN-LAST:event_mapListValueChanged
 

@@ -8,12 +8,15 @@ import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.palette.SpritePalette;
+import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -34,11 +37,13 @@ public class Project implements ListModel {
 	
 	private int selectedIndex;
 	
-	private ArrayList<TileMap> maps = new ArrayList<TileMap>();
-	private ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-	private ArrayList<Palette> palettes = new ArrayList<Palette>();
+	private final List<TileMap> maps = new ArrayList<TileMap>();
+	private final List<Sprite> sprites = new ArrayList<Sprite>();
+	private final List<Palette> palettes = new ArrayList<Palette>();
 	
-	private ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
+	private final Map<TileMap, List<Instance>> instances = new HashMap<TileMap, List<Instance>>();
+	
+	private final List<ListDataListener> listeners = new ArrayList<ListDataListener>();
 	
 	private PaletteMap spritePaletteMap;
 
@@ -132,8 +137,9 @@ public class Project implements ListModel {
 	}
 	
 	public TileMap getCurrentMap() {
-		if(selectedIndex < 0 || maps == null || maps.isEmpty() || selectedIndex >= maps.size())
+		if(selectedIndex < 0 || maps == null || maps.isEmpty() || selectedIndex >= maps.size()) {
 			return null;
+		}
 		
 		return maps.get(selectedIndex);
 	}
@@ -194,6 +200,10 @@ public class Project implements ListModel {
 		return maps.size();
 	}
 
+	public List<Instance> getInstances() {
+		return instances.get(getCurrentMap());
+	}
+	
 	@Override
 	public TileMap getElementAt(int index) {
 		return maps.get(index);

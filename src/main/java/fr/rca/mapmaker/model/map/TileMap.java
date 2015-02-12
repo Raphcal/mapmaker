@@ -6,6 +6,7 @@ import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Instance;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.beans.PropertyChangeListener;
