@@ -10,7 +10,6 @@ import fr.rca.mapmaker.editor.tool.BucketFillTool;
 import fr.rca.mapmaker.editor.tool.PenTool;
 import fr.rca.mapmaker.editor.tool.RectangleFillTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
-import fr.rca.mapmaker.editor.tool.SpriteTool;
 import fr.rca.mapmaker.editor.tool.Tool;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.PaletteMap;
@@ -34,8 +33,9 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
@@ -169,6 +169,7 @@ public class MapEditor extends javax.swing.JFrame {
         toolGroup = new javax.swing.ButtonGroup();
         layerMemento = new fr.rca.mapmaker.editor.undo.LayerMemento();
         jMenuItem1 = new javax.swing.JMenuItem();
+        spriteTool = new fr.rca.mapmaker.editor.tool.SpriteTool();
         mapScrollPane = new javax.swing.JScrollPane();
         mapBackgroundPanel = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
         spriteLayerPanel = new javax.swing.JPanel();
@@ -264,6 +265,10 @@ public class MapEditor extends javax.swing.JFrame {
 
         jMenuItem1.setText("jMenuItem1");
 
+        spriteTool.setSpriteLayer(spriteLayerPanel);
+        spriteTool.setSpritePaletteGrid(spritePaletteGrid);
+        spriteTool.setInstances(project.getInstances());
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(LANGUAGE.getString("app.title")); // NOI18N
 
@@ -286,6 +291,13 @@ public class MapEditor extends javax.swing.JFrame {
             spriteLayerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 5, Short.MAX_VALUE)
         );
+
+        project.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(java.beans.PropertyChangeEvent changeEvent) {
+                spriteInstancesChanged();
+            }
+        });
 
         mapBackgroundPanel.add(spriteLayerPanel);
 
@@ -642,7 +654,7 @@ public class MapEditor extends javax.swing.JFrame {
         spriteToggleButton.setFocusable(false);
         spriteToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         spriteToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        configureButton(spriteToggleButton, new SpriteTool(spriteLayerPanel, spritePaletteGrid, new ArrayList<Instance>()));
+        configureButton(spriteToggleButton, spriteTool);
         spritePaletteToolBar.add(spriteToggleButton);
 
         javax.swing.GroupLayout spritePanelLayout = new javax.swing.GroupLayout(spritePanel);
@@ -785,7 +797,6 @@ private void addMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void mapListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_mapListValueChanged
 	project.setSelectedIndex(mapList.getSelectedIndex());
-	spriteLayerPanel.removeAll();
 	mapBackgroundPanel.repaint();
 }//GEN-LAST:event_mapListValueChanged
 
@@ -1060,6 +1071,17 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_zoomTextFieldActionPerformed
 
+	private void spriteInstancesChanged() {
+		spriteLayerPanel.removeAll();
+		final List<Instance> instances = project.getInstances();
+		if(instances != null) {
+			for(final Instance instance : instances) {
+				spriteLayerPanel.add(instance);
+			}
+		}
+		spriteTool.setInstances(instances);
+	}
+	
     private void selectSprite(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectSprite
 		select(evt, spritePaletteGrid);
     }//GEN-LAST:event_selectSprite
@@ -1137,6 +1159,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JToolBar spritePaletteToolBar;
     private javax.swing.JPanel spritePanel;
     private javax.swing.JToggleButton spriteToggleButton;
+    private fr.rca.mapmaker.editor.tool.SpriteTool spriteTool;
     private fr.rca.mapmaker.ui.TileMapListRenderer tileMapListRenderer;
     private javax.swing.ButtonGroup toolGroup;
     private javax.swing.JButton undoButton;

@@ -75,6 +75,11 @@
         <Property name="text" type="java.lang.String" value="jMenuItem1"/>
       </Properties>
     </Component>
+    <Component class="fr.rca.mapmaker.editor.tool.SpriteTool" name="spriteTool">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="spriteTool.setSpriteLayer(spriteLayerPanel);&#xa;spriteTool.setSpritePaletteGrid(spritePaletteGrid);&#xa;spriteTool.setInstances(project.getInstances());"/>
+      </AuxValues>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -309,6 +314,9 @@
               <BindingProperties>
                 <BindingProperty name="preferredSize" source="mapGrid" sourcePath="${preferredSize}" target="spriteLayerPanel" targetPath="preferredSize" updateStrategy="0" immediately="false"/>
               </BindingProperties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="project.addPropertyChangeListener(new PropertyChangeListener() {&#xa;&#x9;@Override&#xa;&#x9;public void propertyChange(java.beans.PropertyChangeEvent changeEvent) {&#xa;&#x9;&#x9;spriteInstancesChanged();&#xa;&#x9;}&#xa;});&#xa;"/>
+              </AuxValues>
 
               <Layout>
                 <DimensionLayout dim="0">
@@ -887,7 +895,7 @@
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="configureButton(spriteToggleButton, new SpriteTool(spriteLayerPanel, spritePaletteGrid, new ArrayList&lt;Instance&gt;()));"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="configureButton(spriteToggleButton, spriteTool);"/>
                   </AuxValues>
                 </Component>
               </SubComponents>

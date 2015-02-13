@@ -32,6 +32,7 @@ public class Project implements ListModel {
 	public static final String CURRENT_SPRITE_PALETTE_MAP = "currentSpritePaletteMap";
 	public static final String CURRENT_LAYER_MODEL = "currentLayerModel";
 	public static final String CURRENT_SELECTED = "selected";
+	public static final String CURRENT_INSTANCES = "instances";
 	
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
@@ -41,7 +42,7 @@ public class Project implements ListModel {
 	private final List<Sprite> sprites = new ArrayList<Sprite>();
 	private final List<Palette> palettes = new ArrayList<Palette>();
 	
-	private final Map<TileMap, List<Instance>> instances = new HashMap<TileMap, List<Instance>>();
+	private final Map<TileMap, List<Instance>> instancesByMaps = new HashMap<TileMap, List<Instance>>();
 	
 	private final List<ListDataListener> listeners = new ArrayList<ListDataListener>();
 	
@@ -73,12 +74,14 @@ public class Project implements ListModel {
 		final TileMap oldPaletteMap = getCurrentPaletteMap();
 		final TileMap oldSpritePaletteMap = getCurrentSpritePaletteMap();
 		final boolean oldSelected = isSelected();
+		final List<Instance> oldInstances = getInstances();
 		
 		// Nettoyage
 		final int oldSize = getSize();
 		maps.clear();
 		palettes.clear();
 		sprites.clear();
+		instancesByMaps.clear();
 		
 		// Palettes
 		palettes.addAll(project.getPalettes());
@@ -88,6 +91,9 @@ public class Project implements ListModel {
 		
 		// Sprites
 		sprites.addAll(project.getSprites());
+		
+		// Instances
+		instancesByMaps.putAll(project.instancesByMaps);
 		
 		final int newSize = getSize();
 		
@@ -109,12 +115,14 @@ public class Project implements ListModel {
 		propertyChangeSupport.firePropertyChange(CURRENT_LAYER_MODEL, oldPaletteMap, getCurrentPaletteMap());
 		propertyChangeSupport.firePropertyChange(CURRENT_SPRITE_PALETTE_MAP, oldSpritePaletteMap, getCurrentSpritePaletteMap());
 		propertyChangeSupport.firePropertyChange(CURRENT_SELECTED, oldSelected, isSelected());
+		propertyChangeSupport.firePropertyChange(CURRENT_INSTANCES, oldInstances, getInstances());
 	}
 	
 	public void setSelectedIndex(int selectedIndex) {
 		final TileMap oldMap = getCurrentMap();
 		final TileMap oldPaletteMap = getCurrentPaletteMap();
 		final boolean oldSelected = isSelected();
+		final List<Instance> oldInstances = getInstances();
 		
 		this.selectedIndex = selectedIndex;
 		
@@ -122,6 +130,7 @@ public class Project implements ListModel {
 		propertyChangeSupport.firePropertyChange(CURRENT_PALETTE_MAP, oldPaletteMap, getCurrentPaletteMap());
 		propertyChangeSupport.firePropertyChange(CURRENT_LAYER_MODEL, oldPaletteMap, getCurrentPaletteMap());
 		propertyChangeSupport.firePropertyChange(CURRENT_SELECTED, oldSelected, isSelected());
+		propertyChangeSupport.firePropertyChange(CURRENT_INSTANCES, oldInstances, getInstances());
 	}
 	
 	public void currentPaletteChanged() {
@@ -201,7 +210,7 @@ public class Project implements ListModel {
 	}
 
 	public List<Instance> getInstances() {
-		return instances.get(getCurrentMap());
+		return instancesByMaps.get(getCurrentMap());
 	}
 	
 	@Override
@@ -225,12 +234,18 @@ public class Project implements ListModel {
 		final int index = maps.size();
 		maps.add(map);
 		
+		if(!instancesByMaps.containsKey(map)) {
+			// Création d'une liste d'instances pour la map donnée.
+			instancesByMaps.put(map, new ArrayList<Instance>());
+		}
+		
 		fireIntervalAdded(index, index);
 	}
 	
 	public void removeMap(int index) {
 		if(index >= 0 && index < maps.size()) {
-			maps.remove(index);
+			final TileMap map = maps.remove(index);
+			instancesByMaps.remove(map);
 			fireIntervalRemoved(index, index);
 		}
 	}
