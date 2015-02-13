@@ -36,8 +36,9 @@ public class ProjectDataHandler implements DataHandler<Project> {
 		
 		final DataHandler<Palette> paletteDataHandler = format.getHandler(Palette.class);
 		Streams.write(palettes.size(), outputStream);
-		for(final Palette palette : palettes)
+		for(final Palette palette : palettes) {
 			paletteDataHandler.write(palette, outputStream);
+		}
 		
 		// Cartes
 		final List<TileMap> maps = t.getMaps();
@@ -57,6 +58,8 @@ public class ProjectDataHandler implements DataHandler<Project> {
 			for(final Sprite sprite : sprites) {
 				spriteHandler.write(sprite, outputStream);
 			}
+			
+			// Instances
 		}
 	}
 

@@ -14,9 +14,7 @@ import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -42,7 +40,7 @@ public class Project implements ListModel {
 	private final List<Sprite> sprites = new ArrayList<Sprite>();
 	private final List<Palette> palettes = new ArrayList<Palette>();
 	
-	private final Map<TileMap, List<Instance>> instancesByMaps = new HashMap<TileMap, List<Instance>>();
+	private final List<List<Instance>> instancesByMaps = new ArrayList<List<Instance>>();
 	
 	private final List<ListDataListener> listeners = new ArrayList<ListDataListener>();
 	
@@ -93,7 +91,7 @@ public class Project implements ListModel {
 		sprites.addAll(project.getSprites());
 		
 		// Instances
-		instancesByMaps.putAll(project.instancesByMaps);
+		instancesByMaps.addAll(project.instancesByMaps);
 		
 		final int newSize = getSize();
 		
@@ -210,7 +208,11 @@ public class Project implements ListModel {
 	}
 
 	public List<Instance> getInstances() {
-		return instancesByMaps.get(getCurrentMap());
+		return instancesByMaps.get(selectedIndex);
+	}
+
+	public List<List<Instance>> getAllInstances() {
+		return instancesByMaps;
 	}
 	
 	@Override
@@ -229,23 +231,25 @@ public class Project implements ListModel {
 	}
 	
 	public void addMap(TileMap map) {
+		addMap(map, new ArrayList<Instance>());
+	}
+	
+	public void addMap(TileMap map, List<Instance> instances) {
 		map.setParent(this);
 		
 		final int index = maps.size();
 		maps.add(map);
 		
-		if(!instancesByMaps.containsKey(map)) {
-			// Création d'une liste d'instances pour la map donnée.
-			instancesByMaps.put(map, new ArrayList<Instance>());
-		}
+		// Création d'une liste d'instances pour la map donnée.
+		instancesByMaps.add(instances);
 		
 		fireIntervalAdded(index, index);
 	}
 	
 	public void removeMap(int index) {
 		if(index >= 0 && index < maps.size()) {
-			final TileMap map = maps.remove(index);
-			instancesByMaps.remove(map);
+			maps.remove(index);
+			instancesByMaps.remove(index);
 			fireIntervalRemoved(index, index);
 		}
 	}
