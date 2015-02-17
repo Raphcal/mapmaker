@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.model.sprite;
 
 import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.ui.ImageRenderer;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -15,32 +16,80 @@ import javax.swing.JComponent;
 public class Instance extends JComponent {
 	private static final int TILE_SIZE = 1;
 	
-	private Sprite sprite;
+	private Project project;
+	private int index;
 	private BufferedImage image;
+	private Point point;
 
 	public Instance() {
 	}
 
-	public Instance(Sprite sprite, Point location) {
-		setSprite(sprite);
-		setBounds(location.x, location.y, sprite.getSize(), sprite.getSize());
-	}
-	
-	public Sprite getSprite() {
-		return sprite;
+	public Instance(int index, Project project, Point location) {
+		this.project = project;
+		this.index = index;
+		this.point = location;
+		updateSprite();
 	}
 
-	private void setSprite(Sprite sprite) {
-		this.sprite = sprite;
-		setPreferredSize(new Dimension(sprite.getSize(), sprite.getSize()));
+	public Instance(int index, int x, int y) {
+		this.index = index;
+		this.point = new Point(x, y);
+		updateSprite();
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+		updateSprite();
+	}
+
+	public Project getProject() {
+		return project;
+	}
+	
+	public void setProject(Project project) {
+		this.project = project;
+		updateSprite();
+	}
+
+	public Point getPoint() {
+		return point;
+	}
+
+	public void setPoint(Point point) {
+		this.point = point;
+	}
+	
+	private Sprite getSprite() {
+		if(project != null && index >= 0 && index < project.getSprites().size()) {
+			return project.getSprites().get(index);
+		} else {
+			return null;
+		}
+	}
+
+	private void updateSprite() {
+		final Sprite sprite = getSprite();
+		
+		final TileLayer defaultLayer;
+		if(sprite != null) {
+			setPreferredSize(new Dimension(sprite.getSize(), sprite.getSize()));
+			setBounds(point.x, point.y, sprite.getSize(), sprite.getSize());
+			defaultLayer = sprite.getDefaultLayer();
+			
+		} else {
+			defaultLayer = null;
+		}
 		
 		final ImageRenderer renderer = new ImageRenderer();
-		
-		final TileLayer defaultLayer = sprite.getDefaultLayer();
-		if(defaultLayer != null) {
+		if(sprite != null && defaultLayer != null) {
 			image = renderer.renderImage(defaultLayer, sprite.getPalette(), TILE_SIZE);
 		} else {
-			image = renderer.renderImage(sprite.getSize(), sprite.getSize(), TILE_SIZE);
+			final int size = sprite != null ? sprite.getSize() : 32;
+			image = renderer.renderImage(size, size, TILE_SIZE);
 		}
 	}
 

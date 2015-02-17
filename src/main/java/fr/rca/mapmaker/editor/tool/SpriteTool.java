@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.editor.tool;
 
 import fr.rca.mapmaker.model.palette.SpritePalette;
+import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.Grid;
@@ -8,6 +9,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import javax.swing.border.LineBorder;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SpriteTool extends MouseAdapter implements Tool {
+	private Project project;
 	private JComponent spriteLayer;
 	private Grid spritePaletteGrid;
 	private List<Instance> instances;
@@ -28,10 +31,10 @@ public class SpriteTool extends MouseAdapter implements Tool {
 		this(null, null, null);
 	}
 	
-	public SpriteTool(JComponent spriteLayer, Grid spritePaletteGrid, List<Instance> instances) {
+	public SpriteTool(JComponent spriteLayer, Grid spritePaletteGrid, Project project) {
 		this.spriteLayer = spriteLayer;
 		this.spritePaletteGrid = spritePaletteGrid;
-		this.instances = instances;
+		this.instances = project != null ? project.getInstances() : new ArrayList<Instance>();
 		this.mouseAdapters = new HashMap<Instance, MouseAdapter>();
 	}
 
@@ -43,6 +46,16 @@ public class SpriteTool extends MouseAdapter implements Tool {
 		this.spritePaletteGrid = spritePaletteGrid;
 	}
 
+	public void setProject(Project project) {
+		this.project = project;
+		
+		if(project != null) {
+			setInstances(project.getInstances());
+		} else {
+			setInstances(new ArrayList<Instance>());
+		}
+	}
+	
 	public void setInstances(List<Instance> instances) {
 		if(this.instances != null) {
 			for(final Instance instance : this.instances) {
@@ -95,7 +108,7 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			final int x = (e.getX() / size) * size;
 			final int y = (e.getY() / size) * size;
 
-			final Instance instance = new Instance(sprite, new Point(x, y));
+			final Instance instance = new Instance(getPalette().getSelectedTile(), project, new Point(x, y));
 			spriteLayer.add(instance);
 			instances.add(instance);
 			registerInstance(instance);

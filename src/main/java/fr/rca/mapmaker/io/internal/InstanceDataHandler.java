@@ -15,13 +15,18 @@ public class InstanceDataHandler implements DataHandler<Instance> {
 
 	@Override
 	public void write(Instance t, OutputStream outputStream) throws IOException {
-		Streams.write(t.getLocation().x, outputStream);
-		Streams.write(t.getLocation().y, outputStream);
+		Streams.write(t.getPoint().x, outputStream);
+		Streams.write(t.getPoint().y, outputStream);
+		Streams.write(t.getIndex(), outputStream);
 	}
 
 	@Override
 	public Instance read(InputStream inputStream) throws IOException {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		final int x = Streams.readInt(inputStream);
+		final int y = Streams.readInt(inputStream);
+		final int index = Streams.readInt(inputStream);
+		
+		return new Instance(index, x, y);
 	}
 	
 }

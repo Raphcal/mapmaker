@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
@@ -208,7 +209,11 @@ public class Project implements ListModel {
 	}
 
 	public List<Instance> getInstances() {
-		return instancesByMaps.get(selectedIndex);
+		if(selectedIndex >= 0 && selectedIndex < instancesByMaps.size()) {
+			return instancesByMaps.get(selectedIndex);
+		} else {
+			return Collections.<Instance>emptyList();
+		}
 	}
 
 	public List<List<Instance>> getAllInstances() {

@@ -16,6 +16,7 @@ import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Animation;
+import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -60,6 +61,7 @@ public class InternalFormat extends AbstractFormat {
 		addHandler(TileMap.class, new TileMapDataHandler(this));
 		addHandler(Sprite.class, new SpriteDataHandler(this));
 		addHandler(Animation.class, new AnimationDataHandler(this));
+		addHandler(Instance.class, new InstanceDataHandler());
 	}
 
 	@Override

@@ -267,7 +267,7 @@ public class MapEditor extends javax.swing.JFrame {
 
         spriteTool.setSpriteLayer(spriteLayerPanel);
         spriteTool.setSpritePaletteGrid(spritePaletteGrid);
-        spriteTool.setInstances(project.getInstances());
+        spriteTool.setProject(project);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(LANGUAGE.getString("app.title")); // NOI18N

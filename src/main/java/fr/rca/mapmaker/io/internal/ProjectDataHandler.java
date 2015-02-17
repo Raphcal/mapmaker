@@ -6,6 +6,7 @@ import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.Streams;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +61,15 @@ public class ProjectDataHandler implements DataHandler<Project> {
 			}
 			
 			// Instances
+			final List<List<Instance>> allInstances = t.getAllInstances();
+			final DataHandler<Instance> instanceHandler = format.getHandler(Instance.class);
+			
+			for(final List<Instance> instances : allInstances) {
+				Streams.write(instances.size(), outputStream);
+				for(Instance instance : instances) {
+					instanceHandler.write(instance, outputStream);
+				}
+			}
 		}
 	}
 
@@ -92,6 +102,19 @@ public class ProjectDataHandler implements DataHandler<Project> {
 			final int spriteCount = Streams.readInt(inputStream);
 			for(int index = 0; index < spriteCount; index++) {
 				sprites.add(spriteHandler.read(inputStream));
+			}
+			
+			// Instances
+			final DataHandler<Instance> instanceHandler = format.getHandler(Instance.class);
+			final List<List<Instance>> allInstances = project.getAllInstances();
+			
+			for(final List<Instance> instances : allInstances) {
+				final int instancesCount = Streams.readInt(inputStream);
+				for(int j = 0; j < instancesCount; j++) {
+					final Instance instance = instanceHandler.read(inputStream);
+					instance.setProject(project);
+					instances.add(instance);
+				}
 			}
 		}
 		
