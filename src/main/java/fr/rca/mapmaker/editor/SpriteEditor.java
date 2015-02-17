@@ -7,6 +7,7 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.GridList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -132,6 +133,11 @@ public class SpriteEditor extends javax.swing.JDialog {
         tileLayerList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tileLayerListActionPerformed(evt);
+            }
+        });
+        tileLayerList.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tileLayerListKeyPressed(evt);
             }
         });
         gridScrollPane.setViewportView(tileLayerList);
@@ -296,6 +302,13 @@ public class SpriteEditor extends javax.swing.JDialog {
 		
 		fireActionPerformed();
     }//GEN-LAST:event_okButtonActionPerformed
+
+    private void tileLayerListKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tileLayerListKeyPressed
+		if(evt.getKeyCode() == KeyEvent.VK_DELETE || evt.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+			tileLayerList.removeSelectedElement();
+			directionChooser.setAnglesWithValue(currentAnimation.getAnglesWithValue());
+		}
+    }//GEN-LAST:event_tileLayerListKeyPressed
 
 	private void animationChanged() {
 		final int oldFrequency = getCurrentFrequency();

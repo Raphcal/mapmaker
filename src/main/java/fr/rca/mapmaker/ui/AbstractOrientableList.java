@@ -10,6 +10,8 @@ import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -50,6 +52,8 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 
 	public AbstractOrientableList(List<E> elements) {
 		setOpaque(true);
+		setFocusable(true);
+		setEnabled(editable);
 		
 		try {
 			addImage = ImageIO.read(AbstractOrientableList.class.getResourceAsStream("/resources/add.png"));
@@ -79,6 +83,7 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 						int element = orientation.indexOfElementAtPoint(AbstractOrientableList.this, e.getPoint());
 						if(element >= 0 && element <= AbstractOrientableList.this.elements.size()) {
 							selection = element;
+							requestFocusInWindow();
 						} else {
 							selection = null;
 						}
@@ -90,6 +95,16 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 							fireActionPerformed(selection == AbstractOrientableList.this.elements.size() ? ADD_COMMAND : EDIT_COMMAND);
 						}
 						break;
+				}
+			}
+		});
+		
+		addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(selection != null) {
+					repaintElement(selection);
 				}
 			}
 		});
@@ -175,6 +190,21 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 		updateSize();
 	}
 	
+	public void removeSelectedElement() {
+		if(selection != null) {
+			this.elements.remove(selection.intValue());
+			if(selection >= this.elements.size()) {
+				selection--;
+				
+				if(selection < 0) {
+					selection = null;
+				}
+			}
+			repaint();
+			updateSize();
+		}
+	}
+	
 	public void updateElement(int index) {
 		repaintElement(index);
 		updateSize();
@@ -201,7 +231,11 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 		// Selection
 		if(selection != null) {
 			g.setColor(SystemColor.textHighlight);
-			g.fillRect(orientation.getX(this, selection), orientation.getY(this, selection), gridSize, gridSize);
+			if(hasFocus()) {
+				g.fillRect(orientation.getX(this, selection), orientation.getY(this, selection), gridSize, gridSize);
+			} else {
+				g.drawRect(orientation.getX(this, selection), orientation.getY(this, selection), gridSize, gridSize);
+			}
 		}
 		
 		// Maps
