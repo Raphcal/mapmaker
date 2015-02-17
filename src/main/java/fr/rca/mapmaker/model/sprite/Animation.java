@@ -3,6 +3,7 @@ package fr.rca.mapmaker.model.sprite;
 import fr.rca.mapmaker.model.map.TileLayer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -113,7 +114,13 @@ public class Animation {
 	}
 	
 	public Set<Double> getAnglesWithValue() {
-		return frames.keySet();
+		final HashSet<Double> anglesWithValue = new HashSet<Double>();
+		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
+			if(entry.getValue() != null && !entry.getValue().isEmpty()) {
+				anglesWithValue.add(entry.getKey());
+			}
+		}
+		return anglesWithValue;
 	}
 
 	public static Animation[] getDefaultAnimations() {

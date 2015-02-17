@@ -273,6 +273,8 @@ public class SpriteEditor extends javax.swing.JDialog {
 				} else {
 					tileLayerList.updateElement(index);
 				}
+				
+				directionChooser.setAnglesWithValue(currentAnimation.getAnglesWithValue());
 			}
 		});
 		editor.setVisible(true);
@@ -323,33 +325,6 @@ public class SpriteEditor extends javax.swing.JDialog {
 		for(final ActionListener listener : actionListeners) {
 			listener.actionPerformed(new ActionEvent(this, 0, "SPRITE_EDITED"));
 		}
-	}
-	
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String args[]) {
-		/* Create and display the dialog */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				SpriteEditor dialog = new SpriteEditor(new javax.swing.JFrame());
-				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-					@Override
-					public void windowClosing(java.awt.event.WindowEvent e) {
-						System.exit(0);
-					}
-				});
-				dialog.cancelButton.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						System.exit(0);
-					}
-				});
-				dialog.setVisible(true);
-			}
-		});
 	}
 	
     // Variables declaration - do not modify//GEN-BEGIN:variables

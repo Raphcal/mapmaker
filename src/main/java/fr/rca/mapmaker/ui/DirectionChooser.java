@@ -64,12 +64,16 @@ public class DirectionChooser extends JComponent {
 		final double oldDirection = this.direction;
 		
 		if(simplified) {
-			direction = ((int)(direction * 100.0)) / 100.0;
+			direction = simplifiedAngle(direction);
 		}
 		
 		this.direction = direction;
 		
 		firePropertyChange("direction", oldDirection, direction);
+	}
+	
+	private double simplifiedAngle(double angle) {
+		return ((int)(angle * 100.0)) / 100.0;
 	}
 	
 	public boolean isSimplified() {
@@ -91,6 +95,7 @@ public class DirectionChooser extends JComponent {
 	public void setAnglesWithValue(Collection<Double> angles) {
 		anglesWithValue.clear();
 		anglesWithValue.addAll(angles);
+		repaint();
 	}
 	
 	public void clearValues() {
@@ -154,7 +159,7 @@ public class DirectionChooser extends JComponent {
 			final double x = center.getX() + Math.cos(angle) * ray;
 			final double y = center.getY() + Math.sin(angle) * ray;
 				
-			if(anglesWithValue.contains(angle)) {
+			if(anglesWithValue.contains(angle) || anglesWithValue.contains(simplifiedAngle(angle))) {
 				g.setColor(SystemColor.textHighlight);
 				g.fillRect((int)(x - SQUARE_SIZE/2), (int)(y - SQUARE_SIZE/2), SQUARE_SIZE, SQUARE_SIZE);
 				
