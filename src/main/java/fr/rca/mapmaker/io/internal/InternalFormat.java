@@ -29,6 +29,7 @@ import java.util.EnumSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -85,6 +86,8 @@ public class InternalFormat extends AbstractFormat {
 		} catch (IOException ex) {
 			Exceptions.showStackTrace(ex, null);
 		}
+		
+		JOptionPane.showMessageDialog(null, "Projet enregistré", "Enregistrement", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	@Override

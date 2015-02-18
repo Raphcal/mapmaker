@@ -1,5 +1,6 @@
 package fr.rca.mapmaker;
 
+import com.apple.eawt.Application;
 import fr.rca.mapmaker.editor.MapEditor;
 import fr.rca.mapmaker.exception.Exceptions;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
@@ -26,10 +28,10 @@ public class MapMaker {
 		System.setProperty("apple.awt.brushMetalLook", "true");
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MapMaker");
 		
-//		final Application application = Application.getApplication();
-//		if(application != null) {
-//			application.setDockIconImage(null);
-//		}
+		final Application application = Application.getApplication();
+		if(application != null) {
+			application.setDockIconImage(ImageIO.read(MapMaker.class.getResourceAsStream("/resources/icon.png")));
+		}
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
