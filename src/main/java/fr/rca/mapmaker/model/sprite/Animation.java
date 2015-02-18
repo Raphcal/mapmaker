@@ -41,13 +41,13 @@ public class Animation {
 		copy.frequency = frequency;
 		
 		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
-			final ArrayList<TileLayer> layers = new ArrayList<TileLayer>();
+			final ArrayList<TileLayer> layersCopy = new ArrayList<TileLayer>();
 			for(final TileLayer layer : entry.getValue()) {
 				final TileLayer layerCopy = new TileLayer(layer.getWidth(), layer.getHeight());
 				layerCopy.restoreData(layer.copyData(), null);
-				layers.add(layerCopy);
+				layersCopy.add(layerCopy);
 			}
-			copy.frames.put(entry.getKey(), layers);
+			copy.frames.put(entry.getKey(), layersCopy);
 		}
 		
 		return copy;

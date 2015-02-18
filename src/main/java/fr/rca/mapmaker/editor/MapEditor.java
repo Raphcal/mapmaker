@@ -1094,6 +1094,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
     private void editSprite(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editSprite
         edit(evt, spritePaletteGrid);
+		// TODO: Rafraîchir les instances du sprite sélectionné.
     }//GEN-LAST:event_editSprite
 
     private void spritePaletteGridKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_spritePaletteGridKeyPressed
@@ -1126,7 +1127,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 				editablePalette.editTile(tileIndex, this);
 
 				grid.repaint(selection);
-				mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
+				mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
 			}
 		}
 	}
