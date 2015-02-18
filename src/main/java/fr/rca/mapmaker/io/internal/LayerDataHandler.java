@@ -15,7 +15,6 @@ public class LayerDataHandler implements DataHandler<TileLayer> {
 
 	@Override
 	public void write(TileLayer t, OutputStream outputStream) throws IOException {
-		
 		Streams.write(t.toString(), outputStream);
 		Streams.write(t.getWidth(), outputStream);
 		Streams.write(t.getHeight(), outputStream);
@@ -25,7 +24,6 @@ public class LayerDataHandler implements DataHandler<TileLayer> {
 
 	@Override
 	public TileLayer read(InputStream inputStream) throws IOException {
-		
 		final String name = Streams.readString(inputStream);
 		final int width = Streams.readInt(inputStream);
 		final int height = Streams.readInt(inputStream);
