@@ -48,30 +48,9 @@ public class ImagePaletteDataHandler implements DataHandler<Palette> {
 		zipOutputStream.closeEntry();
 	}
 	
-	private int getNearestUpperPowerOfTwoForSurface(long value) {
-		for(int pot = 0;; pot++) {
-			final int pow = (int) Math.pow(2.0, pot);
-			final long surface = pow * pow;
-			
-			if(surface >= value) {
-				return pow;
-			}
-		}
-	}
-	
-	private int getNearestLowerPowerOfTwo(int value) {
-		for(int pot = 1;; pot++) {
-			final int pow = (int) Math.pow(2.0, pot);
-			
-			if(pow > value) {
-				return (int) Math.pow(2.0, pot - 1);
-			}
-		}
-	}
-	
 	private int calculateColumns(Palette p) {
 		final long neededSurface = (p.getTileSize() + PADDING) * (p.getTileSize() + PADDING) * p.size();
-		final int size = getNearestUpperPowerOfTwoForSurface(neededSurface);
+		final int size = Surfaces.getNearestUpperPowerOfTwoForSurface(neededSurface);
 		
 		return (size - PADDING) / (p.getTileSize() + PADDING);
 	}
@@ -86,7 +65,7 @@ public class ImagePaletteDataHandler implements DataHandler<Palette> {
 		// Calcul de l'espace total
 		// TODO: il manque la bordure droite et la bordure basse, ajouter "space * space * p.size()" ?
 		final long neededSurface = (tileSize + space) * (tileSize + space) * p.size();
-		final int size = getNearestUpperPowerOfTwoForSurface(neededSurface);
+		final int size = Surfaces.getNearestUpperPowerOfTwoForSurface(neededSurface);
 		// final int lineTileCount = (size / (tileSize + 2));
 		// final int space = getNearestLowerPowerOfTwo((size - (lineTileCount * tileSize)) / lineTileCount);
 		

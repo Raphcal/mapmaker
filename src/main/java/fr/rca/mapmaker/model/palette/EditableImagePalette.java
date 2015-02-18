@@ -145,6 +145,14 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 		});
 		editor.setVisible(true);
 	}
+
+	@Override
+	public void removeTile(int index) {
+		if(index >= 0 && index < sources.size()) {
+			sources.set(index, new TileLayer(tileSize, tileSize));
+			refreshSource(index);
+		}
+	}
 	
 	public void refreshSource(int index) {
 		if(index >= sources.size() - columns) {

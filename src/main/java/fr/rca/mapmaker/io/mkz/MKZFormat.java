@@ -18,6 +18,7 @@ import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -48,6 +49,7 @@ public class MKZFormat extends AbstractFormat {
 		addHandler(BufferedImage.class, new BufferedImageDataHandler());
 		addHandler(TileLayer.class, new LayerDataHandler());
 		addHandler(TileMap.class, new TileMapDataHandler(this));
+		addHandler(Sprite.class, new SpriteDataHandler(this));
 	}
 	
 	@Override

@@ -11,4 +11,6 @@ public interface EditablePalette extends Palette {
 	void setName(String name);
 	
 	void editTile(int index, JFrame parent);
+	
+	void removeTile(int index);
 }

@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -644,6 +645,11 @@ public class MapEditor extends javax.swing.JFrame {
                 editSprite(evt);
             }
         });
+        spritePaletteGrid.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                spritePaletteGridKeyPressed(evt);
+            }
+        });
         spritePaletteScrollPane.setViewportView(spritePaletteGrid);
 
         spritePaletteToolBar.setFloatable(false);
@@ -1090,11 +1096,21 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         edit(evt, spritePaletteGrid);
     }//GEN-LAST:event_editSprite
 
+    private void spritePaletteGridKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_spritePaletteGridKeyPressed
+		if(evt.getKeyCode() == KeyEvent.VK_DELETE || evt.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+			final PaletteMap paletteMap = (PaletteMap) spritePaletteGrid.getTileMap();
+			paletteMap.removeSelectedTile();
+			spritePaletteGrid.repaint(paletteMap.getSelection());
+		}
+    }//GEN-LAST:event_spritePaletteGridKeyPressed
+
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 				
 		final PaletteMap paletteMap = (PaletteMap) grid.getTileMap();
 		paletteMap.setSelection(point);
+		
+		grid.requestFocusInWindow();
 	}
 	
 	private void edit(MouseEvent event, Grid grid) {

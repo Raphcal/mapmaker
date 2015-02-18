@@ -5,6 +5,7 @@ import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Sprite;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,7 +19,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class ProjectDataHandler implements DataHandler<Project> {
 	
-	private Format format;
+	private final Format format;
 
 	public ProjectDataHandler(Format format) {
 		this.format = format;
@@ -54,6 +55,22 @@ public class ProjectDataHandler implements DataHandler<Project> {
 			zipOutputStream.putNextEntry(entry);
 			tileMapHandler.write(map, outputStream);
 			zipOutputStream.closeEntry();
+		}
+		
+		// Sprites
+		final List<Sprite> sprites = t.getSprites();
+		
+		final DataHandler<Sprite> spriteHandler = format.getHandler(Sprite.class);
+		
+		for(int index = 0; index < sprites.size(); index++) {
+			final Sprite sprite = sprites.get(index);
+			
+			if(!sprite.isEmpty()) {
+				final ZipEntry entry = new ZipEntry("sprite" + index + ".png");
+				zipOutputStream.putNextEntry(entry);
+				spriteHandler.write(sprite, outputStream);
+				zipOutputStream.closeEntry();
+			}
 		}
 	}
 

@@ -28,7 +28,11 @@ public class ColorPalette implements Palette {
 	}
 	
 	private void inverse(int index) {
-		inverses[index] = new Color(~colors[index].getRGB(), false);
+		if(colors[index] != null) {
+			inverses[index] = new Color(~colors[index].getRGB(), false);
+		} else {
+			inverses[index] = null;
+		}
 	}
 	
 	public Color getColor(int index) {
@@ -64,7 +68,6 @@ public class ColorPalette implements Palette {
 	
 	@Override
 	public void paintTile(Graphics g, int tile, int x, int y, int size) {
-		
 		if(tile >= 0 && tile < colors.length && colors[tile] != null) {
 			g.setColor(colors[tile]);
 			g.fillRect(x, y, size, size);
@@ -97,11 +100,11 @@ public class ColorPalette implements Palette {
 	}
 	
 	public Color getInverseColor() {
-		
-		if(selectedTile >= 0 && selectedTile < colors.length)
+		if(selectedTile >= 0 && selectedTile < colors.length) {
 			return inverses[selectedTile];
-		else
+		} else {
 			return Color.WHITE;
+		}
 	}
 
 	public Color[] getColors() {

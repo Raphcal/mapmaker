@@ -32,23 +32,23 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 	}
 	
 	private EditablePalette getEditablePalette() {
-		if(getPalette() instanceof EditablePalette)
+		if(getPalette() instanceof EditablePalette) {
 			return (EditablePalette) getPalette();
-		else
+		} else {
 			throw new UnsupportedOperationException(getPalette().getClass().getSimpleName() + " n'est pas éditable.");
+		}
 	}
 	
 	private HasSizeChangeListeners getHasSizeChangeListeners() {
-		
-		if(getPalette() instanceof HasSizeChangeListeners)
+		if(getPalette() instanceof HasSizeChangeListeners) {
 			return (HasSizeChangeListeners) getPalette();
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		
 		if(obj instanceof PaletteReference) {
 			return paletteIndex == ((PaletteReference)obj).paletteIndex;
 			
@@ -114,25 +114,30 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 	}
 
 	@Override
+	public void removeTile(int index) {
+		getEditablePalette().removeTile(index);
+	}
+	
+	@Override
 	public void refresh() {
 		getPalette().refresh();
 	}
 	
 	@Override
 	public void addSizeChangeListener(SizeChangeListener listener) {
-		
 		final HasSizeChangeListeners hasSizeChangeListeners = getHasSizeChangeListeners();
 		
-		if(hasSizeChangeListeners != null)
+		if(hasSizeChangeListeners != null) {
 			hasSizeChangeListeners.addSizeChangeListener(listener);
+		}
 	}
 
 	@Override
 	public void removeSizeChangeListener(SizeChangeListener listener) {
-		
 		final HasSizeChangeListeners hasSizeChangeListeners = getHasSizeChangeListeners();
 		
-		if(hasSizeChangeListeners != null)
+		if(hasSizeChangeListeners != null) {
 			hasSizeChangeListeners.removeSizeChangeListener(listener);
+		}
 	}
 }

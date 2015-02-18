@@ -28,7 +28,7 @@ public class AlphaColorPalette extends ColorPalette {
 		final int colorIndex = tile % MASK;
 		final int alpha = tile / MASK;
 
-		if(colorIndex >= 0 && colorIndex < getColors().length) {
+		if(colorIndex >= 0 && colorIndex < getColors().length && alpha >= 0 && alpha < ALPHAS.length) {
 			final Color baseColor = getColor(colorIndex);
 
 			final Color color = new Color(baseColor.getRed(), baseColor.getGreen(),

@@ -2,6 +2,7 @@ package fr.rca.mapmaker.model.map;
 
 import fr.rca.mapmaker.model.HasSelectionListeners;
 import fr.rca.mapmaker.model.SelectionListener;
+import fr.rca.mapmaker.model.palette.EditablePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -80,8 +81,9 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 		final int tile = getTileFromPoint(selectedPoint);
 		final int lastTile = getPalette().size() - 1;
 		
-		if(tile > lastTile)
+		if(tile > lastTile) {
 			selectedPoint = getPointFromTile(lastTile);
+		}
 		
 		if(!this.selectedPoint.equals(selectedPoint)) {
 			final Point oldSelection = this.selectedPoint;
@@ -89,6 +91,12 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 			
 			getPalette().setSelectedTile(getSelectedTile());
 			fireSelectionChanged(oldSelection, selectedPoint);
+		}
+	}
+	
+	public void removeSelectedTile() {
+		if(getPalette().isEditable()) {
+			((EditablePalette)getPalette()).removeTile(getSelectedTile());
 		}
 	}
 

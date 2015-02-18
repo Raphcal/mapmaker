@@ -78,6 +78,15 @@ public class Sprite {
 		animations.clear();
 	}
 	
+	public boolean isEmpty() {
+		for(final Animation animation : animations) {
+			if(!animation.getAnglesWithValue().isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public TileLayer getDefaultLayer() {
 		final double[] favoriteDirections = {0.0, 3.14, 4.71, 1.57};
 		

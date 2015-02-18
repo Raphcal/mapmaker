@@ -144,6 +144,13 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 		});
 		editor.setVisible(true);
 	}
+
+	@Override
+	public void removeTile(int index) {
+		if(index >= 0 && index < sprites.size()) {
+			sprites.set(index, new Sprite());
+		}
+	}
 	
 	@Override
 	public void refresh() {

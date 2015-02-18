@@ -73,6 +73,11 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 	}
 
 	@Override
+	public void removeTile(int index) {
+		setColor(index, null);
+	}
+
+	@Override
 	public String toString() {
 		if(name != null)
 			return name;
@@ -92,9 +97,10 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 
 	@Override
 	public void setColor(int index, Color color) {
-		
-		if(index >= length && index < MAX_LENGTH)
+		if(index >= length && index < MAX_LENGTH) {
+			// Agrandissement de la palette.
 			length = index + 1;
+		}
 		
 		super.setColor(index, color);
 	}
