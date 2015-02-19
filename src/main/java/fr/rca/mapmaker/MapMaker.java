@@ -84,8 +84,10 @@ public class MapMaker {
 			final Method getApplicationMethod = applicationClass.getMethod("getApplication");
 			final Object application = getApplicationMethod.invoke(null);
 			
-			final Method setDockIconImageMethod = applicationClass.getMethod("setDockIconImage", java.awt.Image.class);
-			setDockIconImageMethod.invoke(application, ImageIO.read(MapMaker.class.getResourceAsStream("/resources/icon.png")));
+			if(application != null) {
+				final Method setDockIconImageMethod = applicationClass.getMethod("setDockIconImage", java.awt.Image.class);
+				setDockIconImageMethod.invoke(application, ImageIO.read(MapMaker.class.getResourceAsStream("/resources/icon.png")));
+			}
 			
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
 			// Ignoré.
