@@ -3,6 +3,7 @@ package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.TileMap;
 import java.awt.Dimension;
+import javax.swing.JViewport;
 
 /**
  *
@@ -75,6 +76,8 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 
         jLabel2.setText("%");
         toolBar.add(jLabel2);
+
+        gridScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 
         previewGrid.setViewport(gridScrollPane.getViewport());
         gridScrollPane.setViewportView(previewGrid);

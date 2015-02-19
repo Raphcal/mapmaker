@@ -91,6 +91,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JScrollPane" name="gridScrollPane">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="gridScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);"/>
+      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
