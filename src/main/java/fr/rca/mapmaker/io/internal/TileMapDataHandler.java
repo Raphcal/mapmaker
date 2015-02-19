@@ -27,7 +27,6 @@ public class TileMapDataHandler implements DataHandler<TileMap> {
 	
 	@Override
 	public void write(TileMap t, OutputStream outputStream) throws IOException {
-		
 		// Fond
 		final DataHandler<Color> colorHandler = format.getHandler(Color.class);
 		Color backgroundColor = t.getBackgroundColor();
@@ -47,13 +46,13 @@ public class TileMapDataHandler implements DataHandler<TileMap> {
 		final List<Layer> layers = t.getLayers();
 		Streams.write(layers.size(), outputStream);
 		
-		for(final Layer layer : layers)
+		for(final Layer layer : layers) {
 			layerHandler.write((TileLayer)layer, outputStream);
+		}
 	}
 
 	@Override
 	public TileMap read(InputStream inputStream) throws IOException {
-		
 		final TileMap tileMap = new TileMap();
 		
 		// Fond
