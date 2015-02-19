@@ -10,9 +10,6 @@
     <name>MapMaker</name>
 	
 	<properties>
-		<java.compiler.version>1.6</java.compiler.version>
-		<java.source.version>1.6</java.source.version>
-		<java.target.version>1.6</java.target.version>
 		<java.source.encoding>UTF-8</java.source.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -25,8 +22,8 @@
 				<version>2.3.2</version>
 				<configuration>
 					<compilerVersion>${java.compiler.version}</compilerVersion>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>${java.source.encoding}</encoding>
 				</configuration>
 			</plugin>
