@@ -66,7 +66,7 @@ public class MapEditor extends javax.swing.JFrame {
 		setUpMacOSXStyle();
 		
 		// Scrolling
-		mapScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+		refreshScrollMode();
 		
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -804,6 +804,8 @@ private void addMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 private void mapListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_mapListValueChanged
 	project.setSelectedIndex(mapList.getSelectedIndex());
 	mapBackgroundPanel.repaint();
+	
+	refreshScrollMode();
 }//GEN-LAST:event_mapListValueChanged
 
 private void editMapMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editMapMenuItemActionPerformed
@@ -897,6 +899,7 @@ private void editLayerMenuItemActionPerformed(java.awt.event.ActionEvent evt) {/
 		selectedLayer.setName(properties.getName());
 		
 		repaintMapGrid();
+		refreshScrollMode();
 	}
 }//GEN-LAST:event_editLayerMenuItemActionPerformed
 
@@ -980,13 +983,7 @@ private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 	final int action = fileChooser.showOpenDialog(this);
 				
 	if(action == JFileChooser.APPROVE_OPTION) {
-		currentFormat = ((FormatFileFilter)fileChooser.getFileFilter()).getFormat();
-		setCurrentFile(fileChooser.getSelectedFile());
-		
-		final Project newProject = currentFormat.openProject(currentFile);
-		project.morphTo(newProject);
-		
-		spritePaletteGrid.refresh();
+		openProject(fileChooser.getSelectedFile(), ((FormatFileFilter)fileChooser.getFileFilter()).getFormat());
 	}
 }//GEN-LAST:event_openMenuItemActionPerformed
 
@@ -995,16 +992,21 @@ public void openFile(final File file) {
 		final Format format = Formats.getFormat(file.getName());
 		
 		if(format != null) {
-			final Project thisProject = format.openProject(file);
-
-			currentFormat = format;
-			setCurrentFile(file);
-			mapList.setSelectedIndex(0);
-			project.morphTo(thisProject);
-			
-			spritePaletteGrid.refresh();
+			openProject(file, format);
 		}
 	}
+}
+
+private void openProject(File file, Format format) {
+	currentFormat = format;
+	setCurrentFile(file);
+		
+	final Project newProject = currentFormat.openProject(currentFile);
+	project.morphTo(newProject);
+	mapList.setSelectedIndex(0);
+
+	spritePaletteGrid.refresh();
+	refreshScrollMode();
 }
 
 	private void newProjectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectMenuItemActionPerformed
@@ -1012,6 +1014,7 @@ public void openFile(final File file) {
 		project.morphTo(Project.createEmptyProject());
 		
 		spritePaletteGrid.refresh();
+		refreshScrollMode();
 		
 		setCurrentFile(null);
 		currentFormat = null;
@@ -1129,6 +1132,18 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 				grid.repaint(selection);
 				mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
 			}
+		}
+	}
+	
+	private void refreshScrollMode() {
+		boolean hasParallax = false;
+		for(final Layer layer : project.getCurrentMap().getLayers()) {
+			hasParallax = hasParallax || layer.getScrollRate() != 1.0;
+		}
+		if(!hasParallax) {
+			mapScrollPane.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE);
+		} else {
+			mapScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		}
 	}
 
