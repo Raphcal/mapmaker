@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<project name="MapMaker" default="bundle" basedir=".">
+	<property environment="env" />
+
+<taskdef 
+    name="bundleapp" 
+    classname="com.oracle.appbundler.AppBundlerTask" 
+    classpath="lib/appbundler-1.0.jar" />
+
+<target name="bundle">
+    <bundleapp 
+        outputdirectory="target" 
+        name="MapMaker" 
+        displayname="MapMaker" 
+        identifier="fr.rca.mapmaker.MapMaker" 
+        shortversion="1.0"
+        applicationCategory="public.app-category.developer-tools"
+		icon="src/main/app/mapmaker.icns"
+        mainclassname="fr.rca.mapmaker.MapMaker">
+        <!--<runtime dir="${env.JAVA_HOME}" />-->
+        <classpath file="target/mapmaker-1.0.0.jar" />
+        <classpath file="/Users/daeke/.m2/repository/org/jdesktop/beansbinding/1.2.1/beansbinding-1.2.1.jar" />
+    </bundleapp>
+</target>
+</project>
