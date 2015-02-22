@@ -156,7 +156,7 @@ public class Function extends JComponent {
 		for(int x = 0; x < sourceWidth; x++) {
 			final double y = apply((double)x);
 			
-			g.fillRect((int) Math.floor(x * w), (int) (h * (sourceHeight - y)), (int) Math.ceil(w), (int) (h * y));
+			g.fillRect((int) Math.round(x * w), (int) (h * y), (int) Math.round(w), (int) h);
 		}
 	}
 	
@@ -166,7 +166,7 @@ public class Function extends JComponent {
 		final Function function = new Function();
 		function.setSourceWidth(32);
 		function.setSourceHeight(32);
-		function.setFunction("16");
+		function.setFunction("-x + 31");
 		
 		function.setPreferredSize(new Dimension(200, 200));
 		
