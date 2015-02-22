@@ -6,6 +6,8 @@ import java.awt.event.MouseEvent;
 
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.model.map.TileLayer;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class AbstractSelectionTool extends MouseAdapter implements Tool {
 
@@ -20,6 +22,15 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 	public AbstractSelectionTool(Grid grid) {
 		this.grid = grid;
 		this.selectionLayer = new TileLayer(grid.getOverlay().getWidth(), grid.getOverlay().getHeight());
+		
+		this.grid.addComponentListener(new ComponentAdapter() {
+
+			@Override
+			public void componentResized(ComponentEvent e) {
+				final TileLayer overlay = AbstractSelectionTool.this.grid.getOverlay();
+				selectionLayer.resize(overlay.getWidth(), overlay.getHeight());
+			}
+		});
 	}
 	
 	public void setSelected(boolean selected) {
