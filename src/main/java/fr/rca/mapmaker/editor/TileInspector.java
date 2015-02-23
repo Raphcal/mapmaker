@@ -103,6 +103,10 @@ public class TileInspector extends javax.swing.JDialog {
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${preferredSizeSet}"), function, org.jdesktop.beansbinding.BeanProperty.create("preferredSize"));
         bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${height}"), function, org.jdesktop.beansbinding.BeanProperty.create("sourceHeight"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${width}"), function, org.jdesktop.beansbinding.BeanProperty.create("sourceWidth"));
+        bindingGroup.addBinding(binding);
 
         previewPanel.add(function);
 

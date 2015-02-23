@@ -196,6 +196,8 @@
           <BindingProperties>
             <BindingProperty name="function" source="functionTextField" sourcePath="${text}" target="function" targetPath="function" updateStrategy="0" immediately="false"/>
             <BindingProperty name="preferredSize" source="tileAndHitboxGrid" sourcePath="${preferredSizeSet}" target="function" targetPath="preferredSize" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="sourceHeight" source="tileAndHitboxGrid" sourcePath="${height}" target="function" targetPath="sourceHeight" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="sourceWidth" source="tileAndHitboxGrid" sourcePath="${width}" target="function" targetPath="sourceWidth" updateStrategy="0" immediately="false"/>
           </BindingProperties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
