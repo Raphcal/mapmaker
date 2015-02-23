@@ -8,6 +8,7 @@ import fr.rca.mapmaker.model.LayerChangeListener;
 import fr.rca.mapmaker.model.SelectionListener;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.selection.DefaultSelectionStyle;
 import fr.rca.mapmaker.model.selection.SelectionStyle;
@@ -110,6 +111,8 @@ public class Grid extends AbstractLayerPainter {
 		
 		overlay = new TileLayer(0, 0);
 		overlay.addLayerChangeListener(layerChangeListener);
+		
+		setTileMap(new TileMap(new TileLayer(32, 32), AlphaColorPalette.getDefaultColorPalette()));
 	}
 	
 
@@ -181,23 +184,15 @@ public class Grid extends AbstractLayerPainter {
 	}
 
 	private void drawBackground(Graphics g, Rectangle clipBounds, Dimension size) {
-		g.setColor(getBackground());
-		g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
-
-		if(tileMap != null) {
-			// Choix de la couleur de fond
-			final Color color = tileMap.getBackgroundColor();
-			if(color != null) {
-				g.setColor(color);
-			} else {
-				((Graphics2D)g).setPaint(Paints.TRANSPARENT_PAINT);
-			}
-
-			// Affichage
-			g.fillRect(clipBounds.x, clipBounds.y, 
-					Math.min(size.width - clipBounds.x, clipBounds.width),
-					Math.min(size.height - clipBounds.y, clipBounds.height));
+		// Choix de la couleur de fond
+		if(tileMap != null && tileMap.getBackgroundColor() != null) {
+			g.setColor(tileMap.getBackgroundColor());
+		} else {
+			((Graphics2D)g).setPaint(Paints.TRANSPARENT_PAINT);
 		}
+		
+		// Affichage
+		g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 	}
 	
 	@Override

@@ -123,6 +123,10 @@ public class Function extends JComponent {
 			return;
 		}
 		
+		if(stack.size() <= 1) {
+			return;
+		}
+		
 		final double right = stack.pop();
 		final double left = stack.pop();
 		

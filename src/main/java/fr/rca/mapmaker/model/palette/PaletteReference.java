@@ -23,6 +23,10 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 		this.paletteIndex = paletteIndex;
 	}
 
+	public Project getProject() {
+		return project;
+	}
+	
 	public void setProject(Project project) {
 		this.project = project;
 	}

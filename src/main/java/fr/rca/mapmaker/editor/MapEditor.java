@@ -91,6 +91,7 @@ public class MapEditor extends javax.swing.JFrame {
 			mapListScrollPane.setBorder(border);
 			mapScrollPane.setBorder(new CompoundBorder(border, new MatteBorder(0, 1, 0, 1, Color.LIGHT_GRAY)));
 			paletteScrollPane.setBorder(border);
+			spritePaletteScrollPane.setBorder(border);
 			layerListScrollPane.setBorder(null);
 			
 			mapScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -171,6 +172,9 @@ public class MapEditor extends javax.swing.JFrame {
         layerMemento = new fr.rca.mapmaker.editor.undo.LayerMemento();
         jMenuItem1 = new javax.swing.JMenuItem();
         spriteTool = new fr.rca.mapmaker.editor.tool.SpriteTool();
+        tilePopupMenu = new javax.swing.JPopupMenu();
+        inspectTileMenuItem = new javax.swing.JMenuItem();
+        tileInspector = new TileInspector(this, false);
         mapScrollPane = new javax.swing.JScrollPane();
         mapBackgroundPanel = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
         spriteLayerPanel = new javax.swing.JPanel();
@@ -192,6 +196,7 @@ public class MapEditor extends javax.swing.JFrame {
         paletteTabbedPane = new javax.swing.JTabbedPane();
         mapPanel = new javax.swing.JPanel();
         paletteScrollPane = new javax.swing.JScrollPane();
+        paletteBackgroundPanel = new JPanel(new fr.rca.mapmaker.ui.LayerLayout(fr.rca.mapmaker.ui.LayerLayout.Disposition.TOP_LEFT));
         paletteGrid = new fr.rca.mapmaker.ui.Grid();
         javax.swing.JToolBar layerToolBar = new javax.swing.JToolBar();
         addLayerButton = new javax.swing.JButton();
@@ -209,6 +214,7 @@ public class MapEditor extends javax.swing.JFrame {
         selectionToggleButton = new javax.swing.JToggleButton();
         spritePanel = new javax.swing.JPanel();
         spritePaletteScrollPane = new javax.swing.JScrollPane();
+        spriteBackgroundPanel = new JPanel(new fr.rca.mapmaker.ui.LayerLayout(fr.rca.mapmaker.ui.LayerLayout.Disposition.TOP_LEFT));
         spritePaletteGrid = new fr.rca.mapmaker.ui.Grid();
         spritePaletteToolBar = new javax.swing.JToolBar();
         spriteToggleButton = new javax.swing.JToggleButton();
@@ -269,6 +275,27 @@ public class MapEditor extends javax.swing.JFrame {
         spriteTool.setSpriteLayer(spriteLayerPanel);
         spriteTool.setSpritePaletteGrid(spritePaletteGrid);
         spriteTool.setProject(project);
+
+        inspectTileMenuItem.setText("Inspecter");
+        inspectTileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inspectTileMenuItemActionPerformed(evt);
+            }
+        });
+        tilePopupMenu.add(inspectTileMenuItem);
+
+        tileInspector.pack();
+
+        javax.swing.GroupLayout tileInspectorLayout = new javax.swing.GroupLayout(tileInspector.getContentPane());
+        tileInspector.getContentPane().setLayout(tileInspectorLayout);
+        tileInspectorLayout.setHorizontalGroup(
+            tileInspectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        tileInspectorLayout.setVerticalGroup(
+            tileInspectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(LANGUAGE.getString("app.title")); // NOI18N
@@ -438,6 +465,9 @@ public class MapEditor extends javax.swing.JFrame {
         paletteScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         paletteScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
+        paletteBackgroundPanel.setBackground(java.awt.Color.darkGray);
+
+        paletteGrid.setComponentPopupMenu(tilePopupMenu);
         paletteGrid.setMaximumSize(new java.awt.Dimension(128, 32767));
         paletteGrid.setMinimumSize(new java.awt.Dimension(128, 5));
 
@@ -460,14 +490,16 @@ public class MapEditor extends javax.swing.JFrame {
         paletteGrid.setLayout(paletteGridLayout);
         paletteGridLayout.setHorizontalGroup(
             paletteGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 131, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         paletteGridLayout.setVerticalGroup(
             paletteGridLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 219, Short.MAX_VALUE)
+            .addGap(0, 5, Short.MAX_VALUE)
         );
 
-        paletteScrollPane.setViewportView(paletteGrid);
+        paletteBackgroundPanel.add(paletteGrid);
+
+        paletteScrollPane.setViewportView(paletteBackgroundPanel);
 
         layerToolBar.setFloatable(false);
         layerToolBar.setRollover(true);
@@ -617,7 +649,7 @@ public class MapEditor extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mapPanelLayout.createSequentialGroup()
                 .addComponent(paletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(paletteScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                .addComponent(paletteScrollPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(layerToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -630,6 +662,8 @@ public class MapEditor extends javax.swing.JFrame {
 
         spritePaletteScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         spritePaletteScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        spriteBackgroundPanel.setBackground(java.awt.Color.darkGray);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentSpritePaletteMap}"), spritePaletteGrid, org.jdesktop.beansbinding.BeanProperty.create("tileMap"));
         bindingGroup.addBinding(binding);
@@ -650,7 +684,9 @@ public class MapEditor extends javax.swing.JFrame {
                 spritePaletteGridKeyPressed(evt);
             }
         });
-        spritePaletteScrollPane.setViewportView(spritePaletteGrid);
+        spriteBackgroundPanel.add(spritePaletteGrid);
+
+        spritePaletteScrollPane.setViewportView(spriteBackgroundPanel);
 
         spritePaletteToolBar.setFloatable(false);
         spritePaletteToolBar.setRollover(true);
@@ -923,12 +959,14 @@ private void focusToggleButtonItemStateChanged(java.awt.event.ItemEvent evt) {//
 private void layerListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_layerListValueChanged
 	mapGrid.setActiveLayer(layerList.getSelectedIndex());
 				
-	if(mapGrid.isFocusVisible())
+	if(mapGrid.isFocusVisible()) {
 		mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
+	}
 }//GEN-LAST:event_layerListValueChanged
 
 private void selectTile(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectTile
 	select(evt, paletteGrid);
+	tileInspector.setTile((PaletteMap)paletteGrid.getTileMap());
 }//GEN-LAST:event_selectTile
 
 private void editTile(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editTile
@@ -1108,6 +1146,11 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_spritePaletteGridKeyPressed
 
+    private void inspectTileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inspectTileMenuItemActionPerformed
+        // TODO add your handling code here:
+		tileInspector.setVisible(true);
+    }//GEN-LAST:event_inspectTileMenuItemActionPerformed
+
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 				
@@ -1158,6 +1201,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JToolBar gridToolBar;
     private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JPopupMenu.Separator importSeparator;
+    private javax.swing.JMenuItem inspectTileMenuItem;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JButton layerDownButton;
@@ -1173,6 +1217,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPanel mapPanel;
     private javax.swing.JPopupMenu mapPopupMenu;
     private javax.swing.JScrollPane mapScrollPane;
+    private javax.swing.JPanel paletteBackgroundPanel;
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JScrollPane paletteScrollPane;
     private javax.swing.JTabbedPane paletteTabbedPane;
@@ -1185,6 +1230,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton removeLayerButton;
     private javax.swing.JPopupMenu.Separator saveSeparator;
     private javax.swing.JToggleButton selectionToggleButton;
+    private javax.swing.JPanel spriteBackgroundPanel;
     private javax.swing.JPanel spriteLayerPanel;
     private fr.rca.mapmaker.ui.Grid spritePaletteGrid;
     private javax.swing.JScrollPane spritePaletteScrollPane;
@@ -1192,7 +1238,9 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPanel spritePanel;
     private javax.swing.JToggleButton spriteToggleButton;
     private fr.rca.mapmaker.editor.tool.SpriteTool spriteTool;
+    private fr.rca.mapmaker.editor.TileInspector tileInspector;
     private fr.rca.mapmaker.ui.TileMapListRenderer tileMapListRenderer;
+    private javax.swing.JPopupMenu tilePopupMenu;
     private javax.swing.ButtonGroup toolGroup;
     private javax.swing.JButton undoButton;
     private javax.swing.JLabel zoomLabel;
