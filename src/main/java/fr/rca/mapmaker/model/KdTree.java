@@ -13,6 +13,9 @@ import java.util.List;
 public class KdTree {
 	private final int numberOfDimensions = 2;
 	private Element root;
+
+	public KdTree() {
+	}
 	
 	public KdTree(List<Point> points) {
 		root = add(points, 0, null);
