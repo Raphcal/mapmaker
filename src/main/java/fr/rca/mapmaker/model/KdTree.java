@@ -31,9 +31,7 @@ public class KdTree {
 	
 	private Element add(List<Point> points, int depth) {
 		if(points.size() == 1) {
-			final Leaf leaf = new Leaf();
-			leaf.value = points.get(0);
-			return leaf;
+			return new Leaf(points.get(0));
 			
 		} else {
 			final Axis axis = Axis.values()[depth % numberOfDimensions];
@@ -51,11 +49,9 @@ public class KdTree {
 				}
 			}
 
-			final Node node = new Node();
-			node.left = add(left, depth + 1);
-			node.right = add(right, depth + 1);
-			
-			return node;
+			return new Node(median, 
+				add(left, depth + 1), 
+				add(right, depth + 1));
 		}
 	}
 	
@@ -85,15 +81,69 @@ public class KdTree {
 	}
 	
 	private interface Element {
+		int getDepth();
+		Element getParent();
+		boolean isLeaf();
 	}
 	
-	private class Node implements Element {
-		private float location;
-		private Element left;
-		private Element right;
+	private abstract class BaseElement implements Element {
+		private int depth;
+		private Element parent;
+
+		@Override
+		public int getDepth() {
+			return depth;
+		}
+
+		public void setDepth(int depth) {
+			this.depth = depth;
+		}
+
+		@Override
+		public Element getParent() {
+			return parent;
+		}
+
+		public void setParent(Element parent) {
+			this.parent = parent;
+		}
 	}
 	
-	private class Leaf implements Element {
-		private Point value;
+	private class Node extends BaseElement {
+		private final float location;
+		private final Element left;
+		private final Element right;
+
+		public Node(float location, Element left, Element right) {
+			this.location = location;
+			this.left = left;
+			this.right = right;
+		}
+
+		@Override
+		public boolean isLeaf() {
+			return false;
+		}
+
+		public float getLocation() {
+			return location;
+		}
+	}
+	
+	private class Leaf extends BaseElement {
+		private final Point value;
+
+		public Leaf(Point value) {
+			this.value = value;
+		}
+
+		@Override
+		public boolean isLeaf() {
+			return true;
+		}
+
+		public Point getValue() {
+			return value;
+		}
 	}
 }
