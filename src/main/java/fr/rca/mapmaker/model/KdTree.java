@@ -3,7 +3,9 @@ package fr.rca.mapmaker.model;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implémentation à 2 dimensions d'un arbre k-d.
@@ -24,18 +26,15 @@ public class KdTree {
 	public List<Point> get(Point point, float distance) {
 		final ArrayList<Point> points = new ArrayList<Point>();
 		
-		// TODO: Rechercher le 1er élément avec la même méthode que l'insertion.
-		// Calculer la distance
-		// si la distance x,y mélangée à la valeur du noeud recherché (x si 
-		// l'axe est x, y sinon) est à distance, vérifier le nœud suivant
-		// Remonter jusqu'à ce que le nœud soit à une distance superieur.
-		
 		final Leaf nearest = getNearestLeaf(point);
-		if(distance(point, nearest.getValue()) <= distance) {
-			points.add(point);
+		if(distance(point, nearest) <= distance) {
+			points.add(nearest.getValue());
 		}
 		
+		final HashSet<Element> doneNodes = new HashSet<Element>();
+		doneNodes.add(nearest);
 		
+		testElement(nearest.getParent(), point, distance, points, doneNodes);
 		
 		return points;
 	}
@@ -44,25 +43,43 @@ public class KdTree {
 		root = add(point, 0, root);
 	}
 	
-	private void testNeighborLeaf(Leaf leaf, Point point, float distance, List<Point> points) {
-		final Element parent = leaf.getParent();
-		if(parent instanceof Node) {
-			final Node node = (Node)parent;
-
-			if(node.getLeft() == leaf) {
-				testElement(node.getRight(), point, distance, points);
-			} else {
-				testElement(node.getLeft(), point, distance, points);
+	private void testElement(Element element, Point point, float distance, List<Point> points, Set<Element> doneNodes) {
+		if(element instanceof Leaf) {
+			final Leaf leaf = (Leaf)element;
+			if(distance(point, leaf) <= distance) {
+				points.add(leaf.getValue());
 			}
+			doneNodes.add(element);
+			
+		} else if(element instanceof Node) {
+			final Node node = (Node)element;
+			
+			final Axis axis = Axis.values()[node.getDepth() % numberOfDimensions];
+			final Point nodePoint;
+			if(axis == Axis.X) {
+				nodePoint = new Point((int)node.getLocation(), (int)point.getY());
+			} else {
+				nodePoint = new Point((int)point.getX(), (int)node.getLocation());
+			}
+			
+			if(point.distance(nodePoint) > distance) {
+				return;
+			}
+			
+			if(!doneNodes.contains(node.getLeft())) {
+				testElement(node.getLeft(), point, distance, points, doneNodes);
+			}
+			if(!doneNodes.contains(node.getRight())) {
+				testElement(node.getRight(), point, distance, points, doneNodes);
+			}
+			doneNodes.add(node);
+			
+			testElement(node.getParent(), point, distance, points, doneNodes);
 		}
 	}
 	
-	private void testElement(Element element, Point point, float distance, List<Point> points) {
-		
-	}
-	
-	private float distance(Point p1, Point p2) {
-		return (float) p1.distance(p2);
+	private float distance(Point point, Leaf leaf) {
+		return (float) point.distance(leaf.getValue());
 	}
 	
 	private Leaf getNearestLeaf(Point point) {
@@ -125,7 +142,10 @@ public class KdTree {
 	}
 	
 	private Element add(List<Point> points, int depth, Element parent) {
-		if(points.size() == 1) {
+		if(points.isEmpty()) {
+			return null;
+			
+		} else if(points.size() == 1) {
 			return new Leaf(points.get(0), depth, parent);
 			
 		} else {
@@ -261,6 +281,21 @@ public class KdTree {
 
 		public Point getValue() {
 			return value;
+		}
+	}
+	
+	public static void main(String[] args) {
+		final KdTree tree = new KdTree(Arrays.asList(
+				new Point(1, 1),
+				new Point(42, 0),
+				new Point(24, 14),
+				new Point(8, 36),
+				new Point(9, 21),
+				new Point(27, 18)
+		));
+		
+		for(final Point point : tree.get(new Point(10, 10), 15)) {
+			System.out.println(point.getX() + "x" + point.getY());
 		}
 	}
 }
