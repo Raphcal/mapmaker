@@ -2,6 +2,7 @@ package fr.rca.mapmaker.model;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,10 +12,10 @@ import java.util.List;
  */
 public class KdTree {
 	private final int numberOfDimensions = 2;
-	private final Element root;
+	private Element root;
 	
 	public KdTree(List<Point> points) {
-		root = add(points, 0);
+		root = add(points, 0, null);
 	}
 	
 	public List<Point> get(Point point, float distance) {
@@ -26,12 +27,103 @@ public class KdTree {
 		// l'axe est x, y sinon) est à distance, vérifier le nœud suivant
 		// Remonter jusqu'à ce que le nœud soit à une distance superieur.
 		
+		final Leaf nearest = getNearestLeaf(point);
+		if(distance(point, nearest.getValue()) <= distance) {
+			points.add(point);
+		}
+		
+		
+		
 		return points;
 	}
 	
-	private Element add(List<Point> points, int depth) {
+	public void add(Point point) {
+		root = add(point, 0, root);
+	}
+	
+	private void testNeighborLeaf(Leaf leaf, Point point, float distance, List<Point> points) {
+		final Element parent = leaf.getParent();
+		if(parent instanceof Node) {
+			final Node node = (Node)parent;
+
+			if(node.getLeft() == leaf) {
+				testElement(node.getRight(), point, distance, points);
+			} else {
+				testElement(node.getLeft(), point, distance, points);
+			}
+		}
+	}
+	
+	private void testElement(Element element, Point point, float distance, List<Point> points) {
+		
+	}
+	
+	private float distance(Point p1, Point p2) {
+		return (float) p1.distance(p2);
+	}
+	
+	private Leaf getNearestLeaf(Point point) {
+		return getNearestLeaf(point, 0, root);
+	}
+	
+	private Leaf getNearestLeaf(Point point, int depth, Element parent) {
+		if(parent instanceof Leaf) {
+			return (Leaf)parent;
+			
+		} else if(parent instanceof Node) {
+			final Node node = (Node)parent;
+			final Axis axis = Axis.values()[depth % numberOfDimensions];
+			
+			if(axis.get(point) < node.getLocation()) {
+				return getNearestLeaf(point, depth + 1, node.getLeft());
+			} else {
+				return getNearestLeaf(point, depth + 1, node.getRight());
+			}
+			
+		} else {
+			return null;
+		}
+	}
+	
+	private Element add(Point point, int depth, Element parent) {
+		final Axis axis = Axis.values()[depth % numberOfDimensions];
+		
+		if(parent instanceof Leaf) {
+			final Leaf leaf = (Leaf)parent;
+			final float median = median(Arrays.asList(point, leaf.getValue()), axis);
+			
+			final Point left;
+			final Point right;
+			
+			if(axis.get(point) < median) {
+				left = point;
+				right = leaf.getValue();
+			} else {
+				left = leaf.getValue();
+				right = point;
+			}
+			
+			final Node node = new Node(median, depth, parent);
+			node.setLeft(new Leaf(left, depth + 1, node));
+			node.setRight(new Leaf(right, depth + 1, node));
+			return node;
+			
+		} else if(parent instanceof Node) {
+			final Node node = (Node)parent;
+			
+			if(axis.get(point) < node.getLocation()) {
+				return add(point, depth + 1, node.left);
+			} else {
+				return add(point, depth + 1, node.right);
+			}
+		}
+		
+		return new Leaf(point, depth, parent);
+	}
+	
+	private Element add(List<Point> points, int depth, Element parent) {
 		if(points.size() == 1) {
-			return new Leaf(points.get(0));
+			return new Leaf(points.get(0), depth, parent);
 			
 		} else {
 			final Axis axis = Axis.values()[depth % numberOfDimensions];
@@ -49,9 +141,10 @@ public class KdTree {
 				}
 			}
 
-			return new Node(median, 
-				add(left, depth + 1), 
-				add(right, depth + 1));
+			final Node node = new Node(median, depth, parent);
+			node.setLeft(add(left, depth + 1, node));
+			node.setRight(add(right, depth + 1, node));
+			return node;
 		}
 	}
 	
@@ -90,6 +183,11 @@ public class KdTree {
 		private int depth;
 		private Element parent;
 
+		public BaseElement(int depth, Element parent) {
+			this.depth = depth;
+			this.parent = parent;
+		}
+		
 		@Override
 		public int getDepth() {
 			return depth;
@@ -111,13 +209,12 @@ public class KdTree {
 	
 	private class Node extends BaseElement {
 		private final float location;
-		private final Element left;
-		private final Element right;
+		private Element left;
+		private Element right;
 
-		public Node(float location, Element left, Element right) {
+		public Node(float location, int depth, Element parent) {
+			super(depth, parent);
 			this.location = location;
-			this.left = left;
-			this.right = right;
 		}
 
 		@Override
@@ -128,12 +225,29 @@ public class KdTree {
 		public float getLocation() {
 			return location;
 		}
+
+		public Element getLeft() {
+			return left;
+		}
+
+		public void setLeft(Element left) {
+			this.left = left;
+		}
+
+		public Element getRight() {
+			return right;
+		}
+		
+		public void setRight(Element right) {
+			this.right = right;
+		}
 	}
 	
 	private class Leaf extends BaseElement {
 		private final Point value;
 
-		public Leaf(Point value) {
+		public Leaf(Point value, int depth, Element parent) {
+			super(depth, parent);
 			this.value = value;
 		}
 
