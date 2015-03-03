@@ -3,8 +3,10 @@ package fr.rca.mapmaker.model;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -285,17 +287,70 @@ public class KdTree {
 	}
 	
 	public static void main(String[] args) {
-		final KdTree tree = new KdTree(Arrays.asList(
-				new Point2D.Float(1, 1),
-				new Point2D.Float(42, 0),
-				new Point2D.Float(24, 14),
-				new Point2D.Float(8, 36),
-				new Point2D.Float(9, 21),
-				new Point2D.Float(27, 18)
-		));
+		long iterateMin = Long.MAX_VALUE;
+		long iterateMax = 0L;
+		long iterateTotal = 0L;
 		
-		for(final Point2D.Float point : tree.get(new Point2D.Float(10, 10), 20)) {
-			System.out.println(point.getX() + "x" + point.getY());
+		long kdMin = Long.MAX_VALUE;
+		long kdMax = 0L;
+		long kdTotal = 0L;
+		
+		int errors = 0;
+		
+		final Random random = new Random();
+		final int tests = 10000;
+		
+		for(int i = 0; i < tests; i++) {
+			final List<Point2D.Float> points = generatePoints(10000);
+			final KdTree tree = new KdTree(points);
+			
+			final Point2D.Float reference = new Point2D.Float(random.nextFloat() * 100.0f, random.nextFloat() * 100.0f);
+			
+			final long iterateStart = System.nanoTime();
+			final List<Point2D.Float> iterateNeighbors = findNeighbors(points, reference, 20.0f);
+			final long iterateTime = System.nanoTime() - iterateStart;
+			iterateMin = Math.min(iterateMin, iterateTime);
+			iterateMax = Math.max(iterateMax, iterateTime);
+			iterateTotal += iterateTime;
+			
+			final long kdStart = System.nanoTime();
+			final List<Point2D.Float> kdNeighbors = tree.get(reference, 20.0f);
+			final long kdTime = System.nanoTime() - kdStart;
+			kdMin = Math.min(kdMin, kdTime);
+			kdMax = Math.max(kdMax, kdTime);
+			kdTotal += kdTime;
+			
+			if(iterateNeighbors.size() != kdNeighbors.size()) {
+//				System.out.println("Erreur : " + iterateNeighbors.size() + " vs " + kdNeighbors.size());
+				errors++;
+			}
 		}
+		
+		System.out.println(errors + " errors.");
+		System.out.println("Iterate - min : " + iterateMin + ", max : " + iterateMax + ", avg : " + (double)iterateTotal/(tests * 1000000.0) + "ms");
+		System.out.println("Kd Tree - min : " + kdMin + ", max : " + kdMax + ", avg : " + (double)kdTotal/(tests * 1000000.0) + "ms");
+	}
+	
+	private static List<Point2D.Float> generatePoints(int length) {
+		final Point2D.Float[] points = new Point2D.Float[length];
+		final Random random = new Random();
+		
+		for(int i = 0; i < length; i++) {
+			points[i] = new Point2D.Float(random.nextFloat() * 100.0f, random.nextFloat() * 100.0f);
+		}
+		
+		return Arrays.asList(points);
+	}
+	
+	private static List<Point2D.Float> findNeighbors(List<Point2D.Float> points, Point2D.Float reference, float distance) {
+		final ArrayList<Point2D.Float> neighbors = new ArrayList<Point2D.Float>();
+		
+		for(final Point2D.Float point : points) {
+			if(reference.distance(point) <= distance) {
+				neighbors.add(point);
+			}
+		}
+		
+		return neighbors;
 	}
 }
