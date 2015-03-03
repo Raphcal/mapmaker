@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.model.palette;
 
 import fr.rca.mapmaker.editor.TileMapEditor;
+import fr.rca.mapmaker.model.HasFunctionHitbox;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -14,13 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 
-public class EditableImagePalette implements EditablePalette, HasSizeChangeListeners {
+public class EditableImagePalette implements EditablePalette, HasSizeChangeListeners, HasFunctionHitbox {
 
 	private final ArrayList<BufferedImage> tiles = new ArrayList<BufferedImage>();
 	private final ArrayList<TileLayer> sources = new ArrayList<TileLayer>();
 	private final int tileSize;
 	private final int columns;
 	private int selectedTile;
+	
+	private String[] hitboxes;
 	
 	private String name;
 	
@@ -34,6 +37,7 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 		this.tileSize = tileSize;
 		this.columns = columns;
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
+		this.hitboxes = new String[columns];
 		
 		for(int index = 0; index < columns; index++) {
 			sources.add(new TileLayer(tileSize, tileSize));
@@ -42,9 +46,14 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	}
 	
 	public EditableImagePalette(int tileSize, int columns, ColorPalette palette, List<TileLayer> tiles) {
+		this(tileSize, columns, palette, tiles, new String[tiles.size()]);
+	}
+	
+	public EditableImagePalette(int tileSize, int columns, ColorPalette palette, List<TileLayer> tiles, String[] hitboxes) {
 		this.tileSize = tileSize;
 		this.columns = columns;
 		this.palette = palette;
+		this.hitboxes = hitboxes.clone();
 		
 		for(int index = 0; index < tiles.size(); index++) {
 			sources.add(tiles.get(index));
@@ -128,6 +137,16 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 		return sources.get(index);
 	}
 
+	@Override
+	public String getFunction(int index) {
+		return hitboxes[index];
+	}
+
+	@Override
+	public void setFunction(int index, String function) {
+		hitboxes[index] = function;
+	}
+
 	public ColorPalette getColorPalette() {
 		return palette;
 	}
@@ -164,6 +183,11 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 			}
 			
 			final Dimension newSize = new Dimension(columns, sources.size() / columns);
+			
+			// Redimensionnement du tableau de hitbox.
+			final String[] newArray = new String[sources.size()];
+			System.arraycopy(hitboxes, 0, newArray, 0, hitboxes.length);
+			hitboxes = newArray;
 			
 			fireSizeChanged(oldSize, newSize);
 		}

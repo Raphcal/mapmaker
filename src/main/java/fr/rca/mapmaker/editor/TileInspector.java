@@ -1,6 +1,8 @@
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.model.HasFunctionHitbox;
 import fr.rca.mapmaker.model.map.PaletteMap;
+import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
@@ -13,6 +15,8 @@ import java.awt.Point;
  */
 public class TileInspector extends javax.swing.JDialog {
 
+	private Palette palette;
+	
 	public TileInspector() {
 	}
 	
@@ -37,15 +41,63 @@ public class TileInspector extends javax.swing.JDialog {
 			palette = reference.getProject().getPalette(reference.getPaletteIndex());
 		}
 		
+		this.palette = palette;
+		
 		if(palette instanceof EditableImagePalette) {
 			final EditableImagePalette imagePalette = (EditableImagePalette)palette;
 			
-			tileGrid.setTileMap(new TileMap(imagePalette.getSource(tile), imagePalette.getColorPalette()));
-			tileAndHitboxGrid.setTileMap(new TileMap(imagePalette.getSource(tile), imagePalette.getColorPalette()));
+			final TileLayer source = imagePalette.getSource(tile);
+			
+			tileGrid.setTileMap(new TileMap(source, imagePalette.getColorPalette()));
+			tileAndHitboxGrid.setTileMap(new TileMap(source, imagePalette.getColorPalette()));
+			
+			tileAndHitboxGrid.setZoom(256.0 / (double)source.getWidth());
 		}
+		
+		final boolean hasFunctionHitbox = palette instanceof HasFunctionHitbox;
+		hitboxCheckBox.setVisible(hasFunctionHitbox);
+		hitboxLabel.setVisible(hasFunctionHitbox);
+		hitboxSeparator.setVisible(hasFunctionHitbox);
+		functionLabel.setVisible(hasFunctionHitbox);
+		functionTextField.setVisible(hasFunctionHitbox);
+		function.setVisible(hasFunctionHitbox);
+		
+		if(hasFunctionHitbox) {
+			final String hitbox = ((HasFunctionHitbox)palette).getFunction(palette.getSelectedTile());
+			
+			hitboxCheckBox.setSelected(hitbox != null);
+			functionTextField.setEnabled(hitbox != null);
+			
+			firePropertyChange("currentFunctionHitbox", null, hitbox);
+		}
+		
 		function.repaint();
 	}
 
+	public void setCurrentFunctionHitbox(String functionHitbox) {
+		if(palette instanceof HasFunctionHitbox) {
+			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) palette;
+			
+			final String oldHitbox = hasFunctionHitbox.getFunction(palette.getSelectedTile());
+			hasFunctionHitbox.setFunction(palette.getSelectedTile(), functionHitbox);
+			
+			firePropertyChange("currentFunctionHitbox", oldHitbox, functionHitbox);
+		}
+	}
+	
+	public String getCurrentFunctionHitbox() {
+		if(palette instanceof HasFunctionHitbox) {
+			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) palette; 
+			final String hitbox = hasFunctionHitbox.getFunction(palette.getSelectedTile());
+			
+			if(hitbox != null) {
+				return hitbox;
+			}
+		}
+		
+		return "";
+	}
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -56,7 +108,7 @@ public class TileInspector extends javax.swing.JDialog {
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        jSeparator1 = new javax.swing.JSeparator();
+        hitboxSeparator = new javax.swing.JSeparator();
         tileGrid = new fr.rca.mapmaker.ui.Grid();
         tileIndexLabel = new javax.swing.JLabel();
         passThroughCheckBox = new javax.swing.JCheckBox();
@@ -64,12 +116,13 @@ public class TileInspector extends javax.swing.JDialog {
         hitboxLabel = new javax.swing.JLabel();
         functionLabel = new javax.swing.JLabel();
         functionTextField = new javax.swing.JTextField();
-        jSeparator2 = new javax.swing.JSeparator();
+        previewSeparator = new javax.swing.JSeparator();
         previewLabel = new javax.swing.JLabel();
         previewPanel = new javax.swing.JPanel(new fr.rca.mapmaker.ui.LayerLayout(fr.rca.mapmaker.ui.LayerLayout.Disposition.CENTER));
         function = new fr.rca.mapmaker.ui.Function();
         tileAndHitboxGrid = new fr.rca.mapmaker.ui.Grid();
-        hitBoxCheckBox = new javax.swing.JCheckBox();
+        hitboxCheckBox = new javax.swing.JCheckBox();
+        hitboxCheckBox.putClientProperty("JComponent.sizeVariant", "small");
 
         setTitle("Infos sur la tuile n°12");
         setBackground(new java.awt.Color(236, 236, 236));
@@ -93,18 +146,21 @@ public class TileInspector extends javax.swing.JDialog {
         functionLabel.setToolTipText("");
 
         functionTextField.setFont(functionTextField.getFont().deriveFont(functionTextField.getFont().getSize()-1f));
-        functionTextField.setText("0");
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFunctionHitbox}"), functionTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
         previewLabel.setFont(previewLabel.getFont().deriveFont(previewLabel.getFont().getSize()-1f));
         previewLabel.setText("Aperçu :");
 
         previewPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(197, 197, 197)));
+        previewPanel.setPreferredSize(new java.awt.Dimension(256, 256));
 
         function.setPreferredSize(tileAndHitboxGrid.getPreferredSize());
         function.setSourceHeight(tileAndHitboxGrid.getTileMapHeight());
         function.setSourceWidth(tileAndHitboxGrid.getTileMapWidth());
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, functionTextField, org.jdesktop.beansbinding.ELProperty.create("${text}"), function, org.jdesktop.beansbinding.BeanProperty.create("function"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, functionTextField, org.jdesktop.beansbinding.ELProperty.create("${text}"), function, org.jdesktop.beansbinding.BeanProperty.create("function"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${preferredSize}"), function, org.jdesktop.beansbinding.BeanProperty.create("preferredSize"));
         bindingGroup.addBinding(binding);
@@ -119,7 +175,12 @@ public class TileInspector extends javax.swing.JDialog {
         tileAndHitboxGrid.setZoom(4.0);
         previewPanel.add(tileAndHitboxGrid);
 
-        hitBoxCheckBox.setText("Hitbox");
+        hitboxCheckBox.setText("Hitbox");
+        hitboxCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hitboxCheckBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -134,7 +195,7 @@ public class TileInspector extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(functionTextField)
                 .addContainerGap())
-            .addComponent(jSeparator1)
+            .addComponent(hitboxSeparator)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -142,7 +203,7 @@ public class TileInspector extends javax.swing.JDialog {
                         .addComponent(tileGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(hitBoxCheckBox)
+                            .addComponent(hitboxCheckBox)
                             .addComponent(passThroughCheckBox)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(44, 44, 44)
@@ -154,7 +215,7 @@ public class TileInspector extends javax.swing.JDialog {
                         .addGap(6, 6, 6)
                         .addComponent(previewLabel)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jSeparator2)
+            .addComponent(previewSeparator)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,17 +228,17 @@ public class TileInspector extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(passThroughCheckBox)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(hitboxSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hitboxLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hitBoxCheckBox)
+                .addComponent(hitboxCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(functionLabel)
                     .addComponent(functionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(previewSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(previewLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -189,6 +250,15 @@ public class TileInspector extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void hitboxCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hitboxCheckBoxActionPerformed
+		functionTextField.setEnabled(hitboxCheckBox.isSelected());
+		function.setVisible(hitboxCheckBox.isSelected());
+		
+		if(!hitboxCheckBox.isSelected()) {
+			setCurrentFunctionHitbox(null);
+		}
+    }//GEN-LAST:event_hitboxCheckBoxActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -219,13 +289,13 @@ public class TileInspector extends javax.swing.JDialog {
     private fr.rca.mapmaker.ui.Function function;
     private javax.swing.JLabel functionLabel;
     private javax.swing.JTextField functionTextField;
-    private javax.swing.JCheckBox hitBoxCheckBox;
+    private javax.swing.JCheckBox hitboxCheckBox;
     private javax.swing.JLabel hitboxLabel;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator hitboxSeparator;
     private javax.swing.JCheckBox passThroughCheckBox;
     private javax.swing.JLabel previewLabel;
     private javax.swing.JPanel previewPanel;
+    private javax.swing.JSeparator previewSeparator;
     private fr.rca.mapmaker.ui.Grid tileAndHitboxGrid;
     private fr.rca.mapmaker.ui.Grid tileGrid;
     private javax.swing.JLabel tileIndexLabel;

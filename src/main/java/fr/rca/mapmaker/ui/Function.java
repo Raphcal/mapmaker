@@ -153,6 +153,10 @@ public class Function extends JComponent {
 
 	@Override
 	protected void paintComponent(Graphics g) {
+		if(function == null || function.isEmpty()) {
+			return;
+		}
+		
 		final Rectangle bounds = g.getClipBounds();
 		final double w = (double) bounds.width / (double) sourceWidth;
 		final double h = (double) bounds.height / (double) sourceHeight;
