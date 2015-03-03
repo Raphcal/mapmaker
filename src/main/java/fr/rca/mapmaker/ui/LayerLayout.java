@@ -79,20 +79,7 @@ public class LayerLayout implements LayoutManager {
 
 	@Override
 	public Dimension minimumLayoutSize(Container parent) {
-		final Dimension size = new Dimension(0, 0);
-		
-		for(final Component component : parent.getComponents()) {
-			final Dimension preferredSize = component.getMinimumSize();
-			
-			size.width = Math.max(preferredSize.width, size.width);
-			size.height = Math.max(preferredSize.height, size.height);
-		}
-		
-		final Insets insets = parent.getInsets();
-		size.width += insets.left + insets.right;
-		size.height += insets.top + insets.bottom;
-		
-		return size;
+		return preferredLayoutSize(parent);
 	}
 
 	@Override

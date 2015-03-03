@@ -69,9 +69,11 @@ public class TileInspector extends javax.swing.JDialog {
         previewPanel = new javax.swing.JPanel(new fr.rca.mapmaker.ui.LayerLayout(fr.rca.mapmaker.ui.LayerLayout.Disposition.CENTER));
         function = new fr.rca.mapmaker.ui.Function();
         tileAndHitboxGrid = new fr.rca.mapmaker.ui.Grid();
+        hitBoxCheckBox = new javax.swing.JCheckBox();
 
         setTitle("Infos sur la tuile n°12");
         setBackground(new java.awt.Color(236, 236, 236));
+        setMinimumSize(new java.awt.Dimension(240, 0));
         setName("tileInspector"); // NOI18N
         setResizable(false);
 
@@ -97,7 +99,6 @@ public class TileInspector extends javax.swing.JDialog {
         previewLabel.setText("Aperçu :");
 
         previewPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(197, 197, 197)));
-        previewPanel.setPreferredSize(new java.awt.Dimension(256, 256));
 
         function.setPreferredSize(tileAndHitboxGrid.getPreferredSize());
         function.setSourceHeight(tileAndHitboxGrid.getTileMapHeight());
@@ -118,33 +119,42 @@ public class TileInspector extends javax.swing.JDialog {
         tileAndHitboxGrid.setZoom(4.0);
         previewPanel.add(tileAndHitboxGrid);
 
+        hitBoxCheckBox.setText("Hitbox");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
-            .addComponent(jSeparator2)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(6, 6, 6)
+                .addComponent(previewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(6, 6, 6))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(functionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(functionTextField)
+                .addContainerGap())
+            .addComponent(jSeparator1)
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(previewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(tileGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(hitBoxCheckBox)
+                            .addComponent(passThroughCheckBox)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(tileIndexLabel))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(functionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(functionTextField))
+                        .addComponent(hitboxLabel))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(tileGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tileIndexLabel)
-                                    .addComponent(passThroughCheckBox)))
-                            .addComponent(hitboxLabel)
-                            .addComponent(previewLabel))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(6, 6, 6)
+                        .addComponent(previewLabel)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jSeparator2)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,6 +170,8 @@ public class TileInspector extends javax.swing.JDialog {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hitboxLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(hitBoxCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(functionLabel)
@@ -207,6 +219,7 @@ public class TileInspector extends javax.swing.JDialog {
     private fr.rca.mapmaker.ui.Function function;
     private javax.swing.JLabel functionLabel;
     private javax.swing.JTextField functionTextField;
+    private javax.swing.JCheckBox hitBoxCheckBox;
     private javax.swing.JLabel hitboxLabel;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
