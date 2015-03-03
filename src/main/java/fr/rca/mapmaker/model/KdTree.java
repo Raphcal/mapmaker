@@ -1,6 +1,6 @@
 package fr.rca.mapmaker.model;
 
-import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,18 +13,18 @@ import java.util.Set;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class KdTree {
-	private final int numberOfDimensions = 2;
+	private final static int NUMBER_OF_DIMENSIONS = 2;
 	private Element root;
 
 	public KdTree() {
 	}
 	
-	public KdTree(List<Point> points) {
+	public KdTree(List<Point2D.Float> points) {
 		root = add(points, 0, null);
 	}
 	
-	public List<Point> get(Point point, float distance) {
-		final ArrayList<Point> points = new ArrayList<Point>();
+	public List<Point2D.Float> get(Point2D.Float point, float distance) {
+		final ArrayList<Point2D.Float> points = new ArrayList<Point2D.Float>();
 		
 		final Leaf nearest = getNearestLeaf(point);
 		if(distance(point, nearest) <= distance) {
@@ -39,11 +39,11 @@ public class KdTree {
 		return points;
 	}
 	
-	public void add(Point point) {
+	public void add(Point2D.Float point) {
 		root = add(point, 0, root);
 	}
 	
-	private void testElement(Element element, Point point, float distance, List<Point> points, Set<Element> doneNodes) {
+	private void testElement(Element element, Point2D.Float point, float distance, List<Point2D.Float> points, Set<Element> doneNodes) {
 		if(element instanceof Leaf) {
 			final Leaf leaf = (Leaf)element;
 			if(distance(point, leaf) <= distance) {
@@ -54,12 +54,12 @@ public class KdTree {
 		} else if(element instanceof Node) {
 			final Node node = (Node)element;
 			
-			final Axis axis = Axis.values()[node.getDepth() % numberOfDimensions];
-			final Point nodePoint;
+			final Axis axis = Axis.values()[node.getDepth() % NUMBER_OF_DIMENSIONS];
+			final Point2D.Float nodePoint;
 			if(axis == Axis.X) {
-				nodePoint = new Point((int)node.getLocation(), (int)point.getY());
+				nodePoint = new Point2D.Float(node.getLocation(), (float)point.getY());
 			} else {
-				nodePoint = new Point((int)point.getX(), (int)node.getLocation());
+				nodePoint = new Point2D.Float((float)point.getX(), node.getLocation());
 			}
 			
 			if(point.distance(nodePoint) > distance) {
@@ -78,21 +78,21 @@ public class KdTree {
 		}
 	}
 	
-	private float distance(Point point, Leaf leaf) {
+	private float distance(Point2D.Float point, Leaf leaf) {
 		return (float) point.distance(leaf.getValue());
 	}
 	
-	private Leaf getNearestLeaf(Point point) {
+	private Leaf getNearestLeaf(Point2D.Float point) {
 		return getNearestLeaf(point, 0, root);
 	}
 	
-	private Leaf getNearestLeaf(Point point, int depth, Element parent) {
+	private Leaf getNearestLeaf(Point2D.Float point, int depth, Element parent) {
 		if(parent instanceof Leaf) {
 			return (Leaf)parent;
 			
 		} else if(parent instanceof Node) {
 			final Node node = (Node)parent;
-			final Axis axis = Axis.values()[depth % numberOfDimensions];
+			final Axis axis = Axis.values()[depth % NUMBER_OF_DIMENSIONS];
 			
 			if(axis.get(point) < node.getLocation()) {
 				return getNearestLeaf(point, depth + 1, node.getLeft());
@@ -105,15 +105,15 @@ public class KdTree {
 		}
 	}
 	
-	private Element add(Point point, int depth, Element parent) {
-		final Axis axis = Axis.values()[depth % numberOfDimensions];
+	private Element add(Point2D.Float point, int depth, Element parent) {
+		final Axis axis = Axis.values()[depth % NUMBER_OF_DIMENSIONS];
 		
 		if(parent instanceof Leaf) {
 			final Leaf leaf = (Leaf)parent;
 			final float median = median(Arrays.asList(point, leaf.getValue()), axis);
 			
-			final Point left;
-			final Point right;
+			final Point2D.Float left;
+			final Point2D.Float right;
 			
 			if(axis.get(point) < median) {
 				left = point;
@@ -141,7 +141,7 @@ public class KdTree {
 		return new Leaf(point, depth, parent);
 	}
 	
-	private Element add(List<Point> points, int depth, Element parent) {
+	private Element add(List<Point2D.Float> points, int depth, Element parent) {
 		if(points.isEmpty()) {
 			return null;
 			
@@ -149,14 +149,14 @@ public class KdTree {
 			return new Leaf(points.get(0), depth, parent);
 			
 		} else {
-			final Axis axis = Axis.values()[depth % numberOfDimensions];
+			final Axis axis = Axis.values()[depth % NUMBER_OF_DIMENSIONS];
 
 			final float median = median(points, axis);
 
-			final ArrayList<Point> left = new ArrayList<Point>();
-			final ArrayList<Point> right = new ArrayList<Point>();
+			final ArrayList<Point2D.Float> left = new ArrayList<Point2D.Float>();
+			final ArrayList<Point2D.Float> right = new ArrayList<Point2D.Float>();
 
-			for(final Point point : points) {
+			for(final Point2D.Float point : points) {
 				if(axis.get(point) < median) {
 					left.add(point);
 				} else {
@@ -171,9 +171,9 @@ public class KdTree {
 		}
 	}
 	
-	private float median(List<Point> points, Axis axis) {
+	private float median(List<Point2D.Float> points, Axis axis) {
 		float total = 0;
-		for(Point point : points) {
+		for(Point2D.Float point : points) {
 			total += axis.get(point);
 		}
 		return total / (float)points.size();
@@ -182,18 +182,18 @@ public class KdTree {
 	private enum Axis {
 		X {
 			@Override
-			public float get(Point point) {
+			public float get(Point2D.Float point) {
 				return (float) point.getX();
 			}
 		}, 
 		Y {
 			@Override
-			public float get(Point point) {
+			public float get(Point2D.Float point) {
 				return (float) point.getY();
 			}
 		};
 		
-		public abstract float get(Point point);
+		public abstract float get(Point2D.Float point);
 	}
 	
 	private interface Element {
@@ -267,9 +267,9 @@ public class KdTree {
 	}
 	
 	private class Leaf extends BaseElement {
-		private final Point value;
+		private final Point2D.Float value;
 
-		public Leaf(Point value, int depth, Element parent) {
+		public Leaf(Point2D.Float value, int depth, Element parent) {
 			super(depth, parent);
 			this.value = value;
 		}
@@ -279,22 +279,22 @@ public class KdTree {
 			return true;
 		}
 
-		public Point getValue() {
+		public Point2D.Float getValue() {
 			return value;
 		}
 	}
 	
 	public static void main(String[] args) {
 		final KdTree tree = new KdTree(Arrays.asList(
-				new Point(1, 1),
-				new Point(42, 0),
-				new Point(24, 14),
-				new Point(8, 36),
-				new Point(9, 21),
-				new Point(27, 18)
+				new Point2D.Float(1, 1),
+				new Point2D.Float(42, 0),
+				new Point2D.Float(24, 14),
+				new Point2D.Float(8, 36),
+				new Point2D.Float(9, 21),
+				new Point2D.Float(27, 18)
 		));
 		
-		for(final Point point : tree.get(new Point(10, 10), 15)) {
+		for(final Point2D.Float point : tree.get(new Point2D.Float(10, 10), 20)) {
 			System.out.println(point.getX() + "x" + point.getY());
 		}
 	}
