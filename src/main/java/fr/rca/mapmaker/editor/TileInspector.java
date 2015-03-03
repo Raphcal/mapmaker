@@ -5,6 +5,7 @@ import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
+import java.awt.Point;
 
 /**
  *
@@ -42,6 +43,7 @@ public class TileInspector extends javax.swing.JDialog {
 			tileGrid.setTileMap(new TileMap(imagePalette.getSource(tile), imagePalette.getColorPalette()));
 			tileAndHitboxGrid.setTileMap(new TileMap(imagePalette.getSource(tile), imagePalette.getColorPalette()));
 		}
+		function.repaint();
 	}
 
 	/**
@@ -98,19 +100,22 @@ public class TileInspector extends javax.swing.JDialog {
         previewPanel.setPreferredSize(new java.awt.Dimension(256, 256));
 
         function.setPreferredSize(tileAndHitboxGrid.getPreferredSize());
+        function.setSourceHeight(tileAndHitboxGrid.getTileMapHeight());
+        function.setSourceWidth(tileAndHitboxGrid.getTileMapWidth());
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, functionTextField, org.jdesktop.beansbinding.ELProperty.create("${text}"), function, org.jdesktop.beansbinding.BeanProperty.create("function"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${preferredSizeSet}"), function, org.jdesktop.beansbinding.BeanProperty.create("preferredSize"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${preferredSize}"), function, org.jdesktop.beansbinding.BeanProperty.create("preferredSize"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${height}"), function, org.jdesktop.beansbinding.BeanProperty.create("sourceHeight"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${tileMapHeight}"), function, org.jdesktop.beansbinding.BeanProperty.create("sourceHeight"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${width}"), function, org.jdesktop.beansbinding.BeanProperty.create("sourceWidth"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${tileMapWidth}"), function, org.jdesktop.beansbinding.BeanProperty.create("sourceWidth"));
         bindingGroup.addBinding(binding);
 
         previewPanel.add(function);
 
         tileAndHitboxGrid.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        tileAndHitboxGrid.setZoom(4.0);
         previewPanel.add(tileAndHitboxGrid);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -180,7 +185,12 @@ public class TileInspector extends javax.swing.JDialog {
 		/* Create and display the dialog */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				final EditableImagePalette palette = new EditableImagePalette(32, 4);
+				final PaletteMap paletteMap = new PaletteMap(palette, 4);
+				paletteMap.setSelection(new Point(0, 0));
+				
 				TileInspector dialog = new TileInspector(new javax.swing.JFrame(), true);
+				dialog.setTile(paletteMap);
 				dialog.pack();
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override

@@ -1,5 +1,7 @@
 package fr.rca.mapmaker.ui;
 
+import fr.rca.mapmaker.model.map.PaletteMap;
+import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;

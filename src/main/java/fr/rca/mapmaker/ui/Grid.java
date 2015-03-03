@@ -119,6 +119,14 @@ public class Grid extends AbstractLayerPainter {
 	public TileMap getTileMap() {
 		return tileMap;
 	}
+	
+	public int getTileMapWidth() {
+		return tileMap != null ? tileMap.getWidth() : 0;
+	}
+	
+	public int getTileMapHeight() {
+		return tileMap != null ? tileMap.getHeight(): 0;
+	}
 
 	public void setTileMap(TileMap tileMap) {
 		if(this.tileMap != null) {
@@ -335,6 +343,8 @@ public class Grid extends AbstractLayerPainter {
 			height = 5;
 		}
 		
+		firePropertyChange("tileMapWidth", width, overlay.getWidth());
+		firePropertyChange("tileMapHeight", height, overlay.getHeight());
 		overlay.resize(width, height);
 		
 		final int tileSize = getTileSize();
