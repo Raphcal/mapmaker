@@ -3,6 +3,7 @@ package fr.rca.mapmaker.io.mkz;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.Streams;
+import fr.rca.mapmaker.model.HasFunctionHitbox;
 import fr.rca.mapmaker.model.palette.ImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import java.awt.Color;
@@ -37,6 +38,20 @@ public class ImagePaletteDataHandler implements DataHandler<Palette> {
 		Streams.write(t.getTileSize(), outputStream);
 		Streams.write(PADDING, outputStream);
 		
+		if(t instanceof HasFunctionHitbox) {
+			// Écriture des fonctions d'hitbox
+			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) t;
+			for(int index = 0; index < t.size(); index++) {
+				final String function = hasFunctionHitbox.getFunction(index);
+				
+				Streams.write(function != null, outputStream);
+				if(function != null) {
+					Streams.write(function, outputStream);
+				}
+			}
+		}
+		
+		// Écriture des images.
 		final BufferedImage palette = renderPalette(t, t.getTileSize());
 		
 		final ZipEntry zipEntry = new ZipEntry(t.toString() + '-' + t.getTileSize() + ".png");
