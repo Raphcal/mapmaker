@@ -45,6 +45,14 @@ public abstract class AbstractFormat implements Format {
 	public <T> DataHandler<T> getHandler(String name) {
 		return (DataHandler<T>) handlers.get(name);
 	}
+	
+	public void setVersion(int version) {
+		for(final DataHandler<?> handler : handlers.values()) {
+			if(handler instanceof HasVersion) {
+				((HasVersion)handler).setVersion(version);
+			}
+		}
+	}
 
 	@Override
 	public String getDefaultExtension() {

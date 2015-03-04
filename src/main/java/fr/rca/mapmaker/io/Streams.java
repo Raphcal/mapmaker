@@ -87,7 +87,6 @@ public final class Streams {
 	}
 	
 	public static void write(String s, OutputStream outputStream) throws IOException {
-		
 		write(s.toCharArray(), outputStream);
 	}
 	

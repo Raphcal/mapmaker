@@ -41,8 +41,12 @@ public class InternalFormat extends AbstractFormat {
 	private static final String DATA_ENTRY = "data";
 	
 	private static final int HEADER_LENGTH = 4;
-	private static final int HEADER_LAST_VERSION = 3;
-	private static final String HEADER_VERSION_3 = "MMK3";
+	
+	public static final int VERSION_3 = 3;
+	public static final String HEADER_VERSION_3 = "MMK3";
+	
+	public static final int LAST_VERSION = VERSION_3;
+	public static final String HEADER_LAST_VERSION = HEADER_VERSION_3;
 			
 
 	public InternalFormat() {
@@ -69,13 +73,13 @@ public class InternalFormat extends AbstractFormat {
 	public void saveProject(Project project, File file) {
 		final DataHandler<Project> handler = getHandler(project.getClass());
 		
-		((ProjectDataHandler)handler).setVersion(HEADER_LAST_VERSION);
+		setVersion(LAST_VERSION);
 		
 		try {
 			final ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(file));
 			try {
 				outputStream.putNextEntry(new ZipEntry(DATA_ENTRY));
-				writeHeader(HEADER_VERSION_3, outputStream);
+				writeHeader(HEADER_LAST_VERSION, outputStream);
 				handler.write(project, outputStream);
 				outputStream.closeEntry();
 				
@@ -97,7 +101,7 @@ public class InternalFormat extends AbstractFormat {
 		
 		// Définition du numéro de version.
 		final int version = getVersion(file);
-		((ProjectDataHandler)handler).setVersion(version);
+		setVersion(version);
 		
 		try {
 			final ZipFile zipFile = new ZipFile(file);
@@ -106,7 +110,7 @@ public class InternalFormat extends AbstractFormat {
 
 				final InputStream inputStream = zipFile.getInputStream(entry);
 				try {
-					if(version == 3) {
+					if(version >= VERSION_3) {
 						readHeader(inputStream);
 					}
 					project = handler.read(inputStream);

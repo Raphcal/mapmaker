@@ -4,6 +4,7 @@ import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
+import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.Streams;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
@@ -17,7 +18,7 @@ import java.util.List;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class ProjectDataHandler implements DataHandler<Project> {
+public class ProjectDataHandler implements DataHandler<Project>, HasVersion {
 	
 	private final Format format;
 	private int version;
@@ -26,6 +27,7 @@ public class ProjectDataHandler implements DataHandler<Project> {
 		this.format = format;
 	}
 	
+	@Override
 	public void setVersion(int version) {
 		this.version = version;
 	}

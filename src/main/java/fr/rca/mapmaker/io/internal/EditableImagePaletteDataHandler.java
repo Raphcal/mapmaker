@@ -5,6 +5,7 @@ import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
+import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.Streams;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import java.io.IOException;
@@ -16,12 +17,18 @@ import java.util.ArrayList;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class EditableImagePaletteDataHandler implements DataHandler<EditableImagePalette> {
+public class EditableImagePaletteDataHandler implements DataHandler<EditableImagePalette>, HasVersion {
 
 	private final Format format;
+	private int version;
 
 	public EditableImagePaletteDataHandler(Format format) {
 		this.format = format;
+	}
+	
+	@Override
+	public void setVersion(int version) {
+		this.version = version;
 	}
 	
 	@Override
@@ -38,8 +45,17 @@ public class EditableImagePaletteDataHandler implements DataHandler<EditableImag
 		Streams.write(size, outputStream);
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
-		for(int index = 0; index < size; index++)
+		for(int index = 0; index < size; index++) {
 			tileLayerHandler.write(t.getSource(index), outputStream);
+			
+			if(version == InternalFormat.VERSION_3) {
+				final String functionHitbox = t.getFunction(index);
+				Streams.write(functionHitbox != null, outputStream);
+				if(functionHitbox != null) {
+					Streams.write(t.getFunction(index), outputStream);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -55,12 +71,21 @@ public class EditableImagePaletteDataHandler implements DataHandler<EditableImag
 		
 		final int size = Streams.readInt(inputStream);
 		final ArrayList<TileLayer> tiles = new ArrayList<TileLayer>();
+		final String[] functions = new String[size];
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
-		for(int index = 0; index < size; index++)
+		for(int index = 0; index < size; index++) {
 			tiles.add(tileLayerHandler.read(inputStream));
+			
+			if(version == InternalFormat.VERSION_3) {
+				final boolean hasHitbox = Streams.readBoolean(inputStream);
+				if(hasHitbox) {
+					functions[index] = Streams.readString(inputStream);
+				}
+			}
+		}
 		
-		final EditableImagePalette imagePalette = new EditableImagePalette(tileSize, columns, palette, tiles);
+		final EditableImagePalette imagePalette = new EditableImagePalette(tileSize, columns, palette, tiles, functions);
 		imagePalette.setName(name);
 		
 		return imagePalette;
