@@ -31,7 +31,7 @@ public class Operation {
 	 * @param x Valeur de x.
 	 * @return Le résultat de cette opération.
 	 */
-	public Object execute(double x) {
+	public Double execute(double x) {
 		final ArrayDeque<Double> stack = new ArrayDeque<Double>();
 		
 		for(final Instruction instruction : instructions) {
