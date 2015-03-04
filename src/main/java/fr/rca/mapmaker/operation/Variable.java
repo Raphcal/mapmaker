@@ -1,7 +1,6 @@
 package fr.rca.mapmaker.operation;
 
 import java.util.Deque;
-import java.util.Map;
 
 /**
  * Ajoute la valeur d'une variable à la pile.
@@ -22,12 +21,8 @@ public class Variable implements Instruction {
 	}
 
 	@Override
-	public void execute(Map<String, String> clientData, Deque<Double> stack) {
-		if(clientData != null) {
-			stack.push(Double.valueOf(clientData.get(name)));
-		} else {
-			stack.push(null);
-		}
+	public void execute(double x, Deque<Double> stack) {
+		stack.push(x);
 	}
 
 	public String getName() {

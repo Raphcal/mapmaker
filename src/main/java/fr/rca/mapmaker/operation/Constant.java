@@ -1,7 +1,6 @@
 package fr.rca.mapmaker.operation;
 
 import java.util.Deque;
-import java.util.Map;
 
 /**
  * Ajoute une constante à la pile.
@@ -25,7 +24,7 @@ public class Constant implements Instruction {
 	}
 	
 	@Override
-	public void execute(Map<String, String> data, Deque<Double> stack) {
+	public void execute(double x, Deque<Double> stack) {
 		stack.push(value);
 	}
 	

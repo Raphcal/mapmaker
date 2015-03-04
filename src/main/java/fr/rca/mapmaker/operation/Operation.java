@@ -2,7 +2,6 @@ package fr.rca.mapmaker.operation;
 
 import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -29,14 +28,14 @@ public class Operation {
 	
 	/**
 	 * Exécute cette opération à partir des données du client.
-	 * @param clientData Données du client.
+	 * @param x Valeur de x.
 	 * @return Le résultat de cette opération.
 	 */
-	public Object execute(Map<String, String> clientData) {
+	public Object execute(double x) {
 		final ArrayDeque<Double> stack = new ArrayDeque<Double>();
 		
 		for(final Instruction instruction : instructions) {
-			instruction.execute(clientData, stack);
+			instruction.execute(x, stack);
 		}
 		
 		// Renvoi du résultat

@@ -1,7 +1,6 @@
 package fr.rca.mapmaker.operation;
 
 import java.util.Deque;
-import java.util.Map;
 
 /**
  * Compare 2 valeurs et renvoie la plus élevée.
@@ -16,7 +15,7 @@ class Maximum implements Operator {
 	}
 
 	@Override
-	public void execute(Map<String, String> clientData, Deque<Double> stack) {
+	public void execute(double x, Deque<Double> stack) {
 		final Double o2 = stack.pop();
 		final Double o1 = stack.pop();
 		
