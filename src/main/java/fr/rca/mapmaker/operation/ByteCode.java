@@ -10,7 +10,7 @@ public enum ByteCode {
 	MULTIPLY('*'),
 	DIVIDE('/'),
 	NEGATIVE('n'),
-	CONSTANT('"'),
+	CONSTANT('C'),
 	X('x'),
 	PI('p'),
 	E('e'),

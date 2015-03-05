@@ -43,6 +43,8 @@ public class ImagePaletteDataHandler implements DataHandler<Palette> {
 		if(t instanceof HasFunctionHitbox) {
 			// Écriture des fonctions d'hitbox
 			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) t;
+			
+			Streams.write(t.size(), outputStream);
 			for(int index = 0; index < t.size(); index++) {
 				final String function = hasFunctionHitbox.getFunction(index);
 				

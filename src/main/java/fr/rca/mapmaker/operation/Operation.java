@@ -68,7 +68,6 @@ public class Operation {
 					// Ne peut pas arriver avec ByteArrayOutputStream.
 					Exceptions.showStackTrace(ex, null);
 				}
-				outputStream.write(byteCode.getByte());
 			}
 		}
 		
