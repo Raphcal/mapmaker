@@ -8,7 +8,6 @@ import java.util.List;
  * Représente une opération.
  * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
- * @author Kristela Macaj (kmacaj@ideia.fr)
  * 
  */
 public class Operation {
@@ -39,7 +38,11 @@ public class Operation {
 		}
 		
 		// Renvoi du résultat
-		return stack.peek();
+		if(stack.isEmpty()) {
+			return 0.0;
+		} else {
+			return stack.peek();
+		}
 	}
 
 	public List<Instruction> getInstructions() {

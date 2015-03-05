@@ -108,6 +108,8 @@ public final class OperationParser {
 		// Constructeur de mots
 		final StringBuilder itemBuilder = new StringBuilder();
 		
+		boolean waitingForNegative = false;
+		
 		// Traitement de l'opération
 		for(; state != State.RETURN && index <= operation.length(); index++) {
 			
@@ -133,16 +135,16 @@ public final class OperationParser {
 					// Erreur ?
 					throw new IllegalArgumentException("Parenthèse fermante seule.");
 					
+				} else if(c == MINUS) {
+					// Opérateur unaire
+					waitingForNegative = true;
+					
 				} else if(!isWhitespace(c)) {
 					itemBuilder.append(c);
 					
 					// Début d'une variable
 					if(c >= 'a' && c <= 'z') {
 						state = State.VARIABLE;
-					
-					// Opérateur unaire
-					} else if(c == MINUS) {
-						state = State.OPERATOR;
 					
 					// Début d'une constante
 					} else {
@@ -241,6 +243,11 @@ public final class OperationParser {
 			
 			// Attente d'un opérateur
 			case WAITING_FOR_OPERATOR:
+				if(waitingForNegative) {
+					instructions.add(new Negative());
+					waitingForNegative = false;
+				}
+				
 				if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
 					index--;
 					state = State.RETURN;
@@ -290,6 +297,10 @@ public final class OperationParser {
 		
 		if(parent != null) {
 			instructions.add(parent);
+		}
+		
+		if(waitingForNegative) {
+			instructions.add(new Negative());
 		}
 		
 		return index;

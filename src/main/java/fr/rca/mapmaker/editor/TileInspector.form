@@ -170,7 +170,7 @@
       </Properties>
       <BindingProperties>
         <BindingProperty name="text" source="Form" sourcePath="${currentFunctionHitbox}" target="functionTextField" targetPath="text" updateStrategy="0" immediately="false">
-          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_ACTION_OR_FOCUS_LOST"/>
         </BindingProperty>
       </BindingProperties>
     </Component>
@@ -218,7 +218,7 @@
             </Property>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="function" source="functionTextField" sourcePath="${text}" target="function" targetPath="function" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="function" source="Form" sourcePath="${currentFunctionHitbox}" target="function" targetPath="function" updateStrategy="0" immediately="false"/>
             <BindingProperty name="preferredSize" source="tileAndHitboxGrid" sourcePath="${preferredSize}" target="function" targetPath="preferredSize" updateStrategy="0" immediately="false"/>
             <BindingProperty name="sourceHeight" source="tileAndHitboxGrid" sourcePath="${tileMapHeight}" target="function" targetPath="sourceHeight" updateStrategy="0" immediately="false"/>
             <BindingProperty name="sourceWidth" source="tileAndHitboxGrid" sourcePath="${tileMapWidth}" target="function" targetPath="sourceWidth" updateStrategy="0" immediately="false"/>

@@ -19,7 +19,7 @@ public class Divide implements Operator {
 		final Double o1 = stack.pop();
 		
 		if(o2 == 0.0) {
-			stack.push(null);
+			stack.push(0.0);
 			LOGGER.warning("[OPERATION] Tentative de division par zéro.");
 
 		} else {

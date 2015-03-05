@@ -147,7 +147,7 @@ public class TileInspector extends javax.swing.JDialog {
 
         functionTextField.setFont(functionTextField.getFont().deriveFont(functionTextField.getFont().getSize()-1f));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFunctionHitbox}"), functionTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFunctionHitbox}"), functionTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"));
         bindingGroup.addBinding(binding);
 
         previewLabel.setFont(previewLabel.getFont().deriveFont(previewLabel.getFont().getSize()-1f));
@@ -160,7 +160,7 @@ public class TileInspector extends javax.swing.JDialog {
         function.setSourceHeight(tileAndHitboxGrid.getTileMapHeight());
         function.setSourceWidth(tileAndHitboxGrid.getTileMapWidth());
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, functionTextField, org.jdesktop.beansbinding.ELProperty.create("${text}"), function, org.jdesktop.beansbinding.BeanProperty.create("function"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFunctionHitbox}"), function, org.jdesktop.beansbinding.BeanProperty.create("function"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${preferredSize}"), function, org.jdesktop.beansbinding.BeanProperty.create("preferredSize"));
         bindingGroup.addBinding(binding);
