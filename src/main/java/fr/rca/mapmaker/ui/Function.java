@@ -1,13 +1,12 @@
 package fr.rca.mapmaker.ui;
 
+import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.operation.Operation;
 import fr.rca.mapmaker.operation.OperationParser;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
 /**
  *
@@ -71,19 +70,14 @@ public class Function extends JComponent {
 		}
 	}
 	
-	public static void main(String[] args) {
-		final JFrame frame = new JFrame();
+	public static TileLayer asTileLayer(String function, int width, int height) {
+		final TileLayer tileLayer = new TileLayer(width, height);
+		final Operation operation = OperationParser.parse(function);
 		
-		final Function function = new Function();
-		function.setSourceWidth(32);
-		function.setSourceHeight(32);
-		function.setFunction("-x + 31");
+		for(int x = 0; x < width; x++) {
+			tileLayer.setTile(x, (int) operation.execute((double)x), 1);
+		}
 		
-		function.setPreferredSize(new Dimension(200, 200));
-		
-		frame.add(function);
-		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
+		return tileLayer;
 	}
 }
