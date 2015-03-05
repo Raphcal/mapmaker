@@ -17,7 +17,8 @@ public enum ByteCode {
 	MINIMUM('m'),
 	MAXIMUM('M'),
 	COSINUS('c'),
-	SINUS('s');
+	SINUS('s'),
+	ZOOM('z');
 	
 	private final byte b;
 

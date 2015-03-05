@@ -32,6 +32,7 @@ public final class Instructions {
 		
 		map.put("min", new Minimum());
 		map.put("max", new Maximum());
+		map.put("zoom", new Zoom());
 		
 		map.put("cos", new Cosinus());
 		map.put("sin", new Sinus());
