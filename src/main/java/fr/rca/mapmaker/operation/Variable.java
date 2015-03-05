@@ -23,4 +23,10 @@ public class Variable implements Instruction {
 	public String toString() {
 		return "x";
 	}
+
+	@Override
+	public ByteCode toByteCode() {
+		return ByteCode.X;
+	}
+	
 }

@@ -6,6 +6,8 @@ import fr.rca.mapmaker.io.Streams;
 import fr.rca.mapmaker.model.HasFunctionHitbox;
 import fr.rca.mapmaker.model.palette.ImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.operation.Operation;
+import fr.rca.mapmaker.operation.OperationParser;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -46,7 +48,9 @@ public class ImagePaletteDataHandler implements DataHandler<Palette> {
 				
 				Streams.write(function != null, outputStream);
 				if(function != null) {
-					Streams.write(function, outputStream);
+					final Operation operation = OperationParser.parse(function);
+					
+					Streams.write(operation.toByteArray(), outputStream);
 				}
 			}
 		}

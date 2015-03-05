@@ -1,5 +1,9 @@
 package fr.rca.mapmaker.operation;
 
+import fr.rca.mapmaker.exception.Exceptions;
+import fr.rca.mapmaker.io.Streams;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.List;
 
@@ -47,6 +51,28 @@ public class Operation {
 
 	public List<Instruction> getInstructions() {
 		return instructions;
+	}
+	
+	public byte[] toByteArray() {
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		
+		for(final Instruction instruction : instructions) {
+			final ByteCode byteCode = instruction.toByteCode();
+			outputStream.write(byteCode.getByte());
+			
+			if(byteCode == ByteCode.CONSTANT) {
+				try {
+					Streams.write((float)((Constant)instruction).getValue(), outputStream);
+					
+				} catch (IOException ex) {
+					// Ne peut pas arriver avec ByteArrayOutputStream.
+					Exceptions.showStackTrace(ex, null);
+				}
+				outputStream.write(byteCode.getByte());
+			}
+		}
+		
+		return outputStream.toByteArray();
 	}
 	
 	@Override

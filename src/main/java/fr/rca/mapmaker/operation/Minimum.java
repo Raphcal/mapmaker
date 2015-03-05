@@ -45,4 +45,10 @@ public class Minimum implements Function {
 	public String toString() {
 		return "min";
 	}
+
+	@Override
+	public ByteCode toByteCode() {
+		return ByteCode.MINIMUM;
+	}
+	
 }

@@ -27,5 +27,10 @@ public class Cosinus implements Function {
 	public String toString() {
 		return "cos";
 	}
+
+	@Override
+	public ByteCode toByteCode() {
+		return ByteCode.COSINUS;
+	}
 	
 }

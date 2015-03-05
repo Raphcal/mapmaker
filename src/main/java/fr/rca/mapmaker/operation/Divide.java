@@ -36,4 +36,10 @@ public class Divide implements Operator {
 	public String toString() {
 		return "/";
 	}
+
+	@Override
+	public ByteCode toByteCode() {
+		return ByteCode.DIVIDE;
+	}
+	
 }

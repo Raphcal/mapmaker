@@ -45,4 +45,10 @@ class Maximum implements Function {
 	public String toString() {
 		return "max";
 	}
+
+	@Override
+	public ByteCode toByteCode() {
+		return ByteCode.MAXIMUM;
+	}
+	
 }

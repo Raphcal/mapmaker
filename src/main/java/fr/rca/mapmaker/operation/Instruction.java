@@ -18,4 +18,6 @@ public interface Instruction extends Serializable {
 	 * @param stack Pile d'exécution.
 	 */
 	void execute(double x, Deque<Double> stack);
+	
+	ByteCode toByteCode();
 }

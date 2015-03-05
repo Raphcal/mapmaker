@@ -10,7 +10,7 @@ import java.util.Deque;
  */
 public class Constant implements Instruction {
 
-	private Double value;
+	private double value;
 
 	public Constant() {
 	}
@@ -19,7 +19,7 @@ public class Constant implements Instruction {
 	 * Créé une nouvelle constante à partir de la valeur donnée en argument.
 	 * @param value Valeur de la constante.
 	 */
-	public Constant(Double value) {
+	public Constant(double value) {
 		this.value = value;
 	}
 	
@@ -27,13 +27,19 @@ public class Constant implements Instruction {
 	public void execute(double x, Deque<Double> stack) {
 		stack.push(value);
 	}
+
+	public double getValue() {
+		return value;
+	}
 	
 	@Override
 	public String toString() {
 		return '"' + String.valueOf(value) + '"';
 	}
 
-	public Double getValue() {
-		return value;
+	@Override
+	public ByteCode toByteCode() {
+		return ByteCode.CONSTANT;
 	}
+	
 }

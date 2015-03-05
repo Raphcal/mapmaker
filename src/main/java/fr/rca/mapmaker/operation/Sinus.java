@@ -27,5 +27,10 @@ public class Sinus implements Function {
 	public String toString() {
 		return "sin";
 	}
+
+	@Override
+	public ByteCode toByteCode() {
+		return ByteCode.SINUS;
+	}
 	
 }

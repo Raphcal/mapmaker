@@ -27,4 +27,10 @@ public class Multiply implements Operator {
 	public String toString() {
 		return "*";
 	}
+
+	@Override
+	public ByteCode toByteCode() {
+		return ByteCode.MULTIPLY;
+	}
+	
 }
