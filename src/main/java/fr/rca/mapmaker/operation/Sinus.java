@@ -22,5 +22,10 @@ public class Sinus implements Function {
 	public void execute(double x, Deque<Double> stack) {
 		stack.push(Math.sin(stack.pop()));
 	}
+
+	@Override
+	public String toString() {
+		return "sin";
+	}
 	
 }
