@@ -11,14 +11,6 @@ import java.util.ArrayList;
 public final class OperationParser {
 	
 	/**
-	 * Préfixe des variables.
-	 */
-	public static final char VARIABLE_PREFIX = '$';
-	/**
-	 * Préfixe des fonctions.
-	 */
-	public static final char FUNCTION_PREFIX = '@';
-	/**
 	 * Début d'un bloc d'opération.
 	 */
 	public static final char BLOCK_START = '(';
@@ -26,6 +18,10 @@ public final class OperationParser {
 	 * Fin d'un bloc d'opération.
 	 */
 	public static final char BLOCK_END = ')';
+	/**
+	 * Séparateur d'arguments.
+	 */
+	public static final char ARGUMENT_SEPARATOR = ',';
 	/**
 	 * Fin d'un bloc d'opération.
 	 */
@@ -54,14 +50,6 @@ public final class OperationParser {
 		 * Lecture du nom d'une variable.
 		 */
 		VARIABLE,
-		/**
-		 * Lecture du nom d'une référence vers une opération.
-		 */
-		OPERATION_REFERENCE,
-		/**
-		 * Lecture d'un tableau.
-		 */
-		FUNCTION,
 		/**
 		 * Lecture d'un opérateur.
 		 */
@@ -136,10 +124,10 @@ public final class OperationParser {
 			// Début de la lecture
 			case INITIAL:
 				if(c == BLOCK_START) {
-					index = parse(operation, index+1, null, instructions);
+					index = parse(operation, index + 1, null, instructions);
 					state = State.WAITING_FOR_OPERATOR;
 					
-				} else if(c == BLOCK_END) {
+				} else if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
 					index--;
 					state = State.RETURN;
 					// Erreur ?
@@ -149,14 +137,10 @@ public final class OperationParser {
 					itemBuilder.append(c);
 					
 					// Début d'une variable
-					if(c == VARIABLE_PREFIX) {
+					if(c >= 'a' && c <= 'z') {
 						state = State.VARIABLE;
 					
-					// Début d'une fonction
-					} else if(c == FUNCTION_PREFIX) {
-						state = State.FUNCTION;
-					
-					// Opérateurs unaires
+					// Opérateur unaire
 					} else if(c == MINUS) {
 						state = State.OPERATOR;
 					
@@ -169,24 +153,24 @@ public final class OperationParser {
 				
 			// Lecture d'une constante
 			case CONSTANT:
-				if(c == VARIABLE_PREFIX) {
+				if(c >= 'a' && c <= 'z') {
 					instructions.add(new Constant(Double.valueOf(itemBuilder.toString())));
 					itemBuilder.setLength(0);
 					itemBuilder.append(MULTIPLY_INSTRUCTION);
 					index--;
 					state = State.OPERATOR;
-				}
 					
-				else if(c != BLOCK_END && !isWhitespace(c)) {
+				} else if(c != BLOCK_END && c != ARGUMENT_SEPARATOR && !isWhitespace(c)) {
 					itemBuilder.append(c);
 				
 				} else {
 					instructions.add(new Constant(Double.valueOf(itemBuilder.toString())));
 					itemBuilder.setLength(0);
 					
-					if(c == BLOCK_END) {
+					if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
 						index--;
 						state = State.RETURN;
+						
 					} else {
 						state = State.WAITING_FOR_OPERATOR;
 					}
@@ -195,43 +179,34 @@ public final class OperationParser {
 				
 			// Lecture d'une variable
 			case VARIABLE:
-				if(c == VARIABLE_PREFIX) {
-					instructions.add(new Variable(itemBuilder.toString()));
-					itemBuilder.setLength(0);
-					itemBuilder.append(MULTIPLY_INSTRUCTION);
-					index--;
-					state = State.OPERATOR;
-				}
-				
-				else if(c != BLOCK_END && !isWhitespace(c)) {
+				if(c != BLOCK_START && c != BLOCK_END && c != ARGUMENT_SEPARATOR && !isWhitespace(c)) {
 					itemBuilder.append(c);
 					
 				} else {
-					instructions.add(new Variable(itemBuilder.toString()));
-					itemBuilder.setLength(0);
+					final Instruction instruction = Instructions.getInstruction(itemBuilder.toString());
 					
-					if(c == BLOCK_END) {
-						index--;
-						state = State.RETURN;
-					} else {
-						state = State.WAITING_FOR_OPERATOR;
+					if(instruction instanceof Function) {
+						if(c == BLOCK_START) {
+							state = State.FUNCTION_BLOCK;
+
+						} else if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
+							throw new IllegalArgumentException("Parenthèse invalide à l'emplacement " + index + " : '" + c + "'. Début de bloc attendu.");
+							
+						} else {
+							state = State.WAITING_FOR_BLOCK;
+						}
+						
+					} else if(instruction instanceof Variable || instruction instanceof Constant) {
+						instructions.add(instruction);
+						itemBuilder.setLength(0);
+						
+						if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
+							index--;
+							state = State.RETURN;
+						} else {
+							state = State.WAITING_FOR_OPERATOR;
+						}
 					}
-				}
-				break;
-				
-			// Lecture d'une fonction
-			case FUNCTION:
-				if(c == BLOCK_START) {
-					state = State.FUNCTION_BLOCK;
-				
-				} else if(c == BLOCK_END) {
-					throw new IllegalArgumentException("Parenthèse invalide à l'emplacement " + index + " : '" + c + "'. Début de bloc attendu.");
-				
-				} else if(!isWhitespace(c)) {
-					itemBuilder.append(c);
-				
-				} else {
-					state = State.WAITING_FOR_BLOCK;
 				}
 				break;
 				
@@ -244,7 +219,7 @@ public final class OperationParser {
 				}
 
 				final int parentPriority = parent == null ? -1 : parent.getPriority().ordinal();
-				final int thisPriority = operator == null ? -1 : operator.getPriority().ordinal() - 1;
+				final int thisPriority = operator.getPriority().ordinal() - 1;
 
 				if(parentPriority > thisPriority) {
 					instructions.add(parent);
@@ -266,12 +241,11 @@ public final class OperationParser {
 			
 			// Attente d'un opérateur
 			case WAITING_FOR_OPERATOR:
-				if(c == BLOCK_END) {
+				if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
 					index--;
 					state = State.RETURN;
-				}
-				
-				else if(!isWhitespace(c)) {
+					
+				} else if(!isWhitespace(c)) {
 					itemBuilder.append(c);
 					state = State.OPERATOR;
 				}
@@ -289,14 +263,20 @@ public final class OperationParser {
 				
 			// Traitement d'une fonction
 			case FUNCTION_BLOCK:
-				index = parse(operation, index, null, instructions);
-				
-				final Instruction function = Instructions.getInstruction(itemBuilder.toString());
+				final Function function = (Function) Instructions.getInstruction(itemBuilder.toString());
 				
 				if(function == null) {
 					throw new IllegalArgumentException("À l'index " + index + ", fonction inconnue (" + itemBuilder + ").");
 				}
+				
+				for(int argument = 0; argument < function.getNumberOfArguments(); argument++) {
+					index = parse(operation, index, null, instructions);
 					
+					if(argument + 1 < function.getNumberOfArguments()) {
+						index++;
+					}
+				}
+				
 				instructions.add(function);
 				itemBuilder.setLength(0);
 				

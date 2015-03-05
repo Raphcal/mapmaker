@@ -10,27 +10,17 @@ import java.util.Deque;
  */
 public class Variable implements Instruction {
 	
-	private final String name;
-	
-	/**
-	 * Créé une référence vers la variable dont le nom est donné en argument.
-	 * @param name Nom de la variable.
-	 */
-	public Variable(String name) {
-		this.name = name.substring(1); // Suppression du '$'
-	}
-
 	@Override
 	public void execute(double x, Deque<Double> stack) {
 		stack.push(x);
 	}
 
 	public String getName() {
-		return name;
+		return "x";
 	}
 	
 	@Override
 	public String toString() {
-		return name;
+		return "x";
 	}
 }

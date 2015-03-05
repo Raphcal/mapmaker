@@ -7,11 +7,16 @@ import java.util.Deque;
  * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-class Maximum implements Operator {
+class Maximum implements Function {
 
 	@Override
 	public Priority getPriority() {
 		return Priority.COMPARE;
+	}
+
+	@Override
+	public int getNumberOfArguments() {
+		return 2;
 	}
 
 	@Override

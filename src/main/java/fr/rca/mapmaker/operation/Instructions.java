@@ -21,6 +21,10 @@ public final class Instructions {
 	
 	static {
 		final HashMap<String, Instruction> map = new HashMap<String, Instruction>();
+		map.put("x", new Variable());
+		map.put("pi", new Constant(Math.PI));
+		map.put("e", new Constant(Math.E));
+		
 		map.put("+", new Add());
 		map.put("-", new Substract());
 		map.put("*", new Multiply());
@@ -28,6 +32,9 @@ public final class Instructions {
 		
 		map.put("min", new Minimum());
 		map.put("max", new Maximum());
+		
+		map.put("cos", new Cosinus());
+		map.put("sin", new Sinus());
 				
 		INSTRUCTIONS = map;
 	}
