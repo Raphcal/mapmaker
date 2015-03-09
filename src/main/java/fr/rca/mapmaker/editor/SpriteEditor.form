@@ -56,9 +56,9 @@
                                   <Component id="frequencyTextField" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="sizeLabel1" min="-2" max="-2" attributes="0"/>
+                              <Component id="sizeByLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="widthTextField1" min="-2" pref="46" max="-2" attributes="0"/>
+                              <Component id="heightTextField" min="-2" pref="46" max="-2" attributes="0"/>
                               <EmptySpace pref="97" max="32767" attributes="0"/>
                               <Component id="animationPreview" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -93,8 +93,8 @@
                                   <Component id="sizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="widthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="directionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="widthTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="sizeLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="heightTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="sizeByLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -158,7 +158,8 @@
             </Property>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="gridSize" source="sprite" sourcePath="${width}" target="tileLayerList" targetPath="gridSize" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="elementHeight" source="sprite" sourcePath="${height}" target="tileLayerList" targetPath="elementHeight" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="elementWidth" source="sprite" sourcePath="${width}" target="tileLayerList" targetPath="elementWidth" updateStrategy="0" immediately="false"/>
           </BindingProperties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tileLayerListActionPerformed"/>
@@ -251,7 +252,7 @@
         </BindingProperty>
       </BindingProperties>
     </Component>
-    <Component class="javax.swing.JTextField" name="widthTextField1">
+    <Component class="javax.swing.JTextField" name="heightTextField">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -259,12 +260,12 @@
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="sprite" sourcePath="${height}" target="widthTextField1" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="sprite" sourcePath="${height}" target="heightTextField" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
         </BindingProperty>
       </BindingProperties>
     </Component>
-    <Component class="javax.swing.JLabel" name="sizeLabel1">
+    <Component class="javax.swing.JLabel" name="sizeByLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="x"/>
       </Properties>

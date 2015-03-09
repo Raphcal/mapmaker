@@ -113,8 +113,8 @@ public class SpriteEditor extends javax.swing.JDialog {
         animationPreview.start();
         frequencyLabel = new javax.swing.JLabel();
         frequencyTextField = new javax.swing.JTextField();
-        widthTextField1 = new javax.swing.JTextField();
-        sizeLabel1 = new javax.swing.JLabel();
+        heightTextField = new javax.swing.JTextField();
+        sizeByLabel = new javax.swing.JLabel();
 
         setTitle("Sprite");
 
@@ -129,7 +129,9 @@ public class SpriteEditor extends javax.swing.JDialog {
         tileLayerList.setOrientation(fr.rca.mapmaker.ui.Orientation.HORIZONTAL);
         tileLayerList.setPalette(sprite.getPalette());
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${width}"), tileLayerList, org.jdesktop.beansbinding.BeanProperty.create("gridSize"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${height}"), tileLayerList, org.jdesktop.beansbinding.BeanProperty.create("elementHeight"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${width}"), tileLayerList, org.jdesktop.beansbinding.BeanProperty.create("elementWidth"));
         bindingGroup.addBinding(binding);
 
         tileLayerList.addActionListener(new java.awt.event.ActionListener() {
@@ -188,13 +190,13 @@ public class SpriteEditor extends javax.swing.JDialog {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFrequency}"), frequencyTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        widthTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        widthTextField1.setMinimumSize(new java.awt.Dimension(46, 28));
+        heightTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        heightTextField.setMinimumSize(new java.awt.Dimension(46, 28));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${height}"), widthTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${height}"), heightTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        sizeLabel1.setText("x");
+        sizeByLabel.setText("x");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -220,9 +222,9 @@ public class SpriteEditor extends javax.swing.JDialog {
                                     .addComponent(widthTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
                                     .addComponent(frequencyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(sizeLabel1)
+                                .addComponent(sizeByLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(widthTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                                 .addComponent(animationPreview, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -249,8 +251,8 @@ public class SpriteEditor extends javax.swing.JDialog {
                                     .addComponent(sizeLabel)
                                     .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(directionLabel)
-                                    .addComponent(widthTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(sizeLabel1))
+                                    .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sizeByLabel))
                                 .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(animationLabel)
@@ -284,7 +286,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 		final ArrayList<TileLayer> layers = new ArrayList<TileLayer>(tileLayerList.getElements());
 		
 		if(GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
-			layers.add(new TileLayer(tileLayerList.getGridSize(), tileLayerList.getGridSize()));
+			layers.add(new TileLayer(sprite.getWidth(), sprite.getHeight()));
 		}
 		final int index = evt.getID();
 		
@@ -371,13 +373,13 @@ public class SpriteEditor extends javax.swing.JDialog {
     private javax.swing.JLabel frequencyLabel;
     private javax.swing.JTextField frequencyTextField;
     private javax.swing.JScrollPane gridScrollPane;
+    private javax.swing.JTextField heightTextField;
     private javax.swing.JButton okButton;
+    private javax.swing.JLabel sizeByLabel;
     private javax.swing.JLabel sizeLabel;
-    private javax.swing.JLabel sizeLabel1;
     private fr.rca.mapmaker.model.sprite.Sprite sprite;
     private fr.rca.mapmaker.ui.TileLayerList tileLayerList;
     private javax.swing.JTextField widthTextField;
-    private javax.swing.JTextField widthTextField1;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

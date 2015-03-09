@@ -6,6 +6,7 @@ package fr.rca.mapmaker.ui;
  */
 public interface Orientable {
 	int getPadding();
-	int getGridSize();
+	int getElementWidth();
+	int getElementHeight();
 	int getNumberOfElements();
 }

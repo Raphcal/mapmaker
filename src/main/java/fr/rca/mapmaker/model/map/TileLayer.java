@@ -66,6 +66,21 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 		this.tiles = new int[width * height];
 		Arrays.fill(this.tiles, -1);
 	}
+	
+	public TileLayer(int[] data, Dimension dimension, Rectangle copySurface) {
+		if(copySurface == null) {
+			copySurface = new Rectangle(0, 0, dimension.width, dimension.height);
+		}
+		
+		this.width = copySurface.width;
+		this.height = copySurface.height;
+		this.tiles = new int[width * height];
+		
+		final int lastY = Math.min(height, dimension.height - copySurface.y);
+		for(int y = 0; y < lastY; y++) {
+			System.arraycopy(data, (y + copySurface.y) * dimension.width + copySurface.x, tiles, y * width, Math.min(width, dimension.width - copySurface.x));
+		}
+	}
 
 	/**
 	 * Modifie le nom de ce calque.
@@ -85,7 +100,11 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 */
 	@Override
 	public int getTile(int x, int y) {
-		return tiles[y * width + x];
+		if(x >= 0 && x < width && y >= 0 && y < height) {
+			return tiles[y * width + x];
+		} else {
+			return -1;
+		}
 	}
 	
 	/**

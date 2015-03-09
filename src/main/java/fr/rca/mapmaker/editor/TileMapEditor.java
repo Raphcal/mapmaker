@@ -18,6 +18,7 @@ import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
@@ -37,8 +38,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 	
 	private static final int PALETTE_WIDTH = 8;
 	
-	private static int[] clipboardData;
-	private static Rectangle clipboardSurface;
+	private static TileLayer clipboardData;
 
 	private final PasteSelectionTool pasteSelectionTool;
 	
@@ -606,15 +606,14 @@ public class TileMapEditor extends javax.swing.JDialog {
     private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
 		final boolean oldClipboardFull = isClipboardFull();
 		
-		clipboardData = drawLayer.copyData();
-		clipboardSurface = new Rectangle(drawLayer.getWidth(), drawLayer.getHeight());
+		clipboardData = new TileLayer(drawLayer.copyData(), new Dimension(drawLayer.getWidth(), drawLayer.getHeight()), new Rectangle(drawLayer.getWidth(), drawLayer.getHeight()));
 		
 		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());
     }//GEN-LAST:event_copyButtonActionPerformed
 
     private void pasteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteButtonActionPerformed
 		toolButtonGroup.clearSelection();
-		pasteSelectionTool.setSelection(clipboardData, clipboardSurface);
+		pasteSelectionTool.setSelection(clipboardData);
 
 		drawGrid.addMouseListener(pasteSelectionTool);
 		drawGrid.addMouseMotionListener(pasteSelectionTool);

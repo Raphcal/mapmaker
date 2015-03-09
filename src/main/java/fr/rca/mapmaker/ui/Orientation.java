@@ -13,7 +13,7 @@ public enum Orientation {
 		@Override
 		public Dimension getDimension(Orientable orientable) {
 			final int padding = orientable.getPadding();
-			final int width = orientable.getGridSize();
+			final int width = orientable.getElementWidth();
 			final int height = width;
 			return new Dimension(padding + width + padding, padding + orientable.getNumberOfElements() * (height + padding));
 		}
@@ -27,7 +27,7 @@ public enum Orientation {
 		@Override
 		public int getY(Orientable orientable, int index) {
 			final int padding = orientable.getPadding();
-			final int height = orientable.getGridSize();
+			final int height = orientable.getElementHeight();
 			return padding + (height + padding) * index;
 		}
 
@@ -44,8 +44,8 @@ public enum Orientation {
 		@Override
 		public int indexOfElementAtPoint(Orientable orientable, Point point) {
 			final int padding = orientable.getPadding();
-			final int width = orientable.getGridSize();
-			final int height = orientable.getGridSize();
+			final int width = orientable.getElementWidth();
+			final int height = orientable.getElementHeight();
 			
 			if(point.getX() <= padding || point.getX() >= padding + width) {
 				return -1;
@@ -56,7 +56,7 @@ public enum Orientation {
 
 		@Override
 		public int getSize(Orientable orientable) {
-			final int height = orientable.getGridSize();
+			final int height = orientable.getElementHeight();
 			return height;
 		}
 		
@@ -64,7 +64,7 @@ public enum Orientation {
 		@Override
 		public Dimension getDimension(Orientable orientable) {
 			final int padding = orientable.getPadding();
-			final int width = orientable.getGridSize();
+			final int width = orientable.getElementWidth();
 			final int height = width;
 			return new Dimension(padding + orientable.getNumberOfElements() * (width + padding), padding + height + padding);
 		}
@@ -72,7 +72,7 @@ public enum Orientation {
 		@Override
 		public int getX(Orientable orientable, int index) {
 			final int padding = orientable.getPadding();
-			final int width = orientable.getGridSize();
+			final int width = orientable.getElementWidth();
 			return padding + (width + padding) * index;
 		}
 
@@ -95,8 +95,8 @@ public enum Orientation {
 		@Override
 		public int indexOfElementAtPoint(Orientable orientable, Point point) {
 			final int padding = orientable.getPadding();
-			final int width = orientable.getGridSize();
-			final int height = orientable.getGridSize();
+			final int width = orientable.getElementWidth();
+			final int height = orientable.getElementHeight();
 			
 			if(point.getY() <= padding || point.getY() >= padding + height) {
 				return -1;
@@ -107,7 +107,7 @@ public enum Orientation {
 
 		@Override
 		public int getSize(Orientable orientable) {
-			final int width = orientable.getGridSize();
+			final int width = orientable.getElementWidth();
 			return width;
 		}
 		

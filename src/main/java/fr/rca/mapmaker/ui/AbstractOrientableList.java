@@ -31,7 +31,8 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	public static final String EDIT_COMMAND = "edit";
 	
 	protected Orientation orientation = Orientation.VERTICAL;
-	private int gridSize = 72;
+	private int width = 72;
+	private int height = 72;
 	private int padding = 4;
 	protected List<E> elements;
 	
@@ -153,12 +154,22 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	}
 
 	@Override
-	public int getGridSize() {
-		return gridSize;
+	public int getElementWidth() {
+		return width;
+	}
+
+	public void setElementWidth(int width) {
+		this.width = width;
+		updateSize();
+	}
+
+	@Override
+	public int getElementHeight() {
+		return this.height;
 	}
 	
-	public void setGridSize(int gridSize) {
-		this.gridSize = gridSize;
+	public void setElementHeight(int height) {
+		this.height = height;
 		updateSize();
 	}
 
@@ -232,9 +243,9 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 		if(selection != null) {
 			g.setColor(SystemColor.textHighlight);
 			if(hasFocus()) {
-				g.fillRect(orientation.getX(this, selection), orientation.getY(this, selection), gridSize, gridSize);
+				g.fillRect(orientation.getX(this, selection), orientation.getY(this, selection), width, height);
 			} else {
-				g.drawRect(orientation.getX(this, selection), orientation.getY(this, selection), gridSize, gridSize);
+				g.drawRect(orientation.getX(this, selection), orientation.getY(this, selection), width, height);
 			}
 		}
 		
@@ -251,8 +262,8 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 		// Plus
 		if(editable) {
 			g.drawImage(addImage, 
-				orientation.getX(this, elements.size()) + gridSize / 2 - addImage.getWidth() / 2, 
-				orientation.getY(this, elements.size()) + gridSize / 2 - addImage.getHeight()/ 2, null);
+				orientation.getX(this, elements.size()) + width / 2 - addImage.getWidth() / 2, 
+				orientation.getY(this, elements.size()) + height / 2 - addImage.getHeight()/ 2, null);
 		}
 		
 		g.dispose();
@@ -267,7 +278,7 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 			// Y
 			orientation.getY(this, index) - padding,
 			// Width, Height
-			gridSize + padding + padding, gridSize + padding + padding));
+			width + padding + padding, height + padding + padding));
 	}
 	
 	public void addActionListener(ActionListener listener) {
