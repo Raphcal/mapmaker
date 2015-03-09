@@ -32,14 +32,19 @@ public class AnimationDataHandler implements DataHandler<Animation> {
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
 		
+		t.overrideFrameNames();
+		
 		final Set<Map.Entry<Double, List<TileLayer>>> entries = t.getFrames().entrySet();
 		Streams.write(entries.size(), outputStream);
 		
 		for(Map.Entry<Double, List<TileLayer>> entry : entries) {
-			Streams.write(entry.getKey(), outputStream);
-			Streams.write(entry.getValue().size(), outputStream);
+			final double direction = entry.getKey();
+			final List<TileLayer> frames = entry.getValue();
 			
-			for(final TileLayer frame : entry.getValue()) {
+			Streams.write(direction, outputStream);
+			Streams.write(frames.size(), outputStream);
+			
+			for(final TileLayer frame : frames) {
 				tileLayerHandler.write(frame, outputStream);
 			}
 		}
@@ -52,11 +57,14 @@ public class AnimationDataHandler implements DataHandler<Animation> {
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
 		
-		for(int directionCount = Streams.readInt(inputStream); directionCount > 0; directionCount--) {
+		final int directionCount = Streams.readInt(inputStream);
+		for(int i = 0; i < directionCount; i++) {
 			final double direction = Streams.readDouble(inputStream);
+			final int frameCount = Streams.readInt(inputStream);
 			
 			final ArrayList<TileLayer> frames = new ArrayList<TileLayer>();
-			for(int frameCount = Streams.readInt(inputStream); frameCount > 0; frameCount--) {
+			
+			for(int frame = 0; frame < frameCount; frame++) {
 				frames.add(tileLayerHandler.read(inputStream));
 			}
 			

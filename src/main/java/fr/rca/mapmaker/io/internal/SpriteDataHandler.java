@@ -43,7 +43,9 @@ public class SpriteDataHandler implements DataHandler<Sprite> {
 		final HashSet<Animation> animations = new HashSet<Animation>();
 		
 		final DataHandler<Animation> animationHandler = format.getHandler(Animation.class);
-		for(int animationCount = Streams.readInt(inputStream); animationCount > 0; animationCount--) {
+		final int animationCount = Streams.readInt(inputStream);
+		
+		for(int animation = 0; animation < animationCount; animation++) {
 			animations.add(animationHandler.read(inputStream));
 		}
 		

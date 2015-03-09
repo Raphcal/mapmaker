@@ -21,6 +21,7 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +29,6 @@ import java.io.OutputStream;
 import java.util.EnumSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 import javax.swing.JOptionPane;
 
 /**
@@ -76,12 +76,10 @@ public class InternalFormat extends AbstractFormat {
 		setVersion(LAST_VERSION);
 		
 		try {
-			final ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(file));
+			final FileOutputStream outputStream = new FileOutputStream(file);
 			try {
-				outputStream.putNextEntry(new ZipEntry(DATA_ENTRY));
 				writeHeader(HEADER_LAST_VERSION, outputStream);
 				handler.write(project, outputStream);
-				outputStream.closeEntry();
 				
 			} finally {
 				outputStream.close();
@@ -104,22 +102,15 @@ public class InternalFormat extends AbstractFormat {
 		setVersion(version);
 		
 		try {
-			final ZipFile zipFile = new ZipFile(file);
+			final InputStream inputStream = openInputStream(file);
 			try {
-				final ZipEntry entry = zipFile.getEntry(DATA_ENTRY);
-
-				final InputStream inputStream = zipFile.getInputStream(entry);
-				try {
-					if(version >= VERSION_3) {
-						readHeader(inputStream);
-					}
-					project = handler.read(inputStream);
-
-				} finally {
-					inputStream.close();
+				if(version >= VERSION_3) {
+					readHeader(inputStream);
 				}
+				project = handler.read(inputStream);
+
 			} finally {
-				zipFile.close();
+				inputStream.close();
 			}
 			
 		} catch(IOException e) {
@@ -145,27 +136,80 @@ public class InternalFormat extends AbstractFormat {
 	
 	private int getVersion(File file) {
 		try {
-			final ZipFile zipFile = new ZipFile(file);
+			final InputStream inputStream = openInputStream(file);
 			try {
-				final ZipEntry entry = zipFile.getEntry(DATA_ENTRY);
-				final InputStream inputStream = zipFile.getInputStream(entry);
-				try {
-					final String header = readHeader(inputStream);
-					if(HEADER_VERSION_3.equals(header)) {
-						return 3;
-					}
-					
-				} finally {
-					inputStream.close();
+				final String header = readHeader(inputStream);
+				if(HEADER_VERSION_3.equals(header)) {
+					return 3;
 				}
-				
+
 			} finally {
-				zipFile.close();
+				inputStream.close();
 			}
 			
 		} catch(IOException e) {
 			Exceptions.showStackTrace(e, null);
 		}
 		return 0;
+	}
+	
+	private InputStream openInputStream(File file) {
+		try {
+			final ZipFile zipFile = new ZipFile(file);
+			final ZipEntry entry = zipFile.getEntry(DATA_ENTRY);
+			final InputStream inputStream = zipFile.getInputStream(entry);
+			
+			return new InputStream() {
+
+				@Override
+				public int available() throws IOException {
+					return inputStream.available();
+				}
+
+				@Override
+				public int read() throws IOException {
+					return inputStream.read();
+				}
+
+				@Override
+				public int read(byte[] b) throws IOException {
+					return inputStream.read(b);
+				}
+
+				@Override
+				public int read(byte[] b, int off, int len) throws IOException {
+					return inputStream.read(b, off, len);
+				}
+				
+				@Override
+				public long skip(long n) throws IOException {
+					return inputStream.skip(n); //To change body of generated methods, choose Tools | Templates.
+				}
+
+				@Override
+				public synchronized void reset() throws IOException {
+					inputStream.reset();
+				}
+				
+				@Override
+				public void close() throws IOException {
+					inputStream.close();
+					zipFile.close();
+				}
+
+			};
+			
+		} catch(IOException e) {
+			// Ignoré.
+		}
+		
+		try {
+			return new FileInputStream(file);
+			
+		} catch(IOException e) {
+			// Ignoré.
+		}
+		
+		return null;
 	}
 }

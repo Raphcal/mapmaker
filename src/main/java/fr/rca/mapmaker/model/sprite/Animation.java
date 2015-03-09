@@ -122,6 +122,17 @@ public class Animation {
 		}
 		return anglesWithValue;
 	}
+	
+	public void overrideFrameNames() {
+		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
+			final String prefix = name + '.' + entry.getKey()  + '.';
+			int index = 0;
+			for(final TileLayer frame : entry.getValue()) {
+				frame.setName(prefix + index);
+				index++;
+			}
+		}
+	}
 
 	public static Animation[] getDefaultAnimations() {
 		return new Animation[] {

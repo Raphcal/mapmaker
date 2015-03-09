@@ -1180,9 +1180,14 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	
 	private void refreshScrollMode() {
 		boolean hasParallax = false;
-		for(final Layer layer : project.getCurrentMap().getLayers()) {
-			hasParallax = hasParallax || layer.getScrollRate() != 1.0;
+		if(project == null || project.getCurrentMap() == null) {
+			hasParallax = false;
+		} else {
+			for(final Layer layer : project.getCurrentMap().getLayers()) {
+				hasParallax = hasParallax || layer.getScrollRate() != 1.0;
+			}
 		}
+		
 		if(!hasParallax) {
 			mapScrollPane.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE);
 		} else {
