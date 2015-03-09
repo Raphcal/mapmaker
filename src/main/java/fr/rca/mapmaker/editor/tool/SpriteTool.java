@@ -88,6 +88,16 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			public void mouseExited(MouseEvent e) {
 				instance.setBorder(null);
 			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON3) {
+					project.getInstances().remove(instance);
+					mouseAdapters.remove(instance);
+					spriteLayer.remove(instance);
+					spriteLayer.repaint(instance.getBounds());
+				}
+			}
 			
 		};
 		
