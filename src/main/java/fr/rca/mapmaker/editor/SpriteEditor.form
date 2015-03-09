@@ -49,15 +49,26 @@
                           <Component id="frequencyLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="widthTextField" max="32767" attributes="0"/>
-                          <Component id="animationComboBox" max="32767" attributes="0"/>
-                          <Component id="frequencyTextField" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="widthTextField" pref="52" max="32767" attributes="0"/>
+                                  <Component id="frequencyTextField" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="sizeLabel1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="widthTextField1" min="-2" pref="46" max="-2" attributes="0"/>
+                              <EmptySpace pref="97" max="32767" attributes="0"/>
+                              <Component id="animationPreview" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="directionLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="animationComboBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="animationPreview" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="157" max="32767" attributes="0"/>
-                      <Component id="directionLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="directionChooser" min="-2" pref="100" max="-2" attributes="0"/>
                   </Group>
@@ -82,6 +93,8 @@
                                   <Component id="sizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="widthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="directionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="widthTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="sizeLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -125,7 +138,7 @@
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="sprite" sourcePath="${size}" target="widthTextField" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="sprite" sourcePath="${width}" target="widthTextField" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_ACTION_OR_FOCUS_LOST"/>
           <Property name="name" type="java.lang.String" value="gridList.gridWidth"/>
         </BindingProperty>
@@ -145,7 +158,7 @@
             </Property>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="gridSize" source="sprite" sourcePath="${size}" target="tileLayerList" targetPath="gridSize" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="gridSize" source="sprite" sourcePath="${width}" target="tileLayerList" targetPath="gridSize" updateStrategy="0" immediately="false"/>
           </BindingProperties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tileLayerListActionPerformed"/>
@@ -237,6 +250,24 @@
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
         </BindingProperty>
       </BindingProperties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="widthTextField1">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="4"/>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[46, 28]"/>
+        </Property>
+      </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="sprite" sourcePath="${height}" target="widthTextField1" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="sizeLabel1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="x"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

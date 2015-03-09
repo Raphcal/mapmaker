@@ -76,8 +76,8 @@ public class Instance extends JComponent {
 		
 		final TileLayer defaultLayer;
 		if(sprite != null) {
-			setPreferredSize(new Dimension(sprite.getSize(), sprite.getSize()));
-			setBounds(point.x, point.y, sprite.getSize(), sprite.getSize());
+			setPreferredSize(new Dimension(sprite.getWidth(), sprite.getHeight()));
+			setBounds(point.x, point.y, sprite.getWidth(), sprite.getHeight());
 			defaultLayer = sprite.getDefaultLayer();
 			
 		} else {
@@ -88,8 +88,9 @@ public class Instance extends JComponent {
 		if(sprite != null && defaultLayer != null) {
 			image = renderer.renderImage(defaultLayer, sprite.getPalette(), TILE_SIZE);
 		} else {
-			final int size = sprite != null ? sprite.getSize() : 32;
-			image = renderer.renderImage(size, size, TILE_SIZE);
+			final int width = sprite != null ? sprite.getWidth(): 32;
+			final int height = sprite != null ? sprite.getHeight(): 32;
+			image = renderer.renderImage(width, height, TILE_SIZE);
 		}
 	}
 

@@ -95,7 +95,8 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	@Override
 	public int getTileSize(int tile) {
 		final Sprite sprite = sprites.get(tile);
-		return sprite.getSize();
+		// TODO: Faire mieux, peut-être fixer la valeur et dessiner en centré.
+		return sprite.getWidth();
 	}
 
 	@Override

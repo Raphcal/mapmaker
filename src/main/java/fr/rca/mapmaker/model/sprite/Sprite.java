@@ -15,32 +15,45 @@ import java.util.Set;
  */
 public class Sprite {
 	private ColorPalette palette;
-	private int size;
+	private int width;
+	private int height;
 	private Set<Animation> animations;
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	public Sprite() {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
-		this.size = 32;
+		this.width = 32;
+		this.height = 32;
 		this.animations = new HashSet<Animation>();
 	}
 
 	public Sprite(int size, Set<Animation> animations) {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
-		this.size = size;
+		this.width = size;
+		this.height = size;
+		this.animations = animations;
+	}
+
+	public Sprite(int width, int height, Set<Animation> animations) {
+		this.palette = AlphaColorPalette.getDefaultColorPalette();
+		this.width = width;
+		this.height = height;
 		this.animations = animations;
 	}
 
 	public void morphTo(Sprite sprite) {
 		final ColorPalette oldPalette = getPalette();
-		final int oldSize = getSize();
+		final int oldWidth = width;
+		final int oldHeight = height;
 		
 		this.palette = sprite.palette;
-		this.size = sprite.size;
+		this.width = sprite.width;
+		this.height = sprite.height;
 		
 		propertyChangeSupport.firePropertyChange("palette", oldPalette, getPalette());
-		propertyChangeSupport.firePropertyChange("size", oldSize, getSize());
+		propertyChangeSupport.firePropertyChange("width", oldWidth, width);
+		propertyChangeSupport.firePropertyChange("height", oldHeight, height);
 	}
 	
 	public void merge(Sprite sprite) {
@@ -109,15 +122,26 @@ public class Sprite {
 		return palette;
 	}
 	
-	public int getSize() {
-		return size;
+	public int getWidth() {
+		return width;
 	}
 
-	public void setSize(int size) {
-		final int oldSize = this.size;
-		this.size = size;
+	public void setWidth(int width) {
+		final int oldWidth = this.width;
+		this.width = width;
 		
-		propertyChangeSupport.firePropertyChange("size", oldSize, size);
+		propertyChangeSupport.firePropertyChange("width", oldWidth, width);
+	}
+
+	public int getHeight() {
+		return height;
+	}
+	
+	public void setHeight(int height) {
+		final int oldHeight = this.height;
+		this.height = height;
+		
+		propertyChangeSupport.firePropertyChange("height", oldHeight, height);
 	}
 
 	public Set<Animation> getAnimations() {

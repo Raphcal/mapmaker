@@ -60,7 +60,7 @@ public class SpriteDataHandler implements DataHandler<Sprite> {
 		for(final Animation animation : sprite.getAnimations()) {
 			for(final double angle : animation.getAnglesWithValue()) {
 				renderFrames(graphics, animation.getFrames(angle), sprite.getPalette(), y);
-				y += sprite.getSize();
+				y += sprite.getHeight();
 			}
 		}
 		
@@ -92,7 +92,7 @@ public class SpriteDataHandler implements DataHandler<Sprite> {
 			}
 		}
 		
-		return new Dimension(width * sprite.getSize(), height * sprite.getSize());
+		return new Dimension(width * sprite.getWidth(), height * sprite.getHeight());
 	}
 	
 }

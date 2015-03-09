@@ -2,6 +2,7 @@ package fr.rca.mapmaker.io.internal;
 
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
+import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.Streams;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
@@ -15,17 +16,24 @@ import java.util.Set;
  *
  * @author Raphaël Calabro <raph_kun at yahoo.fr>
  */
-public class SpriteDataHandler implements DataHandler<Sprite> {
+public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 	
 	private final Format format;
+	private int version;
 
 	public SpriteDataHandler(Format format) {
 		this.format = format;
 	}
 
 	@Override
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	@Override
 	public void write(Sprite t, OutputStream outputStream) throws IOException {
-		Streams.write(t.getSize(), outputStream);
+		Streams.write(t.getWidth(), outputStream);
+		Streams.write(t.getHeight(), outputStream);
 		
 		final Set<Animation> animations = t.getAnimations();
 		Streams.write(animations.size(), outputStream);
@@ -38,7 +46,16 @@ public class SpriteDataHandler implements DataHandler<Sprite> {
 	
 	@Override
 	public Sprite read(InputStream inputStream) throws IOException {
-		final int size = Streams.readInt(inputStream);
+		final int width, height;
+		
+		if(version >= InternalFormat.VERSION_4) {
+			width = Streams.readInt(inputStream);
+			height = Streams.readInt(inputStream);
+			
+		} else {
+			width = Streams.readInt(inputStream);
+			height = width;
+		}
 		
 		final HashSet<Animation> animations = new HashSet<Animation>();
 		
@@ -49,7 +66,7 @@ public class SpriteDataHandler implements DataHandler<Sprite> {
 			animations.add(animationHandler.read(inputStream));
 		}
 		
-		return new Sprite(size, animations);
+		return new Sprite(width, height, animations);
 	}
 	
 }

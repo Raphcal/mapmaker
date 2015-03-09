@@ -52,7 +52,7 @@ public class ProjectDataHandler implements DataHandler<Project>, HasVersion {
 			tileMapHandler.write(map, outputStream);
 		}
 		
-		if(version == 3) {
+		if(version >= InternalFormat.VERSION_3) {
 			// Sprites
 			final List<Sprite> sprites = t.getSprites();
 			
@@ -95,7 +95,7 @@ public class ProjectDataHandler implements DataHandler<Project>, HasVersion {
 			project.addMap(tileMapHandler.read(inputStream));
 		}
 		
-		if(version == 3) {
+		if(version >= InternalFormat.VERSION_3) {
 			// Sprites
 			final DataHandler<Sprite> spriteHandler = format.getHandler(Sprite.class);
 			final List<Sprite> sprites = project.getSprites();

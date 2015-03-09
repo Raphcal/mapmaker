@@ -113,6 +113,8 @@ public class SpriteEditor extends javax.swing.JDialog {
         animationPreview.start();
         frequencyLabel = new javax.swing.JLabel();
         frequencyTextField = new javax.swing.JTextField();
+        widthTextField1 = new javax.swing.JTextField();
+        sizeLabel1 = new javax.swing.JLabel();
 
         setTitle("Sprite");
 
@@ -121,13 +123,13 @@ public class SpriteEditor extends javax.swing.JDialog {
         widthTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         widthTextField.setMinimumSize(new java.awt.Dimension(46, 28));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${size}"), widthTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"), "gridList.gridWidth");
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${width}"), widthTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"), "gridList.gridWidth");
         bindingGroup.addBinding(binding);
 
         tileLayerList.setOrientation(fr.rca.mapmaker.ui.Orientation.HORIZONTAL);
         tileLayerList.setPalette(sprite.getPalette());
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${size}"), tileLayerList, org.jdesktop.beansbinding.BeanProperty.create("gridSize"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${width}"), tileLayerList, org.jdesktop.beansbinding.BeanProperty.create("gridSize"));
         bindingGroup.addBinding(binding);
 
         tileLayerList.addActionListener(new java.awt.event.ActionListener() {
@@ -186,6 +188,14 @@ public class SpriteEditor extends javax.swing.JDialog {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFrequency}"), frequencyTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
+        widthTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        widthTextField1.setMinimumSize(new java.awt.Dimension(46, 28));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${height}"), widthTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        sizeLabel1.setText("x");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -204,14 +214,22 @@ public class SpriteEditor extends javax.swing.JDialog {
                             .addComponent(sizeLabel)
                             .addComponent(frequencyLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(widthTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(animationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(frequencyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(animationPreview, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 157, Short.MAX_VALUE)
-                        .addComponent(directionLabel)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(widthTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+                                    .addComponent(frequencyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sizeLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(widthTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
+                                .addComponent(animationPreview, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(directionLabel))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(directionChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -230,7 +248,9 @@ public class SpriteEditor extends javax.swing.JDialog {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(sizeLabel)
                                     .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(directionLabel))
+                                    .addComponent(directionLabel)
+                                    .addComponent(widthTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sizeLabel1))
                                 .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(animationLabel)
@@ -353,9 +373,11 @@ public class SpriteEditor extends javax.swing.JDialog {
     private javax.swing.JScrollPane gridScrollPane;
     private javax.swing.JButton okButton;
     private javax.swing.JLabel sizeLabel;
+    private javax.swing.JLabel sizeLabel1;
     private fr.rca.mapmaker.model.sprite.Sprite sprite;
     private fr.rca.mapmaker.ui.TileLayerList tileLayerList;
     private javax.swing.JTextField widthTextField;
+    private javax.swing.JTextField widthTextField1;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

@@ -43,10 +43,12 @@ public class InternalFormat extends AbstractFormat {
 	private static final int HEADER_LENGTH = 4;
 	
 	public static final int VERSION_3 = 3;
+	public static final int VERSION_4 = 4;
 	public static final String HEADER_VERSION_3 = "MMK3";
+	public static final String HEADER_VERSION_4 = "MMK4";
 	
-	public static final int LAST_VERSION = VERSION_3;
-	public static final String HEADER_LAST_VERSION = HEADER_VERSION_3;
+	public static final int LAST_VERSION = VERSION_4;
+	public static final String HEADER_LAST_VERSION = HEADER_VERSION_4;
 			
 
 	public InternalFormat() {
@@ -139,8 +141,11 @@ public class InternalFormat extends AbstractFormat {
 			final InputStream inputStream = openInputStream(file);
 			try {
 				final String header = readHeader(inputStream);
-				if(HEADER_VERSION_3.equals(header)) {
-					return 3;
+				if(HEADER_VERSION_4.equals(header)) {
+					return VERSION_4;
+					
+				} else if(HEADER_VERSION_3.equals(header)) {
+					return VERSION_3;
 				}
 
 			} finally {

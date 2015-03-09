@@ -113,17 +113,18 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	public void mouseClicked(MouseEvent e) {
 		final Sprite sprite = getPalette().getSelectedSprite();
 		if(sprite != null) {
-			final int size = sprite.getSize();
+			final int width = sprite.getWidth();
+			final int height = sprite.getHeight();
 
-			final int x = (e.getX() / size) * size;
-			final int y = (e.getY() / size) * size;
+			final int x = (e.getX() / width) * width;
+			final int y = (e.getY() / height) * height;
 
 			final Instance instance = new Instance(getPalette().getSelectedTile(), project, new Point(x, y));
 			spriteLayer.add(instance);
 			instances.add(instance);
 			registerInstance(instance);
 
-			spriteLayer.repaint(x, y, size, size);
+			spriteLayer.repaint(x, y, width, height);
 		}
 	}
 	

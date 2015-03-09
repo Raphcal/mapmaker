@@ -48,7 +48,7 @@ public class EditableImagePaletteDataHandler implements DataHandler<EditableImag
 		for(int index = 0; index < size; index++) {
 			tileLayerHandler.write(t.getSource(index), outputStream);
 			
-			if(version == InternalFormat.VERSION_3) {
+			if(version >= InternalFormat.VERSION_3) {
 				final String functionHitbox = t.getFunction(index);
 				Streams.write(functionHitbox != null, outputStream);
 				if(functionHitbox != null) {
@@ -77,7 +77,7 @@ public class EditableImagePaletteDataHandler implements DataHandler<EditableImag
 		for(int index = 0; index < size; index++) {
 			tiles.add(tileLayerHandler.read(inputStream));
 			
-			if(version == InternalFormat.VERSION_3) {
+			if(version >= InternalFormat.VERSION_3) {
 				final boolean hasHitbox = Streams.readBoolean(inputStream);
 				if(hasHitbox) {
 					functions[index] = Streams.readString(inputStream);
