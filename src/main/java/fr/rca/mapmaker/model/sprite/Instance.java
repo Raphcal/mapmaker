@@ -20,6 +20,8 @@ public class Instance extends JComponent {
 	private int index;
 	private BufferedImage image;
 	private Point point;
+	
+	private double zoom = 1.0;
 
 	public Instance() {
 	}
@@ -63,6 +65,16 @@ public class Instance extends JComponent {
 		this.point = point;
 	}
 	
+	public void redraw() {
+		updateSprite();
+		repaint();
+	}
+
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+		updateBounds();
+	}
+	
 	private Sprite getSprite() {
 		if(project != null && index >= 0 && index < project.getSprites().size()) {
 			return project.getSprites().get(index);
@@ -76,8 +88,7 @@ public class Instance extends JComponent {
 		
 		final TileLayer defaultLayer;
 		if(sprite != null) {
-			setPreferredSize(new Dimension(sprite.getWidth(), sprite.getHeight()));
-			setBounds(point.x, point.y, sprite.getWidth(), sprite.getHeight());
+			updateBounds();
 			defaultLayer = sprite.getDefaultLayer();
 			
 		} else {
@@ -93,9 +104,16 @@ public class Instance extends JComponent {
 			image = renderer.renderImage(width, height, TILE_SIZE);
 		}
 	}
+	
+	private void updateBounds() {
+		final Sprite sprite = getSprite();
+		
+		setPreferredSize(new Dimension((int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom)));
+		setBounds((int) (point.x * zoom), (int) (point.y * zoom), (int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom));
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		g.drawImage(image, 0, 0, null);
+		g.drawImage(image, 0, 0, (int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom), null);
 	}
 }

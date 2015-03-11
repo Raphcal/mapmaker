@@ -208,6 +208,12 @@ public class Project implements ListModel {
 		return maps.size();
 	}
 
+	/**
+	 * Récupère les instances de la carte actuellement sélectionnée.
+	 * 
+	 * @return La liste des instances de la carte sélectionnée ou une liste vide
+	 * si aucune carte n'est sélectionnée.
+	 */
 	public List<Instance> getInstances() {
 		if(selectedIndex >= 0 && selectedIndex < instancesByMaps.size()) {
 			return instancesByMaps.get(selectedIndex);

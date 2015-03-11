@@ -28,11 +28,11 @@ public class TileLayerList extends AbstractOrientableList<TileLayer> implements 
 		final int originX = orientation.getX(this, index);
 		final int originY = orientation.getY(this, index);
 		
-		final int width = getWidth();
-		final int height = getHeight();
+		final int width = getElementWidth();
+		final int height = getElementHeight();
 		
 		g.setColor(javax.swing.UIManager.getDefaults().getColor("TextComponent.selectionBackgroundInactive"));
-		g.drawRect(originX, originY, width, height);
+		g.drawRect(originX - 1, originY - 1, width + 1, height + 1);
 		
 		final int maxX = Math.min(width / tileSize, layer.getWidth());
 		final int maxY = Math.min(height / tileSize, layer.getHeight());

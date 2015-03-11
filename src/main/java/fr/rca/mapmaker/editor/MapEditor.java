@@ -1111,7 +1111,12 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private void zoomTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomTextFieldActionPerformed
 		try {
 			final int size = Integer.parseInt(zoomTextField.getText());
-			mapGrid.setZoom((double)size/100.0);
+			final double zoom = (double)size/100.0;
+			
+			mapGrid.setZoom(zoom);
+			for(final Instance instance : project.getInstances()) {
+				instance.setZoom(zoom);
+			}
 			
 		} catch(NumberFormatException e) {
 			// Ignoré.
@@ -1134,8 +1139,16 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }//GEN-LAST:event_selectSprite
 
     private void editSprite(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editSprite
-        edit(evt, spritePaletteGrid);
-		// TODO: Rafraîchir les instances du sprite sélectionné.
+        final int editedIndex = edit(evt, spritePaletteGrid);
+		
+		if(editedIndex >= 0) {
+			// Rafraîchissement des instances du sprite sélectionné.
+			for(final Instance instance : project.getInstances()) {
+				if(instance.getIndex() == editedIndex) {
+					instance.redraw();
+				}
+			}
+		}
     }//GEN-LAST:event_editSprite
 
     private void spritePaletteGridKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_spritePaletteGridKeyPressed
@@ -1160,7 +1173,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		grid.requestFocusInWindow();
 	}
 	
-	private void edit(MouseEvent event, Grid grid) {
+	private int edit(MouseEvent event, Grid grid) {
 		if(event.getButton() == MouseEvent.BUTTON1 && event.getClickCount() == 2) {
 			final PaletteMap paletteMap = (PaletteMap) grid.getTileMap();
 			final int tileIndex = paletteMap.getSelectedTile();
@@ -1174,8 +1187,11 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 				grid.repaint(selection);
 				mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
+				
+				return tileIndex;
 			}
 		}
+		return -1;
 	}
 	
 	private void refreshScrollMode() {
