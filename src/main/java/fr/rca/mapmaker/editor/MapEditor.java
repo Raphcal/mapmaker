@@ -1131,7 +1131,11 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		spriteLayerPanel.removeAll();
 		final List<Instance> instances = project.getInstances();
 		if(instances != null) {
+			final int size = Integer.parseInt(zoomTextField.getText());
+			final double zoom = (double)size/100.0;
+			
 			for(final Instance instance : instances) {
+				instance.setZoom(zoom);
 				spriteLayerPanel.add(instance);
 			}
 		}
