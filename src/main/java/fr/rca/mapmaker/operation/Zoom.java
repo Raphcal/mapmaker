@@ -7,6 +7,12 @@ import java.util.Deque;
  * @author Raphaël Calabro <raph_kun at yahoo.fr>
  */
 public class Zoom implements Function {
+	
+	private double zoom;
+
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+	}
 
 	@Override
 	public int getNumberOfArguments() {
@@ -20,7 +26,7 @@ public class Zoom implements Function {
 
 	@Override
 	public void execute(double x, Deque<Double> stack) {
-		stack.push(stack.pop());
+		stack.push(stack.pop() * zoom);
 	}
 
 	@Override

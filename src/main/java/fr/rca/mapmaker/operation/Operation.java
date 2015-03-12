@@ -48,6 +48,14 @@ public class Operation {
 			return stack.peek();
 		}
 	}
+	
+	public void setZoom(double zoom) {
+		for(final Instruction instruction : instructions) {
+			if(instruction instanceof Zoom) {
+				((Zoom) instruction).setZoom(zoom);
+			}
+		}
+	}
 
 	public List<Instruction> getInstructions() {
 		return instructions;
