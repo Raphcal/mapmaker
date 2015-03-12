@@ -32,7 +32,7 @@ public class Instance extends JComponent {
 		this.point = location;
 		updateSprite();
 	}
-
+	
 	public Instance(int index, int x, int y) {
 		this.index = index;
 		this.point = new Point(x, y);

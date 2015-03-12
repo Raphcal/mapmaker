@@ -1113,7 +1113,11 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			final int size = Integer.parseInt(zoomTextField.getText());
 			final double zoom = (double)size/100.0;
 			
+			// Zoom de la carte.
 			mapGrid.setZoom(zoom);
+			
+			// Zoom des instances de sprite.
+			spriteTool.setZoom(zoom);
 			for(final Instance instance : project.getInstances()) {
 				instance.setZoom(zoom);
 			}

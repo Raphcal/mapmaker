@@ -26,6 +26,7 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	private Grid spritePaletteGrid;
 	private List<Instance> instances;
 	private Map<Instance, MouseAdapter> mouseAdapters;
+	private double zoom;
 
 	public SpriteTool() {
 		this(null, null, null);
@@ -71,6 +72,10 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			}
 		}
 	}
+
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+	}
 	
 	public SpritePalette getPalette() {
 		return (SpritePalette) spritePaletteGrid.getTileMap().getPalette();
@@ -113,13 +118,18 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	public void mouseClicked(MouseEvent e) {
 		final Sprite sprite = getPalette().getSelectedSprite();
 		if(sprite != null) {
+			final int mouseX = (int) ((double) e.getX() / zoom);
+			final int mouseY = (int) ((double) e.getY() / zoom);
+			
 			final int width = sprite.getWidth();
 			final int height = sprite.getHeight();
 
-			final int x = (e.getX() / width) * width;
-			final int y = (e.getY() / height) * height;
+			final int x = (mouseX / width) * width;
+			final int y = (mouseY / height) * height;
 
 			final Instance instance = new Instance(getPalette().getSelectedTile(), project, new Point(x, y));
+			instance.setZoom(zoom);
+			
 			spriteLayer.add(instance);
 			instances.add(instance);
 			registerInstance(instance);
