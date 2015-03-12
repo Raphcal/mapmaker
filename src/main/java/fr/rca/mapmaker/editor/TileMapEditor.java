@@ -18,6 +18,7 @@ import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.ui.Function;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -77,6 +78,15 @@ public class TileMapEditor extends javax.swing.JDialog {
 		nextLayerButton.setVisible(false);
 		
 		pack();
+	}
+	
+	public void setHitbox(String hitbox) {
+		if(drawMap.getLayers().size() == 2) {
+			drawMap.remove(1);
+		}
+		if(hitbox != null) {
+			drawMap.add(Function.asTileLayer(hitbox, drawLayer.getWidth(), drawLayer.getHeight()));
+		}
 	}
 	
 	public void setLayers(List<TileLayer> layers, int index, ColorPalette palette) {
