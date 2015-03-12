@@ -40,6 +40,44 @@
 					</archive>
 				</configuration>
 			</plugin>
+			
+			 <plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+					<phase>install</phase>
+					<configuration>
+						<target name="bundle">
+							<property environment="env" />
+
+							<taskdef 
+								name="bundleapp" 
+								classname="com.oracle.appbundler.AppBundlerTask" 
+								classpath="lib/appbundler-1.0.jar" />
+
+							<bundleapp 
+								outputdirectory="target" 
+								name="MapMaker" 
+								displayname="MapMaker" 
+								identifier="fr.rca.mapmaker.MapMaker" 
+								shortversion="1.0"
+								icon="src/main/app/MapMaker.icns"
+								mainclassname="fr.rca.mapmaker.MapMaker">
+								<!--<runtime dir="${env.JAVA_HOME}" />-->
+								<classpath file="target/mapmaker-1.0.0.jar" />
+								<classpath file="/Users/${env.USER}/.m2/repository/org/jdesktop/beansbinding/1.2.1/beansbinding-1.2.1.jar" />
+							</bundleapp>
+							<copy file="Info.plist" toFile="target/MapMaker.app/Contents/Info.plist" overwrite="true"/>
+							<copy file="src/main/app/MmkDocument.icns" toDir="target/MapMaker.app/Contents/Resources"/>
+						</target>
+					</configuration>
+					<goals>
+						<goal>run</goal>
+					</goals>
+					</execution>
+				</executions>
+				</plugin>
 		</plugins>
 	</build>
     <repositories>
