@@ -77,7 +77,7 @@
     </Component>
     <Component class="fr.rca.mapmaker.editor.tool.SpriteTool" name="spriteTool">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="spriteTool.setSpriteLayer(spriteLayerPanel);&#xa;spriteTool.setSpritePaletteGrid(spritePaletteGrid);&#xa;spriteTool.setProject(project);"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="spriteTool.setSpriteLayer(spriteLayerPanel);&#xa;spriteTool.setSpritePaletteGrid(spritePaletteGrid);&#xa;spriteTool.setProject(project);&#xa;spriteTool.setZoom(1.0);&#xa;"/>
       </AuxValues>
     </Component>
     <Container class="javax.swing.JPopupMenu" name="tilePopupMenu">

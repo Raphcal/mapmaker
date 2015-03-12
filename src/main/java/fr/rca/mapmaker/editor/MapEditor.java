@@ -275,6 +275,7 @@ public class MapEditor extends javax.swing.JFrame {
         spriteTool.setSpriteLayer(spriteLayerPanel);
         spriteTool.setSpritePaletteGrid(spritePaletteGrid);
         spriteTool.setProject(project);
+        spriteTool.setZoom(1.0);
 
         inspectTileMenuItem.setText("Inspecter");
         inspectTileMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -1134,9 +1135,18 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			final int size = Integer.parseInt(zoomTextField.getText());
 			final double zoom = (double)size/100.0;
 			
+			final int mapWidth = mapGrid.getTileMapWidth() * mapGrid.getTileSize();
+			final int mapHeight = mapGrid.getTileMapHeight() * mapGrid.getTileSize();
+			
 			for(final Instance instance : instances) {
 				instance.setZoom(zoom);
 				spriteLayerPanel.add(instance);
+				
+				if(instance.getX() > mapWidth || instance.getY() > mapHeight) {
+					instance.setBounds(Math.min(mapWidth - instance.getWidth(), instance.getX()), 
+						Math.min(mapHeight - instance.getHeight(), instance.getY()), 
+						instance.getWidth(), instance.getHeight());
+				}
 			}
 		}
 		spriteTool.setInstances(instances);
