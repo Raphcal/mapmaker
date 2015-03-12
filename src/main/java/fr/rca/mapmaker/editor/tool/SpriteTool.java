@@ -134,7 +134,7 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			instances.add(instance);
 			registerInstance(instance);
 
-			spriteLayer.repaint(x, y, width, height);
+			spriteLayer.repaint(instance.getBounds());
 		}
 	}
 	
