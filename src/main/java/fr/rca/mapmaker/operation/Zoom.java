@@ -8,7 +8,7 @@ import java.util.Deque;
  */
 public class Zoom implements Function {
 	
-	private double zoom;
+	private double zoom = 1.0;
 
 	public void setZoom(double zoom) {
 		this.zoom = zoom;
