@@ -568,7 +568,7 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * Inverse la couche horizontalement.
 	 */
 	public void flipHorizontally() {
-		int[] mirror = new int[this.tiles.length];
+		final int[] mirror = new int[this.tiles.length];
 		
 		int index = 0;
 		for(int y = 0; y < height; y++) {
@@ -586,7 +586,7 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * Inverse la couche verticalement.
 	 */
 	public void flipVertically() {
-		int[] mirror = new int[this.tiles.length];
+		final int[] mirror = new int[this.tiles.length];
 		
 		int index = 0;
 		for(int y = 1; y <= height; y++) {
@@ -597,6 +597,44 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 		}
 		
 		this.tiles = mirror;
+		fireLayerChanged(new Rectangle(width, height));
+	}
+	
+	/**
+	 * Applique une rotation sur la couche.
+	 * 
+	 * @param angle Angle à appliquer.
+	 */
+	public void rotate(double angle) {
+		rotate(angle, width / 2, height / 2);
+	}
+	
+	/**
+	 * Applique une rotation sur la couche.
+	 * 
+	 * @param angle Angle à appliquer.
+	 * @param pivotX Abscisse du centre de la rotation.
+	 * @param pivotY Ordonnée du centre de la rotation.
+	 */
+	public void rotate(double angle, int pivotX, int pivotY) {
+		final int[] rotated = new int[this.tiles.length];
+		
+		int index = 0;
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
+				final double originalAngle = Math.atan2(y - pivotY, x - pivotX);
+				final double length = Point.distance(x, y, pivotX, pivotY);
+				
+				final int refX = (int) (Math.cos(originalAngle - angle) * length) + pivotX;
+				final int refY = (int) (Math.sin(originalAngle - angle) * length) + pivotY;
+				
+				rotated[index] = getTile(refX, refY);
+				
+				index++;
+			}
+		}
+		
+		this.tiles = rotated;
 		fireLayerChanged(new Rectangle(width, height));
 	}
 

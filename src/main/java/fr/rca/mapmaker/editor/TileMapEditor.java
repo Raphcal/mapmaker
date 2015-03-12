@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 
 /**
@@ -194,6 +195,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         zoomPercentLabel = new javax.swing.JLabel();
         previousLayerButton = new javax.swing.JButton();
         nextLayerButton = new javax.swing.JButton();
+        rotateButton = new javax.swing.JButton();
 
         drawMap.setBackgroundColor(new java.awt.Color(0, 153, 153));
         drawMap.setHeight(32);
@@ -424,6 +426,15 @@ public class TileMapEditor extends javax.swing.JDialog {
             }
         });
 
+        rotateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_rotate.png"))); // NOI18N
+        rotateButton.setToolTipText("Pivoter");
+        rotateButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        rotateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rotateButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -449,7 +460,10 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addComponent(ellipseToggleButton)
                         .addGap(0, 0, 0)
                         .addComponent(ellipseFillToggleButton))
-                    .addComponent(colorPickerToggleButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(colorPickerToggleButton)
+                        .addGap(0, 0, 0)
+                        .addComponent(rotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(horizontalMirrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
@@ -470,7 +484,7 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addGap(0, 0, 0)
                         .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(alphaPaletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -517,7 +531,9 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addComponent(ellipseToggleButton)
                             .addComponent(ellipseFillToggleButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(colorPickerToggleButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(colorPickerToggleButton)
+                            .addComponent(rotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(horizontalMirrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -627,6 +643,22 @@ public class TileMapEditor extends javax.swing.JDialog {
 		drawLayer.flipVertically();
     }//GEN-LAST:event_verticalMirrorButtonActionPerformed
 
+    private void rotateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateButtonActionPerformed
+		final String value = JOptionPane.showInputDialog("Angle de la rotation (0 à 360) :");
+		if(value != null) {
+			try {
+				final int degree = Integer.parseInt(value);
+				final double radian = degree * Math.PI / 180.0;
+
+				// Rotation.
+				drawLayer.rotate(radian);
+				
+			} catch(NumberFormatException e) {
+				// Ignoré.
+			}
+		}
+    }//GEN-LAST:event_rotateButtonActionPerformed
+
 	private void selectColor(MouseEvent event) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 		colorPaletteMap.setSelection(point);
@@ -702,6 +734,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private javax.swing.JToggleButton rectangleFillToggleButton;
     private javax.swing.JToggleButton rectangleToggleButton;
     private javax.swing.JButton redoButton;
+    private javax.swing.JButton rotateButton;
     private fr.rca.mapmaker.model.selection.SmallSelectionStyle selectionStyle;
     private javax.swing.JToggleButton selectionToggleButton;
     private javax.swing.ButtonGroup toolButtonGroup;
