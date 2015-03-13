@@ -71,7 +71,7 @@ public class TileInspector extends javax.swing.JDialog {
 			firePropertyChange("currentFunctionHitbox", null, hitbox);
 		}
 		
-		function.repaint();
+		previewPanel.repaint();
 	}
 
 	public void setCurrentFunctionHitbox(String functionHitbox) {
@@ -259,31 +259,6 @@ public class TileInspector extends javax.swing.JDialog {
 			setCurrentFunctionHitbox(null);
 		}
     }//GEN-LAST:event_hitboxCheckBoxActionPerformed
-
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String args[]) {
-		/* Create and display the dialog */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				final EditableImagePalette palette = new EditableImagePalette(32, 4);
-				final PaletteMap paletteMap = new PaletteMap(palette, 4);
-				paletteMap.setSelection(new Point(0, 0));
-				
-				TileInspector dialog = new TileInspector(new javax.swing.JFrame(), true);
-				dialog.setTile(paletteMap);
-				dialog.pack();
-				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-					@Override
-					public void windowClosing(java.awt.event.WindowEvent e) {
-						System.exit(0);
-					}
-				});
-				dialog.setVisible(true);
-			}
-		});
-	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.rca.mapmaker.ui.Function function;
