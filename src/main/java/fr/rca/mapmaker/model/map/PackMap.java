@@ -1,6 +1,15 @@
-package fr.rca.mapmaker.model.sprite;
+package fr.rca.mapmaker.model.map;
 
+import fr.rca.mapmaker.model.palette.Palette;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Table qui agence ses objets pour tenir dans la surface donnée.
@@ -26,11 +35,14 @@ public class PackMap {
 	
 	private int width;
 	private int height;
-
+	
+	private Map<TileMap, Point> locations;
+	
 	public PackMap(int width, int height) {
 		this.width = width;
 		this.height = height;
 		this.topLeft = new Entry(width, height);
+		this.locations = new HashMap<TileMap, Point>();
 	}
 	
 	public Entry get(int column, int row) {
@@ -58,6 +70,82 @@ public class PackMap {
 		}
 		
 		return point;
+	}
+	
+	public Point getPoint(TileMap map) {
+		return locations.get(map);
+	}
+	
+	public static PackMap packAll(Collection<TileMap> maps) {
+		if(maps == null || maps.isEmpty()) {
+			return null;
+		}
+		
+		// Tri des cartes du plus haut au plus petit.
+		final TreeSet<TileMap> orderedSet = new TreeSet<TileMap>(new Comparator<TileMap>() {
+			@Override
+			public int compare(TileMap o1, TileMap o2) {
+				final int compareHeight = Integer.valueOf(o2.getHeight()).compareTo(Integer.valueOf(o1.getHeight()));
+				
+				if(compareHeight == 0) {
+					final int compareWidth = Integer.valueOf(o2.getWidth()).compareTo(o1.getWidth());
+					
+					if(compareWidth == 0) {
+						return o1.toString().compareTo(o2.toString());
+						
+					} else {
+						return compareWidth;
+					}
+					
+				} else {
+					return compareHeight;
+				}
+			}
+		});
+		orderedSet.addAll(maps);
+		
+		PackMap map = null;
+		
+		for(int pot = 0; map == null; pot++) {
+			final int size = (int) Math.pow(2, pot);
+			map = new PackMap(size, size);
+			
+			if(!map.addAll(orderedSet)) {
+				map = null;
+			}
+		}
+		
+		return map;
+	}
+	
+	/**
+	 * 
+	 * @param maps
+	 * @return 
+	 */
+	public boolean addAll(Set<TileMap> maps) {
+		for(final TileMap map : maps) {
+			Point location = null;
+			
+			for(int col = 0; location == null && col < getColumns(); col++) {
+				for(int row = 0; location == null && row < getRows(); row++) {
+					if(insertIfPossible(col, row, map.getWidth(), map.getHeight())) {
+						location = getPoint(col, row);
+						if(!checkIntegrity()) {
+							System.err.println("Erreur de packing");
+							return false;
+						}
+					}
+				}
+			}
+			if(location != null) {
+				locations.put(map, location);
+				
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -158,6 +246,28 @@ public class PackMap {
 		return getEnclosingWidth() * height;
 	}
 	
+	public BufferedImage renderImage() {
+		final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		final Graphics2D graphics = image.createGraphics();
+		
+		for(Map.Entry<TileMap, Point> entry : locations.entrySet()) {
+			final Point location = entry.getValue();
+			final Palette palette = entry.getKey().getPalette();
+			
+			for(final Layer layer : entry.getKey().getLayers()) {
+				for(int y = 0; y < layer.getHeight(); y++) {
+					for(int x = 0; x < layer.getWidth(); x++) {
+						palette.paintTile(graphics, layer.getTile(x, y), x + location.x, y + location.y, 1);
+					}
+				}
+			}
+		}
+		
+		graphics.dispose();
+		
+		return image;
+	}
+	
 	public static class Entry {
 		private boolean empty;
 		private int[] size;
@@ -226,6 +336,7 @@ public class PackMap {
 				span++;
 			}
 			if(remaining > 0) {
+				// La hauteur donnée ne rentre pas dans l'espace restant.
 				return 0;
 			}
 			return span;
