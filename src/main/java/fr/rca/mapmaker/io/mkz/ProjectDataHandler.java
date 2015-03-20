@@ -138,10 +138,10 @@ public class ProjectDataHandler implements DataHandler<Project> {
 				
 				index++;
 				
-				final Collection<Animation> animations = sprite.getAnimations();
-				Streams.write(animations.size(), zipOutputStream);
+				final Animation[] defaultAnimations = Animation.getDefaultAnimations();
+				Streams.write(defaultAnimations.length, zipOutputStream);
 				
-				for(Animation defaultAnimation : Animation.getDefaultAnimations()) {
+				for(Animation defaultAnimation : defaultAnimations) {
 					final Animation animation = sprite.get(defaultAnimation.getName());
 					
 					Streams.write(animation != null, zipOutputStream);
