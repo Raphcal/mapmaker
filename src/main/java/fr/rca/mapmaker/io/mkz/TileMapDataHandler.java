@@ -3,7 +3,6 @@ package fr.rca.mapmaker.io.mkz;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
-import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.Streams;
