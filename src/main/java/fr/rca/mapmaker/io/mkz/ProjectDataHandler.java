@@ -9,6 +9,7 @@ import fr.rca.mapmaker.model.map.PackMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Animation;
+import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -57,13 +58,26 @@ public class ProjectDataHandler implements DataHandler<Project> {
 		final List<TileMap> maps = t.getMaps();
 		
 		final DataHandler<TileMap> tileMapHandler = format.getHandler(TileMap.class);
+		final DataHandler<Instance> instanceHandler = format.getHandler(Instance.class);
 		
 		for(int index = 0; index < maps.size(); index++) {
 			final TileMap map = maps.get(index);
+			final List<Instance> instances = t.getAllInstances().get(index);
 			
-			final ZipEntry entry = new ZipEntry("map" + index + ".map");
-			zipOutputStream.putNextEntry(entry);
+			// Écriture de la carte
+			final ZipEntry mapEntry = new ZipEntry("map" + index + ".map");
+			zipOutputStream.putNextEntry(mapEntry);
 			tileMapHandler.write(map, outputStream);
+			zipOutputStream.closeEntry();
+			
+			// Écriture des instances
+			final ZipEntry instancesEntry = new ZipEntry("map" + index + ".sprites");
+			zipOutputStream.putNextEntry(instancesEntry);
+			
+			Streams.write(instances.size(), outputStream);
+			for(final Instance instance : instances) {
+				instanceHandler.write(instance, outputStream);
+			}
 			zipOutputStream.closeEntry();
 		}
 		
@@ -157,7 +171,7 @@ public class ProjectDataHandler implements DataHandler<Project> {
 			zipOutputStream.closeEntry();
 		}
 	}
-
+	
 	@Override
 	public Project read(InputStream inputStream) throws IOException {
 		throw new UnsupportedOperationException("NIY");

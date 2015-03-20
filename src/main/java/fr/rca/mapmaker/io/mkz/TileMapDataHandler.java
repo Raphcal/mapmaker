@@ -40,8 +40,9 @@ public class TileMapDataHandler implements DataHandler<TileMap> {
 		final List<Layer> layers = t.getLayers();
 		Streams.write(layers.size(), outputStream);
 		
-		for(final Layer layer : layers)
+		for(final Layer layer : layers) {
 			layerHandler.write((TileLayer)layer, outputStream);
+		}
 	}
 
 	@Override
