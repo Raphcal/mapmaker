@@ -125,10 +125,8 @@ public class ProjectDataHandler implements DataHandler<Project> {
 			imageHandler.write(atlasImage, zipOutputStream);
 			zipOutputStream.closeEntry();
 			
-			// TODO: Parcourir les sprites et écrire les informations de position pour chaque layer.
-			final ZipEntry locationEntry = new ZipEntry("atlas.pos");
+			final ZipEntry locationEntry = new ZipEntry("atlas.sprites");
 			zipOutputStream.putNextEntry(locationEntry);
-			
 			
 			Streams.write(sprites.size(), zipOutputStream);
 			
@@ -143,26 +141,32 @@ public class ProjectDataHandler implements DataHandler<Project> {
 				final Collection<Animation> animations = sprite.getAnimations();
 				Streams.write(animations.size(), zipOutputStream);
 				
-				for(final Animation animation : animations) {
-					Streams.write(animation.getName(), zipOutputStream);
-					Streams.write(animation.getFrequency(), zipOutputStream);
+				for(Animation defaultAnimation : Animation.getDefaultAnimations()) {
+					final Animation animation = sprite.get(defaultAnimation.getName());
 					
-					final Set<Map.Entry<Double, List<TileLayer>>> directions = animation.getFrames().entrySet();
-					Streams.write(directions.size(), zipOutputStream);
+					Streams.write(animation != null, zipOutputStream);
 					
-					for(final Map.Entry<Double, List<TileLayer>> direction : directions) {
-						Streams.write((double) direction.getKey(), zipOutputStream);
-						
-						final List<TileLayer> frames = direction.getValue();
-						Streams.write(frames.size(), zipOutputStream);
-						
-						for(final TileLayer frame : frames) {
-							final Point point = packMap.getPoint(maps.get(frame));
-							
-							Streams.write(point.x, zipOutputStream);
-							Streams.write(point.y, zipOutputStream);
-							Streams.write(frame.getWidth(), zipOutputStream);
-							Streams.write(frame.getHeight(), zipOutputStream);
+					if(animation != null) {
+						Streams.write(animation.getName(), zipOutputStream);
+						Streams.write(animation.getFrequency(), zipOutputStream);
+
+						final Set<Map.Entry<Double, List<TileLayer>>> directions = animation.getFrames().entrySet();
+						Streams.write(directions.size(), zipOutputStream);
+
+						for(final Map.Entry<Double, List<TileLayer>> direction : directions) {
+							Streams.write((double) direction.getKey(), zipOutputStream);
+
+							final List<TileLayer> frames = direction.getValue();
+							Streams.write(frames.size(), zipOutputStream);
+
+							for(final TileLayer frame : frames) {
+								final Point point = packMap.getPoint(maps.get(frame));
+
+								Streams.write(point.x, zipOutputStream);
+								Streams.write(point.y, zipOutputStream);
+								Streams.write(frame.getWidth(), zipOutputStream);
+								Streams.write(frame.getHeight(), zipOutputStream);
+							}
 						}
 					}
 				}

@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.io.mkz;
 
 import fr.rca.mapmaker.io.DataHandler;
+import fr.rca.mapmaker.io.Streams;
 import fr.rca.mapmaker.model.sprite.Instance;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +15,9 @@ public class InstanceDataHandler implements DataHandler<Instance> {
 
 	@Override
 	public void write(Instance t, OutputStream outputStream) throws IOException {
-		
+		Streams.write(t.getIndex(), outputStream);
+		Streams.write(t.getPoint().x, outputStream);
+		Streams.write(t.getPoint().y, outputStream);
 	}
 
 	@Override
