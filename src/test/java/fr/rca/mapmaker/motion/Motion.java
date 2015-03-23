@@ -27,6 +27,10 @@ public class Motion {
 	private float x;
 	private float y;
 
+	public Motion() {
+		this(400f, 700f, 200f, 750f, 320f, 100f);
+	}
+
 	public Motion(float maximumSpeed, float maximumFallSpeed, float acceleration, float weight, float jumpForce, float groundInfluence) {
 		this.maximumSpeed = maximumSpeed;
 		this.maximumFallSpeed = maximumFallSpeed;
