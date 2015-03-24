@@ -1188,7 +1188,6 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }//GEN-LAST:event_spritePaletteGridKeyPressed
 
     private void inspectTileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inspectTileMenuItemActionPerformed
-        // TODO add your handling code here:
 		tileInspector.setVisible(true);
     }//GEN-LAST:event_inspectTileMenuItemActionPerformed
 
