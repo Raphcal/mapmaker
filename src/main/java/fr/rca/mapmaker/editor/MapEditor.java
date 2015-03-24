@@ -446,7 +446,7 @@ public class MapEditor extends javax.swing.JFrame {
         gridToolBar.add(devicePreviewButton);
         gridToolBar.add(zoomSeparator);
 
-        zoomLabel.setText("Zoom");
+        zoomLabel.setText(LANGUAGE.getString("view.zoom")); // NOI18N
         gridToolBar.add(zoomLabel);
 
         zoomTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
@@ -657,7 +657,7 @@ public class MapEditor extends javax.swing.JFrame {
                 .addComponent(layerListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        paletteTabbedPane.addTab("Fond", mapPanel);
+        paletteTabbedPane.addTab(LANGUAGE.getString("palette.background"), mapPanel); // NOI18N
 
         spritePanel.setPreferredSize(new java.awt.Dimension(144, 423));
 
@@ -717,7 +717,7 @@ public class MapEditor extends javax.swing.JFrame {
                 .addComponent(spritePaletteScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE))
         );
 
-        paletteTabbedPane.addTab("Actifs", spritePanel);
+        paletteTabbedPane.addTab(LANGUAGE.getString("palette.sprites"), spritePanel); // NOI18N
 
         fileMenu.setText(bundle.getString("menu.file")); // NOI18N
 

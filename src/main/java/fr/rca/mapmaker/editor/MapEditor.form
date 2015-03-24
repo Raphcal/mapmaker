@@ -538,7 +538,9 @@
         </Component>
         <Component class="javax.swing.JLabel" name="zoomLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Zoom"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="resources/language.properties" key="view.zoom" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="zoomTextField">
@@ -569,8 +571,10 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Fond">
-                <Property name="tabTitle" type="java.lang.String" value="Fond"/>
+              <JTabbedPaneConstraints tabName="Bg">
+                <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="resources/language.properties" key="palette.background" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
+                </Property>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
@@ -876,8 +880,10 @@
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Actifs">
-                <Property name="tabTitle" type="java.lang.String" value="Actifs"/>
+              <JTabbedPaneConstraints tabName="Sprites">
+                <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="resources/language.properties" key="palette.sprites" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
+                </Property>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
