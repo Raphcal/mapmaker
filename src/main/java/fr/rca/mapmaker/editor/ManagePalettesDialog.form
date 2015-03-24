@@ -16,6 +16,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -36,7 +37,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="paletteScrollPane" pref="222" max="32767" attributes="0"/>
+                      <Component id="paletteScrollPane" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="gridScrollPane" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -47,6 +48,8 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="addPaletteButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="duplicatePaletteButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="renamePaletteButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -70,6 +73,7 @@
                   <Component id="addPaletteButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="renamePaletteButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="removePaletteButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="duplicatePaletteButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -142,7 +146,7 @@
     <Component class="javax.swing.JButton" name="okButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="button.ok" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="button.ok" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -156,7 +160,7 @@
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="button.cancel" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="button.cancel" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -170,7 +174,7 @@
     <Component class="javax.swing.JButton" name="addPaletteButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="dialog.palette.add" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="dialog.palette.add" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -184,7 +188,7 @@
     <Component class="javax.swing.JButton" name="removePaletteButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="dialog.palette.remove" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="dialog.palette.remove" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
@@ -195,12 +199,22 @@
     <Component class="javax.swing.JButton" name="renamePaletteButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="dialog.palette.rename" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="dialog.palette.rename" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="renamePaletteButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="duplicatePaletteButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="resources/language.properties" key="dialog.palette.duplicate" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="duplicatePaletteButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

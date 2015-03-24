@@ -789,7 +789,7 @@ public class MapEditor extends javax.swing.JFrame {
         });
         editMenu.add(managePalettesMenuItem);
 
-        trajectoryPreviewMenuItem.setText("jMenuItem2");
+        trajectoryPreviewMenuItem.setText(LANGUAGE.getString("menu.edit.trajectorypreview")); // NOI18N
         trajectoryPreviewMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trajectoryPreviewMenuItemActionPerformed(evt);

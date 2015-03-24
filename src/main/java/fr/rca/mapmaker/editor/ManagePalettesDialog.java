@@ -5,6 +5,7 @@
  */
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.model.Duplicatable;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
@@ -21,7 +22,7 @@ import javax.swing.JOptionPane;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class ManagePalettesDialog extends javax.swing.JDialog {
-	private static final ResourceBundle language = ResourceBundle.getBundle("resources/language");
+	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
 
 	private Frame parent;
 	private Project p = new Project();
@@ -59,6 +60,7 @@ public class ManagePalettesDialog extends javax.swing.JDialog {
         javax.swing.JButton addPaletteButton = new javax.swing.JButton();
         removePaletteButton = new javax.swing.JButton();
         renamePaletteButton = new javax.swing.JButton();
+        duplicatePaletteButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/language"); // NOI18N
@@ -91,28 +93,28 @@ public class ManagePalettesDialog extends javax.swing.JDialog {
         });
         paletteScrollPane.setViewportView(paletteList);
 
-        okButton.setText(language.getString("button.ok")); // NOI18N
+        okButton.setText(LANGUAGE.getString("button.ok")); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
             }
         });
 
-        cancelButton.setText(language.getString("button.cancel")); // NOI18N
+        cancelButton.setText(LANGUAGE.getString("button.cancel")); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
             }
         });
 
-        addPaletteButton.setText(language.getString("dialog.palette.add")); // NOI18N
+        addPaletteButton.setText(LANGUAGE.getString("dialog.palette.add")); // NOI18N
         addPaletteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addPaletteButtonActionPerformed(evt);
             }
         });
 
-        removePaletteButton.setText(language.getString("dialog.palette.remove")); // NOI18N
+        removePaletteButton.setText(LANGUAGE.getString("dialog.palette.remove")); // NOI18N
         removePaletteButton.setEnabled(false);
         removePaletteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,11 +122,18 @@ public class ManagePalettesDialog extends javax.swing.JDialog {
             }
         });
 
-        renamePaletteButton.setText(language.getString("dialog.palette.rename")); // NOI18N
+        renamePaletteButton.setText(LANGUAGE.getString("dialog.palette.rename")); // NOI18N
         renamePaletteButton.setEnabled(false);
         renamePaletteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 renamePaletteButtonActionPerformed(evt);
+            }
+        });
+
+        duplicatePaletteButton.setText(LANGUAGE.getString("dialog.palette.duplicate")); // NOI18N
+        duplicatePaletteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                duplicatePaletteButtonActionPerformed(evt);
             }
         });
 
@@ -136,7 +145,7 @@ public class ManagePalettesDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(paletteScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
+                        .addComponent(paletteScrollPane)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(gridScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -145,6 +154,8 @@ public class ManagePalettesDialog extends javax.swing.JDialog {
                         .addComponent(cancelButton))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addPaletteButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(duplicatePaletteButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(renamePaletteButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -162,7 +173,8 @@ public class ManagePalettesDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addPaletteButton)
                     .addComponent(renamePaletteButton)
-                    .addComponent(removePaletteButton))
+                    .addComponent(removePaletteButton)
+                    .addComponent(duplicatePaletteButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -182,7 +194,6 @@ private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 }//GEN-LAST:event_cancelButtonActionPerformed
 
 private void paletteListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_paletteListValueChanged
-	
 	final PaletteMap map;
 	
 	final int index = paletteList.getSelectedIndex();
@@ -190,9 +201,11 @@ private void paletteListValueChanged(javax.swing.event.ListSelectionEvent evt) {
 		final Palette palette = project.getPalette(paletteList.getSelectedIndex());
 		map = new PaletteMap(palette, 4);
 		
-	} else
+	} else {
 		map = null;
+	}
 	
+	duplicatePaletteButton.setEnabled(map != null && map.getPalette() instanceof Duplicatable);
 	renamePaletteButton.setEnabled(map != null && map.getPalette().isEditable());
 	removePaletteButton.setEnabled(map != null);
 	paletteGrid.setTileMap(map);
@@ -203,10 +216,11 @@ private void renamePaletteButtonActionPerformed(java.awt.event.ActionEvent evt) 
 	final int index = paletteList.getSelectedIndex();
 	
 	final String name = JOptionPane.showInputDialog(this,
-			language.getString("dialog.palette.rename.message"), model.getElementAt(index));
+			LANGUAGE.getString("dialog.palette.rename.message"), model.getElementAt(index));
 	
-	if(name != null)
+	if(name != null) {
 		model.renameElementAt(index, name);
+	}
 }//GEN-LAST:event_renamePaletteButtonActionPerformed
 
 private void removePaletteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removePaletteButtonActionPerformed
@@ -216,7 +230,7 @@ private void removePaletteButtonActionPerformed(java.awt.event.ActionEvent evt) 
 
 private void addPaletteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPaletteButtonActionPerformed
 	final NewPaletteDialog newPaletteDialog = new NewPaletteDialog(parent, true);
-	newPaletteDialog.setTitle(language.getString("dialog.palette.new.title"));
+	newPaletteDialog.setTitle(LANGUAGE.getString("dialog.palette.new.title"));
 	newPaletteDialog.setPaletteName("Palette " + (paletteList.getModel().getSize() + 1));
 	newPaletteDialog.setVisible(true);
 	
@@ -233,15 +247,24 @@ private void addPaletteButtonActionPerformed(java.awt.event.ActionEvent evt) {//
 			palette = new EditableColorPalette();
 			((EditableColorPalette)palette).setTileSize(tileSize);
 			
-		} else
+		} else {
 			throw new IllegalArgumentException("Type de palette invalide : " + newPaletteDialog.getPaletteType());
+		}
 		
 		palette.setName(newPaletteDialog.getPaletteName());
 		model.addElement(palette);
 	}
 }//GEN-LAST:event_addPaletteButtonActionPerformed
 
+    private void duplicatePaletteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicatePaletteButtonActionPerformed
+		final Duplicatable<Palette> palette = (Duplicatable<Palette>) project.getPalette(paletteList.getSelectedIndex());
+		
+		final PaletteComboBoxModel model = (PaletteComboBoxModel) paletteList.getModel();
+		model.addElement(palette.duplicate());
+    }//GEN-LAST:event_duplicatePaletteButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton duplicatePaletteButton;
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JList paletteList;
     private fr.rca.mapmaker.model.project.Project project;

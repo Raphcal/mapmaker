@@ -248,7 +248,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="trajectoryPreviewMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="jMenuItem2"/>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="resources/language.properties" key="menu.edit.trajectorypreview" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="trajectoryPreviewMenuItemActionPerformed"/>
