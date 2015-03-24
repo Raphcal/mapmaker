@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.motion;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
@@ -42,6 +43,15 @@ public class Motion {
 
 	public static Motion getDefaultMotion() {
 		return new Motion(400f, 700f, 200f, 750f, 320f, 100f);
+	}
+	
+	public void copyValues(Motion motion) {
+		setMaximumSpeed(motion.maximumSpeed);
+		setMaximumFallSpeed(motion.maximumFallSpeed);
+		setAcceleration(motion.acceleration);
+		setWeight(motion.weight);
+		setJumpForce(motion.jumpForce);
+		setGroundInfluence(motion.groundInfluence);
 	}
 	
 	public void reset() {
@@ -180,4 +190,11 @@ public class Motion {
 		propertyChangeSupport.firePropertyChange("groundInfluence", old, groundInfluence);
 	}
 
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(listener);
+	}
 }
