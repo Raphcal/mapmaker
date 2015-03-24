@@ -57,6 +57,7 @@ public class TrajectoryPreview extends javax.swing.JDialog {
         jSlider1 = new javax.swing.JSlider();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Visualisateur de trajectoire");
 
         directionSlider.setMajorTickSpacing(25);
         directionSlider.setMinorTickSpacing(5);
