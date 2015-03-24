@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 public class MotionPanel extends JPanel {
 	
 	private final Map<Motion, Color> motions = new LinkedHashMap<Motion, Color>();
-	private int refreshRate = 200;
+	private int refreshRate = 2;
 
 	public MotionPanel() {
 		add(Motion.getDefaultMotion(), Color.RED);
@@ -59,7 +59,7 @@ public class MotionPanel extends JPanel {
 	}
 
 	public float getDelta() {
-		return (float) refreshRate / 10000.0f;
+		return (float) refreshRate / 1000.0f;
 	}
 	
 	@Override
@@ -84,10 +84,12 @@ public class MotionPanel extends JPanel {
 		}
 		
 		// Affichage des mouvements
+		final int y = (int) (getHeight() / 2.0f + 32 - ((int) getHeight() / 2.0f) % 32);
+		
 		for(final Map.Entry<Motion, Color> entry : motions.entrySet()) {
 			final Motion motion = entry.getKey();
 			motion.reset();
-			motion.setY(getHeight() / 2.0f);
+			motion.setY(y);
 			drawMotion(entry.getKey(), entry.getValue(), g);
 		}
 
@@ -95,18 +97,22 @@ public class MotionPanel extends JPanel {
 	}
 
 	private void drawMotion(Motion motion, Color color, Graphics g) {
-		final float end = 4f;
+		final float end = 5f;
 		final float delta = getDelta();
 
 		g.setColor(color);
 		for(float elapsed = 0; elapsed < end; elapsed += delta) {
-			if(!motion.isInAir() && elapsed >= end / 2.0f) {
+			if(!motion.isInAir() && motion.isAtMaximumSpeed() && isAtAMultipleOf32(motion)) {
 				motion.jump();
 			}
 			motion.update(delta);
 
 			g.fillOval((int) motion.getX() - 1, (int) motion.getY() - 1, 3, 3);
 		}
+	}
+	
+	private boolean isAtAMultipleOf32(Motion motion) {
+		return ((int)motion.getX()) % 32 == 0;
 	}
 	
 }

@@ -99,6 +99,10 @@ public class Motion {
 	public boolean isInAir() {
 		return inAir;
 	}
+	
+	public boolean isAtMaximumSpeed() {
+		return horizontalSpeed == maximumSpeed;
+	}
 
 	public float getX() {
 		return x;
