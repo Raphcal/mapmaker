@@ -103,6 +103,10 @@ public class Motion {
 	public boolean isAtMaximumSpeed() {
 		return horizontalSpeed == maximumSpeed;
 	}
+	
+	public boolean isAtSpeedPercentage(float percent) {
+		return horizontalSpeed / maximumSpeed >= percent;
+	}
 
 	public float getX() {
 		return x;

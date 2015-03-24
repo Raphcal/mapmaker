@@ -18,6 +18,8 @@ public class MotionPanel extends JPanel {
 	
 	private final Map<Motion, Color> motions = new LinkedHashMap<Motion, Color>();
 	private int refreshRate = 2;
+	private float direction = 1.0f;
+	private float jumpSpeedPercent = 1.0f;
 
 	public MotionPanel() {
 		add(Motion.getDefaultMotion(), Color.RED);
@@ -25,6 +27,7 @@ public class MotionPanel extends JPanel {
 	
 	public final void add(Motion motion, Color color) {
 		motions.put(motion, color);
+		motion.setDirection(this.direction);
 		
 		motion.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -35,13 +38,24 @@ public class MotionPanel extends JPanel {
 				}
 			}
 		});
+		
+		repaint();
 	}
 
 	public void setDirection(int direction) {
-		final float realDirection = direction / 100.0f;
+		this.direction = direction / 100.0f;
 		for(final Motion motion : motions.keySet()) {
-			motion.setDirection(realDirection);
+			motion.setDirection(this.direction);
 		}
+	}
+
+	public void setJumpSpeedPercent(int jumpSpeedPercent) {
+		this.jumpSpeedPercent = (float) jumpSpeedPercent / 100.0f;
+		repaint();
+	}
+
+	public int getJumpSpeedPercent() {
+		return (int) (jumpSpeedPercent * 100.0f);
 	}
 	
 	public void setRefreshRate(int refreshRate) {
@@ -102,7 +116,7 @@ public class MotionPanel extends JPanel {
 
 		g.setColor(color);
 		for(float elapsed = 0; elapsed < end; elapsed += delta) {
-			if(!motion.isInAir() && motion.isAtMaximumSpeed() && isAtAMultipleOf32(motion)) {
+			if(!motion.isInAir() && motion.isAtSpeedPercentage(jumpSpeedPercent) && isAtAMultipleOf32(motion)) {
 				motion.jump();
 			}
 			motion.update(delta);
