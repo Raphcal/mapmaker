@@ -24,6 +24,7 @@ import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
+import fr.rca.mapmaker.motion.TrajectoryPreview;
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Color;
@@ -231,6 +232,7 @@ public class MapEditor extends javax.swing.JFrame {
         quitMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu editMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem managePalettesMenuItem = new javax.swing.JMenuItem();
+        trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout tileMapListRendererLayout = new javax.swing.GroupLayout(tileMapListRenderer);
         tileMapListRenderer.setLayout(tileMapListRendererLayout);
@@ -787,6 +789,14 @@ public class MapEditor extends javax.swing.JFrame {
         });
         editMenu.add(managePalettesMenuItem);
 
+        trajectoryPreviewMenuItem.setText("jMenuItem2");
+        trajectoryPreviewMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                trajectoryPreviewMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(trajectoryPreviewMenuItem);
+
         menuBar.add(editMenu);
 
         setJMenuBar(menuBar);
@@ -1182,6 +1192,10 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		tileInspector.setVisible(true);
     }//GEN-LAST:event_inspectTileMenuItemActionPerformed
 
+    private void trajectoryPreviewMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trajectoryPreviewMenuItemActionPerformed
+		new TrajectoryPreview(this, true).setVisible(true);
+    }//GEN-LAST:event_trajectoryPreviewMenuItemActionPerformed
+
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 				
@@ -1281,6 +1295,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private fr.rca.mapmaker.ui.TileMapListRenderer tileMapListRenderer;
     private javax.swing.JPopupMenu tilePopupMenu;
     private javax.swing.ButtonGroup toolGroup;
+    private javax.swing.JMenuItem trajectoryPreviewMenuItem;
     private javax.swing.JButton undoButton;
     private javax.swing.JLabel zoomLabel;
     private javax.swing.JLabel zoomPercentLabel;
