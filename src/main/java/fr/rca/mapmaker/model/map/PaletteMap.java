@@ -87,7 +87,7 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 			}
 		}
 		
-		if((this.selectedPoint == null && selectedPoint != null) || !this.selectedPoint.equals(selectedPoint)) {
+		if((this.selectedPoint == null && selectedPoint != null) || (this.selectedPoint != null && !this.selectedPoint.equals(selectedPoint))) {
 			final Point oldSelection = this.selectedPoint;
 			this.selectedPoint = selectedPoint;
 			
