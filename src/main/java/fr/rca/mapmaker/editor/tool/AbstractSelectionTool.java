@@ -116,13 +116,11 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 	protected void moveLayer(TileLayer layer, MouseEvent event, boolean directly) {
 		final Point point = grid.getLayerLocation(event.getX(), event.getY());
 			
-		if(!point.equals(startPoint)) {
-			if(!directly) {
-				layer.copyAndTranslate(selectionLayer, point.x - startPoint.x + translation.x, point.y - startPoint.y + translation.y);
-			} else {
-				layer.translate(point.x - startPoint.x, point.y - startPoint.y);
-				startPoint = point;
-			}
+		if(!directly) {
+			layer.copyAndTranslate(selectionLayer, point.x - startPoint.x + translation.x, point.y - startPoint.y + translation.y);
+		} else {
+			layer.translate(point.x - startPoint.x, point.y - startPoint.y);
+			startPoint = point;
 		}
 	}
 	

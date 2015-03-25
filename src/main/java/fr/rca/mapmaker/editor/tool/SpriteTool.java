@@ -83,6 +83,9 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	
 	private void registerInstance(final Instance instance) {
 		final MouseAdapter adapter = new MouseAdapter() {
+			
+			private Point startPoint;
+			private Point originalPoint;
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -103,10 +106,30 @@ public class SpriteTool extends MouseAdapter implements Tool {
 					spriteLayer.repaint(instance.getBounds());
 				}
 			}
-			
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if(startPoint == null) {
+					startPoint = e.getLocationOnScreen();
+					originalPoint = instance.getPoint();
+				}
+				
+				final int translationX = (int) ((double) (e.getXOnScreen() - startPoint.getX()) / zoom);
+				final int translationY = (int) ((double) (e.getYOnScreen() - startPoint.getY()) / zoom);
+				
+				instance.setPoint(new Point(originalPoint.x + translationX, originalPoint.y + translationY));
+				instance.redraw();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				startPoint = null;
+				originalPoint = null;
+			}
 		};
 		
 		instance.addMouseListener(adapter);
+		instance.addMouseMotionListener(adapter);
 		mouseAdapters.put(instance, adapter);
 	}
 	
