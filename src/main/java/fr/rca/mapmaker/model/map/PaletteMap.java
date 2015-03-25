@@ -76,16 +76,18 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 	}
 	
 	public void setSelection(Point selectedPoint) {
-		normalizePoint(selectedPoint);
-		
-		final int tile = getTileFromPoint(selectedPoint);
-		final int lastTile = getPalette().size() - 1;
-		
-		if(tile > lastTile) {
-			selectedPoint = getPointFromTile(lastTile);
+		if(selectedPoint != null) {
+			normalizePoint(selectedPoint);
+
+			final int tile = getTileFromPoint(selectedPoint);
+			final int lastTile = getPalette().size() - 1;
+
+			if(tile > lastTile) {
+				selectedPoint = getPointFromTile(lastTile);
+			}
 		}
 		
-		if(!this.selectedPoint.equals(selectedPoint)) {
+		if((this.selectedPoint == null && selectedPoint != null) || !this.selectedPoint.equals(selectedPoint)) {
 			final Point oldSelection = this.selectedPoint;
 			this.selectedPoint = selectedPoint;
 			
@@ -104,7 +106,7 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 		if(point != null) {
 			return point.y * width + point.x;
 		} else {
-			return 0;
+			return -1;
 		}
 	}
 	

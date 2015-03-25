@@ -93,11 +93,13 @@ public class Grid extends AbstractLayerPainter {
 			public void selectionChanged(Point oldSelection, Point newSelection) {
 				final int tileSize = getTileSize();
 				
-				repaint(oldSelection.x * tileSize, oldSelection.y * tileSize,
-						tileSize, tileSize);
+				if(oldSelection != null) {
+					repaint(oldSelection.x * tileSize, oldSelection.y * tileSize, tileSize, tileSize);
+				}
 				
-				repaint(newSelection.x * tileSize, newSelection.y * tileSize,
-						tileSize, tileSize);
+				if(newSelection != null) {
+					repaint(newSelection.x * tileSize, newSelection.y * tileSize, tileSize, tileSize);
+				}
 			}
 		};
 		

@@ -36,10 +36,16 @@ public class ColorPickerTool extends MouseAdapter implements Tool {
 				point.y >= 0 && point.y < drawingLayer.getHeight()) {
 		
 			final int tile = drawingLayer.getTile(point);
-			final int paletteWidth = paletteMap.getWidth();
 			
-			final Point selectedPoint = new Point(tile % paletteWidth, tile / paletteWidth);
-			paletteMap.setSelection(selectedPoint);
+			if(tile == -1) {
+				paletteMap.setSelection(null);
+				
+			} else {
+				final int paletteWidth = paletteMap.getWidth();
+
+				final Point selectedPoint = new Point(tile % paletteWidth, tile / paletteWidth);
+				paletteMap.setSelection(selectedPoint);
+			}
 		}
 	}
 	
