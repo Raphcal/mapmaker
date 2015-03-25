@@ -267,7 +267,7 @@ public class TileEditor {
 		
 		toolPalette.add(createMargin(BUTTON_WIDTH + BUTTON_WIDTH, 8));
 		
-		final JToggleButton colorPickerButton = createToggleButton("tool_color_picker.png", "Pipette", group, new ColorPickerTool(paletteMap, drawingGrid, drawingLayer), drawingGrid);
+		final JToggleButton colorPickerButton = createToggleButton("tool_color_picker.png", "Pipette", group, new ColorPickerTool(paletteMap, drawingGrid), drawingGrid);
 		toolPalette.add(colorPickerButton);
 		final JToggleButton zoomButton = createToggleButton("tool_magnifier.png", "Loupe", group, new MagnifierTool(drawingGrid, scrollPane), drawingGrid);
 		toolPalette.add(zoomButton);

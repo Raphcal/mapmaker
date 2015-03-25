@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.editor.tool;
 
 import fr.rca.mapmaker.editor.undo.LayerMemento;
+import fr.rca.mapmaker.model.map.PaletteMap;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,14 +18,21 @@ public class PenTool extends MouseAdapter implements Tool {
 	
 	private LayerMemento memento;
 	
+	private ColorPickerTool colorPickerTool;
+	
 	public PenTool(Grid grid) {
-		// TODO: Utiliser un numéro de calque (ou le calque actif) plutôt que la référence.
 		this.grid = grid;
 	}
 	
 	public PenTool(Grid grid, LayerMemento memento) {
 		this.grid = grid;
 		this.memento = memento;
+	}
+	
+	public PenTool(Grid grid, PaletteMap paletteMap, LayerMemento memento) {
+		this.grid = grid;
+		this.memento = memento;
+		this.colorPickerTool = new ColorPickerTool(paletteMap, grid);
 	}
 
 	public void setMemento(LayerMemento memento) {
@@ -51,7 +59,11 @@ public class PenTool extends MouseAdapter implements Tool {
 		button = e.getButton();
 		final Point point = grid.getLayerLocation(e.getX(), e.getY());
 		
-		draw(point);
+		if(colorPickerTool == null || button == MouseEvent.BUTTON1) {
+			draw(point);
+		} else {
+			colorPickerTool.mouseClicked(e);
+		}
 	}
 	
 	@Override
@@ -81,10 +93,11 @@ public class PenTool extends MouseAdapter implements Tool {
 	private void draw(Point point) {
 		final TileLayer layer = (TileLayer) grid.getActiveLayer();
 		
-		if(button == MouseEvent.BUTTON1)
+		if(button == MouseEvent.BUTTON1) {
 			layer.setTile(point.x, point.y, grid.getTileMap().getPalette().getSelectedTile());
-		else
+		} else {
 			layer.clear(point.x, point.y);
+		}
 	}
 	
 	@Override
