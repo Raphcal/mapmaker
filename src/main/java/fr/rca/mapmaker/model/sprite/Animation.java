@@ -143,6 +143,8 @@ public class Animation {
 			new Animation("fall"),
 			new Animation("duck"),
 			new Animation("raise"),
+			new Animation("appear"),
+			new Animation("disappear"),
 			new Animation("attack"),
 			new Animation("hurt"),
 			new Animation("die")
