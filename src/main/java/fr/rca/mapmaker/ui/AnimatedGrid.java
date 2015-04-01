@@ -1,7 +1,9 @@
 package fr.rca.mapmaker.ui;
 
+import fr.rca.mapmaker.model.HasSizeChangeListeners;
+import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.Layer;
-import fr.rca.mapmaker.model.palette.ColorPalette;
+import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -22,16 +24,24 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	private int index;
 	private List<L> frames = Collections.<L>emptyList();
-	private Palette palette = ColorPalette.getDefaultColorPalette();
+	private Palette palette = AlphaColorPalette.getDefaultColorPalette();
 	
 	private Timer timer;
 	private int frequency = 24;
 	
-	private int layerSize = 32;
+	private int frameWidth = 32;
+	private int frameHeight = 32;
+	
+	private HasSizeChangeListeners sizeListenerParent;
+	private SizeChangeListener sizeListener;
+	
+	/**
+	 * Niveau de zoom des carreaux.
+	 */
+	private double zoom = 1.0;
 
 	public AnimatedGrid() {
-		setSize(32, 32);
-		setPreferredSize(new Dimension(32, 32));
+		updateSize();
 	}
 	
 	public void start() {
@@ -67,9 +77,10 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	public void setFrames(List<L> frames) {
 		this.frames = frames;
 		
-		if(frames != null && !frames.isEmpty()) {
-			final Layer layer = frames.get(0);
-			setSize(new Dimension(layer.getWidth(), layer.getHeight()));
+		if(sizeListenerParent != null && sizeListener != null) {
+			sizeListenerParent.removeSizeChangeListener(sizeListener);
+			sizeListenerParent = null;
+			sizeListener = null;
 		}
 		
 		repaint();
@@ -79,13 +90,45 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 		this.palette = palette;
 	}
 
-	public int getLayerSize() {
-		return layerSize;
+	public double getZoom() {
+		return zoom;
+	}
+
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+		updateSize();
 	}
 	
-	public void setLayerSize(int layerSize) {
-		this.layerSize = layerSize;
-		setPreferredSize(new Dimension(layerSize, layerSize));
+	public void setZoomAsInteger(int zoom) {
+		setZoom((double)zoom / 100.0);
+	}
+	
+	public int getZoomAsInteger() {
+		return (int) (zoom * 100.0);
+	}
+
+	public int getFrameWidth() {
+		return frameWidth;
+	}
+
+	public void setFrameWidth(int frameWidth) {
+		this.frameWidth = frameWidth;
+		updateSize();
+	}
+
+	public int getFrameHeight() {
+		return frameHeight;
+	}
+	
+	public void setFrameHeight(int frameHeight) {
+		this.frameHeight = frameHeight;
+		updateSize();
+	}
+	
+	private void updateSize() {
+		final Dimension dimension = new Dimension((int) (frameWidth * zoom), (int) (frameHeight * zoom));
+		setPreferredSize(dimension);
+		setSize(dimension);
 	}
 	
 	public void nextFrame() {
@@ -110,7 +153,7 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 
 			for(int y = 0; y < layer.getHeight(); y++) {
 				for(int x = 0; x < layer.getWidth(); x++) {
-					palette.paintTile(g, layer.getTile(x, y), x, y, 1);
+					palette.paintTile(g, layer.getTile(x, y), (int) (x * zoom), (int) (y * zoom), (int) zoom);
 				}
 			}
 		}

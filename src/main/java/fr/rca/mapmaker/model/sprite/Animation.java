@@ -19,6 +19,7 @@ public class Animation {
 	private String name;
 	private int frequency;
 	private Map<Double, List<TileLayer>> frames;
+	private boolean looping;
 
 	public Animation() {
 		this(null);
@@ -112,7 +113,15 @@ public class Animation {
 	public void setFrames(double direction, List<TileLayer> frames) {
 		this.frames.put(direction, frames);
 	}
-	
+
+	public boolean isLooping() {
+		return looping;
+	}
+
+	public void setLooping(boolean looping) {
+		this.looping = looping;
+	}
+
 	public Set<Double> getAnglesWithValue() {
 		final HashSet<Double> anglesWithValue = new HashSet<Double>();
 		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
