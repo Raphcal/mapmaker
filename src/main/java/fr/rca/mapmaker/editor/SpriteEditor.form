@@ -148,7 +148,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="loopCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="gridScrollPane" pref="67" max="32767" attributes="0"/>
+              <Component id="gridScrollPane" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -259,6 +259,9 @@
       </Layout>
     </Container>
     <Container class="fr.rca.mapmaker.ui.AnimatedGrid" name="animationPreview">
+      <Properties>
+        <Property name="zoom" type="double" value="4.0"/>
+      </Properties>
       <BindingProperties>
         <BindingProperty name="frameHeight" source="sprite" sourcePath="${height}" target="animationPreview" targetPath="frameHeight" updateStrategy="0" immediately="false"/>
         <BindingProperty name="frameWidth" source="sprite" sourcePath="${width}" target="animationPreview" targetPath="frameWidth" updateStrategy="0" immediately="false"/>
@@ -316,11 +319,11 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Jouer en boucle"/>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="selected" source="Form" sourcePath="${animationLooping}" target="loopCheckBox" targetPath="selected" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
     </Component>
     <Component class="javax.swing.JTextField" name="zoomTextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="400"/>
-      </Properties>
       <BindingProperties>
         <BindingProperty name="text" source="animationPreview" sourcePath="${zoomAsInteger}" target="zoomTextField" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>

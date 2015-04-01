@@ -91,6 +91,22 @@ public class SpriteEditor extends javax.swing.JDialog {
 		firePropertyChange("currentFrequency", oldFrequency, getCurrentFrequency());
 	}
 	
+	public boolean isAnimationLooping() {
+		if(currentAnimation != null) {
+			return currentAnimation.isLooping();
+		} else {
+			return false;
+		}
+	}
+	
+	public void setAnimationLooping(boolean looping) {
+		if(currentAnimation != null) {
+			final boolean oldLooping = currentAnimation.isLooping();
+			currentAnimation.setLooping(looping);
+			firePropertyChange("animationLooping", oldLooping, looping);
+		}
+	}
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -204,6 +220,8 @@ public class SpriteEditor extends javax.swing.JDialog {
             }
         });
 
+        animationPreview.setZoom(4.0);
+
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${height}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("frameHeight"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${width}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("frameWidth"));
@@ -235,7 +253,8 @@ public class SpriteEditor extends javax.swing.JDialog {
 
         loopCheckBox.setText("Jouer en boucle");
 
-        zoomTextField.setText("400");
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${animationLooping}"), loopCheckBox, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, animationPreview, org.jdesktop.beansbinding.ELProperty.create("${zoomAsInteger}"), zoomTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -336,7 +355,7 @@ public class SpriteEditor extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(loopCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
+                .addComponent(gridScrollPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -412,6 +431,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 
 	private void animationChanged() {
 		final int oldFrequency = getCurrentFrequency();
+		final boolean oldLooping = isAnimationLooping();
 		
 		updateAnimation();
 		
@@ -424,6 +444,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 		}
 		
 		firePropertyChange("currentFrequency", oldFrequency, getCurrentFrequency());
+		firePropertyChange("animationLooping", oldLooping, isAnimationLooping());
 	}
 	
 	public void addActionListener(ActionListener listener) {

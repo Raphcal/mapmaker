@@ -29,6 +29,7 @@ public class AnimationDataHandler implements DataHandler<Animation> {
 	public void write(Animation t, OutputStream outputStream) throws IOException {
 		Streams.write(t.getName(), outputStream);
 		Streams.write(t.getFrequency(), outputStream);
+		Streams.write(t.isLooping(), outputStream);
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
 		
@@ -54,6 +55,7 @@ public class AnimationDataHandler implements DataHandler<Animation> {
 	public Animation read(InputStream inputStream) throws IOException {
 		final Animation animation = new Animation(Streams.readString(inputStream));
 		animation.setFrequency(Streams.readInt(inputStream));
+		animation.setLooping(Streams.readBoolean(inputStream));
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
 		

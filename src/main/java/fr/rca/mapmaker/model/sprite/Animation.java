@@ -40,6 +40,7 @@ public class Animation {
 		final Animation copy = new Animation();
 		copy.name = name;
 		copy.frequency = frequency;
+		copy.looping = looping;
 		
 		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
 			final ArrayList<TileLayer> layersCopy = new ArrayList<TileLayer>();
