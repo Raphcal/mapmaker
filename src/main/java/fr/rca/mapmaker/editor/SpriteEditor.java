@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -139,6 +140,7 @@ public class SpriteEditor extends javax.swing.JDialog {
         zoomTextField = new javax.swing.JTextField();
         zoomPercentLabel = new javax.swing.JLabel();
         zoomLabel = new javax.swing.JLabel();
+        autoRotateButton = new javax.swing.JButton();
 
         setTitle("Sprite");
 
@@ -263,6 +265,14 @@ public class SpriteEditor extends javax.swing.JDialog {
 
         zoomLabel.setText("Zoom :");
 
+        autoRotateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_rotate.png"))); // NOI18N
+        autoRotateButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        autoRotateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autoRotateButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -270,7 +280,9 @@ public class SpriteEditor extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addComponent(autoRotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cancelButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(okButton))
@@ -302,12 +314,12 @@ public class SpriteEditor extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(zoomPercentLabel))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                        .addContainerGap()
                         .addComponent(gridScrollPane))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(animationPreview, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(258, 258, 258)))
+                        .addGap(258, 283, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -349,7 +361,8 @@ public class SpriteEditor extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
-                    .addComponent(okButton))
+                    .addComponent(okButton)
+                    .addComponent(autoRotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -419,6 +432,33 @@ public class SpriteEditor extends javax.swing.JDialog {
 		pack();
     }//GEN-LAST:event_animationPreviewComponentResized
 
+    private void autoRotateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoRotateButtonActionPerformed
+		final String answer = JOptionPane.showInputDialog("Rotation à appliquer à chaque étape ?");
+		try {
+			final double step = Double.parseDouble(answer);
+			
+			final ArrayList<TileLayer> frames = new ArrayList<TileLayer>(getCurrentAnimation());
+			
+			for(double angle = step; angle < 360; angle += step) {
+				for(final TileLayer frame : frames) {
+					final TileLayer rotatedFrame = new TileLayer(frame.getWidth(), frame.getHeight());
+					rotatedFrame.restoreData(frame.copyData(), null);
+					
+					if(((int)angle) % 90 == 0) {
+						rotatedFrame.rotate90(((int)angle) / 90);
+					} else {
+						rotatedFrame.rotate(angle * Math.PI / 180.0);
+					}
+					
+					tileLayerList.add(rotatedFrame);
+				}
+			}
+			
+		} catch(NumberFormatException e) {
+			// Ignoré.
+		}
+    }//GEN-LAST:event_autoRotateButtonActionPerformed
+
 	private void animationChanged() {
 		final int oldFrequency = getCurrentFrequency();
 		final boolean oldLooping = isAnimationLooping();
@@ -456,6 +496,7 @@ public class SpriteEditor extends javax.swing.JDialog {
     private javax.swing.DefaultComboBoxModel<Animation> animationComboBoxModel;
     private javax.swing.JLabel animationLabel;
     private fr.rca.mapmaker.ui.AnimatedGrid<TileLayer> animationPreview;
+    private javax.swing.JButton autoRotateButton;
     private javax.swing.JButton cancelButton;
     private fr.rca.mapmaker.ui.DirectionChooser directionChooser;
     private javax.swing.JLabel directionLabel;
