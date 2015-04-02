@@ -658,10 +658,14 @@ public class TileMapEditor extends javax.swing.JDialog {
 		if(value != null) {
 			try {
 				final int degree = Integer.parseInt(value);
-				final double radian = degree * Math.PI / 180.0;
-
-				// Rotation.
-				drawLayer.rotate(radian);
+				
+				if(degree % 90 == 0) {
+					drawLayer.rotate90(degree / 90);
+					
+				} else {
+					// Rotation de l'angle converti en radian.
+					drawLayer.rotate(degree * Math.PI / 180.0);
+				}
 				
 			} catch(NumberFormatException e) {
 				// Ignoré.

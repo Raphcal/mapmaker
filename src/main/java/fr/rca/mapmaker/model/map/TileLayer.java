@@ -637,6 +637,28 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 		this.tiles = rotated;
 		fireLayerChanged(new Rectangle(width, height));
 	}
+	
+	public void rotate90(int times) {
+		final int[] rotated = new int[this.tiles.length];
+		final int[] source = new int[this.tiles.length];
+		
+		System.arraycopy(this.tiles, 0, rotated, 0, this.tiles.length);
+		
+		for(int iteration = 0; iteration < times; iteration++) {
+			System.arraycopy(rotated, 0, source, 0, this.tiles.length);
+			
+			int index = 0;
+			for(int y = 0; y < height; y++) {
+				for(int x = 0; x < width; x++) {
+					rotated[index] = source[y + (width - 1 - x) * width];
+					index++;
+				}
+			}
+		}
+		
+		this.tiles = rotated;
+		fireLayerChanged(new Rectangle(width, height));
+	}
 
 	@Override
 	public String toString() {

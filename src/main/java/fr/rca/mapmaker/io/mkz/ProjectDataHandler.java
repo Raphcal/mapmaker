@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,6 +148,7 @@ public class ProjectDataHandler implements DataHandler<Project> {
 					if(animation != null) {
 						Streams.write(animation.getName(), zipOutputStream);
 						Streams.write(animation.getFrequency(), zipOutputStream);
+						Streams.write(animation.isLooping(), zipOutputStream);
 
 						final Set<Map.Entry<Double, List<TileLayer>>> directions = animation.getFrames().entrySet();
 						Streams.write(directions.size(), zipOutputStream);
