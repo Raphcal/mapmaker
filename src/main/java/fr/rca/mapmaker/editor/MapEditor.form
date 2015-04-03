@@ -70,11 +70,6 @@
         <BindingProperty name="layers" source="project" sourcePath="${currentMap.layers}" target="layerMemento" targetPath="layers" updateStrategy="0" immediately="false"/>
       </BindingProperties>
     </Component>
-    <Component class="javax.swing.JMenuItem" name="jMenuItem1">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jMenuItem1"/>
-      </Properties>
-    </Component>
     <Component class="fr.rca.mapmaker.editor.tool.SpriteTool" name="spriteTool">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="spriteTool.setSpriteLayer(spriteLayerPanel);&#xa;spriteTool.setSpritePaletteGrid(spritePaletteGrid);&#xa;spriteTool.setProject(project);&#xa;spriteTool.setZoom(1.0);&#xa;"/>
@@ -115,6 +110,15 @@
         </DimensionLayout>
       </Layout>
     </Container>
+    <Component class="fr.rca.mapmaker.editor.tool.PenTool" name="penTool">
+      <BindingProperties>
+        <BindingProperty name="paletteMap" source="project" sourcePath="${currentPaletteMap}" target="penTool" targetPath="paletteMap" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new PenTool(mapGrid, layerMemento);"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="penTool.setGrid(mapGrid);"/>
+      </AuxValues>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -837,7 +841,7 @@
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="configureButton(penToggleButton, new PenTool(mapGrid, layerMemento));"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="configureButton(penToggleButton, penTool);"/>
                   </AuxValues>
                 </Component>
                 <Component class="javax.swing.JToggleButton" name="bucketFillToggleButton">

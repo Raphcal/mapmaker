@@ -11,7 +11,7 @@ import fr.rca.mapmaker.model.map.TileLayer;
 
 public class PenTool extends MouseAdapter implements Tool {
 
-	private final Grid grid;
+	private Grid grid;
 	private int button = 0;
 	
 	private Point lastPoint;
@@ -19,6 +19,9 @@ public class PenTool extends MouseAdapter implements Tool {
 	private LayerMemento memento;
 	
 	private ColorPickerTool colorPickerTool;
+
+	public PenTool() {
+	}
 	
 	public PenTool(Grid grid) {
 		this.grid = grid;
@@ -37,6 +40,18 @@ public class PenTool extends MouseAdapter implements Tool {
 
 	public void setMemento(LayerMemento memento) {
 		this.memento = memento;
+	}
+	
+	public void setPaletteMap(PaletteMap paletteMap) {
+		if(colorPickerTool == null) {
+			this.colorPickerTool = new ColorPickerTool(paletteMap, grid);
+		} else {
+			this.colorPickerTool.setPaletteMap(paletteMap);
+		}
+	}
+
+	public void setGrid(Grid grid) {
+		this.grid = grid;
 	}
 	
 	@Override

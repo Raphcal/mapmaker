@@ -177,11 +177,11 @@ public class MapEditor extends javax.swing.JFrame {
         fileChooser = new javax.swing.JFileChooser();
         toolGroup = new javax.swing.ButtonGroup();
         layerMemento = new fr.rca.mapmaker.editor.undo.LayerMemento();
-        jMenuItem1 = new javax.swing.JMenuItem();
         spriteTool = new fr.rca.mapmaker.editor.tool.SpriteTool();
         tilePopupMenu = new javax.swing.JPopupMenu();
         inspectTileMenuItem = new javax.swing.JMenuItem();
         tileInspector = new TileInspector(this, false);
+        penTool = new PenTool(mapGrid, layerMemento);
         mapScrollPane = new javax.swing.JScrollPane();
         mapBackgroundPanel = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
         spriteLayerPanel = new javax.swing.JPanel();
@@ -215,7 +215,7 @@ public class MapEditor extends javax.swing.JFrame {
         layerList = new javax.swing.JList();
         javax.swing.JToolBar paletteToolBar = new javax.swing.JToolBar();
         penToggleButton = new javax.swing.JToggleButton();
-        configureButton(penToggleButton, new PenTool(mapGrid, layerMemento));
+        configureButton(penToggleButton, penTool);
         bucketFillToggleButton = new javax.swing.JToggleButton();
         rectangleToggleButton = new javax.swing.JToggleButton();
         selectionToggleButton = new javax.swing.JToggleButton();
@@ -279,8 +279,6 @@ public class MapEditor extends javax.swing.JFrame {
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentMap.layers}"), layerMemento, org.jdesktop.beansbinding.BeanProperty.create("layers"));
         bindingGroup.addBinding(binding);
 
-        jMenuItem1.setText("jMenuItem1");
-
         spriteTool.setSpriteLayer(spriteLayerPanel);
         spriteTool.setSpritePaletteGrid(spritePaletteGrid);
         spriteTool.setProject(project);
@@ -306,6 +304,11 @@ public class MapEditor extends javax.swing.JFrame {
             tileInspectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 300, Short.MAX_VALUE)
         );
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentPaletteMap}"), penTool, org.jdesktop.beansbinding.BeanProperty.create("paletteMap"));
+        bindingGroup.addBinding(binding);
+
+        penTool.setGrid(mapGrid);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(LANGUAGE.getString("app.title")); // NOI18N
@@ -1312,7 +1315,6 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JPopupMenu.Separator importSeparator;
     private javax.swing.JMenuItem inspectTileMenuItem;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JButton layerDownButton;
     private javax.swing.JList layerList;
@@ -1333,6 +1335,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JScrollPane paletteScrollPane;
     private javax.swing.JTabbedPane paletteTabbedPane;
     private javax.swing.JToggleButton penToggleButton;
+    private fr.rca.mapmaker.editor.tool.PenTool penTool;
     private fr.rca.mapmaker.model.project.Project project;
     private javax.swing.JMenuItem quitMenuItem;
     private javax.swing.JPopupMenu.Separator quitSeparator;

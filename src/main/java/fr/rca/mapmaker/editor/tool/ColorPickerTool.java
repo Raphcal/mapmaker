@@ -10,12 +10,16 @@ import fr.rca.mapmaker.model.map.PaletteMap;
 
 public class ColorPickerTool extends MouseAdapter implements Tool {
 	
-	private final PaletteMap paletteMap;
+	private PaletteMap paletteMap;
 	private final Grid drawingGrid;
 	
 	public ColorPickerTool(PaletteMap paletteMap, Grid drawingGrid) {
 		this.paletteMap = paletteMap;
 		this.drawingGrid = drawingGrid;
+	}
+
+	public void setPaletteMap(PaletteMap paletteMap) {
+		this.paletteMap = paletteMap;
 	}
 	
 	@Override
