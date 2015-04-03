@@ -22,6 +22,9 @@ import fr.rca.mapmaker.io.FormatFileFilter;
 import fr.rca.mapmaker.io.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.internal.InternalFormat;
+import fr.rca.mapmaker.model.map.SpanningTileLayer;
+import fr.rca.mapmaker.model.palette.EditableImagePalette;
+import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.motion.TrajectoryPreview;
@@ -29,6 +32,8 @@ import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -41,6 +46,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
@@ -232,6 +238,7 @@ public class MapEditor extends javax.swing.JFrame {
         quitMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu editMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem managePalettesMenuItem = new javax.swing.JMenuItem();
+        multipleEditMenuItem = new javax.swing.JMenuItem();
         trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout tileMapListRendererLayout = new javax.swing.GroupLayout(tileMapListRenderer);
@@ -789,6 +796,14 @@ public class MapEditor extends javax.swing.JFrame {
         });
         editMenu.add(managePalettesMenuItem);
 
+        multipleEditMenuItem.setText(LANGUAGE.getString("menu.edit.multipleedit")); // NOI18N
+        multipleEditMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                multipleEditMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(multipleEditMenuItem);
+
         trajectoryPreviewMenuItem.setText(LANGUAGE.getString("menu.edit.trajectorypreview")); // NOI18N
         trajectoryPreviewMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1195,6 +1210,49 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		new TrajectoryPreview(this, true).setVisible(true);
     }//GEN-LAST:event_trajectoryPreviewMenuItemActionPerformed
 
+    private void multipleEditMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_multipleEditMenuItemActionPerformed
+		final String size = JOptionPane.showInputDialog("Taille de la surface à éditer (exemple : 2x3) ?");
+		
+		final int xIndex = size.indexOf('x');
+		if(xIndex > 0) {
+			final int columns = Integer.parseInt(size.substring(0, xIndex));
+			final int rows = Integer.parseInt(size.substring(xIndex + 1));
+			
+			final SpanningTileLayer layer = new SpanningTileLayer();
+			layer.setSize(columns, rows);
+			
+			final PaletteMap paletteMap = (PaletteMap) paletteGrid.getTileMap();
+			final PaletteReference reference = (PaletteReference) paletteMap.getPalette();
+			final EditableImagePalette imagePalette = (EditableImagePalette) project.getPalette(reference.getPaletteIndex());
+			
+			final Point origin = paletteMap.getSelection();
+			
+			for(int row = 0; row < rows; row++) {
+				for(int column = 0; column < columns; column++) {
+					layer.setLayer(imagePalette.getSource(paletteMap.getTileFromPoint(new Point(origin.x + column, origin.y + row))), column, row);
+				}
+			}
+			
+			layer.updateSize();
+			
+			final TileMapEditor editor = new TileMapEditor(this);
+			editor.setLayerAndPalette(layer, imagePalette.getColorPalette());
+			editor.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					for(int row = 0; row < rows; row++) {
+						for(int column = 0; column < columns; column++) {
+							imagePalette.refreshSource(paletteMap.getTileFromPoint(new Point(origin.x + column, origin.y + row)));
+						}
+					}
+				}
+			});
+			editor.setVisible(true);
+			mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
+		}
+    }//GEN-LAST:event_multipleEditMenuItemActionPerformed
+
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 				
@@ -1269,6 +1327,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPanel mapPanel;
     private javax.swing.JPopupMenu mapPopupMenu;
     private javax.swing.JScrollPane mapScrollPane;
+    private javax.swing.JMenuItem multipleEditMenuItem;
     private javax.swing.JPanel paletteBackgroundPanel;
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JScrollPane paletteScrollPane;

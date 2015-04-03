@@ -102,7 +102,7 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 		}
 	}
 
-	private int getTileFromPoint(Point point) {
+	public int getTileFromPoint(Point point) {
 		if(point != null) {
 			return point.y * width + point.x;
 		} else {
@@ -110,7 +110,7 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 		}
 	}
 	
-	private Point getPointFromTile(int tile) {
+	public Point getPointFromTile(int tile) {
 		return new Point(tile % width, tile / width);
 	}
 
