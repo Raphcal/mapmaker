@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>fr.rca.mapmaker</groupId>
-    <artifactId>mapmaker</artifactId>
+	<artifactId>mapmaker</artifactId>
 	<version>1.0.0</version>
-    <packaging>jar</packaging>
-    <name>MapMaker</name>
+	<packaging>jar</packaging>
+	<name>MapMaker</name>
 	
 	<properties>
 		<java.source.encoding>UTF-8</java.source.encoding>
@@ -41,64 +41,70 @@
 				</configuration>
 			</plugin>
 			
-			 <plugin>
+			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.8</version>
 				<executions>
 					<execution>
-					<phase>install</phase>
-					<configuration>
-						<target name="bundle">
-							<property environment="env" />
+						<phase>install</phase>
+						<configuration>
+							<target name="bundle">
+								<property environment="env" />
 
-							<taskdef 
-								name="bundleapp" 
-								classname="com.oracle.appbundler.AppBundlerTask" 
-								classpath="lib/appbundler-1.0.jar" />
+								<taskdef 
+									name="bundleapp" 
+									classname="com.oracle.appbundler.AppBundlerTask" 
+									classpath="lib/appbundler-1.0.jar" />
 
-							<bundleapp 
-								outputdirectory="target" 
-								name="MapMaker" 
-								displayname="MapMaker" 
-								identifier="fr.rca.mapmaker.MapMaker" 
-								shortversion="1.0"
-								icon="src/main/app/MapMaker.icns"
-								mainclassname="fr.rca.mapmaker.MapMaker">
-								<!--<runtime dir="${env.JAVA_HOME}" />-->
-								<classpath file="target/mapmaker-1.0.0.jar" />
-								<classpath file="/Users/${env.USER}/.m2/repository/org/jdesktop/beansbinding/1.2.1/beansbinding-1.2.1.jar" />
-							</bundleapp>
-							<copy file="Info.plist" toFile="target/MapMaker.app/Contents/Info.plist" overwrite="true"/>
-							<copy file="src/main/app/MmkDocument.icns" toDir="target/MapMaker.app/Contents/Resources"/>
-						</target>
-					</configuration>
-					<goals>
-						<goal>run</goal>
-					</goals>
+								<bundleapp 
+									outputdirectory="target" 
+									name="MapMaker" 
+									displayname="MapMaker" 
+									identifier="fr.rca.mapmaker.MapMaker" 
+									shortversion="1.0"
+									icon="src/main/app/MapMaker.icns"
+									mainclassname="fr.rca.mapmaker.MapMaker">
+									<!--<runtime dir="${env.JAVA_HOME}" />-->
+									<classpath file="target/mapmaker-1.0.0.jar" />
+									<classpath file="/Users/${env.USER}/.m2/repository/org/jdesktop/beansbinding/1.2.1/beansbinding-1.2.1.jar" />
+								</bundleapp>
+								<copy file="Info.plist" toFile="target/MapMaker.app/Contents/Info.plist" overwrite="true"/>
+								<copy file="src/main/app/MmkDocument.icns" toDir="target/MapMaker.app/Contents/Resources"/>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
 					</execution>
 				</executions>
-				</plugin>
+			</plugin>
+				
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.4.201502262128</version>
+			</plugin>
 		</plugins>
 	</build>
-    <repositories>
-        <repository>
-            <url>http://download.java.net/maven/2/</url>
-            <id>beans-binding</id>
-            <layout>default</layout>
-            <name>Repository for library Library[beans-binding]</name>
-        </repository>
-    </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jdesktop</groupId>
-            <artifactId>beansbinding</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-    </dependencies>
+	<repositories>
+		<repository>
+			<url>http://download.java.net/maven/2/</url>
+			<id>beans-binding</id>
+			<layout>default</layout>
+			<name>Repository for library Library[beans-binding]</name>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jdesktop</groupId>
+			<artifactId>beansbinding</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+	</dependencies>
 </project>
