@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class TileLayer implements Layer, HasSizeChangeListeners {
+public class TileLayer implements DataLayer, HasSizeChangeListeners {
 
 	/**
 	 * Nom de la couche.
@@ -525,6 +525,7 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * 
 	 * @return Une copie des données.
 	 */
+	@Override
 	public int[] copyData() {
 		return this.tiles.clone();
 	}
@@ -535,6 +536,7 @@ public class TileLayer implements Layer, HasSizeChangeListeners {
 	 * @param tiles Données à restaurer.
 	 * @param source Surface à copier.
 	 */
+	@Override
 	public void restoreData(int[] tiles, Rectangle source) {
 		this.tiles = tiles.clone();
 		

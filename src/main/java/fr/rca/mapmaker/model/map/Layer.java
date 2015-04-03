@@ -3,7 +3,7 @@ package fr.rca.mapmaker.model.map;
 import java.awt.Point;
 
 /**
- * Couche d'une map.
+ * Couche d'une carte.
  * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */

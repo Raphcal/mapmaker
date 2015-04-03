@@ -13,6 +13,7 @@ import fr.rca.mapmaker.editor.tool.RectangleFillTool;
 import fr.rca.mapmaker.editor.tool.RectangleStrokeTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
+import fr.rca.mapmaker.model.map.DataLayer;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
@@ -45,9 +46,11 @@ public class TileMapEditor extends javax.swing.JDialog {
 	private final PasteSelectionTool pasteSelectionTool;
 	
 	private final ArrayList<ActionListener> listeners;
-	private final ArrayList<TileLayer> layers;
+	private final ArrayList<DataLayer> layers;
 	private int[][] tiles;
 	private int layerIndex;
+	
+	private DataLayer editedLayer;
 	
 	/**
 	 * Créé un nouvel éditeur de dessin.
@@ -59,14 +62,14 @@ public class TileMapEditor extends javax.swing.JDialog {
 		initComponents();
 		
 		listeners = new ArrayList<ActionListener>();
-		layers = new ArrayList<TileLayer>();
+		layers = new ArrayList<DataLayer>();
 		
 		paletteGrid.setTileMap(colorPaletteMap);
 		
 		pasteSelectionTool = new PasteSelectionTool(drawGrid);
 	}
 
-	public void setLayerAndPalette(TileLayer layer, ColorPalette palette) {
+	public void setLayerAndPalette(DataLayer layer, ColorPalette palette) {
 		editedLayer = layer;
 		drawLayer.restoreData(layer.copyData(), layer.getWidth(), layer.getHeight());
 		memento.clear();
@@ -118,7 +121,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 		
 		this.layerIndex = layerIndex;
 		
-		final TileLayer layer = layers.get(layerIndex);
+		final DataLayer layer = layers.get(layerIndex);
 		
 		if(tiles[layerIndex] == null) {
 			tiles[layerIndex] = layer.copyData();
@@ -173,7 +176,6 @@ public class TileMapEditor extends javax.swing.JDialog {
         previewMap.add(drawLayer);
         selectionStyle = new fr.rca.mapmaker.model.selection.SmallSelectionStyle();
         memento = new fr.rca.mapmaker.editor.undo.LayerMemento();
-        editedLayer = new fr.rca.mapmaker.model.map.TileLayer();
         gridScrollPane = new javax.swing.JScrollPane();
         centerPanel = new javax.swing.JPanel(new fr.rca.mapmaker.ui.LayerLayout(fr.rca.mapmaker.ui.LayerLayout.Disposition.CENTER));
         drawGrid = new fr.rca.mapmaker.ui.Grid();
@@ -729,7 +731,6 @@ public class TileMapEditor extends javax.swing.JDialog {
     private fr.rca.mapmaker.ui.Grid drawGrid;
     private fr.rca.mapmaker.model.map.TileLayer drawLayer;
     private fr.rca.mapmaker.model.map.TileMap drawMap;
-    private fr.rca.mapmaker.model.map.TileLayer editedLayer;
     private javax.swing.JToggleButton ellipseFillToggleButton;
     private javax.swing.JToggleButton ellipseToggleButton;
     private javax.swing.JScrollPane gridScrollPane;
