@@ -283,38 +283,6 @@ public class TrajectoryPreview extends javax.swing.JDialog {
 		colorIndex = (colorIndex + 1) % COLORS.length;
     }//GEN-LAST:event_addButtonActionPerformed
 
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String args[]) {
-		/* Create and display the dialog */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				TrajectoryPreview dialog = new TrajectoryPreview(new javax.swing.JFrame(), true);
-				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-					@Override
-					public void windowClosing(java.awt.event.WindowEvent e) {
-						System.exit(0);
-					}
-				});
-				
-
-//				final MotionPanel panel = new MotionPanel();
-//				panel.setOpaque(true);
-//				panel.setPreferredSize(new Dimension(400, 400));
-//				panel.setSize(new Dimension(400, 400));
-//				
-//				panel.add(Motion.getDefaultMotion(), Color.RED);
-//				panel.add(new Motion(400f, 800f, 200f, 800f, 360f, 100f), Color.GREEN);
-//				
-//				dialog.setContentPane(panel);
-				dialog.pack();
-				
-				dialog.setVisible(true);
-			}
-		});
-	}
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private fr.rca.mapmaker.motion.Motion customMotion;

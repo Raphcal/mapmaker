@@ -40,4 +40,14 @@
                 <goal>assembly:single</goal>
             </goals>
         </action>
+		<action>
+            <actionName>CUSTOM-Run Jacoco</actionName>
+            <displayName>Run Jacoco</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>org.jacoco:jacoco-maven-plugin:prepare-agent</goal>
+                <goal>install</goal>
+                <goal>-Dmaven.test.failure.ignore=true</goal>
+            </goals>
+        </action>
     </actions>

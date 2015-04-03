@@ -42,7 +42,7 @@ public class MapMaker {
 			@Override
 			public void run() {
 				final MapEditor editor = new MapEditor();
-				editor.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				editor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 				editor.addWindowListener(new WindowAdapter() {
 					@Override
@@ -56,8 +56,6 @@ public class MapMaker {
 						} catch (BackingStoreException ex) {
 							Exceptions.showStackTrace(ex, editor);
 						}
-
-						System.exit(0);
 					}
 				});
 
