@@ -27,13 +27,16 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 		super(parent, modal);
 		initComponents();
 		
+		deviceComboBox.setSelectedIndex(PreferencesManager.getInt(PreferencesManager.LAST_GAME_PREVIEW_DIMENSION));
 		setDimension(PreferencesManager.getInt(PreferencesManager.LAST_GAME_PREVIEW_DIMENSION));
+		zoomTextField.setText(PreferencesManager.get(PreferencesManager.LAST_GAME_PREVIEW_ZOOM, "100"));
 		
 		addWindowListener(new WindowAdapter() {
 
 			@Override
 			public void windowClosed(WindowEvent e) {
 				PreferencesManager.set(PreferencesManager.LAST_GAME_PREVIEW_DIMENSION, deviceComboBox.getSelectedIndex());
+				PreferencesManager.set(PreferencesManager.LAST_GAME_PREVIEW_ZOOM, zoomTextField.getText());
 			}
 			
 		});
@@ -51,6 +54,7 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         toolBar = new javax.swing.JToolBar();
         deviceComboBox = new javax.swing.JComboBox();
@@ -79,12 +83,9 @@ public class GamePreviewDialog extends javax.swing.JDialog {
         jLabel1.setText("Zoom");
         toolBar.add(jLabel1);
 
-        zoomTextField.setText("100");
-        zoomTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                zoomTextFieldActionPerformed(evt);
-            }
-        });
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, previewGrid, org.jdesktop.beansbinding.ELProperty.create("${zoomAsInteger}"), zoomTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         toolBar.add(zoomTextField);
 
         jLabel2.setText("%");
@@ -115,6 +116,8 @@ public class GamePreviewDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
+        bindingGroup.bind();
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -124,16 +127,6 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 			setDimension(selection);
 		}
     }//GEN-LAST:event_deviceComboBoxActionPerformed
-
-    private void zoomTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomTextFieldActionPerformed
-		try {
-			final int size = Integer.parseInt(zoomTextField.getText());
-			previewGrid.setZoom((double)size/100.0);
-			
-		} catch(NumberFormatException e) {
-			// Ignoré.
-		}
-    }//GEN-LAST:event_zoomTextFieldActionPerformed
 
 	private void setDimension(int entry) {
 		final Dimension dimension = DIMENSIONS[entry];
@@ -151,5 +144,6 @@ public class GamePreviewDialog extends javax.swing.JDialog {
     private fr.rca.mapmaker.ui.Grid previewGrid;
     private javax.swing.JToolBar toolBar;
     private javax.swing.JTextField zoomTextField;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

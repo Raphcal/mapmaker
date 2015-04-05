@@ -15,6 +15,7 @@ public class PreferencesManager {
 	public static final String CURRENT_DIRECTORY = "current_dir";
 	public static final String RECENT = "recent";
 	public static final String LAST_GAME_PREVIEW_DIMENSION = "last_game_preview_dimension";
+	public static final String LAST_GAME_PREVIEW_ZOOM = "last_game_preview_zoom";
 	
 	private static final Preferences PREFERENCES;
 	
@@ -36,6 +37,13 @@ public class PreferencesManager {
 		return PREFERENCES.getInt(preference, defaultValue);
 	}
 	
+	public static double getDouble(String preference) {
+		return getDouble(preference, 0.0);
+	}
+	public static double getDouble(String preference, double defaultValue) {
+		return PREFERENCES.getDouble(preference, defaultValue);
+	}
+	
 	public static List<String> getList(String name) {
 		return new PreferencesList(name);
 	}
@@ -46,6 +54,10 @@ public class PreferencesManager {
 	
 	public static void set(String preference, int value) {
 		PREFERENCES.putInt(preference, value);
+	}
+	
+	public static void set(String preference, double value) {
+		PREFERENCES.putDouble(preference, value);
 	}
 	
 	public static void remove(String preference) {
