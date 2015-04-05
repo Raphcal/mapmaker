@@ -28,6 +28,7 @@ import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.motion.TrajectoryPreview;
+import fr.rca.mapmaker.preferences.PreferencesManager;
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Color;
@@ -46,6 +47,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -79,8 +81,7 @@ public class MapEditor extends javax.swing.JFrame {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				final File currentDirectory = fileChooser.getCurrentDirectory();
-				final Preferences preferences = Preferences.userNodeForPackage(MapMaker.class);
-				preferences.put(MapMaker.PREFERENCES_CURRENT_DIRECTORY, currentDirectory.getPath());
+				PreferencesManager.set(PreferencesManager.CURRENT_DIRECTORY, currentDirectory.getPath());
 			}
 		});
 	}
@@ -229,6 +230,7 @@ public class MapEditor extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem newProjectMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem openMenuItem = new javax.swing.JMenuItem();
+        openRecentMenu = new javax.swing.JMenu();
         importSeparator = new javax.swing.JPopupMenu.Separator();
         importMenuItem = new javax.swing.JMenuItem();
         saveSeparator = new javax.swing.JPopupMenu.Separator();
@@ -269,8 +271,7 @@ public class MapEditor extends javax.swing.JFrame {
         });
         layerPopupMenu.add(editLayerMenuItem);
 
-        final Preferences preferences = Preferences.userNodeForPackage(MapMaker.class);
-        final String path = preferences.get(MapMaker.PREFERENCES_CURRENT_DIRECTORY, null);
+        final String path = PreferencesManager.get(PreferencesManager.CURRENT_DIRECTORY);
         if(path != null) {
             final File currentDirectory = new File(path);
             fileChooser.setCurrentDirectory(currentDirectory);
@@ -750,6 +751,10 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         fileMenu.add(openMenuItem);
+
+        openRecentMenu.setText(bundle.getString("menu.file.openrecent")); // NOI18N
+        buildRecentMenu();
+        fileMenu.add(openRecentMenu);
         fileMenu.add(importSeparator);
 
         importMenuItem.setText(bundle.getString("menu.file.import")); // NOI18N
@@ -1067,6 +1072,7 @@ public void openFile(final File file) {
 private void openProject(File file, Format format) {
 	currentFormat = format;
 	setCurrentFile(file);
+	addToRecentFiles(file);
 		
 	final Project newProject = currentFormat.openProject(currentFile);
 	project.morphTo(newProject);
@@ -1074,6 +1080,58 @@ private void openProject(File file, Format format) {
 
 	spritePaletteGrid.refresh();
 	refreshScrollMode();
+}
+
+private void addToRecentFiles(File file) {
+	final List<String> recents = PreferencesManager.getList(PreferencesManager.RECENT);
+	
+	final String path = file.getPath();
+	int position = -1;
+	
+	final int size = recents.size();
+	for(int index = 0; index < size; index++) {
+		final String entry = recents.get(index);
+		
+		if(entry != null && entry.equals(path)) {
+			position = index;
+		}
+	}
+	
+	if(position != -1) {
+		recents.remove(position);
+	}
+	
+	recents.add(0, file.getPath());
+	
+	while(recents.size() > 10) {
+		recents.remove(10);
+	}
+	
+	buildRecentMenu();
+}
+
+private void buildRecentMenu() {
+	openRecentMenu.removeAll();
+	
+	final List<String> recents = PreferencesManager.getList(PreferencesManager.RECENT);
+	
+	for(final String recent : recents) {
+		if(recent != null) {
+			final File file = new File(recent);
+
+			final JMenuItem item = new JMenuItem();
+			item.setText(file.getName());
+			item.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					openFile(file);
+				}
+			});
+
+			openRecentMenu.add(item);
+		}
+	}
 }
 
 	private void newProjectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectMenuItemActionPerformed
@@ -1330,6 +1388,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPopupMenu mapPopupMenu;
     private javax.swing.JScrollPane mapScrollPane;
     private javax.swing.JMenuItem multipleEditMenuItem;
+    private javax.swing.JMenu openRecentMenu;
     private javax.swing.JPanel paletteBackgroundPanel;
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JScrollPane paletteScrollPane;

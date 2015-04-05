@@ -60,7 +60,7 @@
     </Container>
     <Component class="javax.swing.JFileChooser" name="fileChooser">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="final Preferences preferences = Preferences.userNodeForPackage(MapMaker.class);&#xd;&#xa;final String path = preferences.get(MapMaker.PREFERENCES_CURRENT_DIRECTORY, null);&#xd;&#xa;if(path != null) {&#xd;&#xa;&#x9;final File currentDirectory = new File(path);&#xd;&#xa;&#x9;fileChooser.setCurrentDirectory(currentDirectory);&#xd;&#xa;}"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="final String path = PreferencesManager.get(PreferencesManager.CURRENT_DIRECTORY);&#xd;&#xa;if(path != null) {&#xd;&#xa;&#x9;final File currentDirectory = new File(path);&#xd;&#xa;&#x9;fileChooser.setCurrentDirectory(currentDirectory);&#xd;&#xa;}"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.ButtonGroup" name="toolGroup">
@@ -166,6 +166,16 @@
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
               </AuxValues>
             </MenuItem>
+            <Menu class="javax.swing.JMenu" name="openRecentMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="resources/language.properties" key="menu.file.openrecent" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="buildRecentMenu();"/>
+              </AuxValues>
+            </Menu>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="importSeparator">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="importMenuItem">

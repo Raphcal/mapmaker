@@ -2,7 +2,10 @@
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.preferences.PreferencesManager;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JViewport;
 
 /**
@@ -23,7 +26,17 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 	public GamePreviewDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
-		setDimension(0);
+		
+		setDimension(PreferencesManager.getInt(PreferencesManager.LAST_GAME_PREVIEW_DIMENSION));
+		
+		addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosed(WindowEvent e) {
+				PreferencesManager.set(PreferencesManager.LAST_GAME_PREVIEW_DIMENSION, deviceComboBox.getSelectedIndex());
+			}
+			
+		});
 	}
 	
 	public void setTileMap(TileMap tileMap) {

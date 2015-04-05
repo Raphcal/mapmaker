@@ -2,6 +2,7 @@ package fr.rca.mapmaker;
 
 import fr.rca.mapmaker.editor.MapEditor;
 import fr.rca.mapmaker.exception.Exceptions;
+import fr.rca.mapmaker.preferences.PreferencesManager;
 
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
@@ -9,16 +10,11 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 public class MapMaker {
-	public static final String PREFERENCES_WIDTH = "width";
-	public static final String PREFERENCES_HEIGHT = "height";
-	public static final String PREFERENCES_EXTENDED_STATE = "extended_state";
-	public static final String PREFERENCES_CURRENT_DIRECTORY = "current_dir";
 	
 	public static void main(final String[] args) {
 		
@@ -35,8 +31,6 @@ public class MapMaker {
 			// Look & Feel système non disponible, ignoré.
 		}
 		
-		final Preferences preferences = Preferences.userNodeForPackage(MapMaker.class);
-		
 		EventQueue.invokeLater(new Runnable() {
 
 			@Override
@@ -47,21 +41,21 @@ public class MapMaker {
 				editor.addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosed(WindowEvent e) {
-						preferences.putInt(PREFERENCES_WIDTH, editor.getWidth());
-						preferences.putInt(PREFERENCES_HEIGHT, editor.getHeight());
-						preferences.putInt(PREFERENCES_EXTENDED_STATE, editor.getExtendedState());
+						PreferencesManager.set(PreferencesManager.WIDTH, editor.getWidth());
+						PreferencesManager.set(PreferencesManager.HEIGHT, editor.getHeight());
+						PreferencesManager.set(PreferencesManager.EXTENDED_STATE, editor.getExtendedState());
 
 						try {
-							preferences.sync();
+							PreferencesManager.sync();
 						} catch (BackingStoreException ex) {
 							Exceptions.showStackTrace(ex, editor);
 						}
 					}
 				});
 
-				final int width = preferences.getInt(PREFERENCES_WIDTH, editor.getWidth());
-				final int height = preferences.getInt(PREFERENCES_HEIGHT, editor.getHeight());
-				final int extendedState = preferences.getInt(PREFERENCES_EXTENDED_STATE, editor.getExtendedState());
+				final int width = PreferencesManager.getInt(PreferencesManager.WIDTH, editor.getWidth());
+				final int height = PreferencesManager.getInt(PreferencesManager.HEIGHT, editor.getHeight());
+				final int extendedState = PreferencesManager.getInt(PreferencesManager.EXTENDED_STATE, editor.getExtendedState());
 
 				editor.setSize(width, height);
 				editor.setExtendedState(extendedState);
