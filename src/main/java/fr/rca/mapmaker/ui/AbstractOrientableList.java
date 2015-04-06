@@ -17,8 +17,10 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
@@ -37,13 +39,13 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	protected List<E> elements;
 	
 	protected LayerChangeListener listener;
-	protected final HashMap<TileLayer, Integer> indexes = new HashMap<TileLayer, Integer>();
+	protected final Map<TileLayer, Integer> indexes = new HashMap<TileLayer, Integer>();
 	
 	private BufferedImage addImage;
 	
 	private boolean editable = true;
 	
-	private Integer selection;
+	private final List<Integer> selection = new ArrayList<Integer>();
 	
 	private final List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 
@@ -81,19 +83,52 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 			public void mouseClicked(MouseEvent e) {
 				switch(e.getClickCount()) {
 					case 1:
-						int element = orientation.indexOfElementAtPoint(AbstractOrientableList.this, e.getPoint());
-						if(element >= 0 && element <= AbstractOrientableList.this.elements.size()) {
-							selection = element;
-							requestFocusInWindow();
+						if(!selection.isEmpty() && ((e.getModifiersEx() & MouseEvent.SHIFT_DOWN_MASK) != 0)) {
+							selection.sort(new Comparator<Integer>() {
+
+								@Override
+								public int compare(Integer o1, Integer o2) {
+									return o1.compareTo(o2);
+								}
+							});
+							final int start;
+							final int end;
+							
+							final int click = orientation.indexOfElementAtPoint(AbstractOrientableList.this, e.getPoint());
+							if(click > selection.get(0)) {
+								start = selection.get(0);
+								end = click;
+							} else if(click < selection.get(0)) {
+								end = selection.get(0);
+								start = click;
+							} else {
+								start = click;
+								end = click;
+							}
+							
+							selection.clear();
+							for(int i = start; i <= end; i++) {
+								selection.add(i);
+							}
+							
 						} else {
-							selection = null;
+							int element = orientation.indexOfElementAtPoint(AbstractOrientableList.this, e.getPoint());
+							if(element >= 0 && element <= AbstractOrientableList.this.elements.size()) {
+								selection.clear();
+								selection.add(element);
+
+								requestFocusInWindow();
+							} else {
+								selection.clear();
+							}
 						}
 						repaint();
 						break;
 						
 					case 2:
-						if(selection != null) {
-							fireActionPerformed(selection == AbstractOrientableList.this.elements.size() ? ADD_COMMAND : EDIT_COMMAND);
+						if(selection.size() == 1) {
+							final int selected = selection.get(0);
+							fireActionPerformed(selected == AbstractOrientableList.this.elements.size() ? ADD_COMMAND : EDIT_COMMAND);
 						}
 						break;
 				}
@@ -104,8 +139,8 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				if(selection != null) {
-					repaintElement(selection);
+				if(!selection.isEmpty()) {
+					repaint();
 				}
 			}
 		});
@@ -202,15 +237,19 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	}
 	
 	public void removeSelectedElement() {
-		if(selection != null) {
-			this.elements.remove(selection.intValue());
-			if(selection >= this.elements.size()) {
-				selection--;
-				
-				if(selection < 0) {
-					selection = null;
+		if(!selection.isEmpty()) {
+			selection.sort(new Comparator<Integer>() {
+
+				@Override
+				public int compare(Integer o1, Integer o2) {
+					return o2.compareTo(o1);
 				}
+			});
+			
+			for(final int selected : selection) {
+				this.elements.remove(selected);
 			}
+			
 			repaint();
 			updateSize();
 		}
@@ -239,16 +278,6 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 			g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 		}
 		
-		// Selection
-		if(selection != null) {
-			g.setColor(SystemColor.textHighlight);
-			if(hasFocus()) {
-				g.fillRect(orientation.getX(this, selection), orientation.getY(this, selection), width, height);
-			} else {
-				g.drawRect(orientation.getX(this, selection), orientation.getY(this, selection), width, height);
-			}
-		}
-		
 		// Maps
 		final int firstMap = Math.max((orientation.getStart(clipBounds) - padding) / (orientation.getSize(this) + padding), 0);
 		final int lastMap = Math.min(
@@ -256,6 +285,16 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 			elements.size() - 1);
 		
 		for(int index = firstMap; index <= lastMap; index++) {
+			// Selection
+			if(selection.contains(index)) {
+				g.setColor(SystemColor.textHighlight);
+				if(hasFocus()) {
+					g.fillRect(orientation.getX(this, index), orientation.getY(this, index), width, height);
+				} else {
+					g.drawRect(orientation.getX(this, index), orientation.getY(this, index), width, height);
+				}
+			}
+			
 			paintElement(index, g);
 		}
 
@@ -291,7 +330,7 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	
 	protected void fireActionPerformed(String command) {
 		for(final ActionListener listener : actionListeners) {
-			listener.actionPerformed(new ActionEvent(this, selection, command));
+			listener.actionPerformed(new ActionEvent(this, selection.get(0), command));
 		}
 	}
 }
