@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -150,13 +149,13 @@ public class ProjectDataHandler implements DataHandler<Project> {
 						Streams.write(animation.getFrequency(), zipOutputStream);
 						Streams.write(animation.isLooping(), zipOutputStream);
 
-						final Set<Map.Entry<Double, List<TileLayer>>> directions = animation.getFrames().entrySet();
+						final Set<Double> directions = animation.getAnglesWithValue();
 						Streams.write(directions.size(), zipOutputStream);
 
-						for(final Map.Entry<Double, List<TileLayer>> direction : directions) {
-							Streams.write((double) direction.getKey(), zipOutputStream);
+						for(final double direction : directions) {
+							Streams.write(direction, zipOutputStream);
 
-							final List<TileLayer> frames = direction.getValue();
+							final List<TileLayer> frames = animation.getFrames(direction);
 							Streams.write(frames.size(), zipOutputStream);
 
 							for(final TileLayer frame : frames) {
