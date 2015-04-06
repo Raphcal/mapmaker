@@ -83,44 +83,16 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 			public void mouseClicked(MouseEvent e) {
 				switch(e.getClickCount()) {
 					case 1:
+						final int element = orientation.indexOfElementAtPoint(AbstractOrientableList.this, e.getPoint());
+						
 						if(!selection.isEmpty() && ((e.getModifiersEx() & MouseEvent.SHIFT_DOWN_MASK) != 0)) {
-							selection.sort(new Comparator<Integer>() {
-
-								@Override
-								public int compare(Integer o1, Integer o2) {
-									return o1.compareTo(o2);
-								}
-							});
-							final int start;
-							final int end;
+							expandSelection(element);
 							
-							final int click = orientation.indexOfElementAtPoint(AbstractOrientableList.this, e.getPoint());
-							if(click > selection.get(0)) {
-								start = selection.get(0);
-								end = click;
-							} else if(click < selection.get(0)) {
-								end = selection.get(0);
-								start = click;
-							} else {
-								start = click;
-								end = click;
-							}
-							
-							selection.clear();
-							for(int i = start; i <= end; i++) {
-								selection.add(i);
-							}
+						} else if((e.getModifiersEx() & (MouseEvent.CTRL_DOWN_MASK | MouseEvent.META_DOWN_MASK)) != 0) {
+							addToSelection(element);
 							
 						} else {
-							int element = orientation.indexOfElementAtPoint(AbstractOrientableList.this, e.getPoint());
-							if(element >= 0 && element <= AbstractOrientableList.this.elements.size()) {
-								selection.clear();
-								selection.add(element);
-
-								requestFocusInWindow();
-							} else {
-								selection.clear();
-							}
+							select(element);
 						}
 						repaint();
 						break;
@@ -144,6 +116,54 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 				}
 			}
 		});
+	}
+	
+	private void select(final int element) {
+		if(element >= 0 && element <= AbstractOrientableList.this.elements.size()) {
+			selection.clear();
+			selection.add(element);
+
+			requestFocusInWindow();
+		} else {
+			selection.clear();
+		}
+	}
+
+	private void addToSelection(final int element) {
+		if(element >= 0 && element < AbstractOrientableList.this.elements.size()) {
+			selection.add(element);
+		}
+	}
+
+	private void expandSelection(final int element) {
+		if(element >= 0 && element < AbstractOrientableList.this.elements.size()) {
+			selection.sort(new Comparator<Integer>() {
+
+				@Override
+				public int compare(Integer o1, Integer o2) {
+					return o1.compareTo(o2);
+				}
+			});
+			final int start;
+			final int end;
+
+
+			if(element > selection.get(0)) {
+				start = selection.get(0);
+				end = element;
+			} else if(element < selection.get(0)) {
+				end = selection.get(0);
+				start = element;
+			} else {
+				start = element;
+				end = element;
+			}
+
+			selection.clear();
+			for(int i = start; i <= end; i++) {
+				selection.add(i);
+			}
+		}
 	}
 
 	public final void setElements(List<E> elements) {
@@ -267,6 +287,34 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+	
+	public int[] getSelectedIndexes() {
+		final int[] selectedIndexes = new int[selection.size()];
+		
+		for(int index = 0; index < selection.size(); index++) {
+			selectedIndexes[index] = selection.get(index);
+		}
+		
+		return selectedIndexes;
+	}
+	
+	public List<E> getSelection() {
+		final ArrayList<E> selectedElements = new ArrayList<E>();
+		
+		selection.sort(new Comparator<Integer>() {
+
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		
+		for(int index : selection) {
+			selectedElements.add(elements.get(index));
+		}
+		
+		return selectedElements;
 	}
 	
 	@Override

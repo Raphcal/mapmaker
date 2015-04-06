@@ -24,7 +24,9 @@ import javax.swing.JOptionPane;
  */
 public class SpriteEditor extends javax.swing.JDialog {
 	
-	private final ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
+	private final static List<TileLayer> PASTEBOARD = new ArrayList<TileLayer>();
+	
+	private final List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	
 	private Sprite editedSprite;
 	private Animation currentAnimation;
@@ -141,6 +143,8 @@ public class SpriteEditor extends javax.swing.JDialog {
         zoomPercentLabel = new javax.swing.JLabel();
         zoomLabel = new javax.swing.JLabel();
         autoRotateButton = new javax.swing.JButton();
+        copyButton = new javax.swing.JButton();
+        pasteButton = new javax.swing.JButton();
 
         setTitle("Sprite");
 
@@ -273,6 +277,22 @@ public class SpriteEditor extends javax.swing.JDialog {
             }
         });
 
+        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/copy.png"))); // NOI18N
+        copyButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        copyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyButtonActionPerformed(evt);
+            }
+        });
+
+        pasteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/paste.png"))); // NOI18N
+        pasteButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        pasteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pasteButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -281,6 +301,10 @@ public class SpriteEditor extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
+                        .addComponent(copyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(pasteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(autoRotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cancelButton)
@@ -362,7 +386,9 @@ public class SpriteEditor extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(okButton)
-                    .addComponent(autoRotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(autoRotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(copyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pasteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -424,6 +450,15 @@ public class SpriteEditor extends javax.swing.JDialog {
 			tileLayerList.removeSelectedElement();
 			directionChooser.setAnglesWithValue(currentAnimation.getAnglesWithValue());
 		}
+		
+		if((evt.getModifiersEx() & (KeyEvent.CTRL_DOWN_MASK | KeyEvent.META_DOWN_MASK)) != 0) {
+			if(evt.getExtendedKeyCode() == KeyEvent.VK_C) {
+				copyButtonActionPerformed(null);
+				
+			} else if(evt.getExtendedKeyCode() == KeyEvent.VK_P) {
+				pasteButtonActionPerformed(null);
+			}
+		}
     }//GEN-LAST:event_tileLayerListKeyPressed
 
     private void animationPreviewComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_animationPreviewComponentResized
@@ -458,6 +493,26 @@ public class SpriteEditor extends javax.swing.JDialog {
 			// Ignoré.
 		}
     }//GEN-LAST:event_autoRotateButtonActionPerformed
+
+    private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
+		PASTEBOARD.clear();
+		
+		for(final TileLayer layer : tileLayerList.getSelection()) {
+			final TileLayer copy = new TileLayer(layer.getWidth(), layer.getHeight());
+			copy.restoreData(layer.copyData(), null);
+			
+			PASTEBOARD.add(copy);
+		}
+    }//GEN-LAST:event_copyButtonActionPerformed
+
+    private void pasteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteButtonActionPerformed
+		for(final TileLayer layer : PASTEBOARD) {
+			final TileLayer copy = new TileLayer(layer.getWidth(), layer.getHeight());
+			copy.restoreData(layer.copyData(), null);
+			
+			tileLayerList.add(copy);
+		}
+    }//GEN-LAST:event_pasteButtonActionPerformed
 
 	private void animationChanged() {
 		final int oldFrequency = getCurrentFrequency();
@@ -498,6 +553,7 @@ public class SpriteEditor extends javax.swing.JDialog {
     private fr.rca.mapmaker.ui.AnimatedGrid<TileLayer> animationPreview;
     private javax.swing.JButton autoRotateButton;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JButton copyButton;
     private fr.rca.mapmaker.ui.DirectionChooser directionChooser;
     private javax.swing.JLabel directionLabel;
     private javax.swing.JLabel frequencyLabel;
@@ -506,6 +562,7 @@ public class SpriteEditor extends javax.swing.JDialog {
     private javax.swing.JTextField heightTextField;
     private javax.swing.JCheckBox loopCheckBox;
     private javax.swing.JButton okButton;
+    private javax.swing.JButton pasteButton;
     private javax.swing.JLabel sizeByLabel;
     private javax.swing.JLabel sizeLabel;
     private fr.rca.mapmaker.model.sprite.Sprite sprite;
