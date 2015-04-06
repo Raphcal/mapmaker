@@ -39,8 +39,9 @@ public class MapMaker {
 				editor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 				editor.addWindowListener(new WindowAdapter() {
+
 					@Override
-					public void windowClosed(WindowEvent e) {
+					public void windowClosing(WindowEvent e) {
 						PreferencesManager.set(PreferencesManager.WIDTH, editor.getWidth());
 						PreferencesManager.set(PreferencesManager.HEIGHT, editor.getHeight());
 						PreferencesManager.set(PreferencesManager.EXTENDED_STATE, editor.getExtendedState());

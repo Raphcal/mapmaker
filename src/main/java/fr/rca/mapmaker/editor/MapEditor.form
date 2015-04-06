@@ -175,6 +175,21 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="buildRecentMenu();"/>
               </AuxValues>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="clearRecentMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="resources/language.properties" key="menu.file.openrecent.clear" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearRecentMenuItemActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="final List&lt;String&gt; recents = PreferencesManager.getList(PreferencesManager.RECENT);&#xa;clearRecentMenuItem.setEnabled(!recents.isEmpty());"/>
+                  </AuxValues>
+                </MenuItem>
+              </SubComponents>
             </Menu>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="importSeparator">
             </MenuItem>

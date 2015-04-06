@@ -5,7 +5,6 @@
  */
 package fr.rca.mapmaker.editor;
 
-import fr.rca.mapmaker.MapMaker;
 import fr.rca.mapmaker.editor.tool.BucketFillTool;
 import fr.rca.mapmaker.editor.tool.PenTool;
 import fr.rca.mapmaker.editor.tool.RectangleFillTool;
@@ -45,7 +44,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -78,8 +76,9 @@ public class MapEditor extends javax.swing.JFrame {
 		refreshScrollMode();
 		
 		addWindowListener(new WindowAdapter() {
+
 			@Override
-			public void windowClosed(WindowEvent e) {
+			public void windowClosing(WindowEvent e) {
 				final File currentDirectory = fileChooser.getCurrentDirectory();
 				PreferencesManager.set(PreferencesManager.CURRENT_DIRECTORY, currentDirectory.getPath());
 			}
@@ -231,6 +230,7 @@ public class MapEditor extends javax.swing.JFrame {
         javax.swing.JMenuItem newProjectMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem openMenuItem = new javax.swing.JMenuItem();
         openRecentMenu = new javax.swing.JMenu();
+        clearRecentMenuItem = new javax.swing.JMenuItem();
         importSeparator = new javax.swing.JPopupMenu.Separator();
         importMenuItem = new javax.swing.JMenuItem();
         saveSeparator = new javax.swing.JPopupMenu.Separator();
@@ -754,6 +754,17 @@ public class MapEditor extends javax.swing.JFrame {
 
         openRecentMenu.setText(bundle.getString("menu.file.openrecent")); // NOI18N
         buildRecentMenu();
+
+        clearRecentMenuItem.setText(bundle.getString("menu.file.openrecent.clear")); // NOI18N
+        final List<String> recents = PreferencesManager.getList(PreferencesManager.RECENT);
+        clearRecentMenuItem.setEnabled(!recents.isEmpty());
+        clearRecentMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearRecentMenuItemActionPerformed(evt);
+            }
+        });
+        openRecentMenu.add(clearRecentMenuItem);
+
         fileMenu.add(openRecentMenu);
         fileMenu.add(importSeparator);
 
@@ -1107,6 +1118,7 @@ private void addToRecentFiles(File file) {
 		recents.remove(10);
 	}
 	
+	clearRecentMenuItem.setEnabled(true);
 	buildRecentMenu();
 }
 
@@ -1132,6 +1144,12 @@ private void buildRecentMenu() {
 			openRecentMenu.add(item);
 		}
 	}
+	
+	if(!recents.isEmpty()) {
+		openRecentMenu.addSeparator();
+	}
+	
+	openRecentMenu.add(clearRecentMenuItem);
 }
 
 	private void newProjectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectMenuItemActionPerformed
@@ -1314,6 +1332,15 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_multipleEditMenuItemActionPerformed
 
+    private void clearRecentMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearRecentMenuItemActionPerformed
+		final List<String> recents = PreferencesManager.getList(PreferencesManager.RECENT);
+		recents.clear();
+		
+		clearRecentMenuItem.setEnabled(false);
+		
+		buildRecentMenu();
+    }//GEN-LAST:event_clearRecentMenuItemActionPerformed
+
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 				
@@ -1360,10 +1387,11 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			mapScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		}
 	}
-
+	
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayerButton;
     private javax.swing.JToggleButton bucketFillToggleButton;
+    private javax.swing.JMenuItem clearRecentMenuItem;
     private javax.swing.JButton devicePreviewButton;
     private javax.swing.JMenuItem editLayerMenuItem;
     private javax.swing.JMenuItem editMapMenuItem;
