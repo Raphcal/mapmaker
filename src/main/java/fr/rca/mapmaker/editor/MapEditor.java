@@ -241,6 +241,7 @@ public class MapEditor extends javax.swing.JFrame {
         javax.swing.JMenu editMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem managePalettesMenuItem = new javax.swing.JMenuItem();
         multipleEditMenuItem = new javax.swing.JMenuItem();
+        toolMenu = new javax.swing.JMenu();
         trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout tileMapListRendererLayout = new javax.swing.GroupLayout(tileMapListRenderer);
@@ -823,15 +824,19 @@ public class MapEditor extends javax.swing.JFrame {
         });
         editMenu.add(multipleEditMenuItem);
 
+        menuBar.add(editMenu);
+
+        toolMenu.setText(bundle.getString("menu.tools")); // NOI18N
+
         trajectoryPreviewMenuItem.setText(LANGUAGE.getString("menu.edit.trajectorypreview")); // NOI18N
         trajectoryPreviewMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trajectoryPreviewMenuItemActionPerformed(evt);
             }
         });
-        editMenu.add(trajectoryPreviewMenuItem);
+        toolMenu.add(trajectoryPreviewMenuItem);
 
-        menuBar.add(editMenu);
+        menuBar.add(toolMenu);
 
         setJMenuBar(menuBar);
 
@@ -1443,6 +1448,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private fr.rca.mapmaker.ui.TileMapListRenderer tileMapListRenderer;
     private javax.swing.JPopupMenu tilePopupMenu;
     private javax.swing.ButtonGroup toolGroup;
+    private javax.swing.JMenu toolMenu;
     private javax.swing.JMenuItem trajectoryPreviewMenuItem;
     private javax.swing.JButton undoButton;
     private javax.swing.JLabel zoomLabel;
