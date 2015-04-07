@@ -19,16 +19,24 @@ class PreferencesList extends AbstractList<String> {
 	public void add(int index, String element) {
 		final int size = size();
 		
+		if(index < 0 || index > size) {
+			throw new IndexOutOfBoundsException("Index " + index + " is out of the current bounds: [0, " + size + "].");
+		}
+		
 		for(int i = size - 1; i >= index; i--) {
 			final String value = get(i);
 			if(value != null) {
 				PreferencesManager.set(getKey(i + 1), get(i));
+				
 			} else if(get(i + 1) != null) {
 				PreferencesManager.remove(getKey(i + 1));
 			}
 		}
 		
-		PreferencesManager.set(getKey(index), element);
+		if(element != null) {
+			PreferencesManager.set(getKey(index), element);
+		}
+		
 		setSize(size + 1);
 	}
 	

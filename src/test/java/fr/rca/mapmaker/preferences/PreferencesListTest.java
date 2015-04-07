@@ -43,6 +43,51 @@ public class PreferencesListTest {
 	}
 
 	/**
+	 * Test of add method, of class PreferencesList.
+	 */
+	@Test
+	public void testAddNull() {
+		System.out.println("addNull");
+		
+		PreferencesList instance = createPreferencesList();
+		Assert.assertTrue(instance.isEmpty());
+		
+		instance.add(null);
+		instance.add("deux");
+		
+		Assert.assertEquals(2, instance.size());
+		Assert.assertNull(instance.get(0));
+		Assert.assertEquals("deux", instance.get(1));
+		
+		instance.add(0, "zero");
+		Assert.assertEquals(3, instance.size());
+		Assert.assertEquals("zero", instance.get(0));
+		Assert.assertNull(instance.get(1));
+		Assert.assertEquals("deux", instance.get(2));
+	}
+	
+	/**
+	 * Test of add method, of class PreferencesList.
+	 */
+	@Test
+	public void testAddBounds() {
+		System.out.println("addNull");
+		
+		PreferencesList instance = createPreferencesList();
+		Assert.assertTrue(instance.isEmpty());
+		
+		try {
+			instance.add(10, "dix");
+			Assert.fail("La liste est vide, l'insertion en position 10 ne doit pas être possible.");
+			
+		} catch(IndexOutOfBoundsException e) {
+			// Success
+		}
+		
+		Assert.assertTrue(instance.isEmpty());
+	}
+	
+	/**
 	 * Test of get method, of class PreferencesList.
 	 */
 	@Test
