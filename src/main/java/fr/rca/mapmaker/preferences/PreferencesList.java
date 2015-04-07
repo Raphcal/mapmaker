@@ -19,7 +19,7 @@ class PreferencesList extends AbstractList<String> {
 	public void add(int index, String element) {
 		final int size = size();
 		
-		for(int i = size - 1; i > index; i--) {
+		for(int i = size - 1; i >= index; i--) {
 			final String value = get(i);
 			if(value != null) {
 				PreferencesManager.set(getKey(i + 1), get(i));
