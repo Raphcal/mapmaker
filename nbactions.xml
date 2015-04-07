@@ -48,6 +48,7 @@
                 <goal>org.jacoco:jacoco-maven-plugin:prepare-agent</goal>
                 <goal>install</goal>
                 <goal>-Dmaven.test.failure.ignore=true</goal>
+				<goal>jacoco:report</goal>
             </goals>
         </action>
     </actions>
