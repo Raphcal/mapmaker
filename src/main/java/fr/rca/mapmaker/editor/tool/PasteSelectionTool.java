@@ -9,23 +9,33 @@ import java.awt.Rectangle;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class PasteSelectionTool extends AbstractSelectionTool {
-
+	
 	public PasteSelectionTool(Grid grid) {
 		super(grid);
 	}
 	
 	public void setSelection(final int[] tiles, Rectangle rectangle) {
-		selectionLayer.restoreData(tiles, rectangle);
-		
-		grid.setFocusVisible(true);
-		setSelected(true);
+		if(!selected) {
+			selectionLayer.restoreData(tiles, rectangle);
+
+			grid.setFocusVisible(true);
+			setSelected(true);
+			
+		} else {
+			releaseSelection();
+		}
 	}
 	
 	public void setSelection(TileLayer data) {
-		selectionLayer.merge(data);
-		
-		grid.setFocusVisible(true);
-		setSelected(true);
+		if(!selected) {
+			selectionLayer.merge(data);
+
+			grid.setFocusVisible(true);
+			setSelected(true);
+			
+		} else {
+			releaseSelection();
+		}
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 			}
 		});
 	}
-	
+
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 		
