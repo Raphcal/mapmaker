@@ -96,7 +96,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="selectionToggleButton" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -150,10 +150,14 @@
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="nextLayerButton" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="ditherToggleButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="ditherToggleButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Component id="replaceColorToggleButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="gridScrollPane" pref="414" max="32767" attributes="0"/>
+              <Component id="gridScrollPane" pref="408" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="2" attributes="0">
                   <Component id="alphaPaletteGrid" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -209,7 +213,10 @@
                           <Component id="ellipseToggleButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="ditherToggleButton" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="ditherToggleButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="replaceColorToggleButton" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="colorPickerToggleButton" min="-2" max="-2" attributes="0"/>
@@ -686,6 +693,20 @@
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(ditherToggleButton, new DitherRectangleTool(drawGrid));"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JToggleButton" name="replaceColorToggleButton">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="toolButtonGroup"/>
+        </Property>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/resources/tool_dither.png"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Remplacer couleur"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(replaceColorToggleButton, new ReplaceColorTool(drawGrid));"/>
       </AuxValues>
     </Component>
   </SubComponents>

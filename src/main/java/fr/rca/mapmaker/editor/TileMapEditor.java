@@ -12,6 +12,7 @@ import fr.rca.mapmaker.editor.tool.PasteSelectionTool;
 import fr.rca.mapmaker.editor.tool.PenTool;
 import fr.rca.mapmaker.editor.tool.RectangleFillTool;
 import fr.rca.mapmaker.editor.tool.RectangleStrokeTool;
+import fr.rca.mapmaker.editor.tool.ReplaceColorTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
 import fr.rca.mapmaker.model.map.DataLayer;
@@ -210,6 +211,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         nextLayerButton = new javax.swing.JButton();
         rotateButton = new javax.swing.JButton();
         ditherToggleButton = new javax.swing.JToggleButton();
+        replaceColorToggleButton = new javax.swing.JToggleButton();
 
         drawMap.setBackgroundColor(new java.awt.Color(0, 153, 153));
         drawMap.setHeight(32);
@@ -454,13 +456,18 @@ public class TileMapEditor extends javax.swing.JDialog {
         ditherToggleButton.setToolTipText("Tramage");
         wireTool(ditherToggleButton, new DitherRectangleTool(drawGrid));
 
+        toolButtonGroup.add(replaceColorToggleButton);
+        replaceColorToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_dither.png"))); // NOI18N
+        replaceColorToggleButton.setToolTipText("Remplacer couleur");
+        wireTool(replaceColorToggleButton, new ReplaceColorTool(drawGrid));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(selectionToggleButton)
@@ -502,9 +509,12 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addComponent(previousLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(ditherToggleButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ditherToggleButton)
+                        .addGap(0, 0, 0)
+                        .addComponent(replaceColorToggleButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(alphaPaletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -551,7 +561,9 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addComponent(ellipseFillToggleButton)
                             .addComponent(ellipseToggleButton))
                         .addGap(0, 0, 0)
-                        .addComponent(ditherToggleButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ditherToggleButton)
+                            .addComponent(replaceColorToggleButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(colorPickerToggleButton)
@@ -759,6 +771,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private javax.swing.JToggleButton rectangleFillToggleButton;
     private javax.swing.JToggleButton rectangleToggleButton;
     private javax.swing.JButton redoButton;
+    private javax.swing.JToggleButton replaceColorToggleButton;
     private javax.swing.JButton rotateButton;
     private fr.rca.mapmaker.model.selection.SmallSelectionStyle selectionStyle;
     private javax.swing.JToggleButton selectionToggleButton;
