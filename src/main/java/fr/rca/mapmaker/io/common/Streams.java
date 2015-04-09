@@ -1,4 +1,4 @@
-package fr.rca.mapmaker.io;
+package fr.rca.mapmaker.io.common;
 
 import java.io.IOException;
 import java.io.InputStream;

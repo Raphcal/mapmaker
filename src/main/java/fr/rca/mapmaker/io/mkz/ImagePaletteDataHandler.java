@@ -2,7 +2,7 @@ package fr.rca.mapmaker.io.mkz;
 
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
-import fr.rca.mapmaker.io.Streams;
+import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.HasFunctionHitbox;
 import fr.rca.mapmaker.model.palette.ImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;

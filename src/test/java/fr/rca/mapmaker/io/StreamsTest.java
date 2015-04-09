@@ -4,6 +4,7 @@
  */
 package fr.rca.mapmaker.io;
 
+import fr.rca.mapmaker.io.common.Streams;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

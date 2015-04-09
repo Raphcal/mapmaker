@@ -1,7 +1,7 @@
 package fr.rca.mapmaker.io.internal;
 
 import fr.rca.mapmaker.model.palette.ColorPalette;
-import fr.rca.mapmaker.io.Streams;
+import fr.rca.mapmaker.io.common.Streams;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.junit.Assert;

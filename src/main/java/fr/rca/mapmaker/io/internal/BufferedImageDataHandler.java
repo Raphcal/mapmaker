@@ -1,7 +1,7 @@
 package fr.rca.mapmaker.io.internal;
 
 import fr.rca.mapmaker.io.DataHandler;
-import fr.rca.mapmaker.io.Streams;
+import fr.rca.mapmaker.io.common.Streams;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;

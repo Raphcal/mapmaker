@@ -1,7 +1,7 @@
 package fr.rca.mapmaker.operation;
 
 import fr.rca.mapmaker.exception.Exceptions;
-import fr.rca.mapmaker.io.Streams;
+import fr.rca.mapmaker.io.common.Streams;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayDeque;

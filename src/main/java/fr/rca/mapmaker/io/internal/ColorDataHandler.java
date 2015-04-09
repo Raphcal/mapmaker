@@ -1,7 +1,7 @@
 package fr.rca.mapmaker.io.internal;
 
 import fr.rca.mapmaker.io.DataHandler;
-import fr.rca.mapmaker.io.Streams;
+import fr.rca.mapmaker.io.common.Streams;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;

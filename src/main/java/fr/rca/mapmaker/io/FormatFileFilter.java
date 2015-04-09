@@ -9,9 +9,9 @@ import javax.swing.filechooser.FileFilter;
  */
 public class FormatFileFilter extends FileFilter {
 	
-	private String description;
-	private String extension;
-	private Format format;
+	private final String description;
+	private final String extension;
+	private final Format format;
 
 	public FormatFileFilter(String description, String extension, Format format) {
 		this.description = description;

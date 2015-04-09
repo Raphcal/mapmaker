@@ -18,7 +18,7 @@ import fr.rca.mapmaker.editor.undo.LayerMemento;
 import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.FormatFileFilter;
-import fr.rca.mapmaker.io.Formats;
+import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;

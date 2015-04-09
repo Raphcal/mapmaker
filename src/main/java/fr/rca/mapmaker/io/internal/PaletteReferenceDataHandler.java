@@ -2,7 +2,7 @@ package fr.rca.mapmaker.io.internal;
 
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.io.DataHandler;
-import fr.rca.mapmaker.io.Streams;
+import fr.rca.mapmaker.io.common.Streams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

@@ -18,7 +18,7 @@ import fr.rca.mapmaker.model.palette.EditablePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.FormatFileFilter;
-import fr.rca.mapmaker.io.Formats;
+import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.SpanningTileLayer;

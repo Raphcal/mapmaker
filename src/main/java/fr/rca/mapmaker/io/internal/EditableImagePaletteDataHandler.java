@@ -6,7 +6,7 @@ import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.HasVersion;
-import fr.rca.mapmaker.io.Streams;
+import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import java.io.IOException;
 import java.io.InputStream;

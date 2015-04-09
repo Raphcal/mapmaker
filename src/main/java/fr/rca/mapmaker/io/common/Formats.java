@@ -1,5 +1,6 @@
-package fr.rca.mapmaker.io;
+package fr.rca.mapmaker.io.common;
 
+import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.avm.AVMFormat;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.io.lvl.PuzzleLevelFormat;

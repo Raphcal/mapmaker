@@ -2,7 +2,7 @@ package fr.rca.mapmaker.io.internal;
 
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
-import fr.rca.mapmaker.io.Streams;
+import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import java.io.IOException;
