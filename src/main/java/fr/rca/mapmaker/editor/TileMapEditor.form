@@ -701,9 +701,9 @@
           <ComponentRef name="toolButtonGroup"/>
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/resources/tool_dither.png"/>
+          <Image iconType="3" name="/resources/tool_replace_color.png"/>
         </Property>
-        <Property name="toolTipText" type="java.lang.String" value="Remplacer couleur"/>
+        <Property name="toolTipText" type="java.lang.String" value="Remplacement de couleur"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(replaceColorToggleButton, new ReplaceColorTool(drawGrid));"/>

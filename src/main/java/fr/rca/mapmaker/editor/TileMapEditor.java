@@ -457,8 +457,8 @@ public class TileMapEditor extends javax.swing.JDialog {
         wireTool(ditherToggleButton, new DitherRectangleTool(drawGrid));
 
         toolButtonGroup.add(replaceColorToggleButton);
-        replaceColorToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_dither.png"))); // NOI18N
-        replaceColorToggleButton.setToolTipText("Remplacer couleur");
+        replaceColorToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_replace_color.png"))); // NOI18N
+        replaceColorToggleButton.setToolTipText("Remplacement de couleur");
         wireTool(replaceColorToggleButton, new ReplaceColorTool(drawGrid));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
