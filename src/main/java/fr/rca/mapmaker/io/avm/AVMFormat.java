@@ -59,8 +59,9 @@ public class AVMFormat extends AbstractFormat {
 				inputStream.close();
 			}
 			
-			for(int index = layers.size() - 1; index >= 0; index--)
+			for(int index = layers.size() - 1; index >= 0; index--) {
 				tileMap.add(layers.get(index));
+			}
 			
 			project.addMap(tileMap);
 			

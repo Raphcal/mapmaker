@@ -26,11 +26,13 @@ public class MagnifierTool extends MouseAdapter implements Tool {
 		
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			
-			if(currentZoom < MAX_ZOOM)
+			if(currentZoom < MAX_ZOOM) {
 				grid.setCustomTileSize(currentZoom + 1);
+			}
 			
-		} else if(currentZoom > MIN_ZOOM)
+		} else if(currentZoom > MIN_ZOOM) {
 			grid.setCustomTileSize(currentZoom - 1);
+		}
 		
 		parent.validate();
 	}

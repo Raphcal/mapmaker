@@ -27,13 +27,15 @@ public abstract class AbstractShapeTool extends MouseAdapter implements Tool {
 		
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			final int selectedTile = grid.getTileMap().getPalette().getSelectedTile();
-			if(selectedTile == -1)
+			if(selectedTile == -1) {
 				target = -2;
-			else
+			} else {
 				target = selectedTile;
+			}
 			
-		} else
+		} else {
 			target = -2;
+		}
 	}
 	
 	@Override
@@ -54,8 +56,9 @@ public abstract class AbstractShapeTool extends MouseAdapter implements Tool {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		
-		if(startPoint == null)
+		if(startPoint == null) {
 			return;
+		}
 		
 		final TileLayer previewLayer = grid.getOverlay();
 		
@@ -67,8 +70,9 @@ public abstract class AbstractShapeTool extends MouseAdapter implements Tool {
 				Math.abs(startPoint.x - point.x),
 				Math.abs(startPoint.y - point.y));
 		
-		if(lastRectangle != null)
+		if(lastRectangle != null) {
 			previewLayer.clear(lastRectangle);
+		}
 		
 		drawShape(rectangle, target, previewLayer);
 		

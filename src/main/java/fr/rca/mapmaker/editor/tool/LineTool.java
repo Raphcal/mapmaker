@@ -31,13 +31,15 @@ public class LineTool extends MouseAdapter implements Tool {
 		
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			final int selectedTile = grid.getTileMap().getPalette().getSelectedTile();
-			if(selectedTile == -1)
+			if(selectedTile == -1) {
 				target = -2;
-			else
+			} else {
 				target = selectedTile;
+			}
 			
-		} else
+		} else {
 			target = -2;
+		}
 	}
 	
 	@Override
@@ -51,8 +53,9 @@ public class LineTool extends MouseAdapter implements Tool {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		
-		if(startPoint == null)
+		if(startPoint == null) {
 			return;
+		}
 		
 		final Point point = grid.getLayerLocation(e.getX(), e.getY());
 		
@@ -67,15 +70,17 @@ public class LineTool extends MouseAdapter implements Tool {
 			previewLayer.clear(lastRectangle);
 		}
 		
-		if(point.x > previewLayer.getWidth())
+		if(point.x > previewLayer.getWidth()) {
 			point.x = previewLayer.getWidth();
-		else if(point.x < 0)
+		} else if(point.x < 0) {
 			point.x = 0;
+		}
 		
-		if(point.y > previewLayer.getHeight())
+		if(point.y > previewLayer.getHeight()) {
 			point.y = previewLayer.getHeight();
-		else if(point.y < 0)
+		} else if(point.y < 0) {
 			point.y = 0;
+		}
 		
 		previewLayer.setTiles(startPoint, point, target);
 		lastDragPoint = point;

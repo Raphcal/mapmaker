@@ -39,9 +39,11 @@ public class PixelLogicFormat extends AbstractFormat {
 			// Ecriture de la grille
 			Streams.write(layer.getWidth() * layer.getHeight(), outputStream);
 			
-			for(int y = 0; y < layer.getHeight(); y++)
-				for(int x = 0; x < layer.getWidth(); x++)
+			for(int y = 0; y < layer.getHeight(); y++) {
+				for (int x = 0; x < layer.getWidth(); x++) {
 					Streams.write(layer.getTile(x, y), outputStream);
+				}
+			}
 			
 			// Ecriture de la palette
 			Palette palette = tileMap.getPalette();
@@ -59,8 +61,9 @@ public class PixelLogicFormat extends AbstractFormat {
 				for(int index = 0; index < colorPalette.size(); index++) {
 					Color color = colorPalette.getColor(index);
 					
-					if(color == null)
+					if(color == null) {
 						color = Color.BLACK;
+					}
 					
 					Streams.write(color.getRed(), outputStream);
 					Streams.write(color.getGreen(), outputStream);

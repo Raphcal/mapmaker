@@ -82,11 +82,13 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 				final int maxX = Math.min(tilesX, layer.getWidth());
 				final int maxY = Math.min(tilesY, layer.getHeight());
 				
-				for(int y = 0; y < maxY; y++)
-					for(int x = 0; x < maxX; x++)
+				for(int y = 0; y < maxY; y++) {
+					for (int x = 0; x < maxX; x++) {
 						palette.paintTile(g, layer.getTile(x, y),
-								origin.x + x * TILE_SIZE,
-								origin.y + y * TILE_SIZE, TILE_SIZE);
+							origin.x + x * TILE_SIZE,
+							origin.y + y * TILE_SIZE, TILE_SIZE);
+					}
+				}
 			}
 		}
 		

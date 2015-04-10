@@ -7,7 +7,6 @@ import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
-import java.awt.Point;
 
 /**
  *
@@ -62,7 +61,7 @@ public class TileInspector extends javax.swing.JDialog {
 		functionTextField.setVisible(hasFunctionHitbox);
 		function.setVisible(hasFunctionHitbox);
 		
-		if(hasFunctionHitbox) {
+		if(hasFunctionHitbox && palette != null) {
 			final String hitbox = ((HasFunctionHitbox)palette).getFunction(palette.getSelectedTile());
 			
 			hitboxCheckBox.setSelected(hitbox != null);

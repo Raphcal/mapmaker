@@ -79,10 +79,11 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 
 	@Override
 	public String toString() {
-		if(name != null)
+		if(name != null) {
 			return name;
-		else
+		} else {
 			return super.toString();
+		}
 	}
 
 	@Override
@@ -122,7 +123,8 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 	
 	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
 		
-		for(final SizeChangeListener listener : sizeChangeListeners)
+		for(final SizeChangeListener listener : sizeChangeListeners) {
 			listener.sizeChanged(this, oldSize, newSize);
+		}
 	}
 }

@@ -22,7 +22,11 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
 
 	private boolean confirmed;
 	
-	/** Creates new form TileMapPropertiesDialog */
+	/** 
+	 * Creates new form TileMapPropertiesDialog
+	 * @param parent
+	 * @param modal
+	 */
 	public TileMapPropertiesDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
@@ -53,10 +57,11 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
 		this.paletteComboBox.setModel(project.getPaletteListModel());
 		
 		// Modification du modèle donc recherche de la palette actuelle
-		if(tileMap.getPalette() != null)
+		if(tileMap.getPalette() != null) {
 			this.paletteComboBox.setSelectedItem(tileMap.getPalette());
-		else
+		} else {
 			this.paletteComboBox.setSelectedIndex(0);
+		}
 	}
 
 	public TileMap getTileMap() {
@@ -209,8 +214,9 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
 private void backgroundColorFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backgroundColorFieldMouseClicked
 	final Color newColor = JColorChooser.showDialog(this, language.getString("dialog.map.editbackground"), tileMap.getBackgroundColor());
 	
-	if(newColor != null)
+	if(newColor != null) {
 		tileMap.setBackgroundColor(newColor);
+	}
 }//GEN-LAST:event_backgroundColorFieldMouseClicked
 
 private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed

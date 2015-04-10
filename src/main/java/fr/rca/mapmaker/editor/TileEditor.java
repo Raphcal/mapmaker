@@ -425,8 +425,9 @@ public class TileEditor {
 	}
 	
 	private static void configureFileChooser(JFileChooser fileChooser) {
-		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters())
+		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters()) {
 			fileChooser.removeChoosableFileFilter(fileFilter);
+		}
 			
 		final Format format = Formats.getFormat(".png");
 		fileChooser.addChoosableFileFilter(format.getFileFilter());

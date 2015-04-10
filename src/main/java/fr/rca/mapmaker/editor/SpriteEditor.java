@@ -33,6 +33,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 	
 	/**
 	 * Creates new form SpriteDialog
+	 * @param parent Fenêtre parente
 	 */
 	public SpriteEditor(java.awt.Frame parent) {
 		super(parent, true);

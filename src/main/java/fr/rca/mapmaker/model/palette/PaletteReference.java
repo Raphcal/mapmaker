@@ -59,8 +59,9 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 		} else if(obj instanceof Palette) {
 			return getPalette().equals(obj);
 			
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Override

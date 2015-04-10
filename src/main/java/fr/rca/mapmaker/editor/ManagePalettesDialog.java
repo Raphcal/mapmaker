@@ -24,10 +24,14 @@ import javax.swing.JOptionPane;
 public class ManagePalettesDialog extends javax.swing.JDialog {
 	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
 
-	private Frame parent;
+	private final Frame parent;
 	private Project p = new Project();
 	
-	/** Creates new form ManagePalettesDialog */
+	/** 
+	 * Creates new form ManagePalettesDialog
+	 * @param parent
+	 * @param modal 
+	 */
 	public ManagePalettesDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();

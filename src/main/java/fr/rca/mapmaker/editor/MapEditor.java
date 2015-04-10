@@ -138,8 +138,9 @@ public class MapEditor extends javax.swing.JFrame {
 	private void configureFileChooser(SupportedOperation operation) {
 		fileChooser.setMultiSelectionEnabled(false);
 		
-		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters())
+		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters()) {
 			fileChooser.removeChoosableFileFilter(fileFilter);
+		}
 		
 		Format favoriteFormat = null;
 		

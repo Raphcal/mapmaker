@@ -30,8 +30,9 @@ public class ColorPaletteDataHandler implements DataHandler<ColorPalette> {
 		
 		Streams.write(colors.length, outputStream);
 		
-		for(final Color color : colors)
+		for(final Color color : colors) {
 			colorHandler.write(color, outputStream);
+		}
 	}
 
 	@Override
@@ -43,8 +44,9 @@ public class ColorPaletteDataHandler implements DataHandler<ColorPalette> {
 		
 		final ColorPalette palette = new ColorPalette(length);
 		
-		for(int index = 0; index < length; index++)
+		for(int index = 0; index < length; index++) {
 			palette.setColor(index, colorHandler.read(inputStream));
+		}
 		
 		return palette;
 	}

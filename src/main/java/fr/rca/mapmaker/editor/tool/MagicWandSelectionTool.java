@@ -32,17 +32,21 @@ public class MagicWandSelectionTool extends AbstractSelectionTool {
 		
 		selectionLayer.setTile(x, y, tile);
 		
-		if(canExpandSelection(x - 1, y, tile))
+		if(canExpandSelection(x - 1, y, tile)) {
 			expandSelectionRecursive(x - 1, y, tile);
+		}
 		
-		if(canExpandSelection(x, y - 1, tile))
+		if(canExpandSelection(x, y - 1, tile)) {
 			expandSelectionRecursive(x, y - 1, tile);
+		}
 		
-		if(canExpandSelection(x + 1, y, tile))
+		if(canExpandSelection(x + 1, y, tile)) {
 			expandSelectionRecursive(x + 1, y, tile);
+		}
 		
-		if(canExpandSelection(x, y + 1, tile))
+		if(canExpandSelection(x, y + 1, tile)) {
 			expandSelectionRecursive(x, y + 1, tile);
+		}
 	}
 	
 	private boolean canExpandSelection(int x, int y, int tile) {

@@ -387,8 +387,9 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 				int tile = layer.tiles[y * layer.width + x];
 				
 				if(tile != -1) {
-					if(tile == -2)
+					if(tile == -2) {
 						tile = -1;
+					}
 					
 					final int index = y * this.width + x;
 					
@@ -459,11 +460,13 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 		int height = 0;
 		
 		for(final TileLayer layer : layers) {
-			if(layer.getWidth() > width)
+			if(layer.getWidth() > width) {
 				width = layer.getWidth();
+			}
 			
-			if(layer.getHeight() > height)
+			if(layer.getHeight() > height) {
 				height = layer.getHeight();
+			}
 		}
 		
 		for(final TileLayer layer : layers) {
@@ -664,9 +667,10 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 
 	@Override
 	public String toString() {
-		if(name == null)
+		if(name == null) {
 			return super.toString();
-		else
+		} else {
 			return name;
+		}
 	}
 }

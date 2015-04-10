@@ -17,7 +17,11 @@ public class TileLayerPropertiesDialog extends javax.swing.JDialog {
 
 	private boolean ready;
 	
-	/** Creates new form TileLayerPropertiesDialog */
+	/** 
+	 * Creates new form TileLayerPropertiesDialog
+	 * @param parent
+	 * @param modal
+	 */
 	public TileLayerPropertiesDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();

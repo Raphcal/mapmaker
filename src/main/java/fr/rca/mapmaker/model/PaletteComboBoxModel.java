@@ -69,39 +69,44 @@ public class PaletteComboBoxModel implements ComboBoxModel {
 		if(anItem instanceof PaletteReference) {
 			selectedIndex = ((PaletteReference) anItem).getPaletteIndex();
 			
-		} else
+		} else {
 			selectedIndex = palettes.indexOf(anItem);
+		}
 	}
 
 	@Override
 	public Object getSelectedItem() {
-		if(selectedIndex >= 0 && selectedIndex < palettes.size())
+		if(selectedIndex >= 0 && selectedIndex < palettes.size()) {
 			return palettes.get(selectedIndex);
-		else
+		} else {
 			return null;
+		}
 	}
 	
 	protected void fireContentsChanged(int from, int to) {
 		
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, from, to);
 		
-		for(final ListDataListener listener : listeners)
+		for(final ListDataListener listener : listeners) {
 			listener.contentsChanged(event);
+		}
 	}
 	
 	protected void fireIntervalAdded(int from, int to) {
 		
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, from, to);
 		
-		for(final ListDataListener listener : listeners)
+		for(final ListDataListener listener : listeners) {
 			listener.intervalRemoved(event);
+		}
 	}
 	
 	protected void fireIntervalRemoved(int from, int to) {
 		
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, from, to);
 		
-		for(final ListDataListener listener : listeners)
+		for(final ListDataListener listener : listeners) {
 			listener.intervalRemoved(event);
+		}
 	}
 }

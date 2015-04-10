@@ -30,8 +30,9 @@ public class AlphaColorPaletteDataHandler implements DataHandler<AlphaColorPalet
 		
 		Streams.write(colors.length, outputStream);
 		
-		for(final Color color : colors)
+		for(final Color color : colors) {
 			colorHandler.write(color, outputStream);
+		}
 	}
 
 	@Override
@@ -43,8 +44,9 @@ public class AlphaColorPaletteDataHandler implements DataHandler<AlphaColorPalet
 		
 		final AlphaColorPalette palette = new AlphaColorPalette(length);
 		
-		for(int index = 0; index < length; index++)
+		for(int index = 0; index < length; index++) {
 			palette.setColor(index, colorHandler.read(inputStream));
+		}
 		
 		return palette;
 	}

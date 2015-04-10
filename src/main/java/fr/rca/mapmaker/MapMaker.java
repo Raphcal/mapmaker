@@ -8,14 +8,29 @@ import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.prefs.BackingStoreException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
+/**
+ * Classe principale du projet.
+ * Contient la méthode {@link #main(java.lang.String[])} pour démarrer 
+ * l'exécution.
+ * 
+ * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
+ */
 public class MapMaker {
 	
+	/**
+	 * Démarre l'application.
+	 * 
+	 * @param args Liste des arguments de l'application.
+	 */
 	public static void main(final String[] args) {
 		
 		// Style Mac OS X
@@ -24,12 +39,7 @@ public class MapMaker {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MapMaker");
 		
 		setDockIcon();
-		
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (/* ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeel */ Exception ex) {
-			// Look & Feel système non disponible, ignoré.
-		}
+		setLookAndFeel();
 		
 		EventQueue.invokeLater(new Runnable() {
 
@@ -72,6 +82,26 @@ public class MapMaker {
 		});
 	}
 	
+	/**
+	 * Défini le look and feel du système qui exécute l'application.
+	 */
+	private static void setLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException ex) {
+			// Look & Feel système non disponible, ignoré.
+		} catch (InstantiationException ex) {
+			// Look & Feel système non disponible, ignoré.
+		} catch (IllegalAccessException ex) {
+			// Look & Feel système non disponible, ignoré.
+		} catch (UnsupportedLookAndFeelException ex) {
+			// Look & Feel système non disponible, ignoré.
+		}
+	}
+	
+	/**
+	 * Défini l'icône de l'application dans le dock sous Mac OS X.
+	 */
 	private static void setDockIcon() {
 		try {
 			final Class<?> applicationClass = MapMaker.class.getClassLoader().loadClass("com.apple.eawt.Application");
@@ -83,7 +113,19 @@ public class MapMaker {
 				setDockIconImageMethod.invoke(application, ImageIO.read(MapMaker.class.getResourceAsStream("/resources/icon.png")));
 			}
 			
-		} catch (/* ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | IO */ Exception ex) {
+		} catch (ClassNotFoundException ex) {
+			// Ignoré.
+		} catch (NoSuchMethodException ex) {
+			// Ignoré.
+		} catch (SecurityException ex) {
+			// Ignoré.
+		} catch (IllegalAccessException ex) {
+			// Ignoré.
+		} catch (IllegalArgumentException ex) {
+			// Ignoré.
+		} catch (InvocationTargetException ex) {
+			// Ignoré.
+		} catch (IOException ex) {
 			// Ignoré.
 		}
 	}

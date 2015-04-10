@@ -43,8 +43,9 @@ public class PNGImageFormat extends AbstractFormat {
 			
 			final Color backgroundColor = tileMap.getBackgroundColor();
 			
-			if(backgroundColor != null)
+			if(backgroundColor != null) {
 				renderer.setBackground(backgroundColor);
+			}
 			
 			final int tileSize = tileMap.getPalette().getTileSize();
 			final BufferedImage image = renderer.renderImage(tileMap.getLayers(), tileMap.getPalette(), 

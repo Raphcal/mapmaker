@@ -21,7 +21,9 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 	};
 
 	/**
-	 * Creates new form GamePreviewDialog
+	 * Créé une nouvelle boîte de dialogue.
+	 * @param parent Frame parente.
+	 * @param modal <code>true</code> pour rendre cette fenêtre obligatoire.
 	 */
 	public GamePreviewDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);

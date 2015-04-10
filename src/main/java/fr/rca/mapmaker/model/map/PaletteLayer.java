@@ -62,11 +62,11 @@ public class PaletteLayer implements Layer, HasSizeChangeListeners {
 	public int getTile(int x, int y) {
 		final int tile = y * width + x;
 		
-		if(tile < 0 || tile >= palette.size())
+		if(tile < 0 || tile >= palette.size()) {
 			return -1;
-		
-		else
+		} else {
 			return tile;
+		}
 	}
 
 	@Override
@@ -86,7 +86,8 @@ public class PaletteLayer implements Layer, HasSizeChangeListeners {
 	
 	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
 		
-		for(final SizeChangeListener listener : sizeChangeListeners)
+		for(final SizeChangeListener listener : sizeChangeListeners) {
 			listener.sizeChanged(this, oldSize, newSize);
+		}
 	}
 }

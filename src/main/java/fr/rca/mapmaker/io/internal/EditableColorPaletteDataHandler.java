@@ -35,8 +35,9 @@ public class EditableColorPaletteDataHandler implements DataHandler<EditableColo
 				Streams.write(true, outputStream);
 				colorHandler.write(color, outputStream);
 				
-			} else
+			} else {
 				Streams.write(false, outputStream);
+			}
 		}
 	}
 
@@ -52,8 +53,9 @@ public class EditableColorPaletteDataHandler implements DataHandler<EditableColo
 		for(int index = 0; index < length; index++) {
 			boolean notNull = Streams.readBoolean(inputStream);
 			
-			if(notNull)
+			if(notNull) {
 				palette.setColor(index, colorHandler.read(inputStream));
+			}
 		}
 		
 		return palette;

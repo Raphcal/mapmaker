@@ -92,6 +92,7 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 	public void mouseReleased(MouseEvent e) {
 		if(!selected) {
 			handleMouseReleased(e);
+			
 		} else {
 			final Point releasePoint = grid.getLayerLocation(e.getX(), e.getY());
 			translation.x += releasePoint.x - startPoint.x;

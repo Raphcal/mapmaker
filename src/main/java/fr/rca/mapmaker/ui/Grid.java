@@ -443,9 +443,10 @@ public class Grid extends AbstractLayerPainter {
 	}
 	
 	public Layer getActiveLayer() {
-		if(activeLayer >= 0 && activeLayer < tileMap.getSize())
+		if(activeLayer >= 0 && activeLayer < tileMap.getSize()) {
 			return tileMap.getLayers().get(activeLayer);
-		else
+		} else {
 			return null;
+		}
 	}
 }

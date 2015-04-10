@@ -68,7 +68,8 @@ public class ColorPaletteDataHandlerTest {
 		
 		Assert.assertEquals(palette.size(), result.size());
 		
-		for(int index = 0; index < palette.size(); index++)
+		for(int index = 0; index < palette.size(); index++) {
 			Assert.assertEquals(palette.getColors()[index], result.getColors()[index]);
+		}
 	}
 }

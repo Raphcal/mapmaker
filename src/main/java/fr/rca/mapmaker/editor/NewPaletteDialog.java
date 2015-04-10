@@ -19,7 +19,11 @@ public class NewPaletteDialog extends javax.swing.JDialog {
 
 	private boolean confirmed;
 	
-	/** Creates new form NewPaletteDialog */
+	/** 
+	 * Creates new form NewPaletteDialog
+	 * @param parent
+	 * @param modal 
+	 */
 	public NewPaletteDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();

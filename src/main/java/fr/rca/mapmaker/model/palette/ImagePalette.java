@@ -88,11 +88,12 @@ public class ImagePalette implements Palette, Flippable {
 			@Override
 			public int filterRGB(int x, int y, int rgb) {
 				
-				if(rgb == transparentRGB)
+				if(rgb == transparentRGB) {
 					// Garde la teinte mais défini la valeur alpha à 0.
 					return rgb & 0x00FFFFFF;
-				else
+				} else {
 					return rgb;
+				}
 			}
 	    };
 
@@ -175,9 +176,10 @@ public class ImagePalette implements Palette, Flippable {
 	
 	@Override
 	public String toString() {
-		if(name != null)
+		if(name != null) {
 			return name;
-		else
+		} else {
 			return super.toString();
+		}
 	}
 }

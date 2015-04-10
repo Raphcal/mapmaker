@@ -223,8 +223,9 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 			if(layer instanceof TileLayer) {
 //				((TileLayer)layer).setParent(null);
 
-				for(final LayerChangeListener listener : layerChangeListeners)
+				for(final LayerChangeListener listener : layerChangeListeners) {
 					((TileLayer)layer).removeLayerChangeListener(listener);
+				}
 			}
 
 			if(layer instanceof HasSizeChangeListeners) {
@@ -318,8 +319,9 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 		
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, index, index);
 		
-		for(final ListDataListener listener : listDataListeners)
+		for(final ListDataListener listener : listDataListeners) {
 			listener.intervalAdded(event);
+		}
 	}
 	
 	protected void fireIntervalRemoved(int index) {

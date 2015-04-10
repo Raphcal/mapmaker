@@ -31,12 +31,14 @@ public class TileLayerDataHandler implements DataHandler<TileLayer> {
 			inputStream.read();
 
 			int width = 0;
-			for(int i = 0; i < 4; i++)
+			for(int i = 0; i < 4; i++) {
 				width = width * 10 + (inputStream.read() - '0');
+			}
 
 			int height = 0;
-			for(int i = 0; i < 4; i++)
+			for(int i = 0; i < 4; i++) {
 				height = height * 10 + (inputStream.read() - '0');
+			}
 
 			inputStream.read();
 
@@ -46,8 +48,9 @@ public class TileLayerDataHandler implements DataHandler<TileLayer> {
 			for(int y = 0; y < height; y++) {
 				for(int x = 0; x < width; x++) {
 					final StringBuilder numberBuilder = new StringBuilder();
-					for(int i = 0; i < 3; i++)
+					for(int i = 0; i < 3; i++) {
 						numberBuilder.append((char)inputStream.read());
+					}
 
 					layer.setTile(x, y, Integer.parseInt(numberBuilder.toString()) - 1);
 				}

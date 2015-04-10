@@ -104,8 +104,9 @@ public class Project implements ListModel {
 			fireContentsChanged(0, oldSize -1);
 			fireIntervalAdded(oldSize, newSize -1);
 			
-		} else
+		} else {
 			fireContentsChanged(0, newSize -1);
+		}
 		
 		// Sélection + événement de modification
 		selectedIndex = 0;
@@ -268,15 +269,17 @@ public class Project implements ListModel {
 	protected void fireIntervalAdded(int from, int to) {
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, from, to);
 		
-		for(final ListDataListener listener : listeners)
+		for(final ListDataListener listener : listeners) {
 			listener.intervalAdded(event);
+		}
 	}
 	
 	protected void fireIntervalRemoved(int from, int to) {
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, from, to);
 		
-		for(final ListDataListener listener : listeners)
+		for(final ListDataListener listener : listeners) {
 			listener.intervalRemoved(event);
+		}
 	}
 	
 	protected void fireContentsChanged(int from, int to) {

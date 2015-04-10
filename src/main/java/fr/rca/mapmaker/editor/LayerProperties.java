@@ -9,7 +9,7 @@ import java.beans.PropertyChangeSupport;
  */
 public class LayerProperties {
 	
-	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	private String name;
 	private float scrollRate;
 

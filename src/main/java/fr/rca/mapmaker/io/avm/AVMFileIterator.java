@@ -23,10 +23,11 @@ public class AVMFileIterator implements Iterator<File> {
 
 	private File nextFile() {
 		
-		if(count == 1)
+		if(count == 1) {
 			return source;
-		else
+		} else {
 			return new File(parent, name + count + ".avm");
+		}
 	}
 	
 	@Override

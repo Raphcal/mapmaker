@@ -31,13 +31,15 @@ public class CircleStrokeTool extends MouseAdapter implements Tool {
 		
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			final int selectedTile = grid.getTileMap().getPalette().getSelectedTile();
-			if(selectedTile == -1)
+			if(selectedTile == -1) {
 				target = -2;
-			else
+			} else {
 				target = selectedTile;
+			}
 			
-		} else
+		} else {
 			target = -2;
+		}
 	}
 	
 	@Override
@@ -52,16 +54,18 @@ public class CircleStrokeTool extends MouseAdapter implements Tool {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		
-		if(startPoint == null)
+		if(startPoint == null) {
 			return;
+		}
 		
 		final Point point = grid.getLayerLocation(e.getX(), e.getY());
 		
 		final int radius = (int) Math.sqrt(square(startPoint.x - point.x) + 
 				square(startPoint.y - point.y));
 
-		if(lastRectangle != null)
+		if(lastRectangle != null) {
 			previewLayer.clear(lastRectangle);
+		}
 		
 		final Rectangle rectangle = new Rectangle(startPoint.x - radius,
 				startPoint.y - radius, radius * 2 + 1, radius * 2 + 1);
@@ -72,8 +76,9 @@ public class CircleStrokeTool extends MouseAdapter implements Tool {
 				final int length = (int) Math.sqrt(square(startPoint.x - x) + 
 						square(startPoint.y - y));
 				
-				if(length == radius)
+				if(length == radius) {
 					previewLayer.setTile(x, y, target);
+				}
 			}
 		}
 		

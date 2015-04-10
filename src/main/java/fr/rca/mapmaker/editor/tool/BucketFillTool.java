@@ -42,13 +42,15 @@ public class BucketFillTool extends MouseAdapter implements Tool {
 
 			if(e.getButton() == MouseEvent.BUTTON1) {
 				final int selectedTile = grid.getTileMap().getPalette().getSelectedTile();
-				if(selectedTile == -1)
+				if(selectedTile == -1) {
 					target = -2;
-				else
+				} else {
 					target = selectedTile;
+				}
 
-			} else
+			} else {
 				target = -2;
+			}
 
 			final SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 				@Override
