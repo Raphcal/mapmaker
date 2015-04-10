@@ -11,16 +11,12 @@ import fr.rca.mapmaker.model.project.Project;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -33,7 +29,7 @@ public class PuzzleLevelFormat extends AbstractFormat {
 	private static final String LINE_BREAK = "\r\n";
 	
 	public PuzzleLevelFormat() {
-		super(EXTENSION, "format.lvl.description", EnumSet.of(SupportedOperation.SAVE, SupportedOperation.IMPORT));
+		super(EXTENSION, SupportedOperation.SAVE, SupportedOperation.IMPORT);
 	}
 	
 	@Override

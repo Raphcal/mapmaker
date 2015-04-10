@@ -26,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.EnumSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.swing.JOptionPane;
@@ -52,7 +51,7 @@ public class InternalFormat extends AbstractFormat {
 			
 
 	public InternalFormat() {
-		super(EXTENSION, "format.internal.description", EnumSet.of(SupportedOperation.LOAD, SupportedOperation.SAVE));
+		super(EXTENSION, SupportedOperation.LOAD, SupportedOperation.SAVE);
 		
 		addHandler(Project.class, new ProjectDataHandler(this));
 		addHandler(Color.class, new ColorDataHandler());

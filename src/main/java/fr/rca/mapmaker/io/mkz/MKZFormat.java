@@ -26,7 +26,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -38,7 +37,7 @@ public class MKZFormat extends AbstractFormat {
 	private static final String EXTENSION = ".zip";
 	
 	public MKZFormat() {
-		super(EXTENSION, "format.mkz.description", EnumSet.of(SupportedOperation.SAVE));
+		super(EXTENSION, SupportedOperation.SAVE);
 		
 		addHandler(Project.class, new ProjectDataHandler(this));
 		addHandler(Color.class, new ColorDataHandler());

@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 /**
  *
@@ -25,7 +24,7 @@ public class AVMFormat extends AbstractFormat {
 	private static final String EXTENSION = ".avm";
 	
 	public AVMFormat() {
-		super(EXTENSION, "format.avm.description", EnumSet.of(SupportedOperation.LOAD));
+		super(EXTENSION, SupportedOperation.LOAD);
 		
 		addHandler(TileLayer.class, new TileLayerDataHandler());
 	}

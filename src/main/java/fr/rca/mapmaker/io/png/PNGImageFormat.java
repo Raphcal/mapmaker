@@ -12,7 +12,6 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -26,7 +25,7 @@ public class PNGImageFormat extends AbstractFormat {
 	private static final String EXTENSION = ".png";
 
 	public PNGImageFormat() {
-		super(EXTENSION, "format.png.description", EnumSet.of(SupportedOperation.SAVE, SupportedOperation.IMPORT));
+		super(EXTENSION, SupportedOperation.SAVE, SupportedOperation.IMPORT);
 	}
 	
 	@Override

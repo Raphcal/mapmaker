@@ -14,7 +14,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.EnumSet;
 
 /**
  *
@@ -25,7 +24,7 @@ public class PixelLogicFormat extends AbstractFormat {
 	private static final String EXTENSION = ".pxl";
 	
 	public PixelLogicFormat() {
-		super(EXTENSION, "format.pxl.description", EnumSet.of(SupportedOperation.SAVE));
+		super(EXTENSION, SupportedOperation.SAVE);
 	}
 	
 	@Override

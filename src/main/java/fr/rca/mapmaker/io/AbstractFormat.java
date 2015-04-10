@@ -2,16 +2,31 @@ package fr.rca.mapmaker.io;
 
 import fr.rca.mapmaker.model.project.Project;
 import java.io.File;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
 /**
- *
+ * Classe de base pour la création d'un format de fichier.
+ * <br/>
+ * L'implémentation par défaut des méthodes 
+ * {@link #saveProject(fr.rca.mapmaker.model.project.Project, java.io.File)},
+ * {@link #openProject(java.io.File)} et 
+ * {@link #importFiles(java.io.File[], fr.rca.mapmaker.model.project.Project)}
+ * lance une exception {@code UnsupportedOperationException}.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public abstract class AbstractFormat implements Format {
-	protected static final ResourceBundle language = ResourceBundle.getBundle("resources/language");
+	protected static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
+	
+	private static final String DESCRIPTION_PREFIX = "format";
+	private static final String DESCRIPTION_SUFFIX = ".description";
+	private static final String EXTENSION_PREFIX = " (*";
+	private static final char EXTENSION_SUFFIX = ')';
+	
+	private static final String UNSUPPORTED_MESSAGE = "Not supported by this format.";
 	
 	private final HashMap<String, DataHandler<?>> handlers = new HashMap<String, DataHandler<?>>();
 	private final String defaultExtension;
@@ -19,15 +34,17 @@ public abstract class AbstractFormat implements Format {
 	private final EnumSet<SupportedOperation> supportedOperations;
 	
 
-	public AbstractFormat(String defaultExtension, String descriptionRef, EnumSet<SupportedOperation> supportedOperations) {
+	public AbstractFormat(String defaultExtension, SupportedOperation... supportedOperations) {
 		this.defaultExtension = defaultExtension;
-		this.supportedOperations = supportedOperations;
+		this.supportedOperations = EnumSet.copyOf(Arrays.asList(supportedOperations));
+		
+		final String descriptionRef = DESCRIPTION_PREFIX + defaultExtension + DESCRIPTION_SUFFIX;
 		
 		final StringBuilder descriptionBuilder = new StringBuilder()
-				.append(language.getString(descriptionRef))
-				.append(" (*")
-				.append(defaultExtension)
-				.append(')');
+			.append(LANGUAGE.getString(descriptionRef))
+			.append(EXTENSION_PREFIX)
+			.append(defaultExtension)
+			.append(EXTENSION_SUFFIX);
 				
 		this.fileFilter = new FormatFileFilter(descriptionBuilder.toString(), defaultExtension, this);
 	}
@@ -46,6 +63,12 @@ public abstract class AbstractFormat implements Format {
 		return (DataHandler<T>) handlers.get(name);
 	}
 	
+	/**
+	 * Défini le numéro de version à utiliser pour les instances de {@link 
+	 * DataHandler} qui supportent différentes versions.
+	 * 
+	 * @param version Numéro de version à définir.
+	 */
 	public void setVersion(int version) {
 		for(final DataHandler<?> handler : handlers.values()) {
 			if(handler instanceof HasVersion) {
@@ -61,11 +84,11 @@ public abstract class AbstractFormat implements Format {
 
 	@Override
 	public File normalizeFile(File file) {
-		
-		if(!file.getName().endsWith(defaultExtension))
+		if(!file.getName().endsWith(defaultExtension)) {
 			return new File(file.getParent(), file.getName() + defaultExtension);
-		else
+		} else {
 			return file;
+		}
 	}
 
 	@Override
@@ -85,7 +108,7 @@ public abstract class AbstractFormat implements Format {
 
 	@Override
 	public void saveProject(Project project, File file) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE);
 	}
 
 	@Override
@@ -95,7 +118,7 @@ public abstract class AbstractFormat implements Format {
 
 	@Override
 	public Project openProject(File file) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE);
 	}
 
 	@Override
@@ -105,6 +128,6 @@ public abstract class AbstractFormat implements Format {
 
 	@Override
 	public void importFiles(File[] files, Project project) {
-		throw new UnsupportedOperationException("Not supported yet."); 
+		throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE); 
 	}
 }
