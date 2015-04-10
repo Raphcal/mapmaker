@@ -1,8 +1,5 @@
 package fr.rca.mapmaker.model.palette;
 
-import fr.rca.mapmaker.model.palette.EditablePalette;
-import fr.rca.mapmaker.model.palette.Palette;
-import fr.rca.mapmaker.model.palette.PaletteReference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ComboBoxModel;
