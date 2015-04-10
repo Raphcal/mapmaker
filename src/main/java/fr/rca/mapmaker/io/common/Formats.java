@@ -2,6 +2,7 @@ package fr.rca.mapmaker.io.common;
 
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.avm.AVMFormat;
+import fr.rca.mapmaker.io.bundle.BundleFormat;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.io.lvl.PuzzleLevelFormat;
 import fr.rca.mapmaker.io.mkz.MKZFormat;
@@ -25,6 +26,7 @@ public final class Formats {
 		
 		final LinkedHashMap<String, Format> formats = new LinkedHashMap<String, Format>();
 		addFormat(formats, INTERNAL_FORMAT);
+		addFormat(formats, new BundleFormat());
 		addFormat(formats, new MKZFormat());
 		addFormat(formats, new PNGImageFormat());
 		addFormat(formats, new AVMFormat());
