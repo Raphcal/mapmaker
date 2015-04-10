@@ -1,6 +1,6 @@
 package fr.rca.mapmaker.model.project;
 
-import fr.rca.mapmaker.model.PaletteComboBoxModel;
+import fr.rca.mapmaker.model.palette.PaletteComboBoxModel;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;

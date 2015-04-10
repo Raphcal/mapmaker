@@ -1,4 +1,4 @@
-package fr.rca.mapmaker.model;
+package fr.rca.mapmaker.model.palette;
 
 import fr.rca.mapmaker.model.palette.EditablePalette;
 import fr.rca.mapmaker.model.palette.Palette;

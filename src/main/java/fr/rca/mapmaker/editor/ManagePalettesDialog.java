@@ -9,7 +9,7 @@ import fr.rca.mapmaker.model.Duplicatable;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
-import fr.rca.mapmaker.model.PaletteComboBoxModel;
+import fr.rca.mapmaker.model.palette.PaletteComboBoxModel;
 import fr.rca.mapmaker.model.palette.EditableColorPalette;
 import fr.rca.mapmaker.model.palette.EditablePalette;
 import fr.rca.mapmaker.model.project.Project;
