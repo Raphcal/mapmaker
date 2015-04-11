@@ -10,6 +10,7 @@ import fr.rca.mapmaker.editor.tool.PenTool;
 import fr.rca.mapmaker.editor.tool.RectangleFillTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
+import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -42,8 +43,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -54,6 +58,11 @@ import javax.swing.JViewport;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileFilter;
+import org.eclipse.jgit.api.CommitCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -244,6 +253,11 @@ public class MapEditor extends javax.swing.JFrame {
         multipleEditMenuItem = new javax.swing.JMenuItem();
         toolMenu = new javax.swing.JMenu();
         trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
+        gitMenu = new javax.swing.JMenu();
+        commitMenuItem = new javax.swing.JMenuItem();
+        gitSeparator = new javax.swing.JPopupMenu.Separator();
+        pullMenuItem = new javax.swing.JMenuItem();
+        pushMenuItem = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout tileMapListRendererLayout = new javax.swing.GroupLayout(tileMapListRenderer);
         tileMapListRenderer.setLayout(tileMapListRendererLayout);
@@ -837,6 +851,35 @@ public class MapEditor extends javax.swing.JFrame {
         });
         toolMenu.add(trajectoryPreviewMenuItem);
 
+        gitMenu.setText("Git");
+
+        commitMenuItem.setText("Commit");
+        commitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                commitMenuItemActionPerformed(evt);
+            }
+        });
+        gitMenu.add(commitMenuItem);
+        gitMenu.add(gitSeparator);
+
+        pullMenuItem.setText("Pull");
+        pullMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pullMenuItemActionPerformed(evt);
+            }
+        });
+        gitMenu.add(pullMenuItem);
+
+        pushMenuItem.setText("Push");
+        pushMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pushMenuItemActionPerformed(evt);
+            }
+        });
+        gitMenu.add(pushMenuItem);
+
+        toolMenu.add(gitMenu);
+
         menuBar.add(toolMenu);
 
         setJMenuBar(menuBar);
@@ -1347,6 +1390,62 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		buildRecentMenu();
     }//GEN-LAST:event_clearRecentMenuItemActionPerformed
 
+    private void pullMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pullMenuItemActionPerformed
+		final Git git = getGit();
+		if(git != null) {
+			try {
+				git.pull().call();
+				
+			} catch (GitAPIException ex) {
+				Exceptions.showStackTrace(ex, this);
+			}
+		}
+    }//GEN-LAST:event_pullMenuItemActionPerformed
+
+    private void commitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitMenuItemActionPerformed
+		final Git git = getGit();
+		if(git != null) {
+			try {
+				final CommitCommand command = git.commit();
+				
+				final String message = JOptionPane.showInputDialog("Message de commit :");
+				command.setMessage(message);
+				
+				command.call();
+				
+			} catch (GitAPIException ex) {
+				Exceptions.showStackTrace(ex, this);
+			}
+		}
+    }//GEN-LAST:event_commitMenuItemActionPerformed
+
+    private void pushMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pushMenuItemActionPerformed
+		final Git git = getGit();
+		if(git != null) {
+			try {
+				git.push().call();
+				
+			} catch (GitAPIException ex) {
+				Exceptions.showStackTrace(ex, this);
+			}
+		}
+    }//GEN-LAST:event_pushMenuItemActionPerformed
+
+	@Nullable
+	private Git getGit() {
+		final FileRepositoryBuilder builder = new FileRepositoryBuilder();
+		try {
+			return new Git(builder.setGitDir(currentFile)
+					.readEnvironment()
+					.findGitDir()
+					.build());
+			
+		} catch (IOException ex) {
+			// Ignoré
+			return null;
+		}
+	}
+	
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 				
@@ -1398,11 +1497,14 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton addLayerButton;
     private javax.swing.JToggleButton bucketFillToggleButton;
     private javax.swing.JMenuItem clearRecentMenuItem;
+    private javax.swing.JMenuItem commitMenuItem;
     private javax.swing.JButton devicePreviewButton;
     private javax.swing.JMenuItem editLayerMenuItem;
     private javax.swing.JMenuItem editMapMenuItem;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenu gitMenu;
+    private javax.swing.JPopupMenu.Separator gitSeparator;
     private javax.swing.JToolBar gridToolBar;
     private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JPopupMenu.Separator importSeparator;
@@ -1430,6 +1532,8 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JToggleButton penToggleButton;
     private fr.rca.mapmaker.editor.tool.PenTool penTool;
     private fr.rca.mapmaker.model.project.Project project;
+    private javax.swing.JMenuItem pullMenuItem;
+    private javax.swing.JMenuItem pushMenuItem;
     private javax.swing.JMenuItem quitMenuItem;
     private javax.swing.JPopupMenu.Separator quitSeparator;
     private javax.swing.JToggleButton rectangleToggleButton;
