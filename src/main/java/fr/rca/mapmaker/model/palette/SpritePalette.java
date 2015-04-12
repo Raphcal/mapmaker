@@ -70,12 +70,16 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 			final TileLayer defaultLayer = sprite.getDefaultLayer();
 			
 			if(defaultLayer != null) {
-				final int layerSize = Math.min(defaultLayer.getWidth(), size);
-				final int tileSize = layerSize / defaultLayer.getWidth();
+				final int tileSize = 1;
+				final int layerWidth = Math.min(defaultLayer.getWidth(), size);
+				final int layerHeight = Math.min(defaultLayer.getHeight(), size);
 				
-				for(int y = 0; y < layerSize; y++) {
-					for(int x = 0; x < layerSize; x++) {
-						palette.paintTile(g, defaultLayer.getTile(x, y), x * tileSize + refX, y * tileSize + refY, tileSize);
+				final int left = layerWidth < size ? refX + (size - layerWidth) / 2 : refX;
+				final int top = layerWidth < size ? refY + (size - layerHeight) / 2 / 2 : refY;
+				
+				for(int y = 0; y < layerHeight; y++) {
+					for(int x = 0; x < layerWidth; x++) {
+						palette.paintTile(g, defaultLayer.getTile(x, y), x * tileSize + left, y * tileSize + top, tileSize);
 					}
 				}
 			}
