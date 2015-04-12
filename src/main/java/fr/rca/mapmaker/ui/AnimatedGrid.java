@@ -19,6 +19,7 @@ import javax.swing.Timer;
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
+ * @param <L> Type des étapes d'animation.
  */
 public class AnimatedGrid<L extends Layer> extends JComponent {
 	
@@ -63,7 +64,7 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 			timer = null;
 		}
 	}
-
+	
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
 		

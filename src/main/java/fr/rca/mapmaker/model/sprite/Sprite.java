@@ -14,10 +14,17 @@ import java.util.Set;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class Sprite {
+	private String name;
+	private int type;
 	private ColorPalette palette;
 	private int width;
 	private int height;
-	private Set<Animation> animations;
+	private final Set<Animation> animations;
+	
+	private int top;
+	private int xMotion; // Devrait être au niveau de l'instance
+	private int yMotion; // Devrait être au niveau de l'instance
+	private String scriptFile;
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
@@ -120,6 +127,22 @@ public class Sprite {
 	
 	public ColorPalette getPalette() {
 		return palette;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 	
 	public int getWidth() {
