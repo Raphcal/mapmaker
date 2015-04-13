@@ -1,12 +1,19 @@
 package fr.rca.mapmaker.io.bundle;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.jetbrains.annotations.NotNull;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -45,10 +52,33 @@ public final class Plists {
 	
 	private static final String DATE_START = "<date>";
 	private static final String DATE_END = "</date>\n";
-	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXXX";
+	
+	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXXX";
 	
 	
 	private Plists() {
+	}
+	
+	@NotNull
+	public static Map<String, Object> read(InputStream inputStream) throws IOException {
+		try {
+			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			final SAXParser parser = parserFactory.newSAXParser();
+			final PlistHandler handler = new PlistHandler();
+			parser.parse(inputStream, handler);
+			
+			final Map<String, Object> map = handler.getContent();
+			if(map != null) {
+				return map;
+			} else {
+				return Collections.emptyMap();
+			}
+			
+		} catch (ParserConfigurationException ex) {
+			throw new IOException("Erreur lors de la configuration de l'analyseur SAX.", ex);
+		} catch (SAXException ex) {
+			throw new IOException("Erreur lors de la lecture d'un fichier PLIST.", ex);
+		}
 	}
 	
 	public static void write(Map<String, Object> values, OutputStream outputStream) throws IOException {
