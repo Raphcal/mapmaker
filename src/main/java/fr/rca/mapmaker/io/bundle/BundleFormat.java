@@ -24,7 +24,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -56,7 +58,21 @@ public class BundleFormat extends AbstractFormat {
 	@Override
 	public void saveProject(Project project, File file) {
 		file.mkdir();
+		
+		final Map<String, Object> projectMap = new HashMap<String, Object>();
+		projectMap.put("palettes", project.getPalettes().size());
+		projectMap.put("maps", project.getMaps().size());
+		projectMap.put("sprites", project.getSprites().size());
+		
 		try {
+			// Informations générales
+			final OutputStream projectOutputStream = new FileOutputStream(new File(file, "Info.plist"));
+			try {
+				Plists.write(projectMap, projectOutputStream);
+			} finally {
+				projectOutputStream.close();
+			}
+			
 			// Palettes
 			final DataHandler<Palette> paletteDataHandler = getHandler(Palette.class);
 			int index = 0;
