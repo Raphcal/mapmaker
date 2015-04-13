@@ -59,6 +59,7 @@ public class BundleFormat extends AbstractFormat {
 	public void saveProject(Project project, File file) {
 		file.mkdir();
 		
+		// TODO: Ajouter les noms de fichier à la map plutôt que de stocker les tailles.
 		final Map<String, Object> projectMap = new HashMap<String, Object>();
 		projectMap.put("palettes", project.getPalettes().size());
 		projectMap.put("maps", project.getMaps().size());
