@@ -42,11 +42,12 @@ public class Sprite {
 		this.animations = animations;
 	}
 
-	public Sprite(String name, int width, int height, int top, int xMotion, int yMotion, String scriptFile, Set<Animation> animations) {
+	public Sprite(String name, int width, int height, int type, int top, int xMotion, int yMotion, String scriptFile, Set<Animation> animations) {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
 		this.name = name;
 		this.width = width;
 		this.height = height;
+		this.type = type;
 		this.top = top;
 		this.xMotion = xMotion;
 		this.yMotion = yMotion;

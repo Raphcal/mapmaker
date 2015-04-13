@@ -33,8 +33,9 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 	@Override
 	public void write(Sprite t, OutputStream outputStream) throws IOException {
 		// Nom
-		Streams.write(t.getName() != null, outputStream);
-		if(t.getName() != null) {
+		final boolean hasName = t.getName() != null;
+		Streams.write(hasName, outputStream);
+		if(hasName) {
 			Streams.write(t.getName(), outputStream);
 		}
 		
@@ -49,8 +50,9 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		Streams.write(t.getYMotion(), outputStream);
 		
 		// Script
-		Streams.write(t.getScriptFile() != null, outputStream);
-		if(t.getScriptFile() != null) {
+		final boolean hasScriptFile = t.getScriptFile() != null;
+		Streams.write(hasScriptFile, outputStream);
+		if(hasScriptFile) {
 			Streams.write(t.getScriptFile(), outputStream);
 		}
 		
@@ -67,11 +69,12 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 	public Sprite read(InputStream inputStream) throws IOException {
 		final String name;
 		final int width, height;
-		final int top, xMotion, yMotion;
+		final int type, top, xMotion, yMotion;
 		final String scriptFile;
 		
 		if(version >= InternalFormat.VERSION_4) {
-			if(Streams.readBoolean(inputStream)) {
+			final boolean hasName = Streams.readBoolean(inputStream);
+			if(hasName) {
 				name = Streams.readString(inputStream);
 			} else {
 				name = null;
@@ -80,20 +83,36 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			width = Streams.readInt(inputStream);
 			height = Streams.readInt(inputStream);
 			
+			type = Streams.readInt(inputStream);
 			top = Streams.readInt(inputStream);
 			xMotion = Streams.readInt(inputStream);
 			yMotion = Streams.readInt(inputStream);
 			
-			if(Streams.readBoolean(inputStream)) {
+			final boolean hasScriptFile = Streams.readBoolean(inputStream);
+			if(hasScriptFile) {
 				scriptFile = Streams.readString(inputStream);
 			} else {
 				scriptFile = null;
 			}
 			
+		} else if(version == InternalFormat.VERSION_4) {
+			name = null;
+			
+			width = Streams.readInt(inputStream);
+			height = Streams.readInt(inputStream);
+			
+			type = 0;
+			top = 0;
+			xMotion = 0;
+			yMotion = 0;
+			
+			scriptFile = null;
+			
 		} else {
 			name = null;
 			width = Streams.readInt(inputStream);
 			height = width;
+			type = 0;
 			top = 0;
 			xMotion = 0;
 			yMotion = 0;
@@ -109,7 +128,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			animations.add(animationHandler.read(inputStream));
 		}
 		
-		return new Sprite(name, width, height, top, xMotion, yMotion, scriptFile, animations);
+		return new Sprite(name, width, height, type, top, xMotion, yMotion, scriptFile, animations);
 	}
 	
 }
