@@ -21,6 +21,7 @@ import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.FormatFileFilter;
 import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
+import fr.rca.mapmaker.io.common.Files;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.SpanningTileLayer;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
@@ -46,8 +47,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -58,6 +57,7 @@ import javax.swing.JViewport;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileFilter;
+import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -1406,6 +1406,14 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		final Git git = getGit();
 		if(git != null) {
 			try {
+				// Ajout des fichiers
+				final AddCommand addCommand = git.add();
+				addCommand.addFilepattern(null);
+				
+				final File workTree = git.getRepository().getWorkTree();
+				addCommand.addFilepattern(Files.getRelativePath(workTree, currentFile));
+				
+				// Commit
 				final CommitCommand command = git.commit();
 				
 				final String message = JOptionPane.showInputDialog("Message de commit :");
@@ -1434,11 +1442,14 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	@Nullable
 	private Git getGit() {
 		final FileRepositoryBuilder builder = new FileRepositoryBuilder();
+		builder.readEnvironment().findGitDir(currentFile);
+		
+		if(builder.getGitDir() == null) {
+			return null;
+		}
+		
 		try {
-			return new Git(builder.setGitDir(currentFile)
-					.readEnvironment()
-					.findGitDir()
-					.build());
+			return new Git(builder.build());
 			
 		} catch (IOException ex) {
 			// Ignoré
