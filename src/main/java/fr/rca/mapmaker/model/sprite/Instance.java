@@ -23,6 +23,12 @@ public class Instance extends JComponent {
 	
 	private double zoom = 1.0;
 
+	// TODO: Ajouter la possibilité de définir un script d'initialisation pour
+	// chaque instance.
+	// Voir comment stocker des données / créer des variables depuis le Lua.
+	// Passer une map en argument et la donner dans Update() ?
+	private String scriptFile;
+	
 	public Instance() {
 	}
 
