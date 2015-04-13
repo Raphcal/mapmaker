@@ -42,10 +42,15 @@ public class Sprite {
 		this.animations = animations;
 	}
 
-	public Sprite(int width, int height, Set<Animation> animations) {
+	public Sprite(String name, int width, int height, int top, int xMotion, int yMotion, String scriptFile, Set<Animation> animations) {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
+		this.name = name;
 		this.width = width;
 		this.height = height;
+		this.top = top;
+		this.xMotion = xMotion;
+		this.yMotion = yMotion;
+		this.scriptFile = scriptFile;
 		this.animations = animations;
 	}
 
@@ -169,6 +174,38 @@ public class Sprite {
 
 	public Set<Animation> getAnimations() {
 		return animations;
+	}
+	
+	public int getTop() {
+		return top;
+	}
+
+	public void setTop(int top) {
+		this.top = top;
+	}
+
+	public int getXMotion() {
+		return xMotion;
+	}
+
+	public void setXMotion(int xMotion) {
+		this.xMotion = xMotion;
+	}
+
+	public int getYMotion() {
+		return yMotion;
+	}
+
+	public void setYMotion(int yMotion) {
+		this.yMotion = yMotion;
+	}
+
+	public String getScriptFile() {
+		return scriptFile;
+	}
+
+	public void setScriptFile(String scriptFile) {
+		this.scriptFile = scriptFile;
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener pl) {

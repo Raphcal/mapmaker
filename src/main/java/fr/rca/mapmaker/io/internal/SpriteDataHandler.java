@@ -32,8 +32,27 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 
 	@Override
 	public void write(Sprite t, OutputStream outputStream) throws IOException {
+		// Nom
+		Streams.write(t.getName() != null, outputStream);
+		if(t.getName() != null) {
+			Streams.write(t.getName(), outputStream);
+		}
+		
+		// Général
 		Streams.write(t.getWidth(), outputStream);
 		Streams.write(t.getHeight(), outputStream);
+		Streams.write(t.getType(), outputStream);
+		
+		// Plateforme
+		Streams.write(t.getTop(), outputStream);
+		Streams.write(t.getXMotion(), outputStream);
+		Streams.write(t.getYMotion(), outputStream);
+		
+		// Script
+		Streams.write(t.getScriptFile() != null, outputStream);
+		if(t.getScriptFile() != null) {
+			Streams.write(t.getScriptFile(), outputStream);
+		}
 		
 		final Set<Animation> animations = t.getAnimations();
 		Streams.write(animations.size(), outputStream);
@@ -46,15 +65,39 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 	
 	@Override
 	public Sprite read(InputStream inputStream) throws IOException {
+		final String name;
 		final int width, height;
+		final int top, xMotion, yMotion;
+		final String scriptFile;
 		
 		if(version >= InternalFormat.VERSION_4) {
+			if(Streams.readBoolean(inputStream)) {
+				name = Streams.readString(inputStream);
+			} else {
+				name = null;
+			}
+			
 			width = Streams.readInt(inputStream);
 			height = Streams.readInt(inputStream);
 			
+			top = Streams.readInt(inputStream);
+			xMotion = Streams.readInt(inputStream);
+			yMotion = Streams.readInt(inputStream);
+			
+			if(Streams.readBoolean(inputStream)) {
+				scriptFile = Streams.readString(inputStream);
+			} else {
+				scriptFile = null;
+			}
+			
 		} else {
+			name = null;
 			width = Streams.readInt(inputStream);
 			height = width;
+			top = 0;
+			xMotion = 0;
+			yMotion = 0;
+			scriptFile = null;
 		}
 		
 		final HashSet<Animation> animations = new HashSet<Animation>();
@@ -66,7 +109,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			animations.add(animationHandler.read(inputStream));
 		}
 		
-		return new Sprite(width, height, animations);
+		return new Sprite(name, width, height, top, xMotion, yMotion, scriptFile, animations);
 	}
 	
 }

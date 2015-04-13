@@ -120,5 +120,14 @@ public class BundleFormat extends AbstractFormat {
 			Exceptions.showStackTrace(e, null);
 		}
 	}
+
+	@Override
+	public Project openProject(File file) {
+		final Project project = new Project();
+		
+		
+		
+		return project;
+	}
 	
 }

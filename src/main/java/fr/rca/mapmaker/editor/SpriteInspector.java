@@ -127,13 +127,17 @@ public class SpriteInspector extends javax.swing.JDialog {
         scriptLabel.setText("Script :");
         scriptLabel.setToolTipText("");
 
-        xMotionTextField.setText("jTextField1");
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.XMotion}"), xMotionTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
-        yMotionTextField.setText("jTextField1");
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.YMotion}"), yMotionTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
-        topTextField.setText("jTextField1");
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.top}"), topTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
-        scriptTextField.setText("jTextField1");
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.scriptFile}"), scriptTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
         hitboxLabel.setFont(hitboxLabel.getFont().deriveFont(hitboxLabel.getFont().getSize()-1f));
         hitboxLabel.setText("Général :");

@@ -229,24 +229,32 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="xMotionTextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jTextField1"/>
-      </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="Form" sourcePath="${sprite.XMotion}" target="xMotionTextField" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
     </Component>
     <Component class="javax.swing.JTextField" name="yMotionTextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jTextField1"/>
-      </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="Form" sourcePath="${sprite.YMotion}" target="yMotionTextField" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
     </Component>
     <Component class="javax.swing.JTextField" name="topTextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jTextField1"/>
-      </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="Form" sourcePath="${sprite.top}" target="topTextField" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
     </Component>
     <Component class="javax.swing.JTextField" name="scriptTextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jTextField1"/>
-      </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="Form" sourcePath="${sprite.scriptFile}" target="scriptTextField" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
     </Component>
     <Component class="javax.swing.JSeparator" name="hitboxSeparator1">
     </Component>
