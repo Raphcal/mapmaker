@@ -60,8 +60,12 @@ import javax.swing.filechooser.FileFilter;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -1396,6 +1400,13 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			try {
 				git.pull().call();
 				
+				final int openOption = JOptionPane.showConfirmDialog(this, "Pull effectué. Recharger le projet ?", "Git Pull", JOptionPane.YES_NO_OPTION);
+				if(openOption == JOptionPane.NO_OPTION) {
+					return;
+				}
+				
+				openFile(currentFile);
+				
 			} catch (GitAPIException ex) {
 				Exceptions.showStackTrace(ex, this);
 			}
@@ -1408,22 +1419,60 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			try {
 				// Ajout des fichiers
 				final AddCommand addCommand = git.add();
-				addCommand.addFilepattern(null);
 				
 				final File workTree = git.getRepository().getWorkTree();
-				addCommand.addFilepattern(Files.getRelativePath(workTree, currentFile));
+				
+				final String relativePath = Files.getRelativePath(workTree, currentFile);
+				final int addOption = JOptionPane.showConfirmDialog(this, "Ajout de '" + relativePath + "'...\nSouhaitez-vous continuer ?", "Git Add", JOptionPane.YES_NO_OPTION);
+				if(addOption == JOptionPane.NO_OPTION) {
+					return;
+				}
+				
+				addCommand.addFilepattern(relativePath);
+				addCommand.call();
+				
+				final Status status = git.status().call();
+				
+				final StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append("Résultat de Add :");
+				
+				for(final String added : status.getAdded()) {
+						stringBuilder.append("\nadded: ").append(added);
+				}
+				
+				for(final String modified : status.getChanged()) {
+						stringBuilder.append("\nmodified: ").append(modified);
+				}
+				
+				for(final String removed : status.getRemoved()) {
+						stringBuilder.append("\nremoved: ").append(removed);
+				}
+				
+				stringBuilder.append("\nSouhaitez-vous continuer ?");
+				
+				final int addResultOption = JOptionPane.showConfirmDialog(this, stringBuilder.toString(), "Git Add", JOptionPane.YES_NO_OPTION);
+				if(addResultOption == JOptionPane.NO_OPTION) {
+					return;
+				}
 				
 				// Commit
-				final CommitCommand command = git.commit();
+				final CommitCommand commitCommand = git.commit();
 				
 				final String message = JOptionPane.showInputDialog("Message de commit :");
-				command.setMessage(message);
+				if(message == null) {
+					return;
+				}
 				
-				command.call();
+				commitCommand.setMessage(message);
+				commitCommand.call();
+				
+				JOptionPane.showMessageDialog(this, "Commit effectué.");
 				
 			} catch (GitAPIException ex) {
 				Exceptions.showStackTrace(ex, this);
 			}
+		} else {
+			JOptionPane.showMessageDialog(this, "Repository git non trouvé.");
 		}
     }//GEN-LAST:event_commitMenuItemActionPerformed
 
@@ -1432,6 +1481,26 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		if(git != null) {
 			try {
 				git.push().call();
+				JOptionPane.showMessageDialog(this, "Push effectué.");
+				
+			} catch (TransportException ex) {
+				// Exception ignorée.
+				
+				final PushCommand pushCommand = git.push();
+				
+				final String login = JOptionPane.showInputDialog("Login ?");
+				if(login != null) {
+					final String password = JOptionPane.showInputDialog("Password ?");
+					if(password != null) {
+						pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(login, password));
+						
+						try {
+							pushCommand.call();
+						} catch (GitAPIException ex1) {
+							Exceptions.showStackTrace(ex, this);
+						}
+					}
+				}
 				
 			} catch (GitAPIException ex) {
 				Exceptions.showStackTrace(ex, this);
