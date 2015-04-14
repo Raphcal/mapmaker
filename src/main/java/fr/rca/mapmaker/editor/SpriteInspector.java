@@ -25,14 +25,21 @@ public class SpriteInspector extends javax.swing.JDialog {
 		super(parent, modal);
 		getRootPane().putClientProperty("Window.style", "small");
 		initComponents();
-		
 	}
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 		
 		setTitle("Infos sur le sprite " + sprite.getName());
-		setAnimation(sprite.get(Animation.getDefaultAnimations()[0].getName()));
+		if(sprite.contains(new Animation(Animation.RUN))) {
+			setAnimation(sprite.get(Animation.RUN));
+			
+		} else if(sprite.contains(new Animation(Animation.WALK))) {
+			setAnimation(sprite.get(Animation.WALK));
+			
+		} else {
+			setAnimation(sprite.get(Animation.STAND));
+		}
 	}
 	
 	public Sprite getSprite() {
@@ -40,21 +47,31 @@ public class SpriteInspector extends javax.swing.JDialog {
 	}
 	
 	private void setAnimation(Animation animation) {
+		animatedGrid.stop();
+		
 		// Étapes d'animation
 		final List<TileLayer> frames;
 		
-		final Set<Double> angles = animation.getAnglesWithValue();
-		if(angles.contains(0.0)) {
-			frames = animation.getFrames(0.0);
-		} else if(!angles.isEmpty()) {
-			frames = animation.getFrames(angles.iterator().next());
-		} else {
+		if(animation == null) {
 			frames = Collections.emptyList();
+			
+		} else {
+			final Set<Double> angles = animation.getAnglesWithValue();
+			if(angles.contains(0.0)) {
+				frames = animation.getFrames(0.0);
+			} else if(!angles.isEmpty()) {
+				frames = animation.getFrames(angles.iterator().next());
+			} else {
+				frames = Collections.emptyList();
+			}
+			
+			animatedGrid.setFrequency(animation.getFrequency());
 		}
 		
 		animatedGrid.setFrames(frames);
 		animatedGrid.setPalette(sprite.getPalette());
-		animatedGrid.setFrequency(animation.getFrequency());
+		
+		animatedGrid.start();
 	}
 
 	/**
@@ -71,18 +88,10 @@ public class SpriteInspector extends javax.swing.JDialog {
         typeLabel = new javax.swing.JLabel();
         hitboxSeparator = new javax.swing.JSeparator();
         jComboBox1 = new javax.swing.JComboBox();
-        xMotionLabel = new javax.swing.JLabel();
-        yMotionLabel = new javax.swing.JLabel();
-        topLabel = new javax.swing.JLabel();
         scriptLabel = new javax.swing.JLabel();
-        xMotionTextField = new javax.swing.JTextField();
-        yMotionTextField = new javax.swing.JTextField();
-        topTextField = new javax.swing.JTextField();
         scriptTextField = new javax.swing.JTextField();
         hitboxSeparator1 = new javax.swing.JSeparator();
-        hitboxSeparator2 = new javax.swing.JSeparator();
         hitboxLabel = new javax.swing.JLabel();
-        hitboxLabel1 = new javax.swing.JLabel();
         hitboxLabel2 = new javax.swing.JLabel();
         typeLabel1 = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
@@ -102,48 +111,21 @@ public class SpriteInspector extends javax.swing.JDialog {
         typeLabel.setText("Type :");
         typeLabel.setToolTipText("");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Joueur", "Plateforme", "Bonus", "Destructible", "Méchant", "Décoration" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Décoration", "Joueur", "Plateforme", "Bonus", "Destructible", "Méchant" }));
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.type}"), jComboBox1, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
-
-        xMotionLabel.setFont(xMotionLabel.getFont().deriveFont(xMotionLabel.getFont().getSize()-1f));
-        xMotionLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        xMotionLabel.setText("Mouv. x :");
-        xMotionLabel.setToolTipText("");
-
-        yMotionLabel.setFont(yMotionLabel.getFont().deriveFont(yMotionLabel.getFont().getSize()-1f));
-        yMotionLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        yMotionLabel.setText("Mouv. y :");
-        yMotionLabel.setToolTipText("");
-
-        topLabel.setFont(topLabel.getFont().deriveFont(topLabel.getFont().getSize()-1f));
-        topLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        topLabel.setText("Sommet :");
-        topLabel.setToolTipText("");
 
         scriptLabel.setFont(scriptLabel.getFont().deriveFont(scriptLabel.getFont().getSize()-1f));
         scriptLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         scriptLabel.setText("Script :");
         scriptLabel.setToolTipText("");
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.XMotion}"), xMotionTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.YMotion}"), yMotionTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.top}"), topTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
-
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.scriptFile}"), scriptTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         hitboxLabel.setFont(hitboxLabel.getFont().deriveFont(hitboxLabel.getFont().getSize()-1f));
         hitboxLabel.setText("Général :");
-
-        hitboxLabel1.setFont(hitboxLabel1.getFont().deriveFont(hitboxLabel1.getFont().getSize()-1f));
-        hitboxLabel1.setText("Mouvement :");
 
         hitboxLabel2.setFont(hitboxLabel2.getFont().deriveFont(hitboxLabel2.getFont().getSize()-1f));
         hitboxLabel2.setText("Comportement :");
@@ -161,7 +143,6 @@ public class SpriteInspector extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(hitboxSeparator)
-            .addComponent(hitboxSeparator2)
             .addComponent(hitboxSeparator1)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,36 +151,23 @@ public class SpriteInspector extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox1, 0, 216, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(yMotionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(yMotionTextField))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(topLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(topTextField))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(scriptLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(scriptTextField))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(xMotionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(typeLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(xMotionTextField))
+                        .addComponent(nameTextField))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(hitboxLabel1)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(animatedGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(tileIndexLabel))
                             .addComponent(hitboxLabel)
                             .addComponent(hitboxLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(typeLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nameTextField)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -222,22 +190,6 @@ public class SpriteInspector extends javax.swing.JDialog {
                     .addComponent(typeLabel)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hitboxSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(hitboxLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(xMotionLabel)
-                    .addComponent(xMotionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(yMotionLabel)
-                    .addComponent(yMotionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(topLabel)
-                    .addComponent(topTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hitboxSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(hitboxLabel2)
@@ -256,24 +208,16 @@ public class SpriteInspector extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.rca.mapmaker.ui.AnimatedGrid<TileLayer> animatedGrid;
     private javax.swing.JLabel hitboxLabel;
-    private javax.swing.JLabel hitboxLabel1;
     private javax.swing.JLabel hitboxLabel2;
     private javax.swing.JSeparator hitboxSeparator;
     private javax.swing.JSeparator hitboxSeparator1;
-    private javax.swing.JSeparator hitboxSeparator2;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JLabel scriptLabel;
     private javax.swing.JTextField scriptTextField;
     private javax.swing.JLabel tileIndexLabel;
-    private javax.swing.JLabel topLabel;
-    private javax.swing.JTextField topTextField;
     private javax.swing.JLabel typeLabel;
     private javax.swing.JLabel typeLabel1;
-    private javax.swing.JLabel xMotionLabel;
-    private javax.swing.JTextField xMotionTextField;
-    private javax.swing.JLabel yMotionLabel;
-    private javax.swing.JTextField yMotionTextField;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

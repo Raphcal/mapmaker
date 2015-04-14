@@ -23,6 +23,8 @@ import javax.swing.Timer;
  */
 public class AnimatedGrid<L extends Layer> extends JComponent {
 	
+	private static final double ONE_SECOND = 1000.0;
+	
 	private int index;
 	private List<L> frames = Collections.<L>emptyList();
 	private Palette palette = AlphaColorPalette.getDefaultColorPalette();
@@ -47,7 +49,7 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	public void start() {
 		if(timer == null) {
-			timer = new Timer((int) (1000.0 / (double)frequency), new ActionListener() {
+			timer = new Timer(getDelay(), new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -68,11 +70,17 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
 		
-		timer.setDelay((int) (1000.0 / (double)frequency));
+		if(timer != null) {
+			timer.setDelay(getDelay());
+		}
 	}
 
 	public int getFrequency() {
 		return frequency;
+	}
+	
+	private int getDelay() {
+		return (int) (ONE_SECOND / (double)frequency);
 	}
 	
 	public void setFrames(List<L> frames) {

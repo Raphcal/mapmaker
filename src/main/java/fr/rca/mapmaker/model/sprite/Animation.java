@@ -16,6 +16,19 @@ import java.util.Set;
 public class Animation {
 	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
 	
+	public static final String STAND = "stand";
+	public static final String WALK = "walk";
+	public static final String RUN = "run";
+	public static final String JUMP = "jump";
+	public static final String FALL = "fall";
+	public static final String DUCK = "duck";
+	public static final String RAISE = "raise";
+	public static final String APPEAR = "appear";
+	public static final String DISAPPEAR = "disappear";
+	public static final String ATTACK = "attack";
+	public static final String HURT = "hurt";
+	public static final String DIE = "die";
+	
 	private String name;
 	private int frequency;
 	private Map<Double, List<TileLayer>> frames;
@@ -146,18 +159,18 @@ public class Animation {
 
 	public static Animation[] getDefaultAnimations() {
 		return new Animation[] {
-			new Animation("stand"),
-			new Animation("walk"),
-			new Animation("run"),
-			new Animation("jump"),
-			new Animation("fall"),
-			new Animation("duck"),
-			new Animation("raise"),
-			new Animation("appear"),
-			new Animation("disappear"),
-			new Animation("attack"),
-			new Animation("hurt"),
-			new Animation("die")
+			new Animation(STAND),
+			new Animation(WALK),
+			new Animation(RUN),
+			new Animation(JUMP),
+			new Animation(FALL),
+			new Animation(DUCK),
+			new Animation(RAISE),
+			new Animation(APPEAR),
+			new Animation(DISAPPEAR),
+			new Animation(ATTACK),
+			new Animation(HURT),
+			new Animation(DIE)
 		};
 	}
 }

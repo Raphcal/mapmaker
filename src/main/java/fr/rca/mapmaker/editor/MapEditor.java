@@ -26,6 +26,7 @@ import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.SpanningTileLayer;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
+import fr.rca.mapmaker.model.palette.SpritePalette;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.motion.TrajectoryPreview;
@@ -196,6 +197,9 @@ public class MapEditor extends javax.swing.JFrame {
         inspectTileMenuItem = new javax.swing.JMenuItem();
         tileInspector = new TileInspector(this, false);
         penTool = new PenTool(mapGrid, layerMemento);
+        spriteInspector = new SpriteInspector(this, false);
+        spritePopupMenu = new javax.swing.JPopupMenu();
+        inspectSpriteMenuItem = new javax.swing.JMenuItem();
         mapScrollPane = new javax.swing.JScrollPane();
         mapBackgroundPanel = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
         spriteLayerPanel = new javax.swing.JPanel();
@@ -330,6 +334,26 @@ public class MapEditor extends javax.swing.JFrame {
         bindingGroup.addBinding(binding);
 
         penTool.setGrid(mapGrid);
+
+        javax.swing.GroupLayout spriteInspectorLayout = new javax.swing.GroupLayout(spriteInspector.getContentPane());
+        spriteInspector.getContentPane().setLayout(spriteInspectorLayout);
+        spriteInspectorLayout.setHorizontalGroup(
+            spriteInspectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        spriteInspectorLayout.setVerticalGroup(
+            spriteInspectorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        inspectSpriteMenuItem.setText("Inspecter");
+        inspectSpriteMenuItem.setToolTipText("");
+        inspectSpriteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inspectSpriteMenuItemActionPerformed(evt);
+            }
+        });
+        spritePopupMenu.add(inspectSpriteMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(LANGUAGE.getString("app.title")); // NOI18N
@@ -698,6 +722,8 @@ public class MapEditor extends javax.swing.JFrame {
         spritePaletteScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         spriteBackgroundPanel.setBackground(java.awt.Color.darkGray);
+
+        spritePaletteGrid.setComponentPopupMenu(spritePopupMenu);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentSpritePaletteMap}"), spritePaletteGrid, org.jdesktop.beansbinding.BeanProperty.create("tileMap"));
         bindingGroup.addBinding(binding);
@@ -1311,6 +1337,9 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	
     private void selectSprite(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectSprite
 		select(evt, spritePaletteGrid);
+		
+		final SpritePalette spritePalette = (SpritePalette) spritePaletteGrid.getTileMap().getPalette();
+		spriteInspector.setSprite(spritePalette.getSelectedSprite());
     }//GEN-LAST:event_selectSprite
 
     private void editSprite(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editSprite
@@ -1508,6 +1537,10 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_pushMenuItemActionPerformed
 
+    private void inspectSpriteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inspectSpriteMenuItemActionPerformed
+		spriteInspector.setVisible(true);
+    }//GEN-LAST:event_inspectSpriteMenuItemActionPerformed
+
 	@Nullable
 	private Git getGit() {
 		final FileRepositoryBuilder builder = new FileRepositoryBuilder();
@@ -1588,6 +1621,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JToolBar gridToolBar;
     private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JPopupMenu.Separator importSeparator;
+    private javax.swing.JMenuItem inspectSpriteMenuItem;
     private javax.swing.JMenuItem inspectTileMenuItem;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JButton layerDownButton;
@@ -1622,11 +1656,13 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPopupMenu.Separator saveSeparator;
     private javax.swing.JToggleButton selectionToggleButton;
     private javax.swing.JPanel spriteBackgroundPanel;
+    private fr.rca.mapmaker.editor.SpriteInspector spriteInspector;
     private javax.swing.JPanel spriteLayerPanel;
     private fr.rca.mapmaker.ui.Grid spritePaletteGrid;
     private javax.swing.JScrollPane spritePaletteScrollPane;
     private javax.swing.JToolBar spritePaletteToolBar;
     private javax.swing.JPanel spritePanel;
+    private javax.swing.JPopupMenu spritePopupMenu;
     private javax.swing.JToggleButton spriteToggleButton;
     private fr.rca.mapmaker.editor.tool.SpriteTool spriteTool;
     private fr.rca.mapmaker.editor.TileInspector tileInspector;
