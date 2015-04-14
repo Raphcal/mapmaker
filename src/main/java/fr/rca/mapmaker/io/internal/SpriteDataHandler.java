@@ -44,11 +44,6 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		Streams.write(t.getHeight(), outputStream);
 		Streams.write(t.getType(), outputStream);
 		
-		// Plateforme
-		Streams.write(t.getTop(), outputStream);
-		Streams.write(t.getXMotion(), outputStream);
-		Streams.write(t.getYMotion(), outputStream);
-		
 		// Script
 		final boolean hasScriptFile = t.getScriptFile() != null;
 		Streams.write(hasScriptFile, outputStream);
@@ -69,7 +64,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 	public Sprite read(InputStream inputStream) throws IOException {
 		final String name;
 		final int width, height;
-		final int type, top, xMotion, yMotion;
+		final int type;
 		final String scriptFile;
 		
 		if(version >= InternalFormat.VERSION_4) {
@@ -82,11 +77,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			
 			width = Streams.readInt(inputStream);
 			height = Streams.readInt(inputStream);
-			
 			type = Streams.readInt(inputStream);
-			top = Streams.readInt(inputStream);
-			xMotion = Streams.readInt(inputStream);
-			yMotion = Streams.readInt(inputStream);
 			
 			final boolean hasScriptFile = Streams.readBoolean(inputStream);
 			if(hasScriptFile) {
@@ -97,15 +88,9 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			
 		} else if(version == InternalFormat.VERSION_4) {
 			name = null;
-			
 			width = Streams.readInt(inputStream);
 			height = Streams.readInt(inputStream);
-			
 			type = 0;
-			top = 0;
-			xMotion = 0;
-			yMotion = 0;
-			
 			scriptFile = null;
 			
 		} else {
@@ -113,9 +98,6 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			width = Streams.readInt(inputStream);
 			height = width;
 			type = 0;
-			top = 0;
-			xMotion = 0;
-			yMotion = 0;
 			scriptFile = null;
 		}
 		
@@ -128,7 +110,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			animations.add(animationHandler.read(inputStream));
 		}
 		
-		return new Sprite(name, width, height, type, top, xMotion, yMotion, scriptFile, animations);
+		return new Sprite(name, width, height, type, scriptFile, animations);
 	}
 	
 }

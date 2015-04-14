@@ -21,9 +21,10 @@ public class Sprite {
 	private int height;
 	private final Set<Animation> animations;
 	
-	private int top;
-	private int xMotion; // Devrait être au niveau de l'instance
-	private int yMotion; // Devrait être au niveau de l'instance
+	/**
+	 * Script utilisé pour gérer le mouvement de ce type de sprite.
+	 * Doit définir une méthode <code>Update(<i>delta</i>)</code>.
+	 */
 	private String scriptFile;
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -42,15 +43,12 @@ public class Sprite {
 		this.animations = animations;
 	}
 
-	public Sprite(String name, int width, int height, int type, int top, int xMotion, int yMotion, String scriptFile, Set<Animation> animations) {
+	public Sprite(String name, int width, int height, int type, String scriptFile, Set<Animation> animations) {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
 		this.name = name;
 		this.width = width;
 		this.height = height;
 		this.type = type;
-		this.top = top;
-		this.xMotion = xMotion;
-		this.yMotion = yMotion;
 		this.scriptFile = scriptFile;
 		this.animations = animations;
 	}
@@ -177,30 +175,6 @@ public class Sprite {
 		return animations;
 	}
 	
-	public int getTop() {
-		return top;
-	}
-
-	public void setTop(int top) {
-		this.top = top;
-	}
-
-	public int getXMotion() {
-		return xMotion;
-	}
-
-	public void setXMotion(int xMotion) {
-		this.xMotion = xMotion;
-	}
-
-	public int getYMotion() {
-		return yMotion;
-	}
-
-	public void setYMotion(int yMotion) {
-		this.yMotion = yMotion;
-	}
-
 	public String getScriptFile() {
 		return scriptFile;
 	}
