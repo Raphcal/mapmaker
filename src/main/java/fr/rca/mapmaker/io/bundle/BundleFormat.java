@@ -73,6 +73,8 @@ public class BundleFormat extends AbstractFormat {
 
 	@Override
 	public void saveProject(Project project, File file) {
+		setVersion(InternalFormat.LAST_VERSION);
+		
 		file.mkdir();
 		
 		final Map<String, Object> projectMap = new HashMap<String, Object>();
