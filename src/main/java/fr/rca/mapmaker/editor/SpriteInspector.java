@@ -28,18 +28,31 @@ public class SpriteInspector extends javax.swing.JDialog {
 	}
 
 	public void setSprite(Sprite sprite) {
+		final Sprite oldSprite = this.sprite;
 		this.sprite = sprite;
 		
 		setTitle("Infos sur le sprite " + sprite.getName());
-		if(sprite.contains(new Animation(Animation.RUN))) {
+		if(hasAnimation(Animation.RUN)) {
 			setAnimation(sprite.get(Animation.RUN));
 			
-		} else if(sprite.contains(new Animation(Animation.WALK))) {
+		} else if(hasAnimation(Animation.WALK)) {
 			setAnimation(sprite.get(Animation.WALK));
 			
 		} else {
 			setAnimation(sprite.get(Animation.STAND));
 		}
+		
+		firePropertyChange("sprite", oldSprite, sprite);
+		typeComboBox.setSelectedIndex(sprite.getType());
+	}
+	
+	public void setSpriteIndex(int index) {
+		tileIndexLabel.setText("Sprite n°" + index);
+	}
+	
+	private boolean hasAnimation(String animation) {
+		return sprite.contains(new Animation(animation)) &&
+				!sprite.get(Animation.RUN).getAnglesWithValue().isEmpty();
 	}
 	
 	public Sprite getSprite() {
@@ -87,7 +100,7 @@ public class SpriteInspector extends javax.swing.JDialog {
         tileIndexLabel = new javax.swing.JLabel();
         typeLabel = new javax.swing.JLabel();
         hitboxSeparator = new javax.swing.JSeparator();
-        jComboBox1 = new javax.swing.JComboBox();
+        typeComboBox = new javax.swing.JComboBox();
         scriptLabel = new javax.swing.JLabel();
         scriptTextField = new javax.swing.JTextField();
         hitboxSeparator1 = new javax.swing.JSeparator();
@@ -111,17 +124,19 @@ public class SpriteInspector extends javax.swing.JDialog {
         typeLabel.setText("Type :");
         typeLabel.setToolTipText("");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Décoration", "Joueur", "Plateforme", "Bonus", "Destructible", "Méchant" }));
-
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.type}"), jComboBox1, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
-        bindingGroup.addBinding(binding);
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Décoration", "Joueur", "Plateforme", "Bonus", "Destructible", "Méchant" }));
+        typeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                typeComboBoxActionPerformed(evt);
+            }
+        });
 
         scriptLabel.setFont(scriptLabel.getFont().deriveFont(scriptLabel.getFont().getSize()-1f));
         scriptLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         scriptLabel.setText("Script :");
         scriptLabel.setToolTipText("");
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.scriptFile}"), scriptTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.scriptFile}"), scriptTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         hitboxLabel.setFont(hitboxLabel.getFont().deriveFont(hitboxLabel.getFont().getSize()-1f));
@@ -149,7 +164,7 @@ public class SpriteInspector extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(typeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, 0, 216, Short.MAX_VALUE))
+                        .addComponent(typeComboBox, 0, 216, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(scriptLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -188,7 +203,7 @@ public class SpriteInspector extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(typeLabel)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hitboxSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -205,17 +220,21 @@ public class SpriteInspector extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void typeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeComboBoxActionPerformed
+		sprite.setType(typeComboBox.getSelectedIndex());
+    }//GEN-LAST:event_typeComboBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.rca.mapmaker.ui.AnimatedGrid<TileLayer> animatedGrid;
     private javax.swing.JLabel hitboxLabel;
     private javax.swing.JLabel hitboxLabel2;
     private javax.swing.JSeparator hitboxSeparator;
     private javax.swing.JSeparator hitboxSeparator1;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JLabel scriptLabel;
     private javax.swing.JTextField scriptTextField;
     private javax.swing.JLabel tileIndexLabel;
+    private javax.swing.JComboBox typeComboBox;
     private javax.swing.JLabel typeLabel;
     private javax.swing.JLabel typeLabel1;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;

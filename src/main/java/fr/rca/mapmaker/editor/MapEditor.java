@@ -1340,6 +1340,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		
 		final SpritePalette spritePalette = (SpritePalette) spritePaletteGrid.getTileMap().getPalette();
 		spriteInspector.setSprite(spritePalette.getSelectedSprite());
+		spriteInspector.setSpriteIndex(spritePalette.getSelectedTile());
     }//GEN-LAST:event_selectSprite
 
     private void editSprite(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editSprite
