@@ -185,7 +185,7 @@ public class BundleFormat extends AbstractFormat {
 					// Map
 					read(file, (String) map.get(MAP), tileMapHandler),
 					// Instances
-					readInstances(file, (String) map.get(INSTANCES), instanceHandler)
+					readInstances(file, (String) map.get(INSTANCES), project, instanceHandler)
 				);
 			}
 			
@@ -235,14 +235,16 @@ public class BundleFormat extends AbstractFormat {
 	 * @throws FileNotFoundException Si le fichier n'existe pas.
 	 * @throws IOException En cas d'erreur de lecture.
 	 */
-	private List<Instance> readInstances(File parent, String name, DataHandler<Instance> handler) throws FileNotFoundException, IOException {
+	private List<Instance> readInstances(File parent, String name, Project project, DataHandler<Instance> handler) throws FileNotFoundException, IOException {
 		final List<Instance> instances = new ArrayList<Instance>();
 			
 		final FileInputStream inputStream = new FileInputStream(new File(parent, name));
 		try {
 			final int size = Streams.readInt(inputStream);
 			for(int index = 0; index < size; index++) {
-				instances.add(handler.read(inputStream));
+				final Instance instance = handler.read(inputStream);
+				instance.setProject(project);
+				instances.add(instance);
 			}
 		} finally {
 			inputStream.close();

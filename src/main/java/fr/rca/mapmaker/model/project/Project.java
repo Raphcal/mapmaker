@@ -94,6 +94,12 @@ public class Project implements ListModel {
 		// Instances
 		instancesByMaps.addAll(project.instancesByMaps);
 		
+		for(final List<Instance> instances : project.getAllInstances()) {
+			for(final Instance instance : instances) {
+				instance.setProject(this);
+			}
+		}
+		
 		final int newSize = getSize();
 		
 		if(newSize < oldSize) {

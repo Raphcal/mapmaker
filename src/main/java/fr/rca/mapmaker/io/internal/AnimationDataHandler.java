@@ -35,10 +35,10 @@ public class AnimationDataHandler implements DataHandler<Animation> {
 		
 		t.overrideFrameNames();
 		
-		final Set<Map.Entry<Double, List<TileLayer>>> entries = t.getFrames().entrySet();
-		Streams.write(entries.size(), outputStream);
+		final Set<Map.Entry<Double, List<TileLayer>>> directions = t.getFrames().entrySet();
+		Streams.write(directions.size(), outputStream);
 		
-		for(Map.Entry<Double, List<TileLayer>> entry : entries) {
+		for(Map.Entry<Double, List<TileLayer>> entry : directions) {
 			final double direction = entry.getKey();
 			final List<TileLayer> frames = entry.getValue();
 			
