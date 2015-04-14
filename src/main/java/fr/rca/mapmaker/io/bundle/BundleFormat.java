@@ -5,6 +5,7 @@ import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.common.Streams;
+import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
@@ -21,9 +22,12 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +39,18 @@ import java.util.Map;
 public class BundleFormat extends AbstractFormat {
 	
 	private static final String EXTENSION = ".mmkb";
+	
+	private static final String INFO_FILE = "Info.plist";
+	private static final String PALETTE_FILE_FORMAT = "palette%d.pal";
+	private static final String MAP_FILE_FORMAT = "map%d.map";
+	private static final String INSTANCES_FILE_FORMAT = "map%d.ins";
+	private static final String SPRITE_FILE_FORMAT = "sprite%d.spr";
+	
+	private static final String PALETTES = "palettes";
+	private static final String MAPS = "maps";
+	private static final String MAP = "map";
+	private static final String INSTANCES = "instances";
+	private static final String SPRITES = "sprites";
 
 	public BundleFormat() {
 		super(EXTENSION, SupportedOperation.SAVE, SupportedOperation.LOAD);
@@ -59,78 +75,45 @@ public class BundleFormat extends AbstractFormat {
 	public void saveProject(Project project, File file) {
 		file.mkdir();
 		
-		// TODO: Ajouter les noms de fichier à la map plutôt que de stocker les tailles.
 		final Map<String, Object> projectMap = new HashMap<String, Object>();
-		projectMap.put("palettes", project.getPalettes().size());
-		projectMap.put("maps", project.getMaps().size());
-		projectMap.put("sprites", project.getSprites().size());
+		
+		final List<String> palettes = new ArrayList<String>();
+		final List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
+		final List<String> sprites = new ArrayList<String>();
+		projectMap.put(PALETTES, palettes);
+		projectMap.put(MAPS, maps);
+		projectMap.put(SPRITES, sprites);
 		
 		try {
+			// Palettes
+			write(project.getPalettes(), file, PALETTE_FILE_FORMAT, palettes, getHandler(Palette.class));
+
+			// Cartes
+			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
+			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
+			for(int index = 0; index < project.getMaps().size(); index++) {
+				final Map<String, Object> map = new HashMap<String, Object>();
+				final String mapName =  String.format(MAP_FILE_FORMAT, index);
+				final String instancesName =  String.format(INSTANCES_FILE_FORMAT, index);
+				
+				writeMap(project.getMaps().get(index), file, mapName, tileMapHandler, map);
+				
+				// Instances
+				final List<Instance> instances = project.getAllInstances().get(index);
+				writeInstances(instances, instancesName, instanceHandler, map);
+				
+				maps.add(map);
+			}
+
+			// Sprites
+			write(project.getSprites(), file, SPRITE_FILE_FORMAT, sprites, getHandler(Sprite.class));
+			
 			// Informations générales
-			final OutputStream projectOutputStream = new FileOutputStream(new File(file, "Info.plist"));
+			final OutputStream projectOutputStream = new FileOutputStream(new File(file, INFO_FILE));
 			try {
 				Plists.write(projectMap, projectOutputStream);
 			} finally {
 				projectOutputStream.close();
-			}
-			
-			// Palettes
-			final DataHandler<Palette> paletteDataHandler = getHandler(Palette.class);
-			int index = 0;
-			for(final Palette palette : project.getPalettes()) {
-				final OutputStream outputStream = new FileOutputStream(new File(file, "palette" + index + ".pal"));
-				try {
-					paletteDataHandler.write(palette, outputStream);
-				} finally {
-					outputStream.close();
-				}
-				
-				index++;
-			}
-
-			// Cartes
-			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
-			index = 0;
-			for(final TileMap map : project.getMaps()) {
-				final OutputStream outputStream = new FileOutputStream(new File(file, "map" + index + ".map"));
-				try {
-					tileMapHandler.write(map, outputStream);
-				} finally {
-					outputStream.close();
-				}
-				
-				index++;
-			}
-
-			// Sprites
-			final DataHandler<Sprite> spriteHandler = getHandler(Sprite.class);
-			index = 0;
-			for(final Sprite sprite : project.getSprites()) {
-				final OutputStream outputStream = new FileOutputStream(new File(file, "sprite" + index + ".spr"));
-				try {
-					spriteHandler.write(sprite, outputStream);
-				} finally {
-					outputStream.close();
-				}
-				
-				index++;
-			}
-
-			// Instances
-			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
-			index = 0;
-			for(final List<Instance> instances : project.getAllInstances()) {
-				final OutputStream outputStream = new FileOutputStream(new File(file, "map" + index + ".ins"));
-				try {
-					Streams.write(instances.size(), outputStream);
-					for(Instance instance : instances) {
-						instanceHandler.write(instance, outputStream);
-					}
-				} finally {
-					outputStream.close();
-				}
-				
-				index++;
 			}
 			
 		} catch(IOException e) {
@@ -138,13 +121,131 @@ public class BundleFormat extends AbstractFormat {
 		}
 	}
 
+	private <T> void write(List<T> objects, File parent, String format, final List<String> infoEntries, DataHandler<T> handler) throws IOException {
+		for(int index = 0; index < objects.size(); index++) {
+			final String name = String.format(format, index);
+			final OutputStream outputStream = new FileOutputStream(new File(parent, name));
+			try {
+				handler.write(objects.get(index), outputStream);
+				infoEntries.add(name);
+			} finally {
+				outputStream.close();
+			}
+		}
+	}
+	
+	private void writeMap(TileMap tileMap, File parent, final String mapName, final DataHandler<TileMap> tileMapHandler, final Map<String, Object> map) throws IOException, FileNotFoundException {
+		// Carte
+		final OutputStream mapOutputStream = new FileOutputStream(new File(parent, mapName));
+		try {
+			tileMapHandler.write(tileMap, mapOutputStream);
+			map.put(MAP, mapName);
+			
+		} finally {
+			mapOutputStream.close();
+		}
+	}
+	
+	private void writeInstances(final List<Instance> instances, final String instancesName, final DataHandler<Instance> instanceHandler, final Map<String, Object> map) throws FileNotFoundException, IOException {
+		final OutputStream instancesOutputStream = new FileOutputStream(new File(instancesName));
+		try {
+			Streams.write(instances.size(), instancesOutputStream);
+			for(Instance instance : instances) {
+				instanceHandler.write(instance, instancesOutputStream);
+			}
+			map.put(INSTANCES, instancesName);
+		} finally {
+			instancesOutputStream.close();
+		}
+	}
+
 	@Override
 	public Project openProject(File file) {
 		final Project project = new Project();
 		
+		setVersion(InternalFormat.LAST_VERSION);
 		
+		try {
+			final Map<String, Object> projectInfo = readProjectInfo(file);
+			
+			// Palettes
+			final DataHandler<Palette> paletteHandler = getHandler(Palette.class);
+			for(final String palette : (List<String>) projectInfo.get(PALETTES)) {
+				project.addPalette(read(file, palette, paletteHandler));
+			}
+			
+			// Maps
+			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
+			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
+			
+			for(final Map<String, Object> map : (List<Map<String, Object>>) projectInfo.get(MAPS)) {
+				project.addMap(
+					// Map
+					read(file, (String) map.get(MAP), tileMapHandler),
+					// Instances
+					readInstances(file, (String) map.get(INSTANCES), instanceHandler)
+				);
+			}
+			
+			// Sprites
+			final DataHandler<Sprite> spriteHandler = getHandler(Sprite.class);
+			final List<Sprite> sprites = project.getSprites();
+			sprites.clear();
+			
+			for(final String sprite : (List<String>) projectInfo.get(SPRITES)) {
+				sprites.add(read(file, sprite, spriteHandler));
+			}
+
+			return project;
+			
+		} catch(IOException e) {
+			Exceptions.showStackTrace(e, null);
+		}
 		
-		return project;
+		return Project.createEmptyProject();
+	}
+
+	private Map<String, Object> readProjectInfo(File parent) throws IOException, FileNotFoundException {
+		final FileInputStream inputStream = new FileInputStream(new File(parent, INFO_FILE));
+		try {
+			return Plists.read(inputStream);
+		} finally {
+			inputStream.close();
+		}
 	}
 	
+	private <T> T read(File parent, String name, DataHandler<T> handler) throws FileNotFoundException, IOException {
+		final FileInputStream inputStream = new FileInputStream(new File(parent, name));
+		try {
+			return handler.read(inputStream);
+		} finally {
+			inputStream.close();
+		}
+	}
+	
+	/**
+	 * Lecture des instances contenues dans le fichier <code>name</code>.
+	 * 
+	 * @param parent Paquet à ouvrir.
+	 * @param name Nom du fichier d'instances.
+	 * @param handler Gestionnaire d'instances.
+	 * @return La liste d'instances contenue dans le fichier donné.
+	 * @throws FileNotFoundException Si le fichier n'existe pas.
+	 * @throws IOException En cas d'erreur de lecture.
+	 */
+	private List<Instance> readInstances(File parent, String name, DataHandler<Instance> handler) throws FileNotFoundException, IOException {
+		final List<Instance> instances = new ArrayList<Instance>();
+			
+		final FileInputStream inputStream = new FileInputStream(new File(parent, name));
+		try {
+			final int size = Streams.readInt(inputStream);
+			for(int index = 0; index < size; index++) {
+				instances.add(handler.read(inputStream));
+			}
+		} finally {
+			inputStream.close();
+		}
+		
+		return instances;
+	}
 }
