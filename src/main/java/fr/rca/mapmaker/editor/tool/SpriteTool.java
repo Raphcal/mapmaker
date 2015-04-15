@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.editor.tool;
 
+import fr.rca.mapmaker.editor.InstanceInspector;
 import fr.rca.mapmaker.model.palette.SpritePalette;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
@@ -185,7 +186,16 @@ public class SpriteTool extends MouseAdapter implements Tool {
     }
 	
 	private JPopupMenu createPopupMenu(final Instance instance) {
-		final JPopupMenu popupMenu = new JPopupMenu();
+		final JMenuItem inspectMenuItem = new JMenuItem(LANGUAGE.getString("inspector.inspect"));
+		inspectMenuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final InstanceInspector inspector = new InstanceInspector(null, false);
+				inspector.setInstance(instance);
+				inspector.setVisible(true);
+			}
+		});
 		
 		final JMenuItem removeMenuItem = new JMenuItem(LANGUAGE.getString("popupmenu.instance.remove"));
 		removeMenuItem.addActionListener(new ActionListener() {
@@ -199,8 +209,9 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			}
 		});
 		
+		final JPopupMenu popupMenu = new JPopupMenu();
+		popupMenu.add(inspectMenuItem);
 		popupMenu.add(removeMenuItem);
-		
 		return popupMenu;
 	}
 }

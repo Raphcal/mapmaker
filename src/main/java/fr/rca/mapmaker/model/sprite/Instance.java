@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
+import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -31,7 +32,7 @@ public class Instance extends JComponent {
 	 * TODO: Voir s'il faut inclure directement le script sous forme de String
 	 * ou même le générer à partir d'une map de variables.
 	 */
-	private String scriptFile;
+	private String script;
 	
 	public Instance() {
 	}
@@ -72,7 +73,18 @@ public class Instance extends JComponent {
 	}
 
 	public void setPoint(Point point) {
+		final String oldPointInfo = getPointInfo();
+		
 		this.point = point;
+		
+		firePropertyChange("pointInfo", oldPointInfo, getPointInfo());
+	}
+	
+	public String getPointInfo() {
+		if(point == null) {
+			return "-";
+		}
+		return point.x + " x " + point.y;
 	}
 	
 	public void redraw() {
@@ -85,7 +97,8 @@ public class Instance extends JComponent {
 		updateBounds();
 	}
 	
-	private Sprite getSprite() {
+	@Nullable
+	public Sprite getSprite() {
 		if(project != null && index >= 0 && index < project.getSprites().size()) {
 			return project.getSprites().get(index);
 		} else {
@@ -93,6 +106,14 @@ public class Instance extends JComponent {
 		}
 	}
 
+	public String getScript() {
+		return script;
+	}
+
+	public void setScript(String script) {
+		this.script = script;
+	}
+	
 	private void updateSprite() {
 		final Sprite sprite = getSprite();
 		

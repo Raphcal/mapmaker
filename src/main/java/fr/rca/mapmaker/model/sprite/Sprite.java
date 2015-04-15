@@ -8,6 +8,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -111,6 +112,7 @@ public class Sprite {
 		return true;
 	}
 	
+	@Nullable
 	public TileLayer getDefaultLayer() {
 		final double[] favoriteDirections = {0.0, 3.14, 4.71, 1.57};
 		
@@ -129,6 +131,7 @@ public class Sprite {
 		return null;
 	}
 	
+	@Nullable
 	public ColorPalette getPalette() {
 		return palette;
 	}

@@ -309,7 +309,7 @@ public class MapEditor extends javax.swing.JFrame {
         spriteTool.setProject(project);
         spriteTool.setZoom(1.0);
 
-        inspectTileMenuItem.setText("Inspecter");
+        inspectTileMenuItem.setText(LANGUAGE.getString("inspector.inspect")); // NOI18N
         inspectTileMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inspectTileMenuItemActionPerformed(evt);
@@ -346,7 +346,7 @@ public class MapEditor extends javax.swing.JFrame {
             .addGap(0, 300, Short.MAX_VALUE)
         );
 
-        inspectSpriteMenuItem.setText("Inspecter");
+        inspectSpriteMenuItem.setText(LANGUAGE.getString("inspector.inspect")); // NOI18N
         inspectSpriteMenuItem.setToolTipText("");
         inspectSpriteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
