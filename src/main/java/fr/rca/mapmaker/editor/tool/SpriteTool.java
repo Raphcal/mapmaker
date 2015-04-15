@@ -7,13 +7,18 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.Grid;
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.border.LineBorder;
 
 /**
@@ -21,6 +26,8 @@ import javax.swing.border.LineBorder;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SpriteTool extends MouseAdapter implements Tool {
+	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language"); // NO18N
+	
 	private Project project;
 	private JComponent spriteLayer;
 	private Grid spritePaletteGrid;
@@ -76,65 +83,30 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	public void setZoom(double zoom) {
 		this.zoom = zoom;
 	}
+
+	public double getZoom() {
+		return zoom;
+	}
 	
 	public SpritePalette getPalette() {
 		return (SpritePalette) spritePaletteGrid.getTileMap().getPalette();
 	}
 	
 	private void registerInstance(final Instance instance) {
-		final MouseAdapter adapter = new MouseAdapter() {
-			
-			private Point startPoint;
-			private Point originalPoint;
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				instance.setBorder(new LineBorder(Color.BLACK, 1));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				instance.setBorder(null);
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(e.getButton() == MouseEvent.BUTTON3) {
-					project.getInstances().remove(instance);
-					mouseAdapters.remove(instance);
-					spriteLayer.remove(instance);
-					spriteLayer.repaint(instance.getBounds());
-				}
-			}
-
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				if(startPoint == null) {
-					startPoint = e.getLocationOnScreen();
-					originalPoint = instance.getPoint();
-				}
-				
-				final int translationX = (int) ((double) (e.getXOnScreen() - startPoint.getX()) / zoom);
-				final int translationY = (int) ((double) (e.getYOnScreen() - startPoint.getY()) / zoom);
-				
-				instance.setPoint(new Point(originalPoint.x + translationX, originalPoint.y + translationY));
-				instance.redraw();
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				startPoint = null;
-				originalPoint = null;
-			}
-		};
-		
+		final MouseAdapter adapter = createMouseAdapter(instance);
 		instance.addMouseListener(adapter);
 		instance.addMouseMotionListener(adapter);
+		instance.setZoom(zoom);
+		instance.setComponentPopupMenu(createPopupMenu(instance));
+		
+		spriteLayer.add(instance);
 		mouseAdapters.put(instance, adapter);
 	}
 	
 	private void unregisterInsance(final Instance instance) {
-		instance.removeMouseListener(mouseAdapters.remove(instance));
+		instance.removeMouseListener(mouseAdapters.get(instance));
+		instance.removeMouseMotionListener(mouseAdapters.remove(instance));
+		spriteLayer.remove(instance);
 	}
 
 	@Override
@@ -151,10 +123,8 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			final int y = (mouseY / height) * height;
 
 			final Instance instance = new Instance(getPalette().getSelectedTile(), project, new Point(x, y));
-			instance.setZoom(zoom);
-			
-			spriteLayer.add(instance);
 			instances.add(instance);
+			
 			registerInstance(instance);
 
 			spriteLayer.repaint(instance.getBounds());
@@ -163,5 +133,74 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	
 	@Override
 	public void reset() {
+	}
+	
+	private MouseAdapter createMouseAdapter(final Instance instance) {
+		return new MouseAdapter() {
+			private Point startPoint;
+			private Point originalPoint;
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				instance.setBorder(new LineBorder(Color.BLACK, 1));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				instance.setBorder(null);
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if(startPoint == null) {
+					startPoint = e.getLocationOnScreen();
+					originalPoint = instance.getPoint();
+				}
+				
+				final int translationX = (int) ((double) (e.getXOnScreen() - startPoint.getX()) / zoom);
+				final int translationY = (int) ((double) (e.getYOnScreen() - startPoint.getY()) / zoom);
+				
+				instance.setPoint(new Point(originalPoint.x + translationX, originalPoint.y + translationY));
+				instance.redraw();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				maybeShowPopupMenu(instance, e);
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				maybeShowPopupMenu(instance, e);
+				startPoint = null;
+				originalPoint = null;
+			}
+		};
+	}
+	
+	private void maybeShowPopupMenu(Instance instance, MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            instance.getComponentPopupMenu().show(instance, e.getX(), e.getY());
+        }
+    }
+	
+	private JPopupMenu createPopupMenu(final Instance instance) {
+		final JPopupMenu popupMenu = new JPopupMenu();
+		
+		final JMenuItem removeMenuItem = new JMenuItem(LANGUAGE.getString("popupmenu.instance.remove"));
+		removeMenuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				project.getInstances().remove(instance);
+				instance.setComponentPopupMenu(null);
+				unregisterInsance(instance);
+				spriteLayer.repaint(instance.getBounds());
+			}
+		});
+		
+		popupMenu.add(removeMenuItem);
+		
+		return popupMenu;
 	}
 }

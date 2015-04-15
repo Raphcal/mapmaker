@@ -74,7 +74,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class MapEditor extends javax.swing.JFrame {
-	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
+	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language"); // NO18N
 
 	private TileMap selectedTileMap;
 	private TileLayer selectedLayer;
@@ -1322,9 +1322,6 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			final int mapHeight = mapGrid.getTileMapHeight() * mapGrid.getTileSize();
 			
 			for(final Instance instance : instances) {
-				instance.setZoom(zoom);
-				spriteLayerPanel.add(instance);
-				
 				if(instance.getX() > mapWidth || instance.getY() > mapHeight) {
 					instance.setBounds(Math.min(mapWidth - instance.getWidth(), instance.getX()), 
 						Math.min(mapHeight - instance.getHeight(), instance.getY()), 
