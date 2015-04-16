@@ -49,11 +49,7 @@ public class EditableImagePaletteDataHandler implements DataHandler<EditableImag
 			tileLayerHandler.write(t.getSource(index), outputStream);
 			
 			if(version >= InternalFormat.VERSION_3) {
-				final String functionHitbox = t.getFunction(index);
-				Streams.write(functionHitbox != null, outputStream);
-				if(functionHitbox != null) {
-					Streams.write(t.getFunction(index), outputStream);
-				}
+				Streams.writeNullable(t.getFunction(index), outputStream);
 			}
 		}
 	}
@@ -78,10 +74,7 @@ public class EditableImagePaletteDataHandler implements DataHandler<EditableImag
 			tiles.add(tileLayerHandler.read(inputStream));
 			
 			if(version >= InternalFormat.VERSION_3) {
-				final boolean hasHitbox = Streams.readBoolean(inputStream);
-				if(hasHitbox) {
-					functions[index] = Streams.readString(inputStream);
-				}
+				functions[index] = Streams.readNullableString(inputStream);
 			}
 		}
 		

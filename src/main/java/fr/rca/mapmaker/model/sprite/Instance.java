@@ -44,9 +44,10 @@ public class Instance extends JComponent {
 		updateSprite();
 	}
 	
-	public Instance(int index, int x, int y) {
+	public Instance(int index, int x, int y, String script) {
 		this.index = index;
 		this.point = new Point(x, y);
+		this.script = script;
 		updateSprite();
 	}
 

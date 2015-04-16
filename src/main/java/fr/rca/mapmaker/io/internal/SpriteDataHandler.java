@@ -33,11 +33,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 	@Override
 	public void write(Sprite t, OutputStream outputStream) throws IOException {
 		// Nom
-		final boolean hasName = t.getName() != null;
-		Streams.write(hasName, outputStream);
-		if(hasName) {
-			Streams.write(t.getName(), outputStream);
-		}
+		Streams.writeNullable(t.getName(), outputStream);
 		
 		// Général
 		Streams.write(t.getWidth(), outputStream);
@@ -45,11 +41,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		Streams.write(t.getType(), outputStream);
 		
 		// Script
-		final boolean hasScriptFile = t.getScriptFile() != null;
-		Streams.write(hasScriptFile, outputStream);
-		if(hasScriptFile) {
-			Streams.write(t.getScriptFile(), outputStream);
-		}
+		Streams.writeNullable(t.getScriptFile(), outputStream);
 		
 		final Set<Animation> animations = t.getAnimations();
 		Streams.write(animations.size(), outputStream);
@@ -68,23 +60,11 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		final String scriptFile;
 		
 		if(version >= InternalFormat.VERSION_4) {
-			final boolean hasName = Streams.readBoolean(inputStream);
-			if(hasName) {
-				name = Streams.readString(inputStream);
-			} else {
-				name = null;
-			}
-			
+			name = Streams.readNullableString(inputStream);
 			width = Streams.readInt(inputStream);
 			height = Streams.readInt(inputStream);
 			type = Streams.readInt(inputStream);
-			
-			final boolean hasScriptFile = Streams.readBoolean(inputStream);
-			if(hasScriptFile) {
-				scriptFile = Streams.readString(inputStream);
-			} else {
-				scriptFile = null;
-			}
+			scriptFile = Streams.readNullableString(inputStream);
 			
 		} else if(version == InternalFormat.VERSION_4) {
 			name = null;

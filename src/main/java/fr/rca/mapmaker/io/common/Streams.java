@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -88,6 +90,13 @@ public final class Streams {
 	
 	public static void write(String s, OutputStream outputStream) throws IOException {
 		write(s.toCharArray(), outputStream);
+	}
+	
+	public static void writeNullable(String s, OutputStream outputStream) throws IOException {
+		write(s != null, outputStream);
+		if(s != null) {
+			write(s, outputStream);
+		}
 	}
 	
 	public static void write(Class<?> clazz, OutputStream outputStream) throws IOException {
@@ -187,8 +196,18 @@ public final class Streams {
 		return array;
 	}
 	
+	@NotNull
 	public static String readString(InputStream inputStream) throws IOException {
 		return new String(readCharArray(inputStream));
+	}
+	
+	@Nullable
+	public static String readNullableString(InputStream inputStream) throws IOException {
+		if(readBoolean(inputStream)) {
+			return readString(inputStream);
+		} else {
+			return null;
+		}
 	}
 	
 	public static Class<?> readClass(InputStream inputStream) throws IOException {

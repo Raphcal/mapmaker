@@ -18,6 +18,7 @@ public class InstanceDataHandler implements DataHandler<Instance> {
 		Streams.write(t.getPoint().x, outputStream);
 		Streams.write(t.getPoint().y, outputStream);
 		Streams.write(t.getIndex(), outputStream);
+		Streams.writeNullable(t.getScript(), outputStream);
 	}
 
 	@Override
@@ -25,8 +26,9 @@ public class InstanceDataHandler implements DataHandler<Instance> {
 		final int x = Streams.readInt(inputStream);
 		final int y = Streams.readInt(inputStream);
 		final int index = Streams.readInt(inputStream);
+		final String script = Streams.readNullableString(inputStream);
 		
-		return new Instance(index, x, y);
+		return new Instance(index, x, y, script);
 	}
 	
 }

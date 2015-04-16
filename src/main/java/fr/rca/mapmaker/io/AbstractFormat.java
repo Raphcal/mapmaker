@@ -55,7 +55,13 @@ public abstract class AbstractFormat implements Format {
 	
 	@Override
 	public <T> DataHandler<T> getHandler(Class<? extends T> t) {
-		return (DataHandler<T>) handlers.get(t.getName());
+		final DataHandler<T> handler = (DataHandler<T>) handlers.get(t.getName());
+		
+		if(handler == null) {
+			throw new IllegalStateException("Le handler de la classe '" + t + "' n'existe pas pour le format '" + getDefaultExtension() + "'.");
+		}
+		
+		return handler;
 	}
 	
 	@Override

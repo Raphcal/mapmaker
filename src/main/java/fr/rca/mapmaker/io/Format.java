@@ -17,7 +17,7 @@ public interface Format {
 	@NotNull
 	File normalizeFile(File file);
 	
-	@Nullable
+	@NotNull
 	<T> DataHandler<T> getHandler(Class<? extends T> t);
 	@Nullable
 	<T> DataHandler<T> getHandler(String name);
