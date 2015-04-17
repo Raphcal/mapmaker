@@ -134,6 +134,7 @@ public class ProjectDataHandler implements DataHandler<Project> {
 				Streams.write(sprite.getWidth(), zipOutputStream);
 				Streams.write(sprite.getHeight(), zipOutputStream);
 				Streams.write(sprite.getType(), zipOutputStream);
+				Streams.writeNullable(sprite.getLoadScript(), zipOutputStream);
 				Streams.writeNullable(sprite.getScriptFile(), zipOutputStream);
 				
 				index++;

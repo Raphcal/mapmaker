@@ -27,6 +27,14 @@ public class Sprite {
 	 * Doit définir une méthode <code>Update(<i>delta</i>)</code>.
 	 */
 	private String scriptFile;
+	
+	/**
+	 * Script exécuté à l'initialisation du sprite. Ses valeurs peuvent-être
+	 * écrasée par le script d'initialisation de l'instance.
+	 * <p/>
+	 * Doit définir une méthode <code>Load(<i>sprite</i>)</code>.
+	 */
+	private String loadScript;
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
@@ -44,12 +52,13 @@ public class Sprite {
 		this.animations = animations;
 	}
 
-	public Sprite(String name, int width, int height, int type, String scriptFile, Set<Animation> animations) {
+	public Sprite(String name, int width, int height, int type, String loadScript, String scriptFile, Set<Animation> animations) {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
 		this.name = name;
 		this.width = width;
 		this.height = height;
 		this.type = type;
+		this.loadScript = loadScript;
 		this.scriptFile = scriptFile;
 		this.animations = animations;
 	}
@@ -184,6 +193,14 @@ public class Sprite {
 
 	public void setScriptFile(String scriptFile) {
 		this.scriptFile = scriptFile;
+	}
+
+	public String getLoadScript() {
+		return loadScript;
+	}
+
+	public void setLoadScript(String loadScript) {
+		this.loadScript = loadScript;
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener pl) {

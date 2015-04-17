@@ -75,7 +75,6 @@
 									<classpath file="/Users/${env.USER}/.m2/repository/com/googlecode/javaewah/JavaEWAH/0.7.9/JavaEWAH-0.7.9.jar" />
 									<classpath file="/Users/${env.USER}/.m2/repository/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" />
 									<classpath file="/Users/${env.USER}/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" />
-									<classpath file="/Users/${env.USER}/.m2/repository/com/intellij/annotations/12.0/annotations-12.0.jar" />
 									<classpath file="/Users/${env.USER}/.m2/repository/com/jcraft/jsch/0.1.50/jsch-0.1.50.jar" />
 								</bundleapp>
 								<copy file="Info.plist" toFile="target/MapMaker.app/Contents/Info.plist" overwrite="true"/>
@@ -126,6 +125,7 @@
 			<groupId>com.intellij</groupId>
 			<artifactId>annotations</artifactId>
 			<version>12.0</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

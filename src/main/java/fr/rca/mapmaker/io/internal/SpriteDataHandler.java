@@ -41,6 +41,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		Streams.write(t.getType(), outputStream);
 		
 		// Script
+		Streams.writeNullable(t.getLoadScript(), outputStream);
 		Streams.writeNullable(t.getScriptFile(), outputStream);
 		
 		final Set<Animation> animations = t.getAnimations();
@@ -57,6 +58,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		final String name;
 		final int width, height;
 		final int type;
+		final String loadScript;
 		final String scriptFile;
 		
 		if(version >= InternalFormat.VERSION_4) {
@@ -64,6 +66,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			width = Streams.readInt(inputStream);
 			height = Streams.readInt(inputStream);
 			type = Streams.readInt(inputStream);
+			loadScript = Streams.readNullableString(inputStream);
 			scriptFile = Streams.readNullableString(inputStream);
 			
 		} else if(version == InternalFormat.VERSION_4) {
@@ -71,6 +74,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			width = Streams.readInt(inputStream);
 			height = Streams.readInt(inputStream);
 			type = 0;
+			loadScript = null;
 			scriptFile = null;
 			
 		} else {
@@ -78,6 +82,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			width = Streams.readInt(inputStream);
 			height = width;
 			type = 0;
+			loadScript = null;
 			scriptFile = null;
 		}
 		
@@ -90,7 +95,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			animations.add(animationHandler.read(inputStream));
 		}
 		
-		return new Sprite(name, width, height, type, scriptFile, animations);
+		return new Sprite(name, width, height, type, loadScript, scriptFile, animations);
 	}
 	
 }

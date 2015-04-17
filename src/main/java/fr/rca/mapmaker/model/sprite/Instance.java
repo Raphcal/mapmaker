@@ -27,10 +27,7 @@ public class Instance extends JComponent {
 	/**
 	 * Script d'initialisation de l'instance. 
 	 * <p/>
-	 * Doit contenir une méthode <code>Init(<i>sprite</i>)</code> pour initialiser une instance.
-	 * <p/>
-	 * TODO: Voir s'il faut inclure directement le script sous forme de String
-	 * ou même le générer à partir d'une map de variables.
+	 * Doit contenir une méthode <code>Load(<i>sprite</i>)</code> pour initialiser une instance.
 	 */
 	private String script;
 	
