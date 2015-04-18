@@ -87,7 +87,15 @@ public class Motion {
 
 	private void updateOnGround(float delta) {
 		final double angle = 0.0; // -Math.PI / 2.0;
-		horizontalSpeed += Math.abs(delta * direction * acceleration * Math.cos(angle));
+		if(direction != 0.0) {
+			horizontalSpeed += Math.abs(delta * direction * acceleration * Math.cos(angle));
+			
+		} else if(horizontalSpeed > 0.0f) {
+			horizontalSpeed = horizontalSpeed - acceleration * 3f * delta;
+			if(horizontalSpeed < 0.0f) {
+				horizontalSpeed = 0.0f;
+			}
+		}
 	}
 
 	private void updateInAir(float delta) {

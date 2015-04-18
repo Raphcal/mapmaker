@@ -113,6 +113,8 @@ public class MotionPanel extends JPanel {
 			last = motion;
 		}
 		
+		last.reset();
+		last.setY(y + 32);
 		drawMotionSpeed(last, g);
 		
 		g.dispose();
@@ -137,17 +139,19 @@ public class MotionPanel extends JPanel {
 		final float end = 5f;
 		final float delta = getDelta();
 
-		motion.reset();
-		final float direction = motion.getDirection();
+		final float originalDirection = motion.getDirection();
 		motion.setDirection(1.0f, false);
 		
 		for(float elapsed = 0; elapsed < end; elapsed += delta) {
 			if(motion.getDirection() == 1.0f && motion.isAtSpeedPercentage(jumpSpeedPercent) && isAtAMultipleOf32(motion)) {
 				motion.setDirection(0.0f, false);
+				
+				g.setColor(Color.BLACK);
+				g.fillOval((int) motion.getX() - 3, (int) motion.getY() - 3, 7, 7);
 			}
 			motion.update(delta);
 			
-			final double speedPercent = (motion.getHorizontalSpeed() * COLORS.length) / motion.getMaximumSpeed();
+			final double speedPercent = (motion.getHorizontalSpeed() * (COLORS.length - 1)) / motion.getMaximumSpeed();
 			final int color = (int) speedPercent;
 			
 			if(color >= COLORS.length - 1) {
@@ -159,7 +163,7 @@ public class MotionPanel extends JPanel {
 			g.fillOval((int) motion.getX() - 1, (int) motion.getY() - 1, 3, 3);
 		}
 		
-		motion.setDirection(direction, false);
+		motion.setDirection(originalDirection, false);
 	}
 	
 	private Color mix(Color firstColor, Color secondColor, double percent) {
