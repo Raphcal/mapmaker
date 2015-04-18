@@ -137,7 +137,19 @@ public class Motion {
 		this.direction = direction;
 		propertyChangeSupport.firePropertyChange("direction", old, direction);
 	}
+	
+	public void setDirection(float direction, boolean fireEvent) {
+		if(!fireEvent) {
+			this.direction = direction;
+		} else {
+			setDirection(direction);
+		}
+	}
 
+	public float getHorizontalSpeed() {
+		return horizontalSpeed;
+	}
+	
 	public float getMaximumSpeed() {
 		return maximumSpeed;
 	}

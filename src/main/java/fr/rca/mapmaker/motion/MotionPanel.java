@@ -15,6 +15,9 @@ import javax.swing.JPanel;
  * @author Raphaël Calabro <raph_kun at yahoo.fr>
  */
 public class MotionPanel extends JPanel {
+	private static final Color[] COLORS = new Color[] {
+		Color.RED, Color.YELLOW, Color.GREEN
+	};
 	
 	private final Map<Motion, Color> motions = new LinkedHashMap<Motion, Color>();
 	private int refreshRate = 2;
@@ -100,13 +103,18 @@ public class MotionPanel extends JPanel {
 		// Affichage des mouvements
 		final int y = (int) (getHeight() / 2.0f + 32 - ((int) getHeight() / 2.0f) % 32);
 		
+		Motion last = null;
 		for(final Map.Entry<Motion, Color> entry : motions.entrySet()) {
 			final Motion motion = entry.getKey();
 			motion.reset();
 			motion.setY(y);
 			drawMotion(entry.getKey(), entry.getValue(), g);
+			
+			last = motion;
 		}
-
+		
+		drawMotionSpeed(last, g);
+		
 		g.dispose();
 	}
 
@@ -123,6 +131,41 @@ public class MotionPanel extends JPanel {
 
 			g.fillOval((int) motion.getX() - 1, (int) motion.getY() - 1, 3, 3);
 		}
+	}
+
+	private void drawMotionSpeed(Motion motion, Graphics g) {
+		final float end = 5f;
+		final float delta = getDelta();
+
+		motion.reset();
+		final float direction = motion.getDirection();
+		motion.setDirection(1.0f, false);
+		
+		for(float elapsed = 0; elapsed < end; elapsed += delta) {
+			if(motion.getDirection() == 1.0f && motion.isAtSpeedPercentage(jumpSpeedPercent) && isAtAMultipleOf32(motion)) {
+				motion.setDirection(0.0f, false);
+			}
+			motion.update(delta);
+			
+			final double speedPercent = (motion.getHorizontalSpeed() * COLORS.length) / motion.getMaximumSpeed();
+			final int color = (int) speedPercent;
+			
+			if(color >= COLORS.length - 1) {
+				g.setColor(COLORS[COLORS.length - 1]);
+			} else {
+				g.setColor(mix(COLORS[color], COLORS[color + 1], speedPercent - color));
+			}
+
+			g.fillOval((int) motion.getX() - 1, (int) motion.getY() - 1, 3, 3);
+		}
+		
+		motion.setDirection(direction, false);
+	}
+	
+	private Color mix(Color firstColor, Color secondColor, double percent) {
+		return new Color((int) (secondColor.getRed() * percent + firstColor.getRed() * (1.0 - percent)),
+				(int) (secondColor.getGreen()* percent + firstColor.getGreen() * (1.0 - percent)),
+				(int) (secondColor.getBlue()* percent + firstColor.getBlue() * (1.0 - percent)));
 	}
 	
 	private boolean isAtAMultipleOf32(Motion motion) {
