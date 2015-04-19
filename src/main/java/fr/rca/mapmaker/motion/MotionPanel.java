@@ -113,9 +113,11 @@ public class MotionPanel extends JPanel {
 			last = motion;
 		}
 		
-		last.reset();
-		last.setY(y + 32);
-		drawMotionSpeed(last, g);
+		if(last != null) {
+			last.reset();
+			last.setY(y + 32);
+			drawMotionSpeed(last, g);
+		}
 		
 		g.dispose();
 	}
@@ -147,7 +149,7 @@ public class MotionPanel extends JPanel {
 				motion.setDirection(0.0f, false);
 				
 				g.setColor(Color.BLACK);
-				g.fillOval((int) motion.getX() - 3, (int) motion.getY() - 3, 7, 7);
+				g.drawLine((int) motion.getX(), (int) motion.getY() - 3, (int) motion.getX(), (int) motion.getY() + 3);
 			}
 			motion.update(delta);
 			
