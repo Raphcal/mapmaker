@@ -31,6 +31,7 @@ import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.motion.TrajectoryPreview;
 import fr.rca.mapmaker.preferences.PreferencesManager;
+import fr.rca.mapmaker.team.git.AuthenticationDialog;
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Color;
@@ -1511,23 +1512,27 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 				JOptionPane.showMessageDialog(this, "Push effectué.");
 				
 			} catch (TransportException ex) {
-				// Exception ignorée.
-				
+				// Exception ignorée. 2ème tentative avec connexion.
 				final PushCommand pushCommand = git.push();
 				
-				final String login = JOptionPane.showInputDialog("Login ?");
-				if(login != null) {
-					final String password = JOptionPane.showInputDialog("Password ?");
-					if(password != null) {
-						pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(login, password));
+				final AuthenticationDialog dialog = new AuthenticationDialog(this, pushCommand);
+				dialog.getOkButton().addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(dialog.getLogin(), dialog.getPassword()));
 						
 						try {
 							pushCommand.call();
+							
 						} catch (GitAPIException ex1) {
-							Exceptions.showStackTrace(ex, this);
+							// Affichage de l'erreur.
+							Exceptions.showStackTrace(ex1, MapEditor.this);
 						}
 					}
-				}
+				});
+				
+				dialog.setVisible(true);
 				
 			} catch (GitAPIException ex) {
 				Exceptions.showStackTrace(ex, this);
