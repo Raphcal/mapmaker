@@ -1227,17 +1227,19 @@ private void buildRecentMenu() {
 		if(recent != null) {
 			final File file = new File(recent);
 
-			final JMenuItem item = new JMenuItem();
-			item.setText(file.getName());
-			item.addActionListener(new ActionListener() {
+			if(file.exists()) {
+				final JMenuItem item = new JMenuItem();
+				item.setText(file.getName());
+				item.addActionListener(new ActionListener() {
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					openFile(file);
-				}
-			});
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						openFile(file);
+					}
+				});
 
-			openRecentMenu.add(item);
+				openRecentMenu.add(item);
+			}
 		}
 	}
 	
