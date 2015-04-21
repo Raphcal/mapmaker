@@ -10,7 +10,6 @@ import fr.rca.mapmaker.editor.tool.PenTool;
 import fr.rca.mapmaker.editor.tool.RectangleFillTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
-import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -21,7 +20,6 @@ import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.FormatFileFilter;
 import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
-import fr.rca.mapmaker.io.common.Files;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.SpanningTileLayer;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
@@ -31,7 +29,6 @@ import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.motion.TrajectoryPreview;
 import fr.rca.mapmaker.preferences.PreferencesManager;
-import fr.rca.mapmaker.team.git.AuthenticationDialog;
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Color;
@@ -46,7 +43,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.JFileChooser;
@@ -59,16 +55,6 @@ import javax.swing.JViewport;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileFilter;
-import org.eclipse.jgit.api.AddCommand;
-import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PushCommand;
-import org.eclipse.jgit.api.Status;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -201,6 +187,7 @@ public class MapEditor extends javax.swing.JFrame {
         spriteInspector = new SpriteInspector(this, false);
         spritePopupMenu = new javax.swing.JPopupMenu();
         inspectSpriteMenuItem = new javax.swing.JMenuItem();
+        gitManager = new fr.rca.mapmaker.team.git.GitManager();
         mapScrollPane = new javax.swing.JScrollPane();
         mapBackgroundPanel = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
         spriteLayerPanel = new javax.swing.JPanel();
@@ -263,6 +250,8 @@ public class MapEditor extends javax.swing.JFrame {
         toolMenu = new javax.swing.JMenu();
         trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
         gitMenu = new javax.swing.JMenu();
+        initMenuItem = new javax.swing.JMenuItem();
+        initSeparator = new javax.swing.JPopupMenu.Separator();
         commitMenuItem = new javax.swing.JMenuItem();
         gitSeparator = new javax.swing.JPopupMenu.Separator();
         pullMenuItem = new javax.swing.JMenuItem();
@@ -884,7 +873,24 @@ public class MapEditor extends javax.swing.JFrame {
 
         gitMenu.setText("Git");
 
+        initMenuItem.setText("Init");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gitManager, org.jdesktop.beansbinding.ELProperty.create("${initializable}"), initMenuItem, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        initMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                initMenuItemActionPerformed(evt);
+            }
+        });
+        gitMenu.add(initMenuItem);
+        gitMenu.add(initSeparator);
+
         commitMenuItem.setText("Commit");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gitManager, org.jdesktop.beansbinding.ELProperty.create("${available}"), commitMenuItem, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
         commitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 commitMenuItemActionPerformed(evt);
@@ -894,6 +900,10 @@ public class MapEditor extends javax.swing.JFrame {
         gitMenu.add(gitSeparator);
 
         pullMenuItem.setText("Pull");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gitManager, org.jdesktop.beansbinding.ELProperty.create("${available}"), pullMenuItem, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
         pullMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pullMenuItemActionPerformed(evt);
@@ -902,6 +912,10 @@ public class MapEditor extends javax.swing.JFrame {
         gitMenu.add(pullMenuItem);
 
         pushMenuItem.setText("Push");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gitManager, org.jdesktop.beansbinding.ELProperty.create("${available}"), pushMenuItem, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
         pushMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pushMenuItemActionPerformed(evt);
@@ -1106,6 +1120,8 @@ private void managePalettesMenuItemActionPerformed(java.awt.event.ActionEvent ev
 private void setCurrentFile(File file) {
 	currentFile = file;
 	getRootPane().putClientProperty("Window.documentFile", file);
+	
+	gitManager.setProject(file);
 	
 	if(file != null) {
 		setTitle(file.getName().substring(0, file.getName().lastIndexOf('.')) + " - MapMaker");
@@ -1423,145 +1439,32 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }//GEN-LAST:event_clearRecentMenuItemActionPerformed
 
     private void pullMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pullMenuItemActionPerformed
-		final Git git = getGit();
-		if(git != null) {
-			try {
-				git.pull().call();
-				
-				final int openOption = JOptionPane.showConfirmDialog(this, "Pull effectué. Recharger le projet ?", "Git Pull", JOptionPane.YES_NO_OPTION);
-				if(openOption == JOptionPane.NO_OPTION) {
-					return;
-				}
-				
-				openFile(currentFile);
-				
-			} catch (GitAPIException ex) {
-				Exceptions.showStackTrace(ex, this);
-			}
+		gitManager.pull();
+		
+		final int openOption = JOptionPane.showConfirmDialog(this, "Recharger le projet ?", "Git Pull", JOptionPane.YES_NO_OPTION);
+		if(openOption == JOptionPane.NO_OPTION) {
+			return;
 		}
+
+		openFile(currentFile);
     }//GEN-LAST:event_pullMenuItemActionPerformed
 
     private void commitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitMenuItemActionPerformed
-		final Git git = getGit();
-		if(git != null) {
-			try {
-				// Ajout des fichiers
-				final AddCommand addCommand = git.add();
-				
-				final File workTree = git.getRepository().getWorkTree();
-				
-				final String relativePath = Files.getRelativePath(workTree, currentFile);
-				final int addOption = JOptionPane.showConfirmDialog(this, "Ajout de '" + relativePath + "'...\nSouhaitez-vous continuer ?", "Git Add", JOptionPane.YES_NO_OPTION);
-				if(addOption == JOptionPane.NO_OPTION) {
-					return;
-				}
-				
-				addCommand.addFilepattern(relativePath);
-				addCommand.call();
-				
-				final Status status = git.status().call();
-				
-				final StringBuilder stringBuilder = new StringBuilder();
-				stringBuilder.append("Résultat de Add :");
-				
-				for(final String added : status.getAdded()) {
-						stringBuilder.append("\nadded: ").append(added);
-				}
-				
-				for(final String modified : status.getChanged()) {
-						stringBuilder.append("\nmodified: ").append(modified);
-				}
-				
-				for(final String removed : status.getRemoved()) {
-						stringBuilder.append("\nremoved: ").append(removed);
-				}
-				
-				stringBuilder.append("\nSouhaitez-vous continuer ?");
-				
-				final int addResultOption = JOptionPane.showConfirmDialog(this, stringBuilder.toString(), "Git Add", JOptionPane.YES_NO_OPTION);
-				if(addResultOption == JOptionPane.NO_OPTION) {
-					return;
-				}
-				
-				// Commit
-				final CommitCommand commitCommand = git.commit();
-				
-				final String message = JOptionPane.showInputDialog("Message de commit :");
-				if(message == null) {
-					return;
-				}
-				
-				commitCommand.setMessage(message);
-				commitCommand.call();
-				
-				JOptionPane.showMessageDialog(this, "Commit effectué.");
-				
-			} catch (GitAPIException ex) {
-				Exceptions.showStackTrace(ex, this);
-			}
-		} else {
-			JOptionPane.showMessageDialog(this, "Repository git non trouvé.");
-		}
+		gitManager.commit();
     }//GEN-LAST:event_commitMenuItemActionPerformed
 
     private void pushMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pushMenuItemActionPerformed
-		final Git git = getGit();
-		if(git != null) {
-			try {
-				git.push().call();
-				JOptionPane.showMessageDialog(this, "Push effectué.");
-				
-			} catch (TransportException ex) {
-				// Exception ignorée. 2ème tentative avec connexion.
-				final PushCommand pushCommand = git.push();
-				
-				final AuthenticationDialog dialog = new AuthenticationDialog(this, pushCommand);
-				dialog.getOkButton().addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(dialog.getLogin(), dialog.getPassword()));
-						
-						try {
-							pushCommand.call();
-							
-						} catch (GitAPIException ex1) {
-							// Affichage de l'erreur.
-							Exceptions.showStackTrace(ex1, MapEditor.this);
-						}
-					}
-				});
-				
-				dialog.setVisible(true);
-				
-			} catch (GitAPIException ex) {
-				Exceptions.showStackTrace(ex, this);
-			}
-		}
+		gitManager.push();
     }//GEN-LAST:event_pushMenuItemActionPerformed
 
     private void inspectSpriteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inspectSpriteMenuItemActionPerformed
 		spriteInspector.setVisible(true);
     }//GEN-LAST:event_inspectSpriteMenuItemActionPerformed
 
-	@Nullable
-	private Git getGit() {
-		final FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		builder.readEnvironment().findGitDir(currentFile);
-		
-		if(builder.getGitDir() == null) {
-			return null;
-		}
-		
-		try {
-			return new Git(builder.build());
-			
-		} catch (IOException ex) {
-			// Ignoré
-			return null;
-		}
-	}
-	
+    private void initMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initMenuItemActionPerformed
+		gitManager.init();
+    }//GEN-LAST:event_initMenuItemActionPerformed
+
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 				
@@ -1619,11 +1522,14 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem editMapMenuItem;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JMenu fileMenu;
+    private fr.rca.mapmaker.team.git.GitManager gitManager;
     private javax.swing.JMenu gitMenu;
     private javax.swing.JPopupMenu.Separator gitSeparator;
     private javax.swing.JToolBar gridToolBar;
     private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JPopupMenu.Separator importSeparator;
+    private javax.swing.JMenuItem initMenuItem;
+    private javax.swing.JPopupMenu.Separator initSeparator;
     private javax.swing.JMenuItem inspectSpriteMenuItem;
     private javax.swing.JMenuItem inspectTileMenuItem;
     private javax.swing.JToolBar.Separator jSeparator1;

@@ -158,6 +158,8 @@
         </MenuItem>
       </SubComponents>
     </Container>
+    <Component class="fr.rca.mapmaker.team.git.GitManager" name="gitManager">
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -348,10 +350,26 @@
                 <Property name="text" type="java.lang.String" value="Git"/>
               </Properties>
               <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="initMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Init"/>
+                  </Properties>
+                  <BindingProperties>
+                    <BindingProperty name="enabled" source="gitManager" sourcePath="${initializable}" target="initMenuItem" targetPath="enabled" updateStrategy="0" immediately="false"/>
+                  </BindingProperties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="initMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JPopupMenu$Separator" name="initSeparator">
+                </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="commitMenuItem">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Commit"/>
                   </Properties>
+                  <BindingProperties>
+                    <BindingProperty name="enabled" source="gitManager" sourcePath="${available}" target="commitMenuItem" targetPath="enabled" updateStrategy="0" immediately="false"/>
+                  </BindingProperties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="commitMenuItemActionPerformed"/>
                   </Events>
@@ -362,6 +380,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Pull"/>
                   </Properties>
+                  <BindingProperties>
+                    <BindingProperty name="enabled" source="gitManager" sourcePath="${available}" target="pullMenuItem" targetPath="enabled" updateStrategy="0" immediately="false"/>
+                  </BindingProperties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pullMenuItemActionPerformed"/>
                   </Events>
@@ -370,6 +391,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Push"/>
                   </Properties>
+                  <BindingProperties>
+                    <BindingProperty name="enabled" source="gitManager" sourcePath="${available}" target="pushMenuItem" targetPath="enabled" updateStrategy="0" immediately="false"/>
+                  </BindingProperties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pushMenuItemActionPerformed"/>
                   </Events>

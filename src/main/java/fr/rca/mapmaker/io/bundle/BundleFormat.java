@@ -237,17 +237,21 @@ public class BundleFormat extends AbstractFormat {
 	 */
 	private List<Instance> readInstances(File parent, String name, Project project, DataHandler<Instance> handler) throws FileNotFoundException, IOException {
 		final List<Instance> instances = new ArrayList<Instance>();
-			
-		final FileInputStream inputStream = new FileInputStream(new File(parent, name));
-		try {
-			final int size = Streams.readInt(inputStream);
-			for(int index = 0; index < size; index++) {
-				final Instance instance = handler.read(inputStream);
-				instance.setProject(project);
-				instances.add(instance);
+		
+		final File file = new File(parent, name); 
+		
+		if(file.exists()) {
+			final FileInputStream inputStream = new FileInputStream(file);
+			try {
+				final int size = Streams.readInt(inputStream);
+				for(int index = 0; index < size; index++) {
+					final Instance instance = handler.read(inputStream);
+					instance.setProject(project);
+					instances.add(instance);
+				}
+			} finally {
+				inputStream.close();
 			}
-		} finally {
-			inputStream.close();
 		}
 		
 		return instances;
