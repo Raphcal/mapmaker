@@ -102,7 +102,7 @@ public class BundleFormat extends AbstractFormat {
 				
 				// Instances
 				final List<Instance> instances = project.getAllInstances().get(index);
-				writeInstances(instances, instancesName, instanceHandler, map);
+				writeInstances(instances, file, instancesName, instanceHandler, map);
 				
 				maps.add(map);
 			}
@@ -148,8 +148,8 @@ public class BundleFormat extends AbstractFormat {
 		}
 	}
 	
-	private void writeInstances(final List<Instance> instances, final String instancesName, final DataHandler<Instance> instanceHandler, final Map<String, Object> map) throws FileNotFoundException, IOException {
-		final OutputStream instancesOutputStream = new FileOutputStream(new File(instancesName));
+	private void writeInstances(final List<Instance> instances, File parent, final String instancesName, final DataHandler<Instance> instanceHandler, final Map<String, Object> map) throws FileNotFoundException, IOException {
+		final OutputStream instancesOutputStream = new FileOutputStream(new File(parent, instancesName));
 		try {
 			Streams.write(instances.size(), instancesOutputStream);
 			for(Instance instance : instances) {
