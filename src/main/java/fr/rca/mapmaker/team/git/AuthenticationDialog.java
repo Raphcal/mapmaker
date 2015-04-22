@@ -3,7 +3,10 @@ package fr.rca.mapmaker.team.git;
 import fr.rca.mapmaker.preferences.PreferencesManager;
 import java.util.ResourceBundle;
 import javax.swing.JButton;
+import org.eclipse.jgit.api.GitCommand;
+import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.TransportCommand;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,24 +17,44 @@ import org.jetbrains.annotations.Nullable;
 public class AuthenticationDialog extends javax.swing.JDialog {
 	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language"); // NO18N
 	
+	private static final String GIT_PREFIX = "git.";
+	private static final String LOGIN_SUFFIX = ".login";
+	private static final String PASSWORD_SUFFIX = ".password";
+	
 	private final String remoteName;
 	private final String workTreePath;
 	
 	/**
 	 * Creates new form AuthenticationDialog
+	 * @param <C> Type de la commande git.
+	 * @param <T> 
 	 * @param parent Fenêtre parente.
-	 * @param remoteName Nom du remote Git.
+	 * @param command Commande à exécuter avec authentification.
 	 */
-	public AuthenticationDialog(java.awt.Frame parent, PushCommand pushCommand) {
+	public <C extends GitCommand, T> AuthenticationDialog(java.awt.Frame parent, TransportCommand<C, T> command) {
 		super(parent, false);
-		this.remoteName = pushCommand.getRemote();
-		this.workTreePath = pushCommand.getRepository().getWorkTree().getPath();
+		this.remoteName = getRemote(command);
+		this.workTreePath = command.getRepository().getWorkTree().getPath();
 		initComponents();
 		
 		final String login = PreferencesManager.get("git." + workTreePath + ".login");
 		final String password = PreferencesManager.get("git." + workTreePath + ".password");
 		loginField.setText(login);
 		passwordField.setText(password);
+		rememberCheckBox.setSelected(login != null || password != null);
+	}
+	
+	@Nullable
+	private <C extends GitCommand, T> String getRemote(TransportCommand<C, T> command) {
+		if(command instanceof PushCommand) {
+			return ((PushCommand) command).getRemote();
+			
+		} else if(command instanceof PullCommand) {
+			return ((PullCommand) command).getRemote();
+			
+		} else {
+			return null;
+		}
 	}
 	
 	@Nullable
@@ -156,8 +179,11 @@ public class AuthenticationDialog extends javax.swing.JDialog {
 		setVisible(false);
 		
 		if(mustRememberPassword()) {
-			PreferencesManager.set("git." + workTreePath + ".login", getLogin());
-			PreferencesManager.set("git." + workTreePath + ".password", new String(getPassword()));
+			PreferencesManager.set(GIT_PREFIX + workTreePath + LOGIN_SUFFIX, getLogin());
+			PreferencesManager.set(GIT_PREFIX + workTreePath + PASSWORD_SUFFIX, new String(getPassword()));
+		} else {
+			PreferencesManager.remove(GIT_PREFIX + workTreePath + LOGIN_SUFFIX);
+			PreferencesManager.remove(GIT_PREFIX + workTreePath + PASSWORD_SUFFIX);
 		}
     }//GEN-LAST:event_okButtonActionPerformed
 

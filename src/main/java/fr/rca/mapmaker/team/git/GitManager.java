@@ -8,16 +8,17 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.GitCommand;
 import org.eclipse.jgit.api.InitCommand;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -119,7 +120,7 @@ public class GitManager {
 		} catch (TransportException ex) {
 			LOGGER.trace("L'opération 'push' sans authentification n'a pas fonctionnée.", ex);
 			// 2ème tentative de push mais avec authentification.
-			pushWithAuthentification();
+			callWithAuthentification(git.push());
 
 		} catch (GitAPIException ex) {
 			LOGGER.error("Erreur lors du push.", ex);
@@ -136,6 +137,11 @@ public class GitManager {
 		
 		try {
 			call(git.pull());
+			
+		} catch (TransportException ex) {
+			LOGGER.trace("L'opération 'pull' sans authentification n'a pas fonctionnée.", ex);
+			// 2ème tentative de push mais avec authentification.
+			callWithAuthentification(git.pull());
 
 		} catch (GitAPIException ex) {
 			LOGGER.error("Erreur lors du pull.", ex);
@@ -236,6 +242,19 @@ public class GitManager {
 	}
 	
 	/**
+	 * Appel la commande donnée et affiche un message de confirmation si l'opération s'est bien passée.
+	 * @param command Commande à exécuter.
+	 * @throws GitAPIException En cas d'erreur.
+	 */
+	private <C extends GitCommand, T> void call(TransportCommand<C, T> command) throws GitAPIException {
+		if(command instanceof PushCommand) {
+			call((PushCommand) command);
+		} else if(command instanceof PullCommand) {
+			call((PullCommand) command);
+		}
+	}
+	
+	/**
 	 * Vérifie si un dépôt git existe pour le projet actuel. Si aucun dépôt exite,
 	 * cette méthode lance une exception.
 	 * @throws IllegalStateException si le projet actuel ne possède pas de dépôt git.
@@ -249,21 +268,19 @@ public class GitManager {
 	/**
 	 * Affiche une popup d'authentification permettant la connexion à un dépôt distant.
 	 */
-	private void pushWithAuthentification() {
-		final PushCommand pushCommand = git.push();
-				
-		final AuthenticationDialog dialog = new AuthenticationDialog(parent, pushCommand);
+	private <C extends GitCommand, T> void callWithAuthentification(final TransportCommand<C, T> command) {
+		final AuthenticationDialog dialog = new AuthenticationDialog(parent, command);
 		dialog.getOkButton().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(dialog.getLogin(), dialog.getPassword()));
+				command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(dialog.getLogin(), dialog.getPassword()));
 
 				try {
-					call(pushCommand);
+					call(command);
 
 				} catch (GitAPIException ex) {
-					LOGGER.error("L'opération 'push' avec authentification n'a pas fonctionnée.", ex);
+					LOGGER.error("L'opération avec authentification n'a pas fonctionnée.", ex);
 
 					// Affichage de l'erreur.
 					Exceptions.showStackTrace(ex, parent);
