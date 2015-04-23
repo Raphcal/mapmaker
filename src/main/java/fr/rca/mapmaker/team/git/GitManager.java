@@ -112,15 +112,25 @@ public class GitManager {
 	 * @throws IllegalStateException si le projet actuel ne possède pas de dépôt git.
 	 */
 	public void push() {
+		push(null);
+	}
+	
+	/**
+	 * Exécute une commande <code>push</code> sur le projet ouvert.
+	 * @param listener Appelé lorsque le push est effectué.
+	 * @throws IllegalStateException si le projet actuel ne possède pas de dépôt git.
+	 */
+	public void push(ActionListener listener) {
 		ensureAvailable();
 		
 		try {
 			call(git.push());
+			perform(listener);
 
 		} catch (TransportException ex) {
 			LOGGER.trace("L'opération 'push' sans authentification n'a pas fonctionnée.", ex);
 			// 2ème tentative de push mais avec authentification.
-			callWithAuthentification(git.push());
+			callWithAuthentification(git.push(), listener);
 
 		} catch (GitAPIException ex) {
 			LOGGER.error("Erreur lors du push.", ex);
@@ -133,15 +143,25 @@ public class GitManager {
 	 * @throws IllegalStateException si le projet actuel ne possède pas de dépôt git.
 	 */
 	public void pull() {
+		pull(null);
+	}
+	
+	/**
+	 * Exécute une commande <code>pull</code> sur le projet ouvert.
+	 * @param listener Appelé lorsque le pull est effectué.
+	 * @throws IllegalStateException si le projet actuel ne possède pas de dépôt git.
+	 */
+	public void pull(ActionListener listener) {
 		ensureAvailable();
 		
 		try {
 			call(git.pull());
+			perform(listener);
 			
 		} catch (TransportException ex) {
 			LOGGER.trace("L'opération 'pull' sans authentification n'a pas fonctionnée.", ex);
 			// 2ème tentative de push mais avec authentification.
-			callWithAuthentification(git.pull());
+			callWithAuthentification(git.pull(), listener);
 
 		} catch (GitAPIException ex) {
 			LOGGER.error("Erreur lors du pull.", ex);
@@ -255,6 +275,16 @@ public class GitManager {
 	}
 	
 	/**
+	 * Appel le listener donné s'il n'est pas <code>null</code>.
+	 * @param listener Listener à appeler.
+	 */
+	private void perform(ActionListener listener) {
+		if(listener != null) {
+			listener.actionPerformed(null);
+		}
+	}
+	
+	/**
 	 * Vérifie si un dépôt git existe pour le projet actuel. Si aucun dépôt exite,
 	 * cette méthode lance une exception.
 	 * @throws IllegalStateException si le projet actuel ne possède pas de dépôt git.
@@ -268,7 +298,7 @@ public class GitManager {
 	/**
 	 * Affiche une popup d'authentification permettant la connexion à un dépôt distant.
 	 */
-	private <C extends GitCommand, T> void callWithAuthentification(final TransportCommand<C, T> command) {
+	private <C extends GitCommand, T> void callWithAuthentification(final TransportCommand<C, T> command, final ActionListener listener) {
 		final AuthenticationDialog dialog = new AuthenticationDialog(parent, command);
 		dialog.getOkButton().addActionListener(new ActionListener() {
 
@@ -278,6 +308,7 @@ public class GitManager {
 
 				try {
 					call(command);
+					perform(listener);
 
 				} catch (GitAPIException ex) {
 					LOGGER.error("L'opération avec authentification n'a pas fonctionnée.", ex);

@@ -1446,14 +1446,18 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }//GEN-LAST:event_clearRecentMenuItemActionPerformed
 
     private void pullMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pullMenuItemActionPerformed
-		gitManager.pull();
-		
-		final int openOption = JOptionPane.showConfirmDialog(this, "Recharger le projet ?", "Git Pull", JOptionPane.YES_NO_OPTION);
-		if(openOption == JOptionPane.NO_OPTION) {
-			return;
-		}
+		gitManager.pull(new ActionListener() {
 
-		openFile(currentFile);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final int openOption = JOptionPane.showConfirmDialog(MapEditor.this, "Recharger le projet ?", "Git Pull", JOptionPane.YES_NO_OPTION);
+				if(openOption == JOptionPane.NO_OPTION) {
+					return;
+				}
+
+				openFile(currentFile);
+			}
+		});
     }//GEN-LAST:event_pullMenuItemActionPerformed
 
     private void commitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitMenuItemActionPerformed
