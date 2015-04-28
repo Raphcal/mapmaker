@@ -655,7 +655,14 @@ public class TileMapEditor extends javax.swing.JDialog {
     private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
 		final boolean oldClipboardFull = isClipboardFull();
 		
-		clipboardData = new TileLayer(drawLayer.copyData(), new Dimension(drawLayer.getWidth(), drawLayer.getHeight()), new Rectangle(drawLayer.getWidth(), drawLayer.getHeight()));
+		final TileLayer source;
+		if(drawGrid.getOverlay().isEmpty()) {
+			source = drawLayer;
+		} else {
+			source = drawGrid.getOverlay();
+		}
+		
+		clipboardData = new TileLayer(source.copyData(), new Dimension(source.getWidth(), source.getHeight()), new Rectangle(source.getWidth(), source.getHeight()));
 		
 		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());
     }//GEN-LAST:event_copyButtonActionPerformed

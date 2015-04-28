@@ -28,6 +28,10 @@ public class PasteSelectionTool extends AbstractSelectionTool {
 	
 	public void setSelection(TileLayer data) {
 		if(!selected) {
+			selectionLayer.resize(
+				Math.max(selectionLayer.getWidth(), data.getWidth()), 
+				Math.max(selectionLayer.getHeight(), data.getHeight()));
+			
 			selectionLayer.merge(data);
 
 			grid.setFocusVisible(true);

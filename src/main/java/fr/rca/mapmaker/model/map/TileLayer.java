@@ -278,6 +278,20 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	}
 	
 	/**
+	 * Détermine si au moins une tuile a été positionnée sur cette couche.
+	 * 
+	 * @return <code>true</code> si la couche est vide, <code>false</code> sinon.
+	 */
+	public boolean isEmpty() {
+		for(final int tile : tiles) {
+			if(tile != -1) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * Redimensionne la couche à la taille donnée.
 	 * 
 	 * @param width Nouvelle largeur.
