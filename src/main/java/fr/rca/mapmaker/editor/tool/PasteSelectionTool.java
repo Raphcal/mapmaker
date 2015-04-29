@@ -32,7 +32,7 @@ public class PasteSelectionTool extends AbstractSelectionTool {
 				Math.max(selectionLayer.getWidth(), data.getWidth()), 
 				Math.max(selectionLayer.getHeight(), data.getHeight()));
 			
-			selectionLayer.merge(data);
+			selectionLayer.copyAndTranslate(data, 0, 0);
 
 			grid.setFocusVisible(true);
 			setSelected(true);

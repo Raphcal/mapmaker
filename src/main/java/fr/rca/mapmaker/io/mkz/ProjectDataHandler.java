@@ -83,7 +83,8 @@ public class ProjectDataHandler implements DataHandler<Project> {
 		final List<Sprite> sprites = t.getSprites();
 		
 		// Feuille contenant tous les sprites
-		writeSpriteAtlas(sprites, zipOutputStream);
+		final SpriteAtlas atlas = new SpriteAtlas(format);
+		atlas.write(sprites, zipOutputStream);
 		
 		// Feuilles de sprites individuelles
 		final DataHandler<Sprite> spriteHandler = format.getHandler(Sprite.class);
@@ -97,84 +98,6 @@ public class ProjectDataHandler implements DataHandler<Project> {
 				spriteHandler.write(sprite, outputStream);
 				zipOutputStream.closeEntry();
 			}
-		}
-	}
-	
-	private void writeSpriteAtlas(List<Sprite> sprites, ZipOutputStream zipOutputStream) throws IOException {
-		final HashMap<TileLayer, TileMap> maps = new HashMap<TileLayer, TileMap>();
-		
-		for(final Sprite sprite : sprites) {
-			for(final Animation animation : sprite.getAnimations()) {
-				for(final List<TileLayer> frames : animation.getFrames().values()) {
-					for(final TileLayer frame : frames) {
-						maps.put(frame, new TileMap(frame, sprite.getPalette()));
-					}
-				}
-			}
-		}
-		
-		final PackMap packMap = PackMap.packAll(maps.values());
-		if(packMap != null) {
-			final DataHandler<BufferedImage> imageHandler = format.getHandler(BufferedImage.class);
-			final BufferedImage atlasImage = packMap.renderImage();
-			
-			final ZipEntry atlasEntry = new ZipEntry("atlas.png");
-			zipOutputStream.putNextEntry(atlasEntry);
-			imageHandler.write(atlasImage, zipOutputStream);
-			zipOutputStream.closeEntry();
-			
-			final ZipEntry locationEntry = new ZipEntry("atlas.sprites");
-			zipOutputStream.putNextEntry(locationEntry);
-			
-			Streams.write(sprites.size(), zipOutputStream);
-			
-			int index = 0;
-			for(final Sprite sprite : sprites) {
-				Streams.write("sprite-" + index, zipOutputStream);
-				Streams.write(sprite.getWidth(), zipOutputStream);
-				Streams.write(sprite.getHeight(), zipOutputStream);
-				Streams.write(sprite.getType(), zipOutputStream);
-				Streams.writeNullable(sprite.getLoadScript(), zipOutputStream);
-				Streams.writeNullable(sprite.getScriptFile(), zipOutputStream);
-				
-				index++;
-				
-				final Animation[] defaultAnimations = Animation.getDefaultAnimations();
-				Streams.write(defaultAnimations.length, zipOutputStream);
-				
-				for(Animation defaultAnimation : defaultAnimations) {
-					final Animation animation = sprite.get(defaultAnimation.getName());
-					
-					Streams.write(animation != null, zipOutputStream);
-					
-					if(animation != null) {
-						Streams.write(animation.getName(), zipOutputStream);
-						Streams.write(animation.getFrequency(), zipOutputStream);
-						Streams.write(animation.isLooping(), zipOutputStream);
-
-						final Set<Double> directions = animation.getAnglesWithValue();
-						Streams.write(directions.size(), zipOutputStream);
-
-						for(final double direction : directions) {
-							Streams.write(direction, zipOutputStream);
-
-							final List<TileLayer> frames = animation.getFrames(direction);
-							Streams.write(frames.size(), zipOutputStream);
-
-							for(final TileLayer frame : frames) {
-								final Point point = packMap.getPoint(maps.get(frame));
-
-								Streams.write(point.x, zipOutputStream);
-								Streams.write(point.y, zipOutputStream);
-								Streams.write(frame.getWidth(), zipOutputStream);
-								Streams.write(frame.getHeight(), zipOutputStream);
-							}
-						}
-					}
-				}
-			}
-			
-			zipOutputStream.closeEntry();
 		}
 	}
 	

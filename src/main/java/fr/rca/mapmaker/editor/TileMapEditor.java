@@ -22,9 +22,7 @@ import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.ui.Function;
-import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -662,7 +660,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 			source = drawGrid.getOverlay();
 		}
 		
-		clipboardData = new TileLayer(source.copyData(), new Dimension(source.getWidth(), source.getHeight()), new Rectangle(source.getWidth(), source.getHeight()));
+		clipboardData = new TileLayer(source);
 		
 		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());
     }//GEN-LAST:event_copyButtonActionPerformed

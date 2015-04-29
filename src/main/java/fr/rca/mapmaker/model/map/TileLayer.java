@@ -67,6 +67,15 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 		Arrays.fill(this.tiles, -1);
 	}
 	
+	/**
+	 * Créé une copie de la couche donnée en argument.
+	 * 
+	 * @param layer Couche à copier.
+	 */
+	public TileLayer(TileLayer layer) {
+		this(layer.tiles, new Dimension(layer.width, layer.height), null);
+	}
+	
 	public TileLayer(int[] data, Dimension dimension, Rectangle copySurface) {
 		if(copySurface == null) {
 			copySurface = new Rectangle(0, 0, dimension.width, dimension.height);
@@ -326,28 +335,28 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	 * @param offsetY Décalage vertical.
 	 */
 	public void translate(int offsetX, int offsetY) {
-		translate(this.tiles, offsetX, offsetY);
+		translate(this.tiles, this.width, this.height, offsetX, offsetY);
 	}
 	
 	public void copyAndTranslate(TileLayer layer, int offsetX, int offsetY) {
-		translate(layer.tiles, offsetX, offsetY);
+		translate(layer.tiles, layer.width, layer.height, offsetX, offsetY);
 	}
 	
-	private void translate(int[] source, int offsetX, int offsetY) {
-		final int[] translatedTiles = new int[width * height];
+	private void translate(int[] source, int width, int height, int offsetX, int offsetY) {
+		final int[] translatedTiles = new int[this.width * this.height];
 		Arrays.fill(translatedTiles, -1);
 		
 		final int sourceX = Math.max(0, -offsetX);
 		final int sourceY = Math.max(0, -offsetY);
 		final int destinationX = Math.max(0, offsetX);
 		final int destinationY = Math.max(0, offsetY);
-		final int copyWidth = width - Math.abs(offsetX);
-		final int copyHeight = height - Math.abs(offsetY);
+		final int copyWidth = Math.min(this.width - Math.abs(offsetX), width);
+		final int copyHeight = Math.min(this.height - Math.abs(offsetY), height);
 		
 		for(int j = 0; j < copyHeight; j++) {
 			System.arraycopy(
 					source, (j + sourceY) * width + sourceX,
-					translatedTiles, (j + destinationY) * width + destinationX, copyWidth);
+					translatedTiles, (j + destinationY) * this.width + destinationX, copyWidth);
 		}
 		
 		this.tiles = translatedTiles;

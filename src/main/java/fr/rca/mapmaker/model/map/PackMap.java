@@ -36,11 +36,14 @@ public class PackMap {
 	private int width;
 	private int height;
 	
+	private int margin;
+	
 	private Map<TileMap, Point> locations;
 	
-	public PackMap(int width, int height) {
+	public PackMap(int width, int height, int margin) {
 		this.width = width;
 		this.height = height;
+		this.margin = margin;
 		this.topLeft = new Entry(width, height);
 		this.locations = new HashMap<TileMap, Point>();
 	}
@@ -76,7 +79,7 @@ public class PackMap {
 		return locations.get(map);
 	}
 	
-	public static PackMap packAll(Collection<TileMap> maps) {
+	public static PackMap packAll(Collection<TileMap> maps, final int margin) {
 		if(maps == null || maps.isEmpty()) {
 			return null;
 		}
@@ -108,7 +111,7 @@ public class PackMap {
 		
 		for(int pot = 0; map == null; pot++) {
 			final int size = (int) Math.pow(2, pot);
-			map = new PackMap(size, size);
+			map = new PackMap(size, size, margin);
 			
 			if(!map.addAll(orderedSet)) {
 				map = null;
@@ -153,21 +156,24 @@ public class PackMap {
 	 * S'il reste de la place dans la ligne et/ou dans la colonne, une nouvelle
 	 * ligne/colonne sera créée.
 	 * 
-	 * @param column
-	 * @param row
-	 * @param width
-	 * @param height
-	 * @return 
+	 * @param column Colonne où insérer l'objet.
+	 * @param row Ligne où insérer l'objet.
+	 * @param width Largeur de l'objet.
+	 * @param height Hauteur de l'objet.
+	 * @return <code>true</code> si l'objet est rentré dans la cellule, <code>false</code> sinon.
 	 */
 	public boolean insertIfPossible(int column, int row, int width, int height) {
 		final Entry cell = get(column, row);
 		
-		int rowspan = cell.getSpan(height, VERTICAL);
+		final int cellWidth = width + margin;
+		final int cellHeight = height + margin;
+		
+		int rowspan = cell.getSpan(cellHeight, VERTICAL);
 		if(rowspan > 0) {
-			int colspan = cell.getSpan(width, HORIZONTAL);
+			int colspan = cell.getSpan(cellWidth, HORIZONTAL);
 			if(colspan > 0) {
 				Entry e = topLeft;
-				int remainingWidth = width;
+				int remainingWidth = cellWidth;
 				for(int i = 0; i < column; i++) {
 					e = e.sides[SIDE_RIGHT];
 				}
@@ -178,7 +184,7 @@ public class PackMap {
 				e.divide(remainingWidth, HORIZONTAL);
 
 				e = topLeft;
-				int remainingHeight = height;
+				int remainingHeight = cellHeight;
 				for(int i = 0; i < row; i++) {
 					e = e.sides[SIDE_BOTTOM];
 				}
