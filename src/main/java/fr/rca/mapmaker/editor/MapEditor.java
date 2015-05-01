@@ -1144,14 +1144,14 @@ private void mayShowLayerPopup(java.awt.event.MouseEvent evt) {//GEN-FIRST:event
 
 private void focusToggleButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_focusToggleButtonItemStateChanged
 	mapGrid.setFocusVisible(evt.getStateChange() == ItemEvent.SELECTED);
-	mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
+	mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
 }//GEN-LAST:event_focusToggleButtonItemStateChanged
 
 private void layerListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_layerListValueChanged
 	mapGrid.setActiveLayer(layerList.getSelectedIndex());
 				
 	if(mapGrid.isFocusVisible()) {
-		mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
+		mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
 	}
 }//GEN-LAST:event_layerListValueChanged
 
