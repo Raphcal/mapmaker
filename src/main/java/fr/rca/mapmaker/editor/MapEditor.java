@@ -6,6 +6,7 @@
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.editor.tool.BucketFillTool;
+import fr.rca.mapmaker.editor.tool.PasteSelectionTool;
 import fr.rca.mapmaker.editor.tool.PenTool;
 import fr.rca.mapmaker.editor.tool.RectangleFillTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
@@ -67,6 +68,7 @@ public class MapEditor extends javax.swing.JFrame {
 	private TileLayer selectedLayer;
 	private File currentFile;
 	private Format currentFormat;
+	private final PasteSelectionTool pasteSelectionTool;
 	
 	/** Creates new form MapEditor */
 	public MapEditor() {
@@ -75,6 +77,8 @@ public class MapEditor extends javax.swing.JFrame {
 		
 		// Scrolling
 		refreshScrollMode();
+		
+		pasteSelectionTool = new PasteSelectionTool(mapGrid);
 		
 		addWindowListener(new WindowAdapter() {
 
@@ -188,6 +192,7 @@ public class MapEditor extends javax.swing.JFrame {
         spritePopupMenu = new javax.swing.JPopupMenu();
         inspectSpriteMenuItem = new javax.swing.JMenuItem();
         gitManager = new fr.rca.mapmaker.team.git.GitManager();
+        clipboard = new fr.rca.mapmaker.model.map.TileLayer();
         mapScrollPane = new javax.swing.JScrollPane();
         mapBackgroundPanel = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
         spriteLayerPanel = new javax.swing.JPanel();
@@ -237,23 +242,29 @@ public class MapEditor extends javax.swing.JFrame {
         javax.swing.JMenuItem openMenuItem = new javax.swing.JMenuItem();
         openRecentMenu = new javax.swing.JMenu();
         clearRecentMenuItem = new javax.swing.JMenuItem();
-        importSeparator = new javax.swing.JPopupMenu.Separator();
+        javax.swing.JPopupMenu.Separator importSeparator = new javax.swing.JPopupMenu.Separator();
         importMenuItem = new javax.swing.JMenuItem();
-        saveSeparator = new javax.swing.JPopupMenu.Separator();
+        javax.swing.JPopupMenu.Separator saveSeparator = new javax.swing.JPopupMenu.Separator();
         javax.swing.JMenuItem saveMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem saveAsMenuItem = new javax.swing.JMenuItem();
         quitSeparator = new javax.swing.JPopupMenu.Separator();
         quitMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu editMenu = new javax.swing.JMenu();
+        cancelMenuItem = new javax.swing.JMenuItem();
+        redoMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JPopupMenu.Separator undoRedoSeparator = new javax.swing.JPopupMenu.Separator();
+        copyMenuItem = new javax.swing.JMenuItem();
+        pasteMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JPopupMenu.Separator copyPasteSeparator = new javax.swing.JPopupMenu.Separator();
         javax.swing.JMenuItem managePalettesMenuItem = new javax.swing.JMenuItem();
         multipleEditMenuItem = new javax.swing.JMenuItem();
         toolMenu = new javax.swing.JMenu();
         trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
         gitMenu = new javax.swing.JMenu();
         initMenuItem = new javax.swing.JMenuItem();
-        initSeparator = new javax.swing.JPopupMenu.Separator();
+        javax.swing.JPopupMenu.Separator initSeparator = new javax.swing.JPopupMenu.Separator();
         commitMenuItem = new javax.swing.JMenuItem();
-        gitSeparator = new javax.swing.JPopupMenu.Separator();
+        javax.swing.JPopupMenu.Separator gitSeparator = new javax.swing.JPopupMenu.Separator();
         pullMenuItem = new javax.swing.JMenuItem();
         pushMenuItem = new javax.swing.JMenuItem();
 
@@ -689,15 +700,18 @@ public class MapEditor extends javax.swing.JFrame {
             mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(paletteScrollPane)
             .addComponent(layerListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(layerToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(paletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(mapPanelLayout.createSequentialGroup()
+                .addGroup(mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(layerToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(paletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         mapPanelLayout.setVerticalGroup(
             mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mapPanelLayout.createSequentialGroup()
                 .addComponent(paletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(paletteScrollPane)
+                .addComponent(paletteScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(layerToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -842,6 +856,44 @@ public class MapEditor extends javax.swing.JFrame {
         menuBar.add(fileMenu);
 
         editMenu.setText(bundle.getString("menu.edit")); // NOI18N
+
+        cancelMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.META_MASK));
+        cancelMenuItem.setText(bundle.getString("menu.edit.cancel")); // NOI18N
+        cancelMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(cancelMenuItem);
+
+        redoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
+        redoMenuItem.setText(bundle.getString("menu.edit.redo")); // NOI18N
+        redoMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                redoMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(redoMenuItem);
+        editMenu.add(undoRedoSeparator);
+
+        copyMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.META_MASK));
+        copyMenuItem.setText(bundle.getString("menu.edit.copy")); // NOI18N
+        copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(copyMenuItem);
+
+        pasteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.META_MASK));
+        pasteMenuItem.setText(bundle.getString("menu.edit.paste")); // NOI18N
+        pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pasteMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(pasteMenuItem);
+        editMenu.add(copyPasteSeparator);
 
         managePalettesMenuItem.setText(bundle.getString("menu.edit.managepalettes")); // NOI18N
         managePalettesMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -1476,6 +1528,33 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		gitManager.init();
     }//GEN-LAST:event_initMenuItemActionPerformed
 
+    private void copyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyMenuItemActionPerformed
+		final TileLayer source;
+		if(mapGrid.getOverlay().isEmpty()) {
+			source = (TileLayer) mapGrid.getActiveLayer();
+		} else {
+			source = mapGrid.getOverlay();
+		}
+		
+		clipboard = new TileLayer(source);
+    }//GEN-LAST:event_copyMenuItemActionPerformed
+
+    private void pasteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteMenuItemActionPerformed
+		toolGroup.clearSelection();
+		pasteSelectionTool.setSelection(clipboard);
+
+		mapGrid.addMouseListener(pasteSelectionTool);
+		mapGrid.addMouseMotionListener(pasteSelectionTool);
+    }//GEN-LAST:event_pasteMenuItemActionPerformed
+
+    private void cancelMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelMenuItemActionPerformed
+		layerMemento.undo();
+    }//GEN-LAST:event_cancelMenuItemActionPerformed
+
+    private void redoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redoMenuItemActionPerformed
+		layerMemento.redo();
+    }//GEN-LAST:event_redoMenuItemActionPerformed
+
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 				
@@ -1526,8 +1605,11 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayerButton;
     private javax.swing.JToggleButton bucketFillToggleButton;
+    private javax.swing.JMenuItem cancelMenuItem;
     private javax.swing.JMenuItem clearRecentMenuItem;
+    private fr.rca.mapmaker.model.map.TileLayer clipboard;
     private javax.swing.JMenuItem commitMenuItem;
+    private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JButton devicePreviewButton;
     private javax.swing.JMenuItem editLayerMenuItem;
     private javax.swing.JMenuItem editMapMenuItem;
@@ -1535,12 +1617,9 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenu fileMenu;
     private fr.rca.mapmaker.team.git.GitManager gitManager;
     private javax.swing.JMenu gitMenu;
-    private javax.swing.JPopupMenu.Separator gitSeparator;
     private javax.swing.JToolBar gridToolBar;
     private javax.swing.JMenuItem importMenuItem;
-    private javax.swing.JPopupMenu.Separator importSeparator;
     private javax.swing.JMenuItem initMenuItem;
-    private javax.swing.JPopupMenu.Separator initSeparator;
     private javax.swing.JMenuItem inspectSpriteMenuItem;
     private javax.swing.JMenuItem inspectTileMenuItem;
     private javax.swing.JToolBar.Separator jSeparator1;
@@ -1563,6 +1642,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JScrollPane paletteScrollPane;
     private javax.swing.JTabbedPane paletteTabbedPane;
+    private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JToggleButton penToggleButton;
     private fr.rca.mapmaker.editor.tool.PenTool penTool;
     private fr.rca.mapmaker.model.project.Project project;
@@ -1572,8 +1652,8 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPopupMenu.Separator quitSeparator;
     private javax.swing.JToggleButton rectangleToggleButton;
     private javax.swing.JButton redoButton;
+    private javax.swing.JMenuItem redoMenuItem;
     private javax.swing.JButton removeLayerButton;
-    private javax.swing.JPopupMenu.Separator saveSeparator;
     private javax.swing.JToggleButton selectionToggleButton;
     private javax.swing.JPanel spriteBackgroundPanel;
     private fr.rca.mapmaker.editor.SpriteInspector spriteInspector;

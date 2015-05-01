@@ -61,7 +61,6 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 		drawingLayer.merge(previewLayer);
 		previewLayer.clear();
 		selectionLayer.clear();
-		grid.setFocusVisible(false);
 		selected = false;
 	}
 	
@@ -132,7 +131,6 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 			
 		} else {
 			grid.getOverlay().clear();
-			grid.setFocusVisible(false);
 		}
 	}
 }

@@ -265,7 +265,7 @@ public class Grid extends AbstractLayerPainter {
 			
 			// Si une couche est mise en avant (focus) affichage par
 			// transparence des couches supérieures.
-			if(index == transparentIndex) {
+			if(index == transparentIndex || index == layers.size()) {
 				graphics2d.setComposite(ALPHA_COMPOSITE);
 			}
 
