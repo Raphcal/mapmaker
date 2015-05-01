@@ -19,7 +19,6 @@ public class SelectionTool extends AbstractSelectionTool {
 	@Override
 	protected void handleMousePressed(MouseEvent e) {
 		moveOverlay = e.getButton() == MouseEvent.BUTTON1;
-		grid.setFocusVisible(true);
 	}
 
 	@Override

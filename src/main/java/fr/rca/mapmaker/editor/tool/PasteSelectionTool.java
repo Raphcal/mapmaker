@@ -18,7 +18,6 @@ public class PasteSelectionTool extends AbstractSelectionTool {
 		if(!selected) {
 			selectionLayer.restoreData(tiles, rectangle);
 
-			grid.setFocusVisible(true);
 			setSelected(true);
 			
 		} else {
@@ -34,7 +33,6 @@ public class PasteSelectionTool extends AbstractSelectionTool {
 			
 			selectionLayer.copyAndTranslate(data, 0, 0);
 
-			grid.setFocusVisible(true);
 			setSelected(true);
 			
 		} else {

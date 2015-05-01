@@ -232,7 +232,7 @@ public class Grid extends AbstractLayerPainter {
 		final int transparentIndex;
 		
 		if(focus) {
-			darkLayerIndex = activeLayer - 1;
+			darkLayerIndex = activeLayer;
 			transparentIndex = activeLayer + 1;
 			
 		} else {
@@ -255,6 +255,13 @@ public class Grid extends AbstractLayerPainter {
 		
 		// Affichage des couches
 		for(int index = 0; index <= layers.size(); index++) {
+			// Si une couche est mise en avant (focus) affichage grisé
+			// des couches inférieures.
+			if(index == darkLayerIndex) {
+				g.setColor(DARK_LAYER_COLOR);
+				g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+			}
+			
 			final Layer layer;
 			
 			if(index == layers.size()) {
@@ -271,13 +278,6 @@ public class Grid extends AbstractLayerPainter {
 
 			if(layer.isVisible()) {
 				paintLayer(layer, palette, clipBounds, tileSize, viewPoint, g);
-			}
-			
-			// Si une couche est mise en avant (focus) affichage grisé
-			// des couches inférieures.
-			if(index == darkLayerIndex) {
-				g.setColor(DARK_LAYER_COLOR);
-				g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 			}
 		}
 		

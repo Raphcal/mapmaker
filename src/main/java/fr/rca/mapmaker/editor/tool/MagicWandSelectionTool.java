@@ -24,7 +24,6 @@ public class MagicWandSelectionTool extends AbstractSelectionTool {
 		
 		drawingLayer.clear(selectionLayer);
 		
-		grid.setFocusVisible(true);
 		setSelected(true);
 	}
 	
