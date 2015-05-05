@@ -21,6 +21,7 @@ public class Animation {
 	public static final String RUN = "run";
 	public static final String JUMP = "jump";
 	public static final String FALL = "fall";
+	public static final String BOUNCE = "bounce";
 	public static final String DUCK = "duck";
 	public static final String RAISE = "raise";
 	public static final String APPEAR = "appear";
@@ -164,6 +165,7 @@ public class Animation {
 			new Animation(RUN),
 			new Animation(JUMP),
 			new Animation(FALL),
+			new Animation(BOUNCE),
 			new Animation(DUCK),
 			new Animation(RAISE),
 			new Animation(APPEAR),
