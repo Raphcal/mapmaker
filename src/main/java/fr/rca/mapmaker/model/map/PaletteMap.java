@@ -6,6 +6,7 @@ import fr.rca.mapmaker.model.palette.EditablePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -15,7 +16,7 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 
 	private int width;
 	private Point selectedPoint;
-	private final ArrayList<SelectionListener> listeners;
+	private final List<SelectionListener> listeners;
 
 	public PaletteMap() {
 		this.width = 1;

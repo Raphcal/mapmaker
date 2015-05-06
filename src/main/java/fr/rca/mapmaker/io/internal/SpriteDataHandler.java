@@ -86,7 +86,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			scriptFile = null;
 		}
 		
-		final HashSet<Animation> animations = new HashSet<Animation>();
+		final Set<Animation> animations = new HashSet<Animation>();
 		
 		final DataHandler<Animation> animationHandler = format.getHandler(Animation.class);
 		final int animationCount = Streams.readInt(inputStream);

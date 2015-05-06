@@ -45,8 +45,8 @@ public class TileMapEditor extends javax.swing.JDialog {
 
 	private final PasteSelectionTool pasteSelectionTool;
 	
-	private final ArrayList<ActionListener> listeners;
-	private final ArrayList<DataLayer> layers;
+	private final List<ActionListener> listeners;
+	private final List<DataLayer> layers;
 	private int[][] tiles;
 	private int layerIndex;
 	

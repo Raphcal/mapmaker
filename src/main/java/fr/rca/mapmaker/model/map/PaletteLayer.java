@@ -6,6 +6,7 @@ import fr.rca.mapmaker.model.palette.Palette;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Couche d'une grille dessinée à partir d'une palette.
@@ -17,7 +18,7 @@ public class PaletteLayer implements Layer, HasSizeChangeListeners {
 	private final Palette palette;
 	private int width;
 	
-	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
 
 	public PaletteLayer(Palette palette, int width) {
 		this.palette = palette;

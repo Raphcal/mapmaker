@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -66,7 +67,7 @@ public class EditableImagePaletteDataHandler implements DataHandler<EditableImag
 		final AlphaColorPalette palette = colorPaletteHandler.read(inputStream);
 		
 		final int size = Streams.readInt(inputStream);
-		final ArrayList<TileLayer> tiles = new ArrayList<TileLayer>();
+		final List<TileLayer> tiles = new ArrayList<TileLayer>();
 		final String[] functions = new String[size];
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);

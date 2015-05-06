@@ -300,7 +300,7 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	}
 	
 	public List<E> getSelection() {
-		final ArrayList<E> selectedElements = new ArrayList<E>();
+		final List<E> selectedElements = new ArrayList<E>();
 		
 		selection.sort(new Comparator<Integer>() {
 

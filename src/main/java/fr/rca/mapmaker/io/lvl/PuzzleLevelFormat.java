@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -194,7 +195,7 @@ public class PuzzleLevelFormat extends AbstractFormat {
 	private String readUntil(InputStream inputStream, Character... chars) throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		
-		final HashSet<Character> set = new HashSet<Character>(Arrays.asList(chars));
+		final Set<Character> set = new HashSet<Character>(Arrays.asList(chars));
 				
 		int b = inputStream.read();
 		while(b != -1 && !set.contains((char)b)) {

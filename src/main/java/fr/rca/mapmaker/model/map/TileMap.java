@@ -45,16 +45,16 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	/**
 	 * Liste des couches de la grille.
 	 */
-	private final ArrayList<Layer> layers = new ArrayList<Layer>();
+	private final List<Layer> layers = new ArrayList<Layer>();
 	/**
 	 * Couleur de fond.
 	 */
 	private Color backgroundColor;
 
 	private final SizeChangeListener sizeChangeListener;
-	private final ArrayList<LayerChangeListener> layerChangeListeners = new ArrayList<LayerChangeListener>();
-	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
-	private final ArrayList<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
+	private final List<LayerChangeListener> layerChangeListeners = new ArrayList<LayerChangeListener>();
+	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	private final List<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
 
 	public TileMap() {
 		sizeChangeListener = new SizeChangeListener() {

@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -28,7 +29,7 @@ public abstract class AbstractFormat implements Format {
 	
 	private static final String UNSUPPORTED_MESSAGE = "Not supported by this format.";
 	
-	private final HashMap<String, DataHandler<?>> handlers = new HashMap<String, DataHandler<?>>();
+	private final Map<String, DataHandler<?>> handlers = new HashMap<String, DataHandler<?>>();
 	private final String defaultExtension;
 	private final FormatFileFilter fileFilter;
 	private final EnumSet<SupportedOperation> supportedOperations;

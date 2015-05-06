@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.operation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Instancie des objets {@link Operation} à partir de leur représentation
@@ -84,7 +85,7 @@ public final class OperationParser {
 	 */
 	public static Operation parse(String operation) {
 		
-		final ArrayList<Instruction> instructions = new ArrayList<Instruction>();
+		final List<Instruction> instructions = new ArrayList<Instruction>();
 		
 		parse(operation, 0, null, instructions);
 		
@@ -99,7 +100,7 @@ public final class OperationParser {
 	 * @param instructions Liste d'instructions de l'opération à retourner.
 	 * @return Dernier indice traité par cette méthode.
 	 */
-	private static int parse(String operation, int startIndex, Operator parent, ArrayList<Instruction> instructions) {
+	private static int parse(String operation, int startIndex, Operator parent, List<Instruction> instructions) {
 		int index = startIndex;
 		
 		// Etat du parser

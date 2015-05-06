@@ -64,7 +64,7 @@ public class AnimationDataHandler implements DataHandler<Animation> {
 			final double direction = Streams.readDouble(inputStream);
 			final int frameCount = Streams.readInt(inputStream);
 			
-			final ArrayList<TileLayer> frames = new ArrayList<TileLayer>();
+			final List<TileLayer> frames = new ArrayList<TileLayer>();
 			
 			for(int frame = 0; frame < frameCount; frame++) {
 				frames.add(tileLayerHandler.read(inputStream));

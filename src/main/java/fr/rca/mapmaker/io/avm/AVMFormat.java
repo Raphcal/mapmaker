@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -48,7 +49,7 @@ public class AVMFormat extends AbstractFormat {
 			
 			final DataHandler<TileLayer> tileLayerHandler = getHandler(TileLayer.class);
 			
-			final ArrayList<TileLayer> layers = new ArrayList<TileLayer>();
+			final List<TileLayer> layers = new ArrayList<TileLayer>();
 			
 			final AVMFileIterator iterator = new AVMFileIterator(file);
 			while(iterator.hasNext()) {

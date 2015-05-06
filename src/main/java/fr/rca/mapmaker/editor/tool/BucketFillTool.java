@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.model.map.TileLayer;
 import java.util.ArrayDeque;
+import java.util.Deque;
 import javax.swing.SwingWorker;
 
 public class BucketFillTool extends MouseAdapter implements Tool {
@@ -18,7 +19,7 @@ public class BucketFillTool extends MouseAdapter implements Tool {
 	private final static int ORIGIN_UP = 4;
 	
 	private interface PaintAction {
-		void paint(ArrayDeque<PaintAction> paintStack);
+		void paint(Deque<PaintAction> paintStack);
 	}
 	
 	private final Grid grid;
@@ -57,7 +58,7 @@ public class BucketFillTool extends MouseAdapter implements Tool {
 				protected Void doInBackground() throws Exception {
 					final int[] data = grid.getOverlay().copyData();
 					
-					final ArrayDeque<PaintAction> paintStack = new ArrayDeque<PaintAction>();
+					final Deque<PaintAction> paintStack = new ArrayDeque<PaintAction>();
 					paintStack.addLast(createPaintAction(point.x, point.y, data, source, target, ORIGIN_NONE));
 
 					while(!paintStack.isEmpty()) {
@@ -92,7 +93,7 @@ public class BucketFillTool extends MouseAdapter implements Tool {
 		return new PaintAction() {
 
 			@Override
-			public void paint(ArrayDeque<PaintAction> paintStack) {
+			public void paint(Deque<PaintAction> paintStack) {
 				setTile(tiles, x, y, target);
 				
 				if(origin != ORIGIN_LEFT && canPaint(x - 1, y, source, tiles)) {

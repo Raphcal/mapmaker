@@ -15,7 +15,7 @@ public class PaletteComboBoxModel implements ComboBoxModel {
 	private int selectedIndex;
 	private List<Palette> palettes;
 
-	private final ArrayList<ListDataListener> listeners = new ArrayList<ListDataListener>();
+	private final List<ListDataListener> listeners = new ArrayList<ListDataListener>();
 	
 	public PaletteComboBoxModel(List<Palette> palettes) {
 		this.palettes = palettes;

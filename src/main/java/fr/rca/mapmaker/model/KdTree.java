@@ -25,14 +25,14 @@ public class KdTree {
 	}
 	
 	public List<Point2D.Float> get(Point2D.Float point, float distance) {
-		final ArrayList<Point2D.Float> points = new ArrayList<Point2D.Float>();
+		final List<Point2D.Float> points = new ArrayList<Point2D.Float>();
 		
 		final Leaf nearest = getNearestLeaf(point);
 		if(distance(point, nearest) <= distance) {
 			points.add(nearest.getValue());
 		}
 		
-		final HashSet<Element> doneNodes = new HashSet<Element>();
+		final Set<Element> doneNodes = new HashSet<Element>();
 		doneNodes.add(nearest);
 		
 		testElement(nearest.getParent(), point, distance, points, doneNodes);
@@ -154,8 +154,8 @@ public class KdTree {
 
 			final float median = median(points, axis);
 
-			final ArrayList<Point2D.Float> left = new ArrayList<Point2D.Float>();
-			final ArrayList<Point2D.Float> right = new ArrayList<Point2D.Float>();
+			final List<Point2D.Float> left = new ArrayList<Point2D.Float>();
+			final List<Point2D.Float> right = new ArrayList<Point2D.Float>();
 
 			for(final Point2D.Float point : points) {
 				if(axis.get(point) < median) {
@@ -342,7 +342,7 @@ public class KdTree {
 	}
 	
 	private static List<Point2D.Float> findNeighbors(List<Point2D.Float> points, Point2D.Float reference, float distance) {
-		final ArrayList<Point2D.Float> neighbors = new ArrayList<Point2D.Float>();
+		final List<Point2D.Float> neighbors = new ArrayList<Point2D.Float>();
 		
 		for(final Point2D.Float point : points) {
 			if(reference.distance(point) <= distance) {

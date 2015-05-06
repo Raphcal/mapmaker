@@ -404,7 +404,7 @@ public class SpriteEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void tileLayerListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tileLayerListActionPerformed
-		final ArrayList<TileLayer> layers = new ArrayList<TileLayer>(tileLayerList.getElements());
+		final List<TileLayer> layers = new ArrayList<TileLayer>(tileLayerList.getElements());
 		
 		if(GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
 			layers.add(new TileLayer(sprite.getWidth(), sprite.getHeight()));
@@ -473,7 +473,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 		try {
 			final double step = Double.parseDouble(answer);
 			
-			final ArrayList<TileLayer> frames = new ArrayList<TileLayer>(getCurrentAnimation());
+			final List<TileLayer> frames = new ArrayList<TileLayer>(getCurrentAnimation());
 			
 			for(double angle = step; angle < 360; angle += step) {
 				for(final TileLayer frame : frames) {

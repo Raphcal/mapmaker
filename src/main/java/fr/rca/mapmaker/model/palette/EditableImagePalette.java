@@ -18,8 +18,8 @@ import javax.swing.JFrame;
 
 public class EditableImagePalette implements EditablePalette, HasSizeChangeListeners, HasFunctionHitbox, Duplicatable<EditableImagePalette> {
 
-	private final ArrayList<BufferedImage> tiles = new ArrayList<BufferedImage>();
-	private final ArrayList<TileLayer> sources = new ArrayList<TileLayer>();
+	private final List<BufferedImage> tiles = new ArrayList<BufferedImage>();
+	private final List<TileLayer> sources = new ArrayList<TileLayer>();
 	private final int tileSize;
 	private final int columns;
 	private int selectedTile;
@@ -32,7 +32,7 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	
 	private final ImageRenderer renderer = new ImageRenderer();
 			
-	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
 	
 	public EditableImagePalette(int tileSize, int columns) {
 		this.tileSize = tileSize;
@@ -224,7 +224,7 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 
 	@Override
 	public EditableImagePalette duplicate() {
-		final ArrayList<TileLayer> duplicatedSources = new ArrayList<TileLayer>();
+		final List<TileLayer> duplicatedSources = new ArrayList<TileLayer>();
 		final String[] duplicatedHitboxes = new String[hitboxes.length];
 		
 		for(final TileLayer source : sources) {

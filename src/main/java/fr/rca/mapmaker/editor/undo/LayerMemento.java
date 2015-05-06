@@ -8,6 +8,7 @@ import fr.rca.mapmaker.model.LayerChangeListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 
 public class LayerMemento {
@@ -15,8 +16,8 @@ public class LayerMemento {
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	private int[][] states;
-	private final ArrayDeque<Change> undoStack = new ArrayDeque<Change>();
-	private final ArrayDeque<Change> redoStack = new ArrayDeque<Change>();
+	private final Deque<Change> undoStack = new ArrayDeque<Change>();
+	private final Deque<Change> redoStack = new ArrayDeque<Change>();
 	
 	private boolean ignoreNextChange;
 	private boolean transactionActive;
@@ -139,7 +140,7 @@ public class LayerMemento {
 		propertyChangeSupport.removePropertyChangeListener(pl);
 	}
 	
-	private void restore(ArrayDeque<Change> source, ArrayDeque<Change> destination) {
+	private void restore(Deque<Change> source, Deque<Change> destination) {
 		final boolean oldUndoable = isUndoable();
 		final boolean oldRedoable = isRedoable();
 		

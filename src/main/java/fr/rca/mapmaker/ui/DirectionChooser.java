@@ -13,6 +13,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.swing.JComponent;
 
@@ -30,7 +31,7 @@ public class DirectionChooser extends JComponent {
 	private boolean simplified = true;
 	
 	private final Set<Double> anglesWithValue = new HashSet<Double>();
-	private final ArrayList<ActionListener> actionListeners = new ArrayList<ActionListener>();
+	private final List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 
 	public DirectionChooser() {
 		addMouseListener(new MouseAdapter() {

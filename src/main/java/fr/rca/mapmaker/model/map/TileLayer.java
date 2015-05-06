@@ -47,8 +47,8 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	/**
 	 * Liste de listeners.
 	 */
-	private final ArrayList<LayerChangeListener> listeners = new ArrayList<LayerChangeListener>();
-	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	private final List<LayerChangeListener> listeners = new ArrayList<LayerChangeListener>();
+	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
 
 	public TileLayer() {
 		this(0, 0);

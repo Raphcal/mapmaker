@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -33,7 +34,7 @@ public class SpriteAtlas {
 	}
 	
 	public void write(List<Sprite> sprites, ZipOutputStream zipOutputStream) throws IOException {
-		final HashMap<TileLayer, TileMap> maps = new HashMap<TileLayer, TileMap>();
+		final Map<TileLayer, TileMap> maps = new HashMap<TileLayer, TileMap>();
 		
 		for(final Sprite sprite : sprites) {
 			for(final Animation animation : sprite.getAnimations()) {

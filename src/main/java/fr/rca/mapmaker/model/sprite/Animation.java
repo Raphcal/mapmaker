@@ -57,7 +57,7 @@ public class Animation {
 		copy.looping = looping;
 		
 		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
-			final ArrayList<TileLayer> layersCopy = new ArrayList<TileLayer>();
+			final List<TileLayer> layersCopy = new ArrayList<TileLayer>();
 			for(final TileLayer layer : entry.getValue()) {
 				final TileLayer layerCopy = new TileLayer(layer.getWidth(), layer.getHeight());
 				layerCopy.restoreData(layer.copyData(), null);
@@ -138,7 +138,7 @@ public class Animation {
 	}
 
 	public Set<Double> getAnglesWithValue() {
-		final HashSet<Double> anglesWithValue = new HashSet<Double>();
+		final Set<Double> anglesWithValue = new HashSet<Double>();
 		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
 			if(entry.getValue() != null && !entry.getValue().isEmpty()) {
 				anglesWithValue.add(entry.getKey());

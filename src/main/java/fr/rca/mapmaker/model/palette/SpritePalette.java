@@ -42,7 +42,7 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	 */
 	private List<Sprite> sprites;
 	
-	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
 
 	public SpritePalette() {
 		sprites = new ArrayList<Sprite>();

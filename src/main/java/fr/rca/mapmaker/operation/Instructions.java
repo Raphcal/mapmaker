@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.operation;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Liste de toutes les instructions utilisables dans les opérations.
@@ -12,7 +13,7 @@ public final class Instructions {
 	 * Table de correspondance entre le nom d'une instruction et son
 	 * implémentation.
 	 */
-	private static final HashMap<String, Instruction> INSTRUCTIONS;
+	private static final Map<String, Instruction> INSTRUCTIONS;
 	
 	/**
 	 * Classe utilitaire, toutes les méthodes sont statiques.
@@ -20,7 +21,7 @@ public final class Instructions {
 	private Instructions() {}
 	
 	static {
-		final HashMap<String, Instruction> map = new HashMap<String, Instruction>();
+		final Map<String, Instruction> map = new HashMap<String, Instruction>();
 		map.put("x", new Variable());
 		map.put("pi", new Constant(Math.PI));
 		map.put("e", new Constant(Math.E));

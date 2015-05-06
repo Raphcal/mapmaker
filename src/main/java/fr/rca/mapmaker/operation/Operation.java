@@ -5,6 +5,7 @@ import fr.rca.mapmaker.io.common.Streams;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 
@@ -35,7 +36,7 @@ public class Operation {
 	 * @return Le résultat de cette opération.
 	 */
 	public double execute(double x) {
-		final ArrayDeque<Double> stack = new ArrayDeque<Double>();
+		final Deque<Double> stack = new ArrayDeque<Double>();
 		
 		for(final Instruction instruction : instructions) {
 			instruction.execute(x, stack);
