@@ -1,5 +1,7 @@
 package fr.rca.mapmaker.editor;
 
+import jsyntaxpane.DefaultSyntaxKit;
+
 /**
  *
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
@@ -13,7 +15,9 @@ public class LuaEditor extends javax.swing.JDialog {
 		super(parent, modal);
 		initComponents();
 		
-//		jEditorPane1.setEditorKit(CloneableEditorSupport.getEditorKit("text/lua"));
+		DefaultSyntaxKit.initKit();
+		jEditorPane1.setContentType("text/lua");
+		jEditorPane1.setText("-- Test\nfunction mafunction()\n    rien:call()\nend");
 	}
 
 	/**
