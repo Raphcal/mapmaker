@@ -5,20 +5,15 @@ import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.common.Streams;
-import fr.rca.mapmaker.model.map.PackMap;
-import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.project.Project;
-import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
-import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -60,7 +55,20 @@ public class ProjectDataHandler implements DataHandler<Project> {
 		
 		for(int index = 0; index < maps.size(); index++) {
 			final TileMap map = maps.get(index);
-			final List<Instance> instances = t.getAllInstances().get(index);
+			final List<Instance> instances = new ArrayList<Instance>(t.getAllInstances().get(index));
+			instances.sort(new Comparator<Instance>() {
+
+				@Override
+				public int compare(Instance o1, Instance o2) {
+					int order = Integer.valueOf(o1.getX()).compareTo(o2.getX());
+					if(order == 0) {
+						return Integer.valueOf(o1.getY()).compareTo(o2.getY());
+					} else {
+						return order;
+					}
+				}
+			});
+			
 			
 			// Écriture de la carte
 			final ZipEntry mapEntry = new ZipEntry("map" + index + ".map");
