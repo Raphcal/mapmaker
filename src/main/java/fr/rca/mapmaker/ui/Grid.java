@@ -350,7 +350,9 @@ public class Grid extends AbstractLayerPainter {
 		overlay.resize(width, height);
 		
 		final int tileSize = getTileSize();
-		final Dimension dimension = new Dimension(width * tileSize, height * tileSize);
+		final Dimension dimension = new Dimension(
+				Math.min(width * tileSize, getMaximumSize().width), 
+				Math.min(height * tileSize, getMaximumSize().height));
 		
 		setPreferredSize(dimension);
 		

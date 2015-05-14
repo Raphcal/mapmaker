@@ -72,10 +72,12 @@ public class Instance extends JComponent {
 
 	public void setPoint(Point point) {
 		final String oldPointInfo = getPointInfo();
+		final String oldCenterInfo = getCenterInfo();
 		
 		this.point = point;
 		
 		firePropertyChange("pointInfo", oldPointInfo, getPointInfo());
+		firePropertyChange("centerInfo", oldCenterInfo, getCenterInfo());
 	}
 	
 	public String getPointInfo() {
@@ -83,6 +85,14 @@ public class Instance extends JComponent {
 			return "-";
 		}
 		return point.x + " x " + point.y;
+	}
+	
+	public String getCenterInfo() {
+		final Sprite sprite = getSprite();
+		if(point == null || sprite == null) {
+			return "-";
+		}
+		return (point.x + sprite.getWidth() / 2) + " x " + (point.y + sprite.getHeight() / 2);
 	}
 	
 	public void redraw() {
