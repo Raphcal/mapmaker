@@ -33,38 +33,33 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="hitboxSeparator" max="32767" attributes="0"/>
           <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="44" pref="44" max="-2" attributes="0"/>
-                              <Component id="tileIndexLabel" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="hitboxLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="hitboxLabel" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="tileGrid" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="detailLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="detailLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="detailLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="detailLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Component id="tileIndexLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace min="0" pref="108" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -114,7 +109,7 @@
             <LineBorder/>
           </Border>
         </Property>
-        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+        <Property name="constraint" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[96, 96]"/>
         </Property>
       </Properties>
@@ -168,7 +163,6 @@
             <Font component="detailLabel" property="font" relativeSize="true" size="-2"/>
           </FontInfo>
         </Property>
-        <Property name="text" type="java.lang.String" value="320x240"/>
       </Properties>
       <BindingProperties>
         <BindingProperty name="text" source="Form" sourcePath="${instance.pointInfo}" target="detailLabel" targetPath="text" updateStrategy="0" immediately="false"/>
@@ -181,7 +175,6 @@
             <Font component="detailLabel1" property="font" relativeSize="true" size="-2"/>
           </FontInfo>
         </Property>
-        <Property name="text" type="java.lang.String" value="240x320"/>
       </Properties>
       <BindingProperties>
         <BindingProperty name="text" source="Form" sourcePath="${instance.centerInfo}" target="detailLabel1" targetPath="text" updateStrategy="0" immediately="false"/>

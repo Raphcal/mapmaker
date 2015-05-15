@@ -70,6 +70,11 @@ public class Grid extends AbstractLayerPainter {
 	 * Niveau de zoom des carreaux.
 	 */
 	private double zoom = 1.0;
+	
+	/**
+	 * Contrainte de taille maximum.
+	 */
+	private Dimension constraint;
 
 	public Grid() {
 		setOpaque(true);
@@ -350,9 +355,11 @@ public class Grid extends AbstractLayerPainter {
 		overlay.resize(width, height);
 		
 		final int tileSize = getTileSize();
-		final Dimension dimension = new Dimension(
-				Math.min(width * tileSize, getMaximumSize().width), 
-				Math.min(height * tileSize, getMaximumSize().height));
+		final Dimension dimension = new Dimension(width * tileSize, height * tileSize);
+		if(constraint != null) {
+			dimension.width = Math.min(dimension.width, constraint.width);
+			dimension.height = Math.min(dimension.height, constraint.height);
+		}
 		
 		setPreferredSize(dimension);
 		
@@ -451,4 +458,13 @@ public class Grid extends AbstractLayerPainter {
 			return null;
 		}
 	}
+
+	public Dimension getConstraint() {
+		return constraint;
+	}
+
+	public void setConstraint(Dimension constraint) {
+		this.constraint = constraint;
+	}
+	
 }
