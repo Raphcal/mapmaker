@@ -18,6 +18,7 @@ public class InstanceDataHandler implements DataHandler<Instance> {
 		Streams.write(t.getIndex(), outputStream);
 		Streams.write(t.getPoint().x, outputStream);
 		Streams.write(t.getPoint().y, outputStream);
+		Streams.write(t.isUnique(), outputStream);
 		Streams.writeNullable(t.getScript(), outputStream);
 	}
 

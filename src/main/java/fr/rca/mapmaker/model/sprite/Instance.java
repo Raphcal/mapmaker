@@ -21,6 +21,7 @@ public class Instance extends JComponent {
 	private int index;
 	private BufferedImage image;
 	private Point point;
+	private boolean unique;
 	
 	private double zoom = 1.0;
 
@@ -41,9 +42,10 @@ public class Instance extends JComponent {
 		updateSprite();
 	}
 	
-	public Instance(int index, int x, int y, String script) {
+	public Instance(int index, int x, int y, boolean unique, String script) {
 		this.index = index;
 		this.point = new Point(x, y);
+		this.unique = unique;
 		this.script = script;
 		updateSprite();
 	}
@@ -66,6 +68,14 @@ public class Instance extends JComponent {
 		updateSprite();
 	}
 
+	public boolean isUnique() {
+		return unique;
+	}
+
+	public void setUnique(boolean unique) {
+		this.unique = unique;
+	}
+	
 	public Point getPoint() {
 		return point;
 	}

@@ -32,34 +32,38 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="hitboxSeparator" max="32767" attributes="0"/>
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jScrollPane2" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="hitboxLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <Component id="tileGrid" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="detailLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="detailLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
-                                  <Component id="tileIndexLabel" min="-2" max="-2" attributes="0"/>
+                                  <Component id="uniqueCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="tileIndexLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
+                          </Group>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="38" pref="38" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="detailLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="detailLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Component id="hitboxLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -91,9 +95,11 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="hitboxSeparator" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="uniqueCheckBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="hitboxLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane2" pref="233" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" pref="198" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -199,6 +205,18 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Centre :"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="uniqueCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Unique"/>
+        <Property name="toolTipText" type="java.lang.String" value="Ne r&#xe9;appara&#xee;t qu&apos;une fois par partie"/>
+      </Properties>
+      <BindingProperties>
+        <BindingProperty name="selected" source="Form" sourcePath="${instance.unique}" target="uniqueCheckBox" targetPath="selected" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="uniqueCheckBox.putClientProperty(&quot;JComponent.sizeVariant&quot;, &quot;small&quot;);"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>
