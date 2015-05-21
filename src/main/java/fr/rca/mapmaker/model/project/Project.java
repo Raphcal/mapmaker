@@ -272,6 +272,26 @@ public class Project implements ListModel {
 		}
 	}
 	
+	public void swapMaps(int first, int second) {
+		final TileMap firstMap = maps.get(first);
+		final TileMap secondMap = maps.get(second);
+		
+		maps.set(second, firstMap);
+		maps.set(first, secondMap);
+		
+		swapInstances(first, second);
+		
+		fireContentsChanged(Math.min(first, second), Math.max(first, second));
+	}
+	
+	private void swapInstances(int first, int second) {
+		final List<Instance> firstList = instancesByMaps.get(first);
+		final List<Instance> secondList = instancesByMaps.get(second);
+		
+		instancesByMaps.set(second, firstList);
+		instancesByMaps.set(first, secondList);
+	}
+	
 	protected void fireIntervalAdded(int from, int to) {
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, from, to);
 		

@@ -202,6 +202,9 @@ public class MapEditor extends javax.swing.JFrame {
         javax.swing.JToolBar mapToolBar = new javax.swing.JToolBar();
         javax.swing.JButton addMapButton = new javax.swing.JButton();
         javax.swing.JButton removeMapButton = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        moveMapUpButton = new javax.swing.JButton();
+        moveMapBottomButton = new javax.swing.JButton();
         gridToolBar = new javax.swing.JToolBar();
         undoButton = new javax.swing.JButton();
         redoButton = new javax.swing.JButton();
@@ -457,6 +460,29 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         mapToolBar.add(removeMapButton);
+        mapToolBar.add(jSeparator2);
+
+        moveMapUpButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_up.png"))); // NOI18N
+        moveMapUpButton.setFocusable(false);
+        moveMapUpButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        moveMapUpButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        moveMapUpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moveMapUpButtonActionPerformed(evt);
+            }
+        });
+        mapToolBar.add(moveMapUpButton);
+
+        moveMapBottomButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_down.png"))); // NOI18N
+        moveMapBottomButton.setFocusable(false);
+        moveMapBottomButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        moveMapBottomButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        moveMapBottomButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moveMapBottomButtonActionPerformed(evt);
+            }
+        });
+        mapToolBar.add(moveMapBottomButton);
 
         gridToolBar.setFloatable(false);
         gridToolBar.setRollover(true);
@@ -1560,6 +1586,22 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		layerMemento.redo();
     }//GEN-LAST:event_redoMenuItemActionPerformed
 
+    private void moveMapUpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveMapUpButtonActionPerformed
+		final int selectedIndex = project.getSelectedIndex();
+		if(selectedIndex > 0) {
+			project.swapMaps(selectedIndex, selectedIndex - 1);
+			project.setSelectedIndex(selectedIndex - 1);
+		}
+    }//GEN-LAST:event_moveMapUpButtonActionPerformed
+
+    private void moveMapBottomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveMapBottomButtonActionPerformed
+		final int selectedIndex = project.getSelectedIndex();
+		if(selectedIndex < project.getMaps().size() - 1) {
+			project.swapMaps(selectedIndex, selectedIndex + 1);
+			project.setSelectedIndex(selectedIndex + 1);
+		}
+    }//GEN-LAST:event_moveMapBottomButtonActionPerformed
+
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 				
@@ -1628,6 +1670,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem inspectSpriteMenuItem;
     private javax.swing.JMenuItem inspectTileMenuItem;
     private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JButton layerDownButton;
     private javax.swing.JList layerList;
     private javax.swing.JScrollPane layerListScrollPane;
@@ -1641,6 +1684,8 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPanel mapPanel;
     private javax.swing.JPopupMenu mapPopupMenu;
     private javax.swing.JScrollPane mapScrollPane;
+    private javax.swing.JButton moveMapBottomButton;
+    private javax.swing.JButton moveMapUpButton;
     private javax.swing.JMenuItem multipleEditMenuItem;
     private javax.swing.JMenu openRecentMenu;
     private javax.swing.JPanel paletteBackgroundPanel;
