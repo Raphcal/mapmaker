@@ -77,6 +77,13 @@ public class BundleFormat extends AbstractFormat {
 		
 		file.mkdir();
 		
+		// Suppression des fichiers existants
+		for(final File child : file.listFiles()) {
+			child.delete();
+		}
+		
+		// Écriture des nouveaux fichiers
+		
 		final Map<String, Object> projectMap = new HashMap<String, Object>();
 		
 		final List<String> palettes = new ArrayList<String>();
