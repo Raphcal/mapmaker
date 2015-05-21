@@ -1196,7 +1196,7 @@ private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GE
 			setCurrentFile(destination);
 		}
 		
-		format.saveProject(project, destination);
+		save(format, destination);
 	}
 }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
@@ -1204,9 +1204,14 @@ private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 	if(currentFile == null || currentFormat == null) {
 		saveAsMenuItemActionPerformed(evt);
 	} else {
-		currentFormat.saveProject(project, currentFile);
+		save(currentFormat, currentFile);
 	}
 }//GEN-LAST:event_saveMenuItemActionPerformed
+
+private void save(Format format, File destination) {
+	format.saveProject(project, destination);
+	JOptionPane.showMessageDialog(null, "Projet enregistré", "Enregistrement", JOptionPane.INFORMATION_MESSAGE);
+}
 
 private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
 	configureFileChooser(SupportedOperation.LOAD);

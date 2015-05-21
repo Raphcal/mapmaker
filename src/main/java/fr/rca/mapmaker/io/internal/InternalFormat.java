@@ -89,8 +89,6 @@ public class InternalFormat extends AbstractFormat {
 		} catch (IOException ex) {
 			Exceptions.showStackTrace(ex, null);
 		}
-		
-		JOptionPane.showMessageDialog(null, "Projet enregistré", "Enregistrement", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	@Override

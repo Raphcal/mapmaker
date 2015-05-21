@@ -32,7 +32,14 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 	}
 	
 	private Palette getPalette() {
-		return project.getPalette(paletteIndex);
+		final int index;
+		if(paletteIndex < 0 || paletteIndex >= project.getPalettes().size()) {
+			index = 0;
+		} else {
+			index = paletteIndex;
+		}
+		
+		return project.getPalette(index);
 	}
 	
 	private EditablePalette getEditablePalette() {
