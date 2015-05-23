@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.ui;
 
 import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.operation.Operation;
 import fr.rca.mapmaker.operation.OperationParser;
 import java.awt.Color;
@@ -78,8 +79,13 @@ public class Function extends JComponent {
 		final TileLayer tileLayer = new TileLayer(width, height);
 		final Operation operation = OperationParser.parse(function);
 		
+		final AlphaColorPalette alphaColorPalette = AlphaColorPalette.getDefaultColorPalette();
+		alphaColorPalette.setSelectedAlpha(3);
+		alphaColorPalette.setSelectedTile(1);
+		final int tile = alphaColorPalette.getSelectedTile();
+		
 		for(int x = 0; x < width; x++) {
-			tileLayer.setTile(x, (int) operation.execute((double)x), 1);
+			tileLayer.setTile(x, (int) operation.execute((double)x), tile);
 		}
 		
 		return tileLayer;

@@ -225,7 +225,7 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	@Override
 	public EditableImagePalette duplicate() {
 		final List<TileLayer> duplicatedSources = new ArrayList<TileLayer>();
-		final String[] duplicatedHitboxes = new String[hitboxes.length];
+		final String[] duplicatedHitboxes = hitboxes.clone();
 		
 		for(final TileLayer source : sources) {
 			final TileLayer duplicate = new TileLayer(source.getWidth(), source.getHeight());
