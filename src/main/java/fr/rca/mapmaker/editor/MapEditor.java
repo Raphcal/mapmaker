@@ -186,6 +186,9 @@ public class MapEditor extends javax.swing.JFrame {
         spriteTool = new fr.rca.mapmaker.editor.tool.SpriteTool();
         tilePopupMenu = new javax.swing.JPopupMenu();
         inspectTileMenuItem = new javax.swing.JMenuItem();
+        addRowAfterMenuItem = new javax.swing.JMenuItem();
+        addRowBeforeMenuItem = new javax.swing.JMenuItem();
+        removeRowMenuItem = new javax.swing.JMenuItem();
         tileInspector = new TileInspector(this, false);
         penTool = new PenTool(mapGrid, layerMemento);
         spriteInspector = new SpriteInspector(this, false);
@@ -320,6 +323,30 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         tilePopupMenu.add(inspectTileMenuItem);
+
+        addRowAfterMenuItem.setText(bundle.getString("palette.row.add.after")); // NOI18N
+        addRowAfterMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addRowAfterMenuItemActionPerformed(evt);
+            }
+        });
+        tilePopupMenu.add(addRowAfterMenuItem);
+
+        addRowBeforeMenuItem.setText(bundle.getString("palette.row.add.before")); // NOI18N
+        addRowBeforeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addRowBeforeMenuItemActionPerformed(evt);
+            }
+        });
+        tilePopupMenu.add(addRowBeforeMenuItem);
+
+        removeRowMenuItem.setText(bundle.getString("palette.row.remove")); // NOI18N
+        removeRowMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeRowMenuItemActionPerformed(evt);
+            }
+        });
+        tilePopupMenu.add(removeRowMenuItem);
 
         tileInspector.pack();
 
@@ -1602,9 +1629,33 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_moveMapBottomButtonActionPerformed
 
+    private void addRowAfterMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRowAfterMenuItemActionPerformed
+		final Palette palette = project.getCurrentMap().getPalette();
+		if(palette.isEditable()) {
+			final EditablePalette editablePalette = (EditablePalette) palette;
+			editablePalette.insertRowAfter();
+		}
+    }//GEN-LAST:event_addRowAfterMenuItemActionPerformed
+
+    private void addRowBeforeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRowBeforeMenuItemActionPerformed
+        final Palette palette = project.getCurrentMap().getPalette();
+		if(palette.isEditable()) {
+			final EditablePalette editablePalette = (EditablePalette) palette;
+			editablePalette.insertRowBefore();
+		}
+    }//GEN-LAST:event_addRowBeforeMenuItemActionPerformed
+
+    private void removeRowMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeRowMenuItemActionPerformed
+        final Palette palette = project.getCurrentMap().getPalette();
+		if(palette.isEditable()) {
+			final EditablePalette editablePalette = (EditablePalette) palette;
+			editablePalette.removeRow();
+		}
+    }//GEN-LAST:event_removeRowMenuItemActionPerformed
+
 	private void select(MouseEvent event, Grid grid) {
-		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
-				
+		final Point point = grid.getLayerLocation(event.getX(), event.getY());
+		
 		final PaletteMap paletteMap = (PaletteMap) grid.getTileMap();
 		paletteMap.setSelection(point);
 		
@@ -1651,6 +1702,8 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayerButton;
+    private javax.swing.JMenuItem addRowAfterMenuItem;
+    private javax.swing.JMenuItem addRowBeforeMenuItem;
     private javax.swing.JToggleButton bucketFillToggleButton;
     private javax.swing.JMenuItem cancelMenuItem;
     private javax.swing.JMenuItem clearRecentMenuItem;
@@ -1704,6 +1757,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton redoButton;
     private javax.swing.JMenuItem redoMenuItem;
     private javax.swing.JButton removeLayerButton;
+    private javax.swing.JMenuItem removeRowMenuItem;
     private javax.swing.JToggleButton selectionToggleButton;
     private javax.swing.JPanel spriteBackgroundPanel;
     private fr.rca.mapmaker.editor.SpriteInspector spriteInspector;

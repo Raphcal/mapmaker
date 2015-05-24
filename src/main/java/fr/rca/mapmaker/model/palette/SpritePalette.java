@@ -158,6 +158,21 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	}
 	
 	@Override
+	public void removeRow() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void insertRowBefore() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void insertRowAfter() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	
+	@Override
 	public void refresh() {
 		expand(columns - 1);
 	}

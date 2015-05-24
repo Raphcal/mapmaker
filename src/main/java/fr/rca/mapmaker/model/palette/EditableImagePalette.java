@@ -121,7 +121,7 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	}
 	
 	private void renderTile(int index) {
-		final BufferedImage image = renderer.renderImage(sources.get(index), palette, 1);
+		final BufferedImage image = render(sources.get(index));
 		
 		if(tiles.size() == index) {
 			tiles.add(image);
@@ -132,6 +132,10 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 		} else {
 			throw new IndexOutOfBoundsException("L'index " + index + " n'existe pas.");
 		}
+	}
+	
+	private BufferedImage render(TileLayer layer) {
+		return renderer.renderImage(layer, palette, 1);
 	}
 	
 	public TileLayer getSource(int index) {
@@ -175,26 +179,80 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 		}
 	}
 	
+	@Override
+	public void insertRowBefore() {
+		insert(selectedTile - selectedTile % columns, columns);
+	}
+	
+	@Override
+	public void insertRowAfter() {
+		insert(columns + selectedTile - selectedTile % columns, columns);
+	}
+	
+	public void insert(int index, int count) {
+		final Dimension oldSize = getSize();
+		
+		// Ajout des nouvelles tuiles
+		for(int i = 0; i < count; i++) {
+			final TileLayer layer = new TileLayer(tileSize, tileSize);
+			sources.add(index, layer);
+			tiles.add(index, render(layer));
+		}
+		
+		// Redimensionnement du tableau de hitbox.
+		final String[] newArray = new String[sources.size()];
+		System.arraycopy(hitboxes, 0, newArray, 0, index);
+		System.arraycopy(hitboxes, index, newArray, index + count, sources.size() - index - count);
+		hitboxes = newArray;
+		
+		fireSizeChanged(oldSize, getSize());
+	}
+	
+	@Override
+	public void removeRow() {
+		remove(selectedTile - selectedTile % columns, columns);
+	}
+	
+	public void remove(int index, int count) {
+		final Dimension oldSize = getSize();
+		
+		// Suppression des tuiles
+		for(int i = 0; i < count; i++) {
+			sources.remove(index);
+			tiles.remove(index);
+		}
+		
+		// Redimensionnement du tableau de hitbox.
+		final String[] newArray = new String[sources.size()];
+		System.arraycopy(hitboxes, 0, newArray, 0, index);
+		System.arraycopy(hitboxes, index + count, newArray, index, sources.size() - index - count);
+		hitboxes = newArray;
+		
+		fireSizeChanged(oldSize, getSize());
+	}
+	
 	public void refreshSource(int index) {
 		if(index >= sources.size() - columns) {
-			final Dimension oldSize = new Dimension(columns, sources.size() / columns);
+			final Dimension oldSize = getSize();
 			
 			for(int i = 0; i < columns; i++) {
 				sources.add(new TileLayer(tileSize, tileSize));
 				renderTile(sources.size() - 1);
 			}
 			
-			final Dimension newSize = new Dimension(columns, sources.size() / columns);
-			
 			// Redimensionnement du tableau de hitbox.
 			final String[] newArray = new String[sources.size()];
 			System.arraycopy(hitboxes, 0, newArray, 0, hitboxes.length);
 			hitboxes = newArray;
 			
-			fireSizeChanged(oldSize, newSize);
+			fireSizeChanged(oldSize, getSize());
 		}
 		
 		renderTile(index);
+	}
+	
+	private Dimension getSize() {
+		return new Dimension(columns, sources.size() / columns);
 	}
 	
 	@Override

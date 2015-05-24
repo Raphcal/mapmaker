@@ -129,6 +129,21 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 	public void removeTile(int index) {
 		getEditablePalette().removeTile(index);
 	}
+
+	@Override
+	public void removeRow() {
+		getEditablePalette().removeRow();
+	}
+
+	@Override
+	public void insertRowAfter() {
+		getEditablePalette().insertRowAfter();
+	}
+
+	@Override
+	public void insertRowBefore() {
+		getEditablePalette().insertRowBefore();
+	}
 	
 	@Override
 	public void refresh() {

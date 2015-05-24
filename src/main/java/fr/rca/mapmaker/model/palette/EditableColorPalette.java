@@ -76,6 +76,21 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 	public void removeTile(int index) {
 		setColor(index, null);
 	}
+	
+	@Override
+	public void removeRow() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void insertRowBefore() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void insertRowAfter() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
 	@Override
 	public String toString() {
