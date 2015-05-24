@@ -186,8 +186,9 @@ public class MapEditor extends javax.swing.JFrame {
         spriteTool = new fr.rca.mapmaker.editor.tool.SpriteTool();
         tilePopupMenu = new javax.swing.JPopupMenu();
         inspectTileMenuItem = new javax.swing.JMenuItem();
-        addRowAfterMenuItem = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
         addRowBeforeMenuItem = new javax.swing.JMenuItem();
+        addRowAfterMenuItem = new javax.swing.JMenuItem();
         removeRowMenuItem = new javax.swing.JMenuItem();
         tileInspector = new TileInspector(this, false);
         penTool = new PenTool(mapGrid, layerMemento);
@@ -323,14 +324,7 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         tilePopupMenu.add(inspectTileMenuItem);
-
-        addRowAfterMenuItem.setText(bundle.getString("palette.row.add.after")); // NOI18N
-        addRowAfterMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addRowAfterMenuItemActionPerformed(evt);
-            }
-        });
-        tilePopupMenu.add(addRowAfterMenuItem);
+        tilePopupMenu.add(jSeparator3);
 
         addRowBeforeMenuItem.setText(bundle.getString("palette.row.add.before")); // NOI18N
         addRowBeforeMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -339,6 +333,14 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         tilePopupMenu.add(addRowBeforeMenuItem);
+
+        addRowAfterMenuItem.setText(bundle.getString("palette.row.add.after")); // NOI18N
+        addRowAfterMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addRowAfterMenuItemActionPerformed(evt);
+            }
+        });
+        tilePopupMenu.add(addRowAfterMenuItem);
 
         removeRowMenuItem.setText(bundle.getString("palette.row.remove")); // NOI18N
         removeRowMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -1750,6 +1752,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem inspectTileMenuItem;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JButton layerDownButton;
     private javax.swing.JList layerList;
     private javax.swing.JScrollPane layerListScrollPane;
