@@ -1634,6 +1634,8 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		if(palette.isEditable()) {
 			final EditablePalette editablePalette = (EditablePalette) palette;
 			editablePalette.insertRowAfter();
+			
+			shiftTiles(palette, 4 + editablePalette.getSelectedTile() - editablePalette.getSelectedTile() % 4, 4);
 		}
     }//GEN-LAST:event_addRowAfterMenuItemActionPerformed
 
@@ -1642,6 +1644,8 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		if(palette.isEditable()) {
 			final EditablePalette editablePalette = (EditablePalette) palette;
 			editablePalette.insertRowBefore();
+			
+			shiftTiles(palette, editablePalette.getSelectedTile() - editablePalette.getSelectedTile() % 4, 4);
 		}
     }//GEN-LAST:event_addRowBeforeMenuItemActionPerformed
 
@@ -1650,9 +1654,31 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		if(palette.isEditable()) {
 			final EditablePalette editablePalette = (EditablePalette) palette;
 			editablePalette.removeRow();
+			
+			shiftTiles(palette, editablePalette.getSelectedTile() - editablePalette.getSelectedTile() % 4, -4);
 		}
     }//GEN-LAST:event_removeRowMenuItemActionPerformed
 
+	private void shiftTiles(Palette palette, int from, int shift) {
+		for(final TileMap map : project.getMaps()) {
+			if(map.getPalette().equals(palette)) {
+				for(final Layer layer : map.getLayers()) {
+					if(layer instanceof TileLayer) {
+						final TileLayer tileLayer = (TileLayer) layer;
+						for(int y = 0; y < tileLayer.getHeight(); y++) {
+							for(int x = 0; x < tileLayer.getWidth(); x++) {
+								final int tile = tileLayer.getTile(x, y);
+								if(tile >= from) {
+									tileLayer.setRawTile(x, y, tile + shift);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = grid.getLayerLocation(event.getX(), event.getY());
 		
