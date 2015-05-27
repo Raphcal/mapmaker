@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
@@ -23,7 +24,7 @@ import javax.swing.JOptionPane;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SpriteEditor extends javax.swing.JDialog {
-	
+	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
 	private final static List<TileLayer> PASTEBOARD = new ArrayList<TileLayer>();
 	
 	private final List<ActionListener> actionListeners = new ArrayList<ActionListener>();
@@ -177,14 +178,14 @@ public class SpriteEditor extends javax.swing.JDialog {
         });
         gridScrollPane.setViewportView(tileLayerList);
 
-        cancelButton.setText("Annuler");
+        cancelButton.setText(LANGUAGE.getString("button.cancel")); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
             }
         });
 
-        okButton.setText("OK");
+        okButton.setText(LANGUAGE.getString("button.ok")); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
