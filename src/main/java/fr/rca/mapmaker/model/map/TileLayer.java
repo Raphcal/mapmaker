@@ -593,6 +593,15 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	}
 	
 	/**
+	 * Vérifie si cette couche est visuellement identique à celle donnée en argument.
+	 * @param other Couche à vérifier
+	 * @return <code>true</code> si les deux couches sont identiques, <code>false</code> sinon.
+	 */
+	public boolean hasSameData(TileLayer other) {
+		return Arrays.equals(tiles, other.tiles);
+	}
+	
+	/**
 	 * Inverse la couche horizontalement.
 	 */
 	public void flipHorizontally() {
