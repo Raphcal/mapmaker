@@ -3,6 +3,7 @@ package fr.rca.mapmaker.editor;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import java.util.Map;
 
 /**
  *
@@ -50,6 +51,11 @@ public class InstanceInspector extends javax.swing.JDialog {
 
 	public Instance getInstance() {
 		return instance;
+	}
+	
+	public Map<String, String> getVariables() {
+		// TODO: Parser simplement le textarea pour déterminer les variables.
+		return null;
 	}
 	
 	/**
