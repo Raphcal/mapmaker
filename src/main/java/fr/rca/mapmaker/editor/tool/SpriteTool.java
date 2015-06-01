@@ -35,6 +35,8 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	private List<Instance> instances;
 	private Map<Instance, MouseAdapter> mouseAdapters;
 	private double zoom;
+	
+	private final InstanceInspector inspector = new InstanceInspector(null, false);
 
 	public SpriteTool() {
 		this(null, null, null);
@@ -167,6 +169,7 @@ public class SpriteTool extends MouseAdapter implements Tool {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				inspector.setInstance(instance);
 				maybeShowPopupMenu(instance, e);
 			}
 			
@@ -175,6 +178,11 @@ public class SpriteTool extends MouseAdapter implements Tool {
 				maybeShowPopupMenu(instance, e);
 				startPoint = null;
 				originalPoint = null;
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				inspector.setInstance(instance);
 			}
 		};
 	}
@@ -191,7 +199,6 @@ public class SpriteTool extends MouseAdapter implements Tool {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				final InstanceInspector inspector = new InstanceInspector(null, false);
 				inspector.setInstance(instance);
 				inspector.setVisible(true);
 			}
