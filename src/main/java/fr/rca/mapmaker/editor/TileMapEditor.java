@@ -177,6 +177,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         previewMap.add(drawLayer);
         selectionStyle = new fr.rca.mapmaker.model.selection.SmallSelectionStyle();
         memento = new fr.rca.mapmaker.editor.undo.LayerMemento();
+        treeTool = new fr.rca.mapmaker.editor.tool.TreeTool();
         gridScrollPane = new javax.swing.JScrollPane();
         centerPanel = new javax.swing.JPanel(new fr.rca.mapmaker.ui.LayerLayout(fr.rca.mapmaker.ui.LayerLayout.Disposition.CENTER));
         drawGrid = new fr.rca.mapmaker.ui.Grid();
@@ -214,6 +215,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         treeToggleButton = new javax.swing.JToggleButton();
+        nextStepTreeButton = new javax.swing.JButton();
 
         drawMap.setBackgroundColor(new java.awt.Color(0, 153, 153));
         drawMap.setHeight(32);
@@ -229,6 +231,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         previewMap.setWidth(32);
 
         memento.setLayers(Collections.singletonList(drawLayer));
+        treeTool.setGrid(drawGrid);
 
         setTitle("Éditeur");
 
@@ -473,7 +476,15 @@ public class TileMapEditor extends javax.swing.JDialog {
         toolButtonGroup.add(treeToggleButton);
         treeToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_tree.png"))); // NOI18N
         treeToggleButton.setSize(new java.awt.Dimension(32, 32));
-        wireTool(treeToggleButton, new TreeTool(drawGrid));
+        wireTool(treeToggleButton, treeTool);
+
+        nextStepTreeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_right.png"))); // NOI18N
+        nextStepTreeButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        nextStepTreeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextStepTreeButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -528,9 +539,11 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addComponent(treeToggleButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(previousLayerButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, 0)
-                        .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nextStepTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -595,7 +608,9 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addComponent(previousLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(treeToggleButton)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(treeToggleButton)
+                            .addComponent(nextStepTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(paletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -724,6 +739,11 @@ public class TileMapEditor extends javax.swing.JDialog {
 		}
     }//GEN-LAST:event_rotateButtonActionPerformed
 
+    private void nextStepTreeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextStepTreeButtonActionPerformed
+        // TODO add your handling code here:
+		treeTool.nextStep();
+    }//GEN-LAST:event_nextStepTreeButtonActionPerformed
+
 	private void selectColor(MouseEvent event) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 		colorPaletteMap.setSelection(point);
@@ -791,6 +811,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private javax.swing.JToggleButton magicWandToggleButton;
     private fr.rca.mapmaker.editor.undo.LayerMemento memento;
     private javax.swing.JButton nextLayerButton;
+    private javax.swing.JButton nextStepTreeButton;
     private javax.swing.JButton okButton;
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JButton pasteButton;
@@ -807,6 +828,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private javax.swing.JToggleButton selectionToggleButton;
     private javax.swing.ButtonGroup toolButtonGroup;
     private javax.swing.JToggleButton treeToggleButton;
+    private fr.rca.mapmaker.editor.tool.TreeTool treeTool;
     private javax.swing.JButton undoButton;
     private javax.swing.JButton verticalMirrorButton;
     private javax.swing.JLabel zoomPercentLabel;
