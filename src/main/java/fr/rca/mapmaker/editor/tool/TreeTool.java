@@ -66,9 +66,11 @@ public class TreeTool extends MouseAdapter implements Tool {
 	
 	public void nextStep() {
 		if(painter != null) {
+			final DataLayer layer = (DataLayer) grid.getActiveLayer();
+			
+			painter.setTiles(layer.copyData());
 			painter.nextStep(getTile());
 			
-			final DataLayer layer = (DataLayer) grid.getActiveLayer();
 			layer.restoreData(painter.getTiles(), null);
 		}
 	}
