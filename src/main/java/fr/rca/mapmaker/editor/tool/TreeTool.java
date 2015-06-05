@@ -44,7 +44,8 @@ public class TreeTool extends MouseAdapter implements Tool {
 		lastInput = input;
 		
 		final String[] values = input.split(",");
-		if(values.length != 5) {
+		if(values.length != 5 && values.length != 6) {
+			JOptionPane.showMessageDialog(null, "Taille fournie : " + values.length);
 			return;
 		}
 		
@@ -53,13 +54,14 @@ public class TreeTool extends MouseAdapter implements Tool {
 		final double wide = Math.toRadians(Double.parseDouble(values[2]));
 		final double childLength = Double.parseDouble(values[3]);
 		final double trunkHeight = Double.parseDouble(values[4]);
+		final int trunkWidth = values.length == 6 ? Integer.parseInt(values[5]) : 1;
 		
 		final DataLayer layer = (DataLayer) grid.getActiveLayer();
 		
 		final Point point = grid.getLayerLocation(e.getX(), e.getY());
 		
 		painter = new FractalPainter(layer, leafCount, tilting, wide, childLength);
-		painter.firstStep(getTile(), point, trunkHeight, -Math.PI / 2.0);
+		painter.firstStep(getTile(), point, trunkHeight, trunkWidth, -Math.PI / 2.0);
 		
 		layer.restoreData(painter.getTiles(), null);
 	}
@@ -113,8 +115,8 @@ public class TreeTool extends MouseAdapter implements Tool {
 			}
 		}
 
-		public void firstStep(int tile, Point2D root, double length, double angle) {
-			states = Collections.singletonList(new State(root, length, angle));
+		public void firstStep(int tile, Point2D root, double length, int width, double angle) {
+			states = Collections.singletonList(new State(root, length, width, angle));
 			nextStep(tile);
 			nextStep(tile);
 		}
@@ -126,10 +128,11 @@ public class TreeTool extends MouseAdapter implements Tool {
 				draw(state, tile);
 				
 				final Point2D nextRoot = nextRoot(state);
+				final int width = state.getWidth() > 1 ? state.getWidth() - 1 : 1;
 				
 				double leafAngle = state.getAngle() + tilting - wide / 2.0;
 				for(int leaf = 0; leaf < leafCount; leaf++) {
-					nextStates.add(new State(nextRoot, state.getLength() * childLenth, leafAngle));
+					nextStates.add(new State(nextRoot, state.getLength() * childLenth, width, leafAngle));
 					leafAngle += wide / (double) (leafCount - 1);
 				}
 			}
@@ -145,13 +148,35 @@ public class TreeTool extends MouseAdapter implements Tool {
 		}
 		
 		private void draw(State state, int tile) {
-			draw(state.getRoot(), (int) state.getLength(), state.getAngle(), tile);
+			if(state.getWidth() > 1) {
+				draw(state.getRoot(), state.getWidth(), (int) state.getLength(), state.getAngle(), tile);
+			} else {
+				draw(state.getRoot(), (int) state.getLength(), state.getAngle(), tile);
+			}
 		}
 		
 		private void draw(Point2D origin, int length, double angle, int tile) {
 			for(int i = 0; i < length; i++) {
 				final double x = origin.getX() + Math.cos(angle) * i;
 				final double y = origin.getY() + Math.sin(angle) * i;
+				
+				draw((int) x, (int) y, tile);
+			}
+		}
+		
+		private void draw(Point2D origin, int width, int length, double angle, int tile) {
+			for(int i = 0; i < length; i++) {
+				final double x = origin.getX() + Math.cos(angle) * i;
+				final double y = origin.getY() + Math.sin(angle) * i;
+				
+				draw(new Line(new Point2D.Double(x, y), (double) width, angle), tile);
+			}
+		}
+		
+		private void draw(Line line, int tile) {
+			for(int i = 0; i < (int) line.getWidth(); i++) {
+				final double x = line.getA().getX() + (i / line.getWidth()) * (line.getB().getX() - line.getA().getX());
+				final double y = line.getA().getY() + (i / line.getWidth()) * (line.getB().getY() - line.getA().getY());
 				
 				draw((int) x, (int) y, tile);
 			}
@@ -174,14 +199,45 @@ public class TreeTool extends MouseAdapter implements Tool {
 		
 	}
 	
+	private static class Line {
+		private final Point2D a, b;
+		private final double width;
+
+		public Line(Point2D origin, double width, double angle) {
+			this.width = width;
+			
+			final double aAngle = angle - Math.PI / 2.0f;
+			final double bAngle = angle + Math.PI / 2.0f;
+			
+			this.a = new Point2D.Double(Math.cos(aAngle) * width + origin.getX(),
+					Math.sin(aAngle) * width + origin.getY());
+			this.b = new Point2D.Double(Math.cos(bAngle) * width + origin.getX(),
+					Math.sin(bAngle) * width + origin.getY());
+		}
+
+		public double getWidth() {
+			return width;
+		}
+
+		public Point2D getA() {
+			return a;
+		}
+
+		public Point2D getB() {
+			return b;
+		}
+	}
+	
 	private static class State {
 		private final Point2D root;
 		private final double length;
+		private final int width;
 		private final double angle;
 
-		public State(Point2D root, double length, double angle) {
+		public State(Point2D root, double length, int width, double angle) {
 			this.root = root;
 			this.length = length;
+			this.width = width;
 			this.angle = angle;
 		}
 
@@ -193,6 +249,10 @@ public class TreeTool extends MouseAdapter implements Tool {
 			return length;
 		}
 
+		public int getWidth() {
+			return width;
+		}
+		
 		public double getAngle() {
 			return angle;
 		}
