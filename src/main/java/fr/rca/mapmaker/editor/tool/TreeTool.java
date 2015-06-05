@@ -35,7 +35,7 @@ public class TreeTool extends MouseAdapter implements Tool {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		final String input = JOptionPane.showInputDialog("Infos de l'arbre ? (feuilles, angle d'orientation, angle de largeur, pourcentage branches, taille du tronc, itérations)", lastInput);
+		final String input = JOptionPane.showInputDialog("Infos de l'arbre ? (feuilles, tilt, angle de largeur, pourcentage branches, taille du tronc, itérations)", lastInput);
 		lastInput = input;
 		
 		final String[] values = input.split(",");
@@ -55,9 +55,13 @@ public class TreeTool extends MouseAdapter implements Tool {
 		final Point point = grid.getLayerLocation(e.getX(), e.getY());
 		
 		final FractalPainter painter = new FractalPainter(layer, leafCount, tilting, wide, childLength);
-		painter.drawLine(point, trunkHeight, -Math.PI / 2.0, iterations);
+		painter.drawLine(getTile(), point, trunkHeight, -Math.PI / 2.0, iterations);
 		
 		layer.restoreData(painter.getTiles(), null);
+	}
+	
+	private int getTile() {
+		return grid.getTileMap().getPalette().getSelectedTile();
 	}
 	
 	private static class FractalPainter {
@@ -77,12 +81,12 @@ public class TreeTool extends MouseAdapter implements Tool {
 			this.childLenth = childLenth;
 		}
 		
-		private void drawLine(Point2D root, double length, double angle, int remainingIterations) {
+		public void drawLine(int tile, Point2D root, double length, double angle, int remainingIterations) {
 			for(int i = 0; i < (int) length; i++) {
 				final double x = root.getX() + Math.cos(angle) * i;
 				final double y = root.getY() + Math.sin(angle) * i;
 				
-				draw((int) x, (int) y, 0);
+				draw((int) x, (int) y, tile);
 			}
 			
 			final Point2D nextRoot = new Point2D.Double(root.getX() + Math.cos(angle) * length, root.getY() + Math.sin(angle) * length);
@@ -90,9 +94,9 @@ public class TreeTool extends MouseAdapter implements Tool {
 			if(remainingIterations > 0) {
 				double leafAngle = angle + tilting - wide / 2.0;
 				for(int leaf = 0; leaf < leafCount; leaf++) {
-					drawLine(nextRoot, length * childLenth, leafAngle, remainingIterations - 1);
+					drawLine(tile, nextRoot, length * childLenth, leafAngle, remainingIterations - 1);
 
-					leafAngle += wide / (double) leafCount;
+					leafAngle += wide / (double) (leafCount - 1);
 				}
 			}
 		}
