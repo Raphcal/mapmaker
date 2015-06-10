@@ -34,6 +34,12 @@
 			<key>map</key>
 			<string>map4.map</string>
 		</dict>
+		<dict>
+			<key>instances</key>
+			<string>map5.ins</string>
+			<key>map</key>
+			<string>map5.map</string>
+		</dict>
 	</array>
 	<key>palettes</key>
 	<array>
