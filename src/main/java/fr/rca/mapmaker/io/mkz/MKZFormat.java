@@ -8,6 +8,7 @@ import fr.rca.mapmaker.io.internal.ColorDataHandler;
 import fr.rca.mapmaker.io.internal.ColorPaletteDataHandler;
 import fr.rca.mapmaker.io.internal.EditableColorPaletteDataHandler;
 import fr.rca.mapmaker.io.internal.EditableImagePaletteDataHandler;
+import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.io.internal.LayerDataHandler;
 import fr.rca.mapmaker.io.internal.PaletteReferenceDataHandler;
 import fr.rca.mapmaker.io.internal.ScrollRateDataHandler;
@@ -60,6 +61,8 @@ public class MKZFormat extends AbstractFormat {
 	
 	@Override
 	public void saveProject(Project project, File file) {
+		setVersion(InternalFormat.LAST_VERSION);
+		
 		final DataHandler<Project> handler = getHandler(project.getClass());
 		
 		ZipOutputStream outputStream = null;
