@@ -5,6 +5,7 @@ import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.SupportedOperation;
+import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
@@ -28,7 +29,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,11 +43,13 @@ public class InternalFormat extends AbstractFormat {
 	
 	public static final int VERSION_3 = 3;
 	public static final int VERSION_4 = 4;
+	public static final int VERSION_5 = 5;
 	public static final String HEADER_VERSION_3 = "MMK3";
 	public static final String HEADER_VERSION_4 = "MMK4";
+	public static final String HEADER_VERSION_5 = "MMK5";
 	
-	public static final int LAST_VERSION = VERSION_4;
-	public static final String HEADER_LAST_VERSION = HEADER_VERSION_4;
+	public static final int LAST_VERSION = VERSION_5;
+	public static final String HEADER_LAST_VERSION = HEADER_VERSION_5;
 			
 
 	public InternalFormat() {
@@ -63,7 +65,8 @@ public class InternalFormat extends AbstractFormat {
 		addHandler(EditableImagePalette.class, new EditableImagePaletteDataHandler(this));
 		addHandler(PaletteReference.class, new PaletteReferenceDataHandler());
 		addHandler(BufferedImage.class, new BufferedImageDataHandler());
-		addHandler(TileLayer.class, new LayerDataHandler());
+		addHandler(TileLayer.class, new LayerDataHandler(this));
+		addHandler(ScrollRate.class, new ScrollRateDataHandler());
 		addHandler(TileMap.class, new TileMapDataHandler(this));
 		addHandler(Sprite.class, new SpriteDataHandler(this));
 		addHandler(Animation.class, new AnimationDataHandler(this));

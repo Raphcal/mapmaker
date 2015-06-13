@@ -37,7 +37,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	/**
 	 * Vitesse de défilement pour le parallaxe. 
 	 */
-	private float scrollRate = 1.0f;
+	private ScrollRate scrollRate = new ScrollRate();
 	
 	/**
 	 * Visibilité de la couche.
@@ -252,7 +252,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	 * @return La vitesse de défilement.
 	 */
 	@Override
-	public float getScrollRate() {
+	public ScrollRate getScrollRate() {
 		return scrollRate;
 	}
 	
@@ -261,7 +261,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	 * 
 	 * @param scrollRate La vitesse de défilement.
 	 */
-	public void setScrollRate(float scrollRate) {
+	public void setScrollRate(ScrollRate scrollRate) {
 		this.scrollRate = scrollRate;
 	}
 	
@@ -493,8 +493,8 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 		}
 		
 		for(final TileLayer layer : layers) {
-			final int normalizedWidth = (int) (width * layer.getScrollRate());
-			final int normalizedHeight = (int) (height * layer.getScrollRate());
+			final int normalizedWidth = (int) (width * layer.getScrollRate().getX());
+			final int normalizedHeight = (int) (height * layer.getScrollRate().getY());
 			layer.resize(normalizedWidth, normalizedHeight);
 		}
 		

@@ -326,8 +326,8 @@ public class Grid extends AbstractLayerPainter {
 			final Point viewPoint = viewport.getViewPosition();
 			
 			// Emplacement du point supérieur gauche de la couche.
-			origin.x = (int) (viewPoint.x * (1 - layer.getScrollRate()));
-			origin.y = (int) (viewPoint.y * (1 - layer.getScrollRate()));
+			origin.x = (int) (viewPoint.x * (1 - layer.getScrollRate().getX()));
+			origin.y = (int) (viewPoint.y * (1 - layer.getScrollRate().getY()));
 
 		} else {
 			origin.x = 0;
@@ -417,8 +417,8 @@ public class Grid extends AbstractLayerPainter {
 			final Point viewPoint = viewport.getViewPosition();
 			
 			// Décalage du point pour prendre en compte le parallaxe.
-			x -= (int) (viewPoint.x * (1 - layer.getScrollRate()));
-			y -= (int) (viewPoint.y * (1 - layer.getScrollRate()));
+			x -= (int) (viewPoint.x * (1 - layer.getScrollRate().getX()));
+			y -= (int) (viewPoint.y * (1 - layer.getScrollRate().getY()));
 		}
 		
 		return new Point(x / tileSize, y / tileSize);

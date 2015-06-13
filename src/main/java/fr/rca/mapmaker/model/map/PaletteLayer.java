@@ -50,8 +50,8 @@ public class PaletteLayer implements Layer, HasSizeChangeListeners {
 	}
 
 	@Override
-	public float getScrollRate() {
-		return 1.0f;
+	public ScrollRate getScrollRate() {
+		return ScrollRate.IDENTITY;
 	}
 
 	@Override

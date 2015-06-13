@@ -50,12 +50,12 @@ public abstract class AbstractLayerPainter extends JComponent {
 		// Emplacement du point supérieur gauche de la couche.
 		// Utilisé pour centrer correctement les plans ayant une vitesse
 		// de défilement différente de 1.
-		final int originX = (int) (viewpoint.x * (1 - layer.getScrollRate())) + padding;
-		final int originY = (int) (viewpoint.y * (1 - layer.getScrollRate())) + padding;
+		final int originX = (int) (viewpoint.x * (1 - layer.getScrollRate().getX())) + padding;
+		final int originY = (int) (viewpoint.y * (1 - layer.getScrollRate().getY())) + padding;
 		
 		// Coordonnées du premier point à afficher.
-		final int startX = (int) ((clipBounds.x * layer.getScrollRate()) / tileSize);
-		final int startY = (int) ((clipBounds.y * layer.getScrollRate()) / tileSize);
+		final int startX = (int) ((clipBounds.x * layer.getScrollRate().getX()) / tileSize);
+		final int startY = (int) ((clipBounds.y * layer.getScrollRate().getY()) / tileSize);
 		
 		// Coordonnées du dernier point à afficher.
 		final int maxX = Math.min((int) Math.ceil((double) (clipBounds.x + clipBounds.width) / tileSize), layer.getWidth());

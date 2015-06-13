@@ -1108,8 +1108,8 @@ private void editMapMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//G
 		
 		for(final Layer layer : selectedTileMap.getLayers()) {
 			if(layer instanceof TileLayer) {
-				final int correctedWidth = (int) Math.ceil(width * Math.max(layer.getScrollRate(), 1.0f));
-				final int correctedHeight = (int) Math.ceil(height * Math.max(layer.getScrollRate(), 1.0f));
+				final int correctedWidth = (int) Math.ceil(width * Math.max(layer.getScrollRate().getX(), 1.0f));
+				final int correctedHeight = (int) Math.ceil(height * Math.max(layer.getScrollRate().getY(), 1.0f));
 				
 				((TileLayer)layer).resize(correctedWidth, correctedHeight);
 			}
@@ -1142,8 +1142,8 @@ private void addLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
 	if(dialog.hasBeenConfirmed()) {
 		final LayerProperties properties = dialog.getLayerProperties();
 		
-		final int width = (int) (tileMap.getWidth() * Math.max(properties.getScrollRate(), 1.0f));
-		final int height = (int) (tileMap.getHeight() * Math.max(properties.getScrollRate(), 1.0f));
+		final int width = (int) (tileMap.getWidth() * Math.max(properties.getScrollRate().getX(), 1.0f));
+		final int height = (int) (tileMap.getHeight() * Math.max(properties.getScrollRate().getY(), 1.0f));
 		
 		final TileLayer tileLayer = new TileLayer(width, height);
 		tileLayer.setScrollRate(properties.getScrollRate());
@@ -1173,8 +1173,8 @@ private void editLayerMenuItemActionPerformed(java.awt.event.ActionEvent evt) {/
 		final LayerProperties properties = dialog.getLayerProperties();
 		final TileMap tileMap = project.getCurrentMap();
 		
-		final int width = (int) (tileMap.getWidth() * Math.max(properties.getScrollRate(), 1.0f));
-		final int height = (int) (tileMap.getHeight() * Math.max(properties.getScrollRate(), 1.0f));
+		final int width = (int) (tileMap.getWidth() * Math.max(properties.getScrollRate().getX(), 1.0f));
+		final int height = (int) (tileMap.getHeight() * Math.max(properties.getScrollRate().getY(), 1.0f));
 		
 		selectedLayer.setScrollRate(properties.getScrollRate());
 		selectedLayer.resize(width, height);
@@ -1717,7 +1717,9 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			hasParallax = false;
 		} else {
 			for(final Layer layer : project.getCurrentMap().getLayers()) {
-				hasParallax = hasParallax || layer.getScrollRate() != 1.0;
+				hasParallax = hasParallax 
+						|| layer.getScrollRate().getX() != 1.0f 
+						|| layer.getScrollRate().getY() != 1.0f;
 			}
 		}
 		

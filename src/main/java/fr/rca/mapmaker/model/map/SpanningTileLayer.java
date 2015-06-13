@@ -59,7 +59,7 @@ public class SpanningTileLayer implements DataLayer {
 	}
 
 	@Override
-	public float getScrollRate() {
+	public ScrollRate getScrollRate() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

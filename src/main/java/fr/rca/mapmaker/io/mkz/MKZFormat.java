@@ -10,6 +10,8 @@ import fr.rca.mapmaker.io.internal.EditableColorPaletteDataHandler;
 import fr.rca.mapmaker.io.internal.EditableImagePaletteDataHandler;
 import fr.rca.mapmaker.io.internal.LayerDataHandler;
 import fr.rca.mapmaker.io.internal.PaletteReferenceDataHandler;
+import fr.rca.mapmaker.io.internal.ScrollRateDataHandler;
+import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.ColorPalette;
@@ -48,7 +50,8 @@ public class MKZFormat extends AbstractFormat {
 		addHandler(EditableImagePalette.class, new EditableImagePaletteDataHandler(this));
 		addHandler(PaletteReference.class, new PaletteReferenceDataHandler());
 		addHandler(BufferedImage.class, new BufferedImageDataHandler());
-		addHandler(TileLayer.class, new LayerDataHandler());
+		addHandler(TileLayer.class, new LayerDataHandler(this));
+		addHandler(ScrollRate.class, new ScrollRateDataHandler());
 		addHandler(TileMap.class, new TileMapDataHandler(this));
 		addHandler(Sprite.class, new SpriteDataHandler(this));
 		addHandler(Instance.class, new InstanceDataHandler());
