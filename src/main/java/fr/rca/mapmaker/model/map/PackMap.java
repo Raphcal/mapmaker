@@ -1,12 +1,15 @@
 package fr.rca.mapmaker.model.map;
 
 import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.model.sprite.Animation;
+import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -39,6 +42,9 @@ public class PackMap {
 	private int margin;
 	
 	private Map<TileMap, Point> locations;
+	
+	private Map<TileLayer, TileMap> tileLayerToTileMap;
+	private Collection<Sprite> sprites;
 	
 	public PackMap(int width, int height, int margin) {
 		this.width = width;
@@ -79,7 +85,7 @@ public class PackMap {
 		return locations.get(map);
 	}
 	
-	public static PackMap packAll(Collection<TileMap> maps, final int margin) {
+	public static PackMap packMaps(Collection<TileMap> maps, final int margin) {
 		if(maps == null || maps.isEmpty()) {
 			return null;
 		}
@@ -119,6 +125,27 @@ public class PackMap {
 		}
 		
 		return map;
+	}
+	
+	public static PackMap packSprites(Collection<Sprite> sprites, final int margin) {
+		final Map<TileLayer, TileMap> maps = new HashMap<TileLayer, TileMap>();
+		
+		for(final Sprite sprite : sprites) {
+			for(final Animation animation : sprite.getAnimations()) {
+				for(final List<TileLayer> frames : animation.getFrames().values()) {
+					for(final TileLayer frame : frames) {
+						maps.put(frame, new TileMap(frame, sprite.getPalette()));
+					}
+				}
+			}
+		}
+		
+		final PackMap result = packMaps(maps.values(), margin);
+		if(result != null) {
+			result.tileLayerToTileMap = maps;
+			result.sprites = sprites;
+		}
+		return result;
 	}
 	
 	/**
@@ -250,6 +277,14 @@ public class PackMap {
 
 	public int getSurface() {
 		return getEnclosingWidth() * height;
+	}
+
+	public Map<TileLayer, TileMap> getTileLayerToTileMap() {
+		return tileLayerToTileMap;
+	}
+
+	public Collection<Sprite> getSprites() {
+		return sprites;
 	}
 	
 	public BufferedImage renderImage() {
