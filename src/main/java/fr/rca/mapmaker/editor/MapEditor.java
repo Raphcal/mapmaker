@@ -21,6 +21,7 @@ import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.FormatFileFilter;
 import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
+import fr.rca.mapmaker.io.autodeploy.MeltedIceAutoDeploy;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.SpanningTileLayer;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
@@ -44,6 +45,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.JFileChooser;
@@ -56,12 +58,15 @@ import javax.swing.JViewport;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class MapEditor extends javax.swing.JFrame {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MapEditor.class);
 	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language"); // NO18N
 
 	private TileMap selectedTileMap;
@@ -142,6 +147,7 @@ public class MapEditor extends javax.swing.JFrame {
 	
 	private void configureFileChooser(SupportedOperation operation) {
 		fileChooser.setMultiSelectionEnabled(false);
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		
 		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters()) {
 			fileChooser.removeChoosableFileFilter(fileFilter);
@@ -267,6 +273,8 @@ public class MapEditor extends javax.swing.JFrame {
         multipleEditMenuItem = new javax.swing.JMenuItem();
         toolMenu = new javax.swing.JMenu();
         trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
+        autoDeployMenu = new javax.swing.JMenu();
+        meltedIceAutoDeployMenuItem = new javax.swing.JMenuItem();
         gitMenu = new javax.swing.JMenu();
         initMenuItem = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator initSeparator = new javax.swing.JPopupMenu.Separator();
@@ -978,6 +986,18 @@ public class MapEditor extends javax.swing.JFrame {
         });
         toolMenu.add(trajectoryPreviewMenuItem);
 
+        autoDeployMenu.setText(LANGUAGE.getString("menu.tools.deploy")); // NOI18N
+
+        meltedIceAutoDeployMenuItem.setText("MeltedIce");
+        meltedIceAutoDeployMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                meltedIceAutoDeployMenuItemActionPerformed(evt);
+            }
+        });
+        autoDeployMenu.add(meltedIceAutoDeployMenuItem);
+
+        toolMenu.add(autoDeployMenu);
+
         gitMenu.setText("Git");
 
         initMenuItem.setText("Init");
@@ -1661,6 +1681,36 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_removeRowMenuItemActionPerformed
 
+    private void meltedIceAutoDeployMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_meltedIceAutoDeployMenuItemActionPerformed
+		fileChooser.setMultiSelectionEnabled(false);
+		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters()) {
+			fileChooser.removeChoosableFileFilter(fileFilter);
+		}
+		
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		fileChooser.setFileFilter(new FileFilter() {
+
+			@Override
+			public boolean accept(File f) {
+				return MeltedIceAutoDeploy.accept(f);
+			}
+
+			@Override
+			public String getDescription() {
+				return "Dossier de MeltedIce";
+			}
+		});
+		
+		final int action = fileChooser.showSaveDialog(this);
+		if(action == JFileChooser.APPROVE_OPTION) {
+			try {
+				MeltedIceAutoDeploy.deploy(project, fileChooser.getSelectedFile());
+			} catch (IOException ex) {
+				LOGGER.error("Une erreur est survenue lors du déploiement automatique vers MeltedIce.", ex);
+			}
+		}
+    }//GEN-LAST:event_meltedIceAutoDeployMenuItemActionPerformed
+
 	private void shiftTiles(Palette palette, int from, int shift) {
 		for(final TileMap map : project.getMaps()) {
 			if(map.getPalette().equals(palette)) {
@@ -1734,6 +1784,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton addLayerButton;
     private javax.swing.JMenuItem addRowAfterMenuItem;
     private javax.swing.JMenuItem addRowBeforeMenuItem;
+    private javax.swing.JMenu autoDeployMenu;
     private javax.swing.JToggleButton bucketFillToggleButton;
     private javax.swing.JMenuItem cancelMenuItem;
     private javax.swing.JMenuItem clearRecentMenuItem;
@@ -1754,7 +1805,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem inspectTileMenuItem;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JButton layerDownButton;
     private javax.swing.JList layerList;
     private javax.swing.JScrollPane layerListScrollPane;
@@ -1768,6 +1819,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPanel mapPanel;
     private javax.swing.JPopupMenu mapPopupMenu;
     private javax.swing.JScrollPane mapScrollPane;
+    private javax.swing.JMenuItem meltedIceAutoDeployMenuItem;
     private javax.swing.JButton moveMapBottomButton;
     private javax.swing.JButton moveMapUpButton;
     private javax.swing.JMenuItem multipleEditMenuItem;

@@ -1,4 +1,4 @@
-package fr.rca.mapmaker;
+package fr.rca.mapmaker.io.autodeploy;
 
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
@@ -41,8 +41,9 @@ public class MeltedIceAutoDeploy {
 	};
 	
 	private static final String[] PALETTE_NAMES = {
-		"title.pal",
+		null,
 		"palette2.pal",
+		"title.pal",
 		"palette3.pal",
 		"palette4.pal",
 		"palette5.pal",
@@ -53,8 +54,12 @@ public class MeltedIceAutoDeploy {
 	
 	public static void main(String[] args) throws IOException {
 		final Project project = open(new File(SOURCE_PATH));
-		
 		final File root = new File(DEPLOY_PATH);
+		
+		deploy(project, root);
+	}
+	
+	public static void deploy(Project project, File root) throws IOException {
 		final File mapsFolder = new File(root, MAPS_FOLDER);
 		final File spritesFolder = new File(root, SPRITES_FOLDER);
 		
@@ -63,6 +68,13 @@ public class MeltedIceAutoDeploy {
 		deploySprites(project.getSprites(), spritesFolder);
 		deployPalettes(project.getPalettes(), mapsFolder);
 		deployMaps(project.getMaps(), project, mapsFolder);
+	}
+	
+	public static boolean accept(File file) {
+		final File mapsFolder = new File(file, MAPS_FOLDER);
+		final File spritesFolder = new File(file, SPRITES_FOLDER);
+		
+		return file.isDirectory() && mapsFolder.isDirectory() && spritesFolder.isDirectory();
 	}
 	
 	private static void deploySprites(Collection<Sprite> sprites, File folder) throws IOException {
@@ -95,7 +107,7 @@ public class MeltedIceAutoDeploy {
 		final DataHandler<BufferedImage> imageHandler = FORMAT.getHandler(BufferedImage.class);
 		
 		for(int index = 0; index < palettes.size(); index++) {
-			final String name = PALETTE_NAMES[index];
+			final String name = index < PALETTE_NAMES.length ? PALETTE_NAMES[index] : null;
 			if(name != null) {
 				final Palette palette = palettes.get(index);
 
@@ -123,7 +135,7 @@ public class MeltedIceAutoDeploy {
 		final DataHandler<Instance> instanceHandler = FORMAT.getHandler(Instance.class);
 		
 		for(int index = 0; index < maps.size(); index++) {
-			final String baseName = MAP_NAMES[index];
+			final String baseName = index < MAP_NAMES.length ? MAP_NAMES[index] : null;
 			
 			if(baseName != null) {
 				final TileMap map = maps.get(index);
