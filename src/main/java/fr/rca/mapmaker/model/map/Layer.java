@@ -28,7 +28,7 @@ public interface Layer {
 	 *
 	 * @return La vitesse de défilement.
 	 */
-	float getScrollRate();
+	ScrollRate getScrollRate();
 	
 	/**
 	 * Récupère la visibilité de la couche.
@@ -54,4 +54,5 @@ public interface Layer {
 	 * @return Le numéro de la tuile à l'emplacement donné.
 	 */
 	int getTile(Point p);
+	
 }

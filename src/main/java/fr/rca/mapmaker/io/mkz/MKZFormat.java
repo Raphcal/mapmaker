@@ -5,8 +5,11 @@ import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.internal.ColorDataHandler;
+import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.io.internal.LayerDataHandler;
 import fr.rca.mapmaker.model.map.PackMap;
+import fr.rca.mapmaker.io.internal.ScrollRateDataHandler;
+import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
@@ -35,13 +38,9 @@ public class MKZFormat extends AbstractFormat {
 		addHandler(Project.class, new ProjectDataHandler(this));
 		addHandler(Color.class, new ColorDataHandler());
 		addHandler(Palette.class, new ImagePaletteDataHandler());
-//		addHandler(ColorPalette.class, new ColorPaletteDataHandler(this));
-//		addHandler(EditableColorPalette.class, new EditableColorPaletteDataHandler(this));
-//		addHandler(ImagePalette.class, new ImagePaletteDataHandler(this));
-//		addHandler(EditableImagePalette.class, new EditableImagePaletteDataHandler(this));
-//		addHandler(PaletteReference.class, new PaletteReferenceDataHandler());
 		addHandler(BufferedImage.class, new BufferedImageDataHandler());
-		addHandler(TileLayer.class, new LayerDataHandler());
+		addHandler(TileLayer.class, new LayerDataHandler(this));
+		addHandler(ScrollRate.class, new ScrollRateDataHandler());
 		addHandler(TileMap.class, new TileMapDataHandler(this));
 		addHandler(Sprite.class, new SpriteDataHandler(this));
 		addHandler(Instance.class, new InstanceDataHandler());
@@ -51,6 +50,8 @@ public class MKZFormat extends AbstractFormat {
 	
 	@Override
 	public void saveProject(Project project, File file) {
+		setVersion(InternalFormat.LAST_VERSION);
+		
 		final DataHandler<Project> handler = getHandler(project.getClass());
 		
 		ZipOutputStream outputStream = null;

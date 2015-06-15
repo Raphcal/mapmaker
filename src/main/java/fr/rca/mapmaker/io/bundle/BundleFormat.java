@@ -6,6 +6,7 @@ import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.internal.InternalFormat;
+import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
@@ -46,6 +47,7 @@ public class BundleFormat extends AbstractFormat {
 	private static final String INSTANCES_FILE_FORMAT = "map%d.ins";
 	private static final String SPRITE_FILE_FORMAT = "sprite%d.spr";
 	
+	private static final String VERSION = "version";
 	private static final String PALETTES = "palettes";
 	private static final String MAPS = "maps";
 	private static final String MAP = "map";
@@ -64,7 +66,8 @@ public class BundleFormat extends AbstractFormat {
 		addHandler(EditableImagePalette.class, new fr.rca.mapmaker.io.internal.EditableImagePaletteDataHandler(this));
 		addHandler(PaletteReference.class, new fr.rca.mapmaker.io.internal.PaletteReferenceDataHandler());
 		addHandler(BufferedImage.class, new fr.rca.mapmaker.io.internal.BufferedImageDataHandler());
-		addHandler(TileLayer.class, new fr.rca.mapmaker.io.internal.LayerDataHandler());
+		addHandler(TileLayer.class, new fr.rca.mapmaker.io.internal.LayerDataHandler(this));
+		addHandler(ScrollRate.class, new fr.rca.mapmaker.io.internal.ScrollRateDataHandler());
 		addHandler(TileMap.class, new fr.rca.mapmaker.io.internal.TileMapDataHandler(this));
 		addHandler(Sprite.class, new fr.rca.mapmaker.io.internal.SpriteDataHandler(this));
 		addHandler(Animation.class, new fr.rca.mapmaker.io.internal.AnimationDataHandler(this));
@@ -85,6 +88,7 @@ public class BundleFormat extends AbstractFormat {
 		// Écriture des nouveaux fichiers
 		
 		final Map<String, Object> projectMap = new HashMap<String, Object>();
+		projectMap.put(VERSION, InternalFormat.LAST_VERSION);
 		
 		final List<String> palettes = new ArrayList<String>();
 		final List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
@@ -172,10 +176,12 @@ public class BundleFormat extends AbstractFormat {
 	public Project openProject(File file) {
 		final Project project = new Project();
 		
-		setVersion(InternalFormat.LAST_VERSION);
-		
 		try {
 			final Map<String, Object> projectInfo = readProjectInfo(file);
+			
+			// Version
+			final Integer version = (Integer) projectInfo.get(VERSION);
+			setVersion(version != null ? version : InternalFormat.VERSION_4);
 			
 			// Palettes
 			final DataHandler<Palette> paletteHandler = getHandler(Palette.class);

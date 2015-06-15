@@ -41,8 +41,8 @@ public class SpriteLayer implements Layer {
 	}
 
 	@Override
-	public float getScrollRate() {
-		return 1.0f;
+	public ScrollRate getScrollRate() {
+		return ScrollRate.IDENTITY;
 	}
 
 	@Override

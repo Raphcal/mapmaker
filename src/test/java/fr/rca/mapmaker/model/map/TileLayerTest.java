@@ -239,13 +239,12 @@ public class TileLayerTest {
 	public void testGetScrollRate() {
 		System.out.println("getScrollRate");
 		TileLayer instance = new TileLayer(4, 6);
-		Assert.assertEquals(1.0f, instance.getScrollRate(), 0.0001f);
+		Assert.assertEquals(1.0f, instance.getScrollRate().getX(), 0.0001f);
+		Assert.assertEquals(1.0f, instance.getScrollRate().getY(), 0.0001f);
 		
-		instance.setScrollRate(0.75f);
-		float expResult = 0.75f;
-		float result = instance.getScrollRate();
-		
-		Assert.assertEquals(expResult, result, 0.0001f);
+		instance.getScrollRate().setX(0.75f);
+		Assert.assertEquals(0.75f, instance.getScrollRate().getX(), 0.0001f);
+		Assert.assertEquals(1.0f, instance.getScrollRate().getY(), 0.0001f);
 	}
 
 	/**

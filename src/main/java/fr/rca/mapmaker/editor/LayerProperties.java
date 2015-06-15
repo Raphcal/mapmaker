@@ -1,5 +1,7 @@
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.model.map.Layer;
+import fr.rca.mapmaker.model.map.ScrollRate;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -11,7 +13,7 @@ public class LayerProperties {
 	
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	private String name;
-	private float scrollRate;
+	private ScrollRate scrollRate;
 
 	public String getName() {
 		return name;
@@ -24,13 +26,13 @@ public class LayerProperties {
 		propertyChangeSupport.firePropertyChange("name", oldName, name);
 	}
 
-	public float getScrollRate() {
+	public ScrollRate getScrollRate() {
 		return scrollRate;
 	}
 
-	public void setScrollRate(float scrollRate) {
-		final float oldScrollRate = this.scrollRate;
-		this.scrollRate = scrollRate;
+	public void setScrollRate(ScrollRate scrollRate) {
+		final ScrollRate oldScrollRate = this.scrollRate;
+		this.scrollRate = new ScrollRate(scrollRate);
 		
 		propertyChangeSupport.firePropertyChange("scrollRate", oldScrollRate, scrollRate);
 	}

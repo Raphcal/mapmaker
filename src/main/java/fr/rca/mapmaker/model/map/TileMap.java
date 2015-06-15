@@ -157,8 +157,8 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 
 	private void updateSizeForLayer(Layer layer) {
-		final int layerWidth = (int) (layer.getWidth() / Math.max(layer.getScrollRate(), 1.0f));
-		final int layerHeight = (int) (layer.getHeight() / Math.max(layer.getScrollRate(), 1.0f));
+		final int layerWidth = (int) (layer.getWidth() / Math.max(layer.getScrollRate().getX(), 1.0f));
+		final int layerHeight = (int) (layer.getHeight() / Math.max(layer.getScrollRate().getY(), 1.0f));
 
 		if(layerWidth > width) {
 			setWidth(layerWidth);
