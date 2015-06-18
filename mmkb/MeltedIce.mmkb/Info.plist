@@ -46,6 +46,12 @@
 			<key>map</key>
 			<string>map6.map</string>
 		</dict>
+		<dict>
+			<key>instances</key>
+			<string>map7.ins</string>
+			<key>map</key>
+			<string>map7.map</string>
+		</dict>
 	</array>
 	<key>palettes</key>
 	<array>
