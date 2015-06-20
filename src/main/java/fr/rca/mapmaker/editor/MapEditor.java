@@ -216,6 +216,9 @@ public class MapEditor extends javax.swing.JFrame {
         moveMapUpButton = new javax.swing.JButton();
         moveMapBottomButton = new javax.swing.JButton();
         gridToolBar = new javax.swing.JToolBar();
+        copyButton = new javax.swing.JButton();
+        pasteButton = new javax.swing.JButton();
+        jSeparator4 = new javax.swing.JToolBar.Separator();
         undoButton = new javax.swing.JButton();
         redoButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
@@ -523,6 +526,29 @@ public class MapEditor extends javax.swing.JFrame {
 
         gridToolBar.setFloatable(false);
         gridToolBar.setRollover(true);
+
+        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/copy.png"))); // NOI18N
+        copyButton.setFocusable(false);
+        copyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        copyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        copyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copy(evt);
+            }
+        });
+        gridToolBar.add(copyButton);
+
+        pasteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/paste.png"))); // NOI18N
+        pasteButton.setFocusable(false);
+        pasteButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pasteButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        pasteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paste(evt);
+            }
+        });
+        gridToolBar.add(pasteButton);
+        gridToolBar.add(jSeparator4);
 
         undoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_undo.png"))); // NOI18N
         undoButton.setFocusable(false);
@@ -943,7 +969,7 @@ public class MapEditor extends javax.swing.JFrame {
         copyMenuItem.setText(bundle.getString("menu.edit.copy")); // NOI18N
         copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                copyMenuItemActionPerformed(evt);
+                copy(evt);
             }
         });
         editMenu.add(copyMenuItem);
@@ -952,7 +978,7 @@ public class MapEditor extends javax.swing.JFrame {
         pasteMenuItem.setText(bundle.getString("menu.edit.paste")); // NOI18N
         pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pasteMenuItemActionPerformed(evt);
+                paste(evt);
             }
         });
         editMenu.add(pasteMenuItem);
@@ -1066,11 +1092,10 @@ public class MapEditor extends javax.swing.JFrame {
                     .addComponent(mapListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mapScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 411, Short.MAX_VALUE))
-                    .addComponent(mapScrollPane))
-                .addGap(0, 0, 0)
+                        .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(paletteTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
@@ -1608,25 +1633,6 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		gitManager.init();
     }//GEN-LAST:event_initMenuItemActionPerformed
 
-    private void copyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyMenuItemActionPerformed
-		final TileLayer source;
-		if(mapGrid.getOverlay().isEmpty()) {
-			source = (TileLayer) mapGrid.getActiveLayer();
-		} else {
-			source = mapGrid.getOverlay();
-		}
-		
-		clipboard = new TileLayer(source);
-    }//GEN-LAST:event_copyMenuItemActionPerformed
-
-    private void pasteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteMenuItemActionPerformed
-		toolGroup.clearSelection();
-		pasteSelectionTool.setSelection(clipboard);
-
-		mapGrid.addMouseListener(pasteSelectionTool);
-		mapGrid.addMouseMotionListener(pasteSelectionTool);
-    }//GEN-LAST:event_pasteMenuItemActionPerformed
-
     private void cancelMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelMenuItemActionPerformed
 		layerMemento.undo();
     }//GEN-LAST:event_cancelMenuItemActionPerformed
@@ -1711,6 +1717,25 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_meltedIceAutoDeployMenuItemActionPerformed
 
+    private void copy(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copy
+		final TileLayer source;
+		if(mapGrid.getOverlay().isEmpty()) {
+			source = (TileLayer) mapGrid.getActiveLayer();
+		} else {
+			source = mapGrid.getOverlay();
+		}
+		
+		clipboard = new TileLayer(source);
+    }//GEN-LAST:event_copy
+
+    private void paste(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paste
+		toolGroup.clearSelection();
+		pasteSelectionTool.setSelection(clipboard);
+
+		mapGrid.addMouseListener(pasteSelectionTool);
+		mapGrid.addMouseMotionListener(pasteSelectionTool);
+    }//GEN-LAST:event_paste
+
 	private void shiftTiles(Palette palette, int from, int shift) {
 		for(final TileMap map : project.getMaps()) {
 			if(map.getPalette().equals(palette)) {
@@ -1790,6 +1815,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem clearRecentMenuItem;
     private fr.rca.mapmaker.model.map.TileLayer clipboard;
     private javax.swing.JMenuItem commitMenuItem;
+    private javax.swing.JButton copyButton;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JButton devicePreviewButton;
     private javax.swing.JMenuItem editLayerMenuItem;
@@ -1806,6 +1832,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JButton layerDownButton;
     private javax.swing.JList layerList;
     private javax.swing.JScrollPane layerListScrollPane;
@@ -1828,6 +1855,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JScrollPane paletteScrollPane;
     private javax.swing.JTabbedPane paletteTabbedPane;
+    private javax.swing.JButton pasteButton;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JToggleButton penToggleButton;
     private fr.rca.mapmaker.editor.tool.PenTool penTool;

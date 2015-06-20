@@ -37,7 +37,7 @@ public class MeltedIceAutoDeploy {
 		"map2",
 		"map3",
 		"map4",
-		null
+		"map5"
 	};
 	
 	private static final String[] PALETTE_NAMES = {
@@ -46,8 +46,7 @@ public class MeltedIceAutoDeploy {
 		"title.pal",
 		"palette3.pal",
 		"palette4.pal",
-		"palette5.pal",
-		null
+		"palette5.pal"
 	};
 	
 	private static final MKZFormat FORMAT = new MKZFormat();
