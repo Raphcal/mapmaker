@@ -18,7 +18,7 @@ import javax.swing.JColorChooser;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class TileMapPropertiesDialog extends javax.swing.JDialog {
-	private static final ResourceBundle language = ResourceBundle.getBundle("resources/language");
+	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
 
 	private boolean confirmed;
 	
@@ -88,6 +88,7 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
         javax.swing.JLabel heightLabel = new javax.swing.JLabel();
         javax.swing.JLabel paletteLabel = new javax.swing.JLabel();
         javax.swing.JLabel backgroundColorLabel = new javax.swing.JLabel();
+        nameLabel = new javax.swing.JLabel();
         paletteComboBox = new javax.swing.JComboBox();
         javax.swing.JTextField backgroundColorField = new javax.swing.JTextField();
         javax.swing.JFormattedTextField widthTextField = new javax.swing.JFormattedTextField();
@@ -95,17 +96,19 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
         javax.swing.JButton okButton = new javax.swing.JButton();
         javax.swing.JButton cancelButton = new javax.swing.JButton();
         removeBackgroundColorButton = new javax.swing.JButton();
+        nameTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/language"); // NOI18N
-        widthLabel.setText(bundle.getString("dialog.map.width")); // NOI18N
+        widthLabel.setText(LANGUAGE.getString("dialog.map.width")); // NOI18N
 
-        heightLabel.setText(language.getString("dialog.map.height")); // NOI18N
+        heightLabel.setText(LANGUAGE.getString("dialog.map.height")); // NOI18N
 
-        paletteLabel.setText(language.getString("dialog.map.palette")); // NOI18N
+        paletteLabel.setText(LANGUAGE.getString("dialog.map.palette")); // NOI18N
 
-        backgroundColorLabel.setText(language.getString("dialog.map.background")); // NOI18N
+        backgroundColorLabel.setText(LANGUAGE.getString("dialog.map.background")); // NOI18N
+
+        nameLabel.setText(LANGUAGE.getString("dialog.map.name")); // NOI18N
 
         backgroundColorField.setEditable(false);
 
@@ -128,14 +131,14 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileMap, org.jdesktop.beansbinding.ELProperty.create("${height}"), heightTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        okButton.setText(language.getString("button.ok")); // NOI18N
+        okButton.setText(LANGUAGE.getString("button.ok")); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
             }
         });
 
-        cancelButton.setText(language.getString("button.cancel")); // NOI18N
+        cancelButton.setText(LANGUAGE.getString("button.cancel")); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
@@ -149,6 +152,9 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
             }
         });
 
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileMap, org.jdesktop.beansbinding.ELProperty.create("${name}"), nameTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -156,16 +162,6 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(paletteLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(widthLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(heightLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(heightTextField)
-                            .addComponent(widthTextField)
-                            .addComponent(paletteComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(backgroundColorLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -176,13 +172,30 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(okButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton)))
+                        .addComponent(cancelButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(paletteLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(widthLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(heightLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(nameLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nameTextField)
+                            .addComponent(heightTextField)
+                            .addComponent(widthTextField)
+                            .addComponent(paletteComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameLabel)
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(widthLabel)
                     .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -212,7 +225,7 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
 private void backgroundColorFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backgroundColorFieldMouseClicked
-	final Color newColor = JColorChooser.showDialog(this, language.getString("dialog.map.editbackground"), tileMap.getBackgroundColor());
+	final Color newColor = JColorChooser.showDialog(this, LANGUAGE.getString("dialog.map.editbackground"), tileMap.getBackgroundColor());
 	
 	if(newColor != null) {
 		tileMap.setBackgroundColor(newColor);
@@ -236,6 +249,8 @@ private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 	}//GEN-LAST:event_removeBackgroundColorButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JTextField nameTextField;
     private javax.swing.JComboBox paletteComboBox;
     private fr.rca.mapmaker.model.project.Project project;
     private javax.swing.JButton removeBackgroundColorButton;

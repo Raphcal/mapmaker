@@ -12,6 +12,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -32,19 +33,6 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="paletteLabel" alignment="0" max="32767" attributes="1"/>
-                          <Component id="widthLabel" alignment="1" max="32767" attributes="1"/>
-                          <Component id="heightLabel" alignment="1" max="32767" attributes="1"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="heightTextField" alignment="0" max="32767" attributes="1"/>
-                          <Component id="widthTextField" alignment="0" max="32767" attributes="1"/>
-                          <Component id="paletteComboBox" alignment="0" max="32767" attributes="1"/>
-                      </Group>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
                       <Component id="backgroundColorLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="backgroundColorField" pref="37" max="32767" attributes="0"/>
@@ -57,6 +45,23 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="paletteLabel" alignment="0" max="32767" attributes="1"/>
+                              <Component id="widthLabel" alignment="1" max="32767" attributes="1"/>
+                              <Component id="heightLabel" alignment="1" max="32767" attributes="1"/>
+                          </Group>
+                          <Component id="nameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="nameTextField" max="32767" attributes="0"/>
+                          <Component id="heightTextField" alignment="0" max="32767" attributes="1"/>
+                          <Component id="widthTextField" alignment="0" max="32767" attributes="1"/>
+                          <Component id="paletteComboBox" alignment="0" max="32767" attributes="1"/>
+                      </Group>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -65,6 +70,11 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="widthLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -100,7 +110,7 @@
     <Component class="javax.swing.JLabel" name="widthLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="dialog.map.width" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="dialog.map.width" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -111,7 +121,7 @@
     <Component class="javax.swing.JLabel" name="heightLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="dialog.map.height" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="dialog.map.height" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -122,7 +132,7 @@
     <Component class="javax.swing.JLabel" name="paletteLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="dialog.map.palette" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="dialog.map.palette" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -133,13 +143,20 @@
     <Component class="javax.swing.JLabel" name="backgroundColorLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="dialog.map.background" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="dialog.map.background" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="nameLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="resources/language.properties" key="dialog.map.name" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="paletteComboBox">
       <Properties>
@@ -194,7 +211,7 @@
     <Component class="javax.swing.JButton" name="okButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="button.ok" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="button.ok" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -208,7 +225,7 @@
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="resources/language.properties" key="button.cancel" replaceFormat="language.getString(&quot;{key}&quot;)"/>
+          <ResourceString bundle="resources/language.properties" key="button.cancel" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -226,6 +243,13 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeBackgroundColorButtonActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JTextField" name="nameTextField">
+      <BindingProperties>
+        <BindingProperty name="text" source="tileMap" sourcePath="${name}" target="nameTextField" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
     </Component>
   </SubComponents>
 </Form>

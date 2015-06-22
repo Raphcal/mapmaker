@@ -27,6 +27,10 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	/**
+	 * Nom de la carte.
+	 */
+	private String name;
+	/**
 	 * Largeur de la grille.
 	 */
 	private int width;
@@ -86,6 +90,14 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 		}
 		
 		this.parent = parent;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public int getWidth() {

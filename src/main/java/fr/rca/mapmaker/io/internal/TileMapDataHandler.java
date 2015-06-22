@@ -6,6 +6,7 @@ import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
+import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
 import java.awt.Color;
 import java.io.IOException;
@@ -17,16 +18,26 @@ import java.util.List;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class TileMapDataHandler implements DataHandler<TileMap> {
+public class TileMapDataHandler implements DataHandler<TileMap>, HasVersion {
 
-	private Format format;
+	private final Format format;
+	private int version;
 
 	public TileMapDataHandler(Format format) {
 		this.format = format;
 	}
+
+	@Override
+	public void setVersion(int version) {
+		this.version = version;
+	}
 	
 	@Override
 	public void write(TileMap t, OutputStream outputStream) throws IOException {
+		if(version >= InternalFormat.VERSION_6) {
+			Streams.writeNullable(t.getName(), outputStream);
+		}
+		
 		// Fond
 		final DataHandler<Color> colorHandler = format.getHandler(Color.class);
 		Color backgroundColor = t.getBackgroundColor();
@@ -54,6 +65,11 @@ public class TileMapDataHandler implements DataHandler<TileMap> {
 	@Override
 	public TileMap read(InputStream inputStream) throws IOException {
 		final TileMap tileMap = new TileMap();
+		
+		// Nom
+		if(version >= InternalFormat.VERSION_6) {
+			tileMap.setName(Streams.readNullableString(inputStream));
+		}
 		
 		// Fond
 		final DataHandler<Color> colorHandler = format.getHandler(Color.class);
