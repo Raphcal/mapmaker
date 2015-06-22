@@ -31,6 +31,10 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
 		super(parent, modal);
 		initComponents();
 		
+		this.fileNameLabel.setVisible(false);
+		this.fileNameTextField.setVisible(false);
+		pack();
+		
 		// Fond blanc
 		tileMap.setBackgroundColor(Color.WHITE);
 		
@@ -45,6 +49,7 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
 		
 		this.tileMap.clear();
 		
+		this.tileMap.setName(tileMap.getName());
 		this.tileMap.setWidth(tileMap.getWidth());
 		this.tileMap.setHeight(tileMap.getHeight());
 		this.tileMap.setBackgroundColor(tileMap.getBackgroundColor());
@@ -97,6 +102,8 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
         javax.swing.JButton cancelButton = new javax.swing.JButton();
         removeBackgroundColorButton = new javax.swing.JButton();
         nameTextField = new javax.swing.JTextField();
+        fileNameTextField = new javax.swing.JTextField();
+        fileNameLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -155,6 +162,8 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileMap, org.jdesktop.beansbinding.ELProperty.create("${name}"), nameTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
+        fileNameLabel.setText(LANGUAGE.getString("dialog.map.file")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,9 +188,11 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
                                 .addComponent(paletteLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(widthLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(heightLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(nameLabel))
+                            .addComponent(nameLabel)
+                            .addComponent(fileNameLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(fileNameTextField)
                             .addComponent(nameTextField)
                             .addComponent(heightTextField)
                             .addComponent(widthTextField)
@@ -190,11 +201,15 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nameLabel)
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fileNameLabel)
+                    .addComponent(fileNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(widthLabel)
@@ -212,11 +227,11 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
                     .addComponent(backgroundColorLabel)
                     .addComponent(backgroundColorField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removeBackgroundColorButton))
-                .addGap(18, 18, 18)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(okButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         bindingGroup.bind();
@@ -249,6 +264,8 @@ private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 	}//GEN-LAST:event_removeBackgroundColorButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel fileNameLabel;
+    private javax.swing.JTextField fileNameTextField;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JComboBox paletteComboBox;

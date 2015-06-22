@@ -31,6 +31,11 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	 */
 	private String name;
 	/**
+	 * Nom de la carte après export.
+	 * REM: Inutilisé.
+	 */
+	private String fileName;
+	/**
 	 * Largeur de la grille.
 	 */
 	private int width;
@@ -97,7 +102,21 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 
 	public void setName(String name) {
+		final String oldName = this.name;
 		this.name = name;
+		
+		propertyChangeSupport.firePropertyChange("name", oldName, name);
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		final String oldFileName = this.fileName;
+		this.fileName = fileName;
+		
+		propertyChangeSupport.firePropertyChange("fileName", oldFileName, fileName);
 	}
 	
 	public int getWidth() {
