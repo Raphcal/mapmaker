@@ -63,7 +63,7 @@
 		<string>palette5.pal</string>
 	</array>
 	<key>version</key>
-	<integer>5</integer>
+	<integer>6</integer>
 	<key>sprites</key>
 	<array>
 		<string>sprite0.spr</string>
