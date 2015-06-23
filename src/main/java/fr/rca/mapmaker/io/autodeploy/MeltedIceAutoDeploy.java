@@ -119,7 +119,9 @@ public class MeltedIceAutoDeploy {
 		final DataHandler<BufferedImage> imageHandler = FORMAT.getHandler(BufferedImage.class);
 		
 		for (Palette palette : palettes) {
-			final File paletteFile = new File(folder, palette.toString() + ".pal");
+			final String baseName = getBaseName(palette.toString());
+			
+			final File paletteFile = new File(folder, baseName + ".pal");
 			final FileOutputStream paletteOutputStream = new FileOutputStream(paletteFile);
 			try {
 				paletteDataHandler.write(palette, paletteOutputStream);
@@ -129,7 +131,7 @@ public class MeltedIceAutoDeploy {
 			}
 
 			// Écriture des images.
-			final File imageFile = new File(folder, palette.toString() + ".png");
+			final File imageFile = new File(folder, baseName + ".png");
 			final BufferedImage image = fr.rca.mapmaker.io.mkz.ProjectDataHandler.renderPalette(palette, palette.getTileSize());
 			final FileOutputStream imageOutputStream = new FileOutputStream(imageFile);
 			try {
