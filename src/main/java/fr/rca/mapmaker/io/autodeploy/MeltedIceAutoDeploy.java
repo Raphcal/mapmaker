@@ -131,7 +131,7 @@ public class MeltedIceAutoDeploy {
 			}
 
 			// Écriture des images.
-			final File imageFile = new File(folder, baseName + ".png");
+			final File imageFile = new File(folder, palette.toString() + '-' + palette.getTileSize() + ".png");
 			final BufferedImage image = fr.rca.mapmaker.io.mkz.ProjectDataHandler.renderPalette(palette, palette.getTileSize());
 			final FileOutputStream imageOutputStream = new FileOutputStream(imageFile);
 			try {
