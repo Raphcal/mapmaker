@@ -119,7 +119,7 @@ public class MeltedIceAutoDeploy {
 		final DataHandler<BufferedImage> imageHandler = FORMAT.getHandler(BufferedImage.class);
 		
 		for (Palette palette : palettes) {
-			final String baseName = getBaseName(palette.toString());
+			final String baseName = getBaseName(palette);
 			
 			final File paletteFile = new File(folder, baseName + ".pal");
 			final FileOutputStream paletteOutputStream = new FileOutputStream(paletteFile);
@@ -208,8 +208,14 @@ public class MeltedIceAutoDeploy {
 	}
 	
 	private static String getBaseName(TileMap map) {
-		final String name = map.getName();
-		
+		return getBaseName(map.getName());
+	}
+	
+	private static String getBaseName(Palette palette) {
+		return getBaseName(palette.toString());
+	}
+	
+	private static String getBaseName(String name) {
 		if(name == null) {
 			return name;
 		}
