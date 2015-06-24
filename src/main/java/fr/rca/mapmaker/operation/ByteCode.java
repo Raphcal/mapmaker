@@ -18,7 +18,9 @@ public enum ByteCode {
 	MAXIMUM('M'),
 	COSINUS('c'),
 	SINUS('s'),
-	ZOOM('z');
+	ZOOM('z'),
+	SPRITE_VARIABLE('v'),
+	SPRITE_DIRECTION('d');
 	
 	private final byte b;
 

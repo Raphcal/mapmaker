@@ -34,13 +34,13 @@ public final class OperationParser {
 	
 	
 	/**
-	 * Etats possibles lors du traitement d'une opération.
+	 * États possibles lors du traitement d'une opération.
 	 * 
 	 * @author Raphaël Calabro (rcalabro@ideia.fr)
 	 */
 	private enum State {
 		/**
-		 * Etat initial.
+		 * État initial.
 		 */
 		INITIAL,
 		/**
@@ -76,7 +76,7 @@ public final class OperationParser {
 	/**
 	 * Cet objet n'est pas instantiable, utilisez directement ses méthodes.
 	 */
-	private OperationParser() {}
+	protected OperationParser() {}
 	
 	/**
 	 * Créé une opération à partir de sa représentation sous forme de texte.
@@ -84,7 +84,6 @@ public final class OperationParser {
 	 * @return Un objet {@link Operation}.
 	 */
 	public static Operation parse(String operation) {
-		
 		final List<Instruction> instructions = new ArrayList<Instruction>();
 		
 		parse(operation, 0, null, instructions);
@@ -100,7 +99,7 @@ public final class OperationParser {
 	 * @param instructions Liste d'instructions de l'opération à retourner.
 	 * @return Dernier indice traité par cette méthode.
 	 */
-	private static int parse(String operation, int startIndex, Operator parent, List<Instruction> instructions) {
+	static int parse(String operation, int startIndex, Operator parent, List<Instruction> instructions) {
 		int index = startIndex;
 		
 		// Etat du parser

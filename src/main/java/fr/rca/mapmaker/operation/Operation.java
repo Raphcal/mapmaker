@@ -77,6 +77,14 @@ public class Operation {
 					// Ne peut pas arriver avec ByteArrayOutputStream.
 					Exceptions.showStackTrace(ex, null);
 				}
+			} else if(byteCode == ByteCode.SPRITE_VARIABLE) {
+				try {
+					Streams.write(((SpriteVariable)instruction).getName(), outputStream);
+					
+				} catch (IOException ex) {
+					// Ne peut pas arriver avec ByteArrayOutputStream.
+					Exceptions.showStackTrace(ex, null);
+				}
 			}
 		}
 		
