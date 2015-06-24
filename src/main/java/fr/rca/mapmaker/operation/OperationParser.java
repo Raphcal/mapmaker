@@ -162,15 +162,16 @@ public final class OperationParser {
 					index--;
 					state = State.OPERATOR;
 					
-				} else if(c != BLOCK_END && c != ARGUMENT_SEPARATOR && !isWhitespace(c)) {
+				} else if((c >= '0' && c <= '9') || c == '.') {
 					itemBuilder.append(c);
 				
 				} else {
 					instructions.add(new Constant(Double.valueOf(itemBuilder.toString())));
 					itemBuilder.setLength(0);
 					
+					index--;
+					
 					if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
-						index--;
 						state = State.RETURN;
 						
 					} else {
@@ -181,7 +182,7 @@ public final class OperationParser {
 				
 			// Lecture d'une variable
 			case VARIABLE:
-				if(c != BLOCK_START && c != BLOCK_END && c != ARGUMENT_SEPARATOR && !isWhitespace(c)) {
+				if(c >= 'a' && c <= 'z') {
 					itemBuilder.append(c);
 					
 				} else {
@@ -202,8 +203,9 @@ public final class OperationParser {
 						instructions.add(instruction);
 						itemBuilder.setLength(0);
 						
+						index--;
+						
 						if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
-							index--;
 							state = State.RETURN;
 						} else {
 							state = State.WAITING_FOR_OPERATOR;

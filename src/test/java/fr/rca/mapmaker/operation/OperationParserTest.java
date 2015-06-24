@@ -81,4 +81,10 @@ public class OperationParserTest {
 		final Operation operation = OperationParser.parse("-(x + -1 / 4)");
 		Assert.assertEquals(-(5.0 + -1.0 / 4.0), operation.execute(5));
 	}
+	
+	@Test
+	public void testWithoutSpaces() {
+		final Operation operation = OperationParser.parse("-3.0*pi/4.0");
+		Assert.assertEquals(-3.0 * Math.PI / 4.0, operation.execute(5));
+	}
 }
