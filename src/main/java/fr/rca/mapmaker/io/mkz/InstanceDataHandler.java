@@ -3,6 +3,8 @@ package fr.rca.mapmaker.io.mkz;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.sprite.Instance;
+import fr.rca.mapmaker.operation.Operation;
+import fr.rca.mapmaker.operation.VariableDeclarationParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,7 +21,12 @@ public class InstanceDataHandler implements DataHandler<Instance> {
 		Streams.write(t.getPoint().x, outputStream);
 		Streams.write(t.getPoint().y, outputStream);
 		Streams.write(t.isUnique(), outputStream);
-		Streams.writeNullable(t.getScript(), outputStream);
+		Streams.write(t.getScript() != null, outputStream);
+		
+		if(t.getScript() != null) {
+			final Operation operation = VariableDeclarationParser.parse(t.getScript());
+			Streams.write(operation.toByteArray(), outputStream);
+		}
 	}
 
 	@Override
