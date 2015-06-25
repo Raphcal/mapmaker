@@ -21,109 +21,123 @@ public class VSProjectWriter {
 		final XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream);
 		
 		writer.writeStartDocument();
+		writer.writeCharacters("\n");
 		
 		writer.writeStartElement("Project");
 		writer.writeAttribute("DefaultTargets", "Build");
 		writer.writeAttribute("ToolsVersion", "4.0");
 		writer.writeDefaultNamespace("http://schemas.microsoft.com/developer/msbuild/2003");
+		writer.writeCharacters("\n");
 		
+		int level = 1;
+		
+		writeIndent(writer, level++);
 		writer.writeStartElement("PropertyGroup");
-		writeElement(writer, "Configuration", " '$(Configuration)' == '' ", "Debug");
-		writeElement(writer, "Platform", " '$(Platform)' == '' ", "AnyCPU");
-		writeElement(writer, "ProductVersion", "10.0.0");
-		writeElement(writer, "SchemaVersion", "2.0");
-		writeElement(writer, "ProjectGuid", "{753347C6-8677-4F27-8346-D60E5E79A76F}");
-		writeElement(writer, "ProjectTypeGuids", "{69878862-DA7D-4DC6-B0A1-50D8FAB4242F};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}");
-		writeElement(writer, "OutputType", "Exe");
-		writeElement(writer, "RootNamespace", "MeltedIce");
-		writeElement(writer, "AssemblyName", "MeltedIce");
+		writer.writeCharacters("\n");
+		writeElement(writer, level, "Configuration", " '$(Configuration)' == '' ", "Debug");
+		writeElement(writer, level, "Platform", " '$(Platform)' == '' ", "AnyCPU");
+		writeElement(writer, level, "ProductVersion", "10.0.0");
+		writeElement(writer, level, "SchemaVersion", "2.0");
+		writeElement(writer, level, "ProjectGuid", "{753347C6-8677-4F27-8346-D60E5E79A76F}");
+		writeElement(writer, level, "ProjectTypeGuids", "{69878862-DA7D-4DC6-B0A1-50D8FAB4242F};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}");
+		writeElement(writer, level, "OutputType", "Exe");
+		writeElement(writer, level, "RootNamespace", "MeltedIce");
+		writeElement(writer, level, "AssemblyName", "MeltedIce");
+		writeIndent(writer, --level);
 		writer.writeEndElement();
+		writer.writeCharacters("\n");
 		
-		writeCompileMode(writer, "Debug", true, "full");
-		writeCompileMode(writer, "Release", false, "none");
+		writeCompileMode(writer, level, "Debug", true, "full");
+		writeCompileMode(writer, level, "Release", false, "none");
 		
-		writeItemGroup(writer, "Reference", "System", "System.Xml", "System.Core", "Sce.PlayStation.Core");
-		writeItemGroup(writer, "Compile", getSources(projectRoot));
-		writeItemGroup(writer, "ShaderProgram", getShaders(projectRoot));
-		writeItemGroup(writer, "PsmMetadata", "app.xml");
+		writeItemGroup(writer, level, "Reference", "System", "System.Xml", "System.Core", "Sce.PlayStation.Core");
+		writeItemGroup(writer, level, "Compile", getSources(projectRoot));
+		writeItemGroup(writer, level, "ShaderProgram", getShaders(projectRoot));
+		writeItemGroup(writer, level, "PsmMetadata", "app.xml");
 		
+		writeIndent(writer, level);
 		writer.writeEmptyElement("Import");
 		writer.writeAttribute("Project", "$(MSBuildExtensionsPath)\\Sce\\Sce.Psm.CSharp.targets");
 		
-		writeItemGroup(writer, "Folder", "maps\\", "sprites\\", "audio\\", "scripts\\");
+		writeItemGroup(writer, level, "Folder", "maps\\", "sprites\\", "audio\\", "scripts\\");
 		
 		final List<String> allContents = new ArrayList<String>(contents);
 		allContents.addAll(Arrays.asList(getFileNames(projectRoot, "audio", ".wav", ".mp3")));
 		allContents.addAll(Arrays.asList(getFileNames(projectRoot, "scripts", ".lua")));
-		writeItemGroup(writer, "Content", allContents.toArray(new String[allContents.size()]));
+		writeItemGroup(writer, level, "Content", allContents.toArray(new String[allContents.size()]));
 		
+		writeIndent(writer, --level);
 		writer.writeEndElement();
+		writer.writeCharacters("\n");
 	}
 	
-	private static void writeCompileMode(XMLStreamWriter writer, String mode, boolean debugSymbols, String debugType) throws XMLStreamException {
-		writeStartElement(writer, "PropertyGroup", " '$(Configuration)|$(Platform)' == '" + mode + "|AnyCPU' ");
+	private static void writeCompileMode(XMLStreamWriter writer, int indent, String mode, boolean debugSymbols, String debugType) throws XMLStreamException {
+		writeStartElement(writer, indent++, "PropertyGroup", " '$(Configuration)|$(Platform)' == '" + mode + "|AnyCPU' ");
+		writer.writeCharacters("\n");
 		
 		if(debugSymbols) {
-			writeElement(writer, "DebugSymbols", debugSymbols);
+			writeElement(writer, indent, "DebugSymbols", debugSymbols);
 		}
-		writeElement(writer, "DebugType", debugType);
-		writeElement(writer, "Optimize", true);
-		writeElement(writer, "OutputPath", "bin\\" + mode);
+		writeElement(writer, indent, "DebugType", debugType);
+		writeElement(writer, indent, "Optimize", true);
+		writeElement(writer, indent, "OutputPath", "bin\\" + mode);
 		
 		if(debugSymbols) {
-			writeElement(writer, "DefineConstants", "DEBUG;");
+			writeElement(writer, indent, "DefineConstants", "DEBUG;");
 		}
-		writeElement(writer, "ErrorReport", "prompt");
-		writeElement(writer, "WarningLevel", 4);
-		writeElement(writer, "ConsolePause", false);
+		writeElement(writer, indent, "ErrorReport", "prompt");
+		writeElement(writer, indent, "WarningLevel", 4);
+		writeElement(writer, indent, "ConsolePause", false);
 		
+		writeIndent(writer, --indent);
 		writer.writeEndElement();
+		writer.writeCharacters("\n");
 	}
 	
-	private static void writeItemGroup(XMLStreamWriter writer, String category, String... includes) throws XMLStreamException {
+	private static void writeItemGroup(XMLStreamWriter writer, int indent, String category, String... includes) throws XMLStreamException {
+		writeIndent(writer, indent++);
 		writer.writeStartElement("ItemGroup");
+		writer.writeCharacters("\n");
 		
 		for(final String include : includes) {
+			writeIndent(writer, indent);
 			writer.writeEmptyElement(category);
 			writer.writeAttribute("Include", include);
+			writer.writeCharacters("\n");
 		}
 		
+		writeIndent(writer, --indent);
 		writer.writeEndElement();
+		writer.writeCharacters("\n");
 	}
 	
-	private static void writeElement(XMLStreamWriter writer, String element, String value) throws XMLStreamException {
+	private static void writeElement(XMLStreamWriter writer, int indent, String element, String value) throws XMLStreamException {
+		writeIndent(writer, indent);
 		writer.writeStartElement(element);
 		writer.writeCharacters(value);
 		writer.writeEndElement();
+		writer.writeCharacters("\n");
 	}
 	
-	private static void writeElement(XMLStreamWriter writer, String element, int value) throws XMLStreamException {
-		writeElement(writer, element, Integer.toString(value));
+	private static void writeElement(XMLStreamWriter writer, int indent, String element, int value) throws XMLStreamException {
+		writeElement(writer, indent, element, Integer.toString(value));
 	}
 	
-	private static void writeElement(XMLStreamWriter writer, String element, boolean value) throws XMLStreamException {
-		writeElement(writer, element, Boolean.toString(value));
+	private static void writeElement(XMLStreamWriter writer, int indent, String element, boolean value) throws XMLStreamException {
+		writeElement(writer, indent, element, Boolean.toString(value));
 	}
 	
-	private static void writeStartElement(XMLStreamWriter writer, String element, String condition) throws XMLStreamException {
+	private static void writeStartElement(XMLStreamWriter writer, int indent, String element, String condition) throws XMLStreamException {
+		writeIndent(writer, indent);
 		writer.writeStartElement(element);
 		writer.writeAttribute("Condition", condition);
 	}
 	
-	private static void writeElement(XMLStreamWriter writer, String element, String condition, String value) throws XMLStreamException {
-		writeStartElement(writer, element, condition);
+	private static void writeElement(XMLStreamWriter writer, int indent, String element, String condition, String value) throws XMLStreamException {
+		writeStartElement(writer, indent, element, condition);
 		writer.writeCharacters(value);
 		writer.writeEndElement();
-	}
-	
-	private static void writeProjectReference(XMLStreamWriter writer, String name, String include, String uid) throws XMLStreamException {
-		writer.writeStartElement("ProjectReference");
-		writer.writeAttribute("Include", include);
-		
-		writeElement(writer, "Project", uid);
-		writeElement(writer, "Name", name);
-		
-		writer.writeEndElement();
+		writer.writeCharacters("\n");
 	}
 	
 	private static String[] getSources(File projectRoot) {
@@ -157,5 +171,11 @@ public class VSProjectWriter {
 		}
 		
 		return files;
+	}
+	
+	private static void writeIndent(XMLStreamWriter writer, int level) throws XMLStreamException {
+		for(int i = 0; i < level; i++) {
+			writer.writeCharacters("\t");
+		}
 	}
 }
