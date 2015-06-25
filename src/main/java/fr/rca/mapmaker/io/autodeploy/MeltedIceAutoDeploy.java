@@ -32,23 +32,11 @@ public class MeltedIceAutoDeploy {
 	private static final String MAPS_FOLDER = "maps";
 	private static final String SPRITES_FOLDER = "sprites";
 	
-	private static final String[] MAP_NAMES = {
-		"title",
-		"map1",
-		"map2",
-		"map3",
-		"map4",
-		"map5"
-	};
-	
-	private static final String[] PALETTE_NAMES = {
-		null,
-		"palette2.pal",
-		"title.pal",
-		"palette3.pal",
-		"palette4.pal",
-		"palette5.pal"
-	};
+	private static final String PROJECT_FILE = "MeltedIce.csproj";
+	private static final String PALETTE_IMAGE_EXTENSION = ".png";
+	private static final String PALETTE_EXTENSION = ".pal";
+	private static final String MAP_INSTANCES_EXTENSION = ".sprites";
+	private static final String MAP_EXTENSION = ".map";
 	
 	private static final MKZFormat FORMAT = new MKZFormat();
 	
@@ -72,7 +60,7 @@ public class MeltedIceAutoDeploy {
 		deployMaps(project.getMaps(), project, mapsFolder, contents);
 		
 		try {
-			VSProjectWriter.write(project, root, contents, new FileOutputStream(new File(root, "MeltedIce.csproj")));
+			VSProjectWriter.write(project, root, contents, new FileOutputStream(new File(root, PROJECT_FILE)));
 		} catch (XMLStreamException ex) {
 			throw new IOException("Erreur lors de l'écriture du fichier de projet VisualStudio.", ex);
 		}
@@ -121,7 +109,7 @@ public class MeltedIceAutoDeploy {
 		for (Palette palette : palettes) {
 			final String baseName = getBaseName(palette);
 			
-			final File paletteFile = new File(folder, baseName + ".pal");
+			final File paletteFile = new File(folder, baseName + PALETTE_EXTENSION);
 			final FileOutputStream paletteOutputStream = new FileOutputStream(paletteFile);
 			try {
 				paletteDataHandler.write(palette, paletteOutputStream);
@@ -131,7 +119,7 @@ public class MeltedIceAutoDeploy {
 			}
 
 			// Écriture des images.
-			final File imageFile = new File(folder, palette.toString() + '-' + palette.getTileSize() + ".png");
+			final File imageFile = new File(folder, palette.toString() + '-' + palette.getTileSize() + PALETTE_IMAGE_EXTENSION);
 			final BufferedImage image = fr.rca.mapmaker.io.mkz.ProjectDataHandler.renderPalette(palette, palette.getTileSize());
 			final FileOutputStream imageOutputStream = new FileOutputStream(imageFile);
 			try {
@@ -168,7 +156,7 @@ public class MeltedIceAutoDeploy {
 
 
 				// Écriture de la carte
-				final File mapFile = new File(folder, baseName + ".map");
+				final File mapFile = new File(folder, baseName + MAP_EXTENSION);
 				final FileOutputStream mapOutputStream = new FileOutputStream(mapFile);
 				try {
 					tileMapHandler.write(map, mapOutputStream);
@@ -178,7 +166,7 @@ public class MeltedIceAutoDeploy {
 				}
 
 				// Écriture des instances
-				final File instancesFile = new File(folder, baseName + ".sprites");
+				final File instancesFile = new File(folder, baseName + MAP_INSTANCES_EXTENSION);
 				final FileOutputStream instancesOutputStream = new FileOutputStream(instancesFile);
 				try {
 					Streams.write(instances.size(), instancesOutputStream);
