@@ -57,10 +57,6 @@ public class VSProjectWriter {
 		allContents.addAll(Arrays.asList(getFileNames(projectRoot, "scripts", ".lua")));
 		writeItemGroup(writer, "Content", allContents.toArray(new String[allContents.size()]));
 		
-		writer.writeStartElement("ItemGroup");
-		writeProjectReference(writer, "LuaInterface", "..\\..\\LuaInterface\\LuaInterface\\LuaInterface.csproj", "{D29CA5AA-9C3A-47FD-A145-20A13F147E83}");
-		writer.writeEndElement();
-		
 		writer.writeEndElement();
 	}
 	
