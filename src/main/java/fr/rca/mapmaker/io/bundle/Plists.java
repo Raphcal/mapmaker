@@ -63,6 +63,17 @@ public final class Plists {
 	public static Map<String, Object> read(InputStream inputStream) throws IOException {
 		try {
 			final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setFeature("http://xml.org/sax/features/validation", false);
+			parserFactory.setFeature("http://xml.org/sax/features/resolve-dtd-uris", false);
+			parserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			parserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			parserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+			parserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			parserFactory.setFeature("http://xml.org/sax/features/use-entity-resolver2", false);   
+			parserFactory.setFeature("http://xml.org/sax/features/resolve-dtd-uris", false);
+			parserFactory.setFeature("http://apache.org/xml/features/validation/dynamic", false);
+			parserFactory.setFeature("http://apache.org/xml/features/validation/schema/augment-psvi", false);
+			
 			final SAXParser parser = parserFactory.newSAXParser();
 			final PlistHandler handler = new PlistHandler();
 			parser.parse(inputStream, handler);

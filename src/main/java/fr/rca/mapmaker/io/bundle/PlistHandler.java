@@ -80,9 +80,11 @@ public class PlistHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		final Mode currentMode = Mode.valueOf(qName.toUpperCase());
 
+		final String characters = stringBuilder.toString().trim();
+		
 		switch(currentMode) {
 			case KEY:
-				currentKey = stringBuilder.toString();
+				currentKey = characters;
 				stringBuilder.setLength(0);
 				break;
 
@@ -92,20 +94,20 @@ public class PlistHandler extends DefaultHandler {
 				break;
 
 			case STRING:
-				put(stringBuilder.toString());
+				put(characters);
 				break;
 
 			case INTEGER:
-				put(Integer.parseInt(stringBuilder.toString()));
+				put(Integer.parseInt(characters));
 				break;
 
 			case REAL:
-				put(Double.parseDouble(stringBuilder.toString()));
+				put(Double.parseDouble(characters));
 				break;
 
 			case DATE:
 				final SimpleDateFormat formatter = new SimpleDateFormat(Plists.DATE_FORMAT);
-				final String date = stringBuilder.toString();
+				final String date = characters;
 				try {
 					put(formatter.parse(date));
 				} catch (ParseException ex) {
