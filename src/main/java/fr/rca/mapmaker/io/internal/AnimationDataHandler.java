@@ -2,6 +2,7 @@ package fr.rca.mapmaker.io.internal;
 
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
+import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
@@ -17,19 +18,27 @@ import java.util.Set;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class AnimationDataHandler implements DataHandler<Animation> {
+public class AnimationDataHandler implements DataHandler<Animation>, HasVersion {
 	
 	private final Format format;
+	private int version;
 
 	public AnimationDataHandler(Format format) {
 		this.format = format;
 	}
 
 	@Override
+	public void setVersion(int version) {
+		this.version = version;
+	}
+	
+	@Override
 	public void write(Animation t, OutputStream outputStream) throws IOException {
 		Streams.write(t.getName(), outputStream);
 		Streams.write(t.getFrequency(), outputStream);
-		Streams.write(t.isLooping(), outputStream);
+		if(version >= InternalFormat.VERSION_4) {
+			Streams.write(t.isLooping(), outputStream);
+		}
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
 		
@@ -55,7 +64,9 @@ public class AnimationDataHandler implements DataHandler<Animation> {
 	public Animation read(InputStream inputStream) throws IOException {
 		final Animation animation = new Animation(Streams.readString(inputStream));
 		animation.setFrequency(Streams.readInt(inputStream));
-		animation.setLooping(Streams.readBoolean(inputStream));
+		if(version >= InternalFormat.VERSION_4) {
+			animation.setLooping(Streams.readBoolean(inputStream));
+		}
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
 		
