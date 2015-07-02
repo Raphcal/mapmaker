@@ -32,4 +32,14 @@ public enum ByteCode {
 		return b;
 	}
 	
+	public String nameCapitalized() {
+		return name().substring(0, 1) + name().substring(1).toLowerCase();
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("// Swift");
+		for(final ByteCode byteCode : values()) {
+			System.out.println(String.format("case %s = 0x%x", byteCode.nameCapitalized(), byteCode.getByte()));
+		}
+	}
 }
