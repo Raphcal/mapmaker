@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -71,7 +72,7 @@ public class ProjectDataHandler implements DataHandler<Project> {
 		for(int index = 0; index < maps.size(); index++) {
 			final TileMap map = maps.get(index);
 			final List<Instance> instances = new ArrayList<Instance>(t.getAllInstances().get(index));
-			instances.sort(new Comparator<Instance>() {
+			Collections.sort(instances, new Comparator<Instance>() {
 
 				@Override
 				public int compare(Instance o1, Instance o2) {
