@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.io.common;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -12,8 +13,8 @@ public final class Files {
 	}
 	
 	public static String getRelativePath(File parent, File child) {
-		final String[] parentPath = parent.getPath().split(File.separator);
-		final String[] childPath = child.getPath().split(File.separator);
+		final String[] parentPath = parent.getPath().split(Pattern.quote(File.separator));
+		final String[] childPath = child.getPath().split(Pattern.quote(File.separator));
 		
 		if(childPath.length < parentPath.length) {
 			throw new IllegalArgumentException("Le chemin du fils doit-être plus long que celui de son parent. Fils : '" + child + "', parent : '" + parent + "'.");

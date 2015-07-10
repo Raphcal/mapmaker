@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -137,7 +138,7 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 
 	private void expandSelection(final int element) {
 		if(element >= 0 && element < AbstractOrientableList.this.elements.size()) {
-			selection.sort(new Comparator<Integer>() {
+			Collections.sort(selection, new Comparator<Integer>() {
 
 				@Override
 				public int compare(Integer o1, Integer o2) {
@@ -258,7 +259,7 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	
 	public void removeSelectedElement() {
 		if(!selection.isEmpty()) {
-			selection.sort(new Comparator<Integer>() {
+			Collections.sort(selection, new Comparator<Integer>() {
 
 				@Override
 				public int compare(Integer o1, Integer o2) {
@@ -302,7 +303,7 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	public List<E> getSelection() {
 		final List<E> selectedElements = new ArrayList<E>();
 		
-		selection.sort(new Comparator<Integer>() {
+		Collections.sort(selection, new Comparator<Integer>() {
 
 			@Override
 			public int compare(Integer o1, Integer o2) {

@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
@@ -141,7 +142,7 @@ public class MeltedIceAutoDeploy {
 			
 			if(baseName != null) {
 				final List<Instance> instances = new ArrayList<Instance>(project.getAllInstances().get(index));
-				instances.sort(new Comparator<Instance>() {
+				Collections.sort(instances, new Comparator<Instance>() {
 
 					@Override
 					public int compare(Instance o1, Instance o2) {
