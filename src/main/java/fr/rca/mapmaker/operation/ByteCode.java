@@ -41,5 +41,11 @@ public enum ByteCode {
 		for(final ByteCode byteCode : values()) {
 			System.out.println(String.format("case %s = 0x%x", byteCode.nameCapitalized(), byteCode.getByte()));
 		}
+		
+		System.out.print("let operation : [UInt8] = [");
+		for(final byte b : OperationParser.parse("(x * 45678) / 2").toByteArray()) {
+			System.out.print(String.format("0x%x, ", b));
+		}
+		System.out.println("]");
 	}
 }
