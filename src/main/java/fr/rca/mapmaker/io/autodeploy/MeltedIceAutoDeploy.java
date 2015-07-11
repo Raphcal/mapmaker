@@ -49,8 +49,8 @@ public class MeltedIceAutoDeploy {
 	}
 	
 	public static void deploy(Project project, File root) throws IOException {
-		final File mapsFolder = new File(root, MAPS_FOLDER);
-		final File spritesFolder = new File(root, SPRITES_FOLDER);
+		final File mapsFolder = isCSharp(root) ? new File(root, MAPS_FOLDER) : root;
+		final File spritesFolder = isCSharp(root) ? new File(root, SPRITES_FOLDER) : root;
 		
 		FORMAT.setVersion(InternalFormat.LAST_VERSION);
 		
@@ -60,18 +60,28 @@ public class MeltedIceAutoDeploy {
 		deployPalettes(project.getPalettes(), mapsFolder, contents);
 		deployMaps(project.getMaps(), project, mapsFolder, contents);
 		
-		try {
-			VSProjectWriter.write(project, root, contents, new FileOutputStream(new File(root, PROJECT_FILE)));
-		} catch (XMLStreamException ex) {
-			throw new IOException("Erreur lors de l'écriture du fichier de projet VisualStudio.", ex);
+		if(isCSharp(root)) {
+			try {
+				VSProjectWriter.write(project, root, contents, new FileOutputStream(new File(root, PROJECT_FILE)));
+			} catch (XMLStreamException ex) {
+				throw new IOException("Erreur lors de l'écriture du fichier de projet VisualStudio.", ex);
+			}
 		}
 	}
 	
 	public static boolean accept(File file) {
+		return isCSharp(file) || isSwift(file);
+	}
+	
+	private static boolean isCSharp(File file) {
 		final File mapsFolder = new File(file, MAPS_FOLDER);
 		final File spritesFolder = new File(file, SPRITES_FOLDER);
 		
 		return file.isDirectory() && mapsFolder.isDirectory() && spritesFolder.isDirectory();
+	}
+	
+	private static boolean isSwift(File file) {
+		return file.isDirectory() && new File(file, "Images.xcassets").isDirectory();
 	}
 	
 	private static void deploySprites(Collection<Sprite> sprites, File folder, List<String> files) throws IOException {
