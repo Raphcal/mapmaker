@@ -1,10 +1,12 @@
 package fr.rca.mapmaker.team.git;
 
+import fr.rca.mapmaker.editor.ProgressDialog;
 import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.common.Files;
 import fr.rca.mapmaker.preferences.PreferencesManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
@@ -208,7 +211,7 @@ public class GitManager {
 			final CommitDialog dialog = new CommitDialog(parent, true, new CommitDialog.Callback() {
 
 				@Override
-				public void onOK(String message, boolean push) {
+				public void onOK(final String message, final boolean push) {
 					// Commit
 					final CommitCommand commitCommand = git.commit();
 
@@ -217,17 +220,37 @@ public class GitManager {
 					}
 
 					commitCommand.setMessage(message);
-					try {
-						if (push) {
-							commitCommand.call();
-							push();
-						} else {
-							call(commitCommand);
+					
+					final ProgressDialog progressDialog = new ProgressDialog(parent, true);
+					final SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+
+						@Override
+						protected Void doInBackground() throws Exception {
+							if (push) {
+								commitCommand.call();
+								push();
+							} else {
+								call(commitCommand);
+							}
+							return null;
 						}
-						
-					} catch (GitAPIException ex) {
-						Exceptions.showStackTrace(ex, parent);
-					}
+					};
+
+					worker.addPropertyChangeListener(new PropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent event) {
+							if ("state".equals(event.getPropertyName())
+								 && SwingWorker.StateValue.DONE == event.getNewValue()) {
+								// Fermeture de la popup de chargement
+								progressDialog.setVisible(false);
+								progressDialog.dispose();
+							}
+						}
+					});
+					worker.execute();
+					progressDialog.setLocationRelativeTo(parent);
+					progressDialog.setVisible(true);
 				}
 
 				@Override
@@ -235,6 +258,7 @@ public class GitManager {
 				}
 			});
 			dialog.setEntries(entries);
+			dialog.setLocationRelativeTo(parent);
 			dialog.setVisible(true);
 
 		} catch (GitAPIException ex) {
