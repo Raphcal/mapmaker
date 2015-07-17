@@ -11,6 +11,7 @@ import fr.rca.mapmaker.editor.tool.PenTool;
 import fr.rca.mapmaker.editor.tool.RectangleFillTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
+import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -43,11 +44,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -55,6 +58,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JViewport;
+import javax.swing.SwingWorker;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileFilter;
@@ -1309,9 +1313,33 @@ private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 	}
 }//GEN-LAST:event_saveMenuItemActionPerformed
 
-private void save(Format format, File destination) {
-	format.saveProject(project, destination);
-	JOptionPane.showMessageDialog(null, "Projet enregistré", "Enregistrement", JOptionPane.INFORMATION_MESSAGE);
+private void save(final Format format, final File destination) {
+	final ProgressDialog dialog = new ProgressDialog(this, true);
+	
+	final SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			format.saveProject(project, destination);
+			return null;
+		}
+	};
+	
+	worker.addPropertyChangeListener(new PropertyChangeListener() {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent event) {
+			if ("state".equals(event.getPropertyName())
+                 && SwingWorker.StateValue.DONE == event.getNewValue()) {
+				// Fermeture de la popup de chargement
+				dialog.setVisible(false);
+				dialog.dispose();
+			}
+		}
+	});
+	worker.execute();
+	dialog.setLocationRelativeTo(this);
+	dialog.setVisible(true);
 }
 
 private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
@@ -1338,13 +1366,46 @@ private void openProject(File file, Format format) {
 	currentFormat = format;
 	setCurrentFile(file);
 	addToRecentFiles(file);
-		
-	final Project newProject = currentFormat.openProject(currentFile);
-	project.morphTo(newProject);
-	mapList.setSelectedIndex(0);
+	
+	final ProgressDialog dialog = new ProgressDialog(this, true);
+	
+	final SwingWorker<Project, Integer> worker = new SwingWorker<Project, Integer>() {
 
-	spritePaletteGrid.refresh();
-	refreshScrollMode();
+		@Override
+		protected Project doInBackground() throws Exception {
+			return currentFormat.openProject(currentFile);
+		}
+	};
+	
+	worker.addPropertyChangeListener(new PropertyChangeListener() {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent event) {
+			if ("state".equals(event.getPropertyName())
+                 && SwingWorker.StateValue.DONE == event.getNewValue()) {
+				// Ouverture du projet
+				try {
+					project.morphTo(worker.get());
+					mapList.setSelectedIndex(0);
+
+					spritePaletteGrid.refresh();
+					refreshScrollMode();
+				
+				} catch (InterruptedException ex) {
+					Exceptions.showStackTrace(ex, MapEditor.this);
+				} catch (ExecutionException ex) {
+					Exceptions.showStackTrace(ex, MapEditor.this);
+				}
+				
+				// Fermeture de la popup de chargement
+				dialog.setVisible(false);
+				dialog.dispose();
+			}
+		}
+	});
+	worker.execute();
+	dialog.setLocationRelativeTo(this);
+	dialog.setVisible(true);
 }
 
 private void addToRecentFiles(File file) {
