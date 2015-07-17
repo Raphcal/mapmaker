@@ -186,11 +186,6 @@ public class GitManager {
 			final File workTree = git.getRepository().getWorkTree();
 
 			final String relativePath = Files.getRelativePath(workTree, project);
-			final int addOption = JOptionPane.showConfirmDialog(parent, "Ajout de '" + relativePath + "'...\nSouhaitez-vous continuer ?", "Git Add", JOptionPane.YES_NO_OPTION);
-			if(addOption == JOptionPane.NO_OPTION) {
-				return;
-			}
-
 			addCommand.addFilepattern(relativePath);
 			addCommand.call();
 
