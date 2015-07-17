@@ -150,43 +150,6 @@ public class CommitDialog extends javax.swing.JDialog {
 		callback.onOK(commitMessageTextPane.getText(), pushCheckBox.isSelected());
     }//GEN-LAST:event_commitButtonActionPerformed
 
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String args[]) {
-		/* Create and display the dialog */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				CommitDialog dialog = new CommitDialog(new javax.swing.JFrame(), true, new Callback() {
-
-					@Override
-					public void onOK(String message, boolean push) {
-					}
-
-					@Override
-					public void onCancel() {
-					}
-				});
-				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-					@Override
-					public void windowClosing(java.awt.event.WindowEvent e) {
-						System.exit(0);
-					}
-				});
-				
-				dialog.setEntries(Arrays.asList(
-					new CommitEntry("machin/bidule.map", CommitEntry.Status.ADDED),
-					new CommitEntry("machin/bidule.ins", CommitEntry.Status.ADDED),
-					new CommitEntry("machin/truc.map", CommitEntry.Status.MODIFIED),
-					new CommitEntry("machin/truc.ins", CommitEntry.Status.MODIFIED)
-				));
-				
-				dialog.setVisible(true);
-			}
-		});
-	}
-	
 	public void setEntries(final List<CommitEntry> entries) {
 		modificationTable.setModel(new TableModel() {
 
