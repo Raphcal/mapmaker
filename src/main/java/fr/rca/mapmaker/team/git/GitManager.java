@@ -2,12 +2,15 @@ package fr.rca.mapmaker.team.git;
 
 import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.common.Files;
+import fr.rca.mapmaker.preferences.PreferencesManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.eclipse.jgit.api.AddCommand;
@@ -124,7 +127,7 @@ public class GitManager {
 		ensureAvailable();
 		
 		try {
-			call(git.push());
+			callWithDefaultAuthentification(git.push());
 			perform(listener);
 
 		} catch (TransportException ex) {
@@ -155,7 +158,7 @@ public class GitManager {
 		ensureAvailable();
 		
 		try {
-			call(git.pull());
+			callWithDefaultAuthentification(git.pull());
 			perform(listener);
 			
 		} catch (TransportException ex) {
@@ -192,39 +195,52 @@ public class GitManager {
 			addCommand.call();
 
 			final Status status = git.status().call();
-
-			final StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append("Résultat de Add :");
+			
+			final List<CommitEntry> entries = new ArrayList<CommitEntry>();
 
 			for(final String added : status.getAdded()) {
-					stringBuilder.append("\nadded: ").append(added);
+				entries.add(new CommitEntry(added, CommitEntry.Status.ADDED));
 			}
 
 			for(final String modified : status.getChanged()) {
-					stringBuilder.append("\nmodified: ").append(modified);
+				entries.add(new CommitEntry(modified, CommitEntry.Status.MODIFIED));
 			}
 
 			for(final String removed : status.getRemoved()) {
-					stringBuilder.append("\nremoved: ").append(removed);
+				entries.add(new CommitEntry(removed, CommitEntry.Status.REMOVED));
 			}
+			
+			final CommitDialog dialog = new CommitDialog(parent, true, new CommitDialog.Callback() {
 
-			stringBuilder.append("\nSouhaitez-vous continuer ?");
+				@Override
+				public void onOK(String message, boolean push) {
+					// Commit
+					final CommitCommand commitCommand = git.commit();
 
-			final int addResultOption = JOptionPane.showConfirmDialog(parent, stringBuilder.toString(), "Git Add", JOptionPane.YES_NO_OPTION);
-			if(addResultOption == JOptionPane.NO_OPTION) {
-				return;
-			}
+					if(message == null || message.isEmpty()) {
+						return;
+					}
 
-			// Commit
-			final CommitCommand commitCommand = git.commit();
+					commitCommand.setMessage(message);
+					try {
+						if (push) {
+							commitCommand.call();
+							push();
+						} else {
+							call(commitCommand);
+						}
+						
+					} catch (GitAPIException ex) {
+						Exceptions.showStackTrace(ex, parent);
+					}
+				}
 
-			final String message = JOptionPane.showInputDialog("Message de commit :");
-			if(message == null || message.isEmpty()) {
-				return;
-			}
-
-			commitCommand.setMessage(message);
-			call(commitCommand);
+				@Override
+				public void onCancel() {
+				}
+			});
+			dialog.setEntries(entries);
+			dialog.setVisible(true);
 
 		} catch (GitAPIException ex) {
 			Exceptions.showStackTrace(ex, parent);
@@ -320,6 +336,27 @@ public class GitManager {
 		});
 
 		dialog.setVisible(true);
+	}
+	
+	/**
+	 * Si des identifiants sont déjà remplis dans les préférences, utilisation.
+	 * Sinon, appel de la commande sans identifiants.
+	 * 
+	 * @param <C>
+	 * @param <T>
+	 * @param command
+	 * @throws GitAPIException 
+	 */
+	private <C extends GitCommand, T> void callWithDefaultAuthentification(TransportCommand<C, T> command) throws GitAPIException {
+		final String workTreePath = command.getRepository().getWorkTree().getPath();
+		final String login = PreferencesManager.get("git." + workTreePath + ".login");
+		final String password = PreferencesManager.get("git." + workTreePath + ".password");
+
+		if (login != null && password != null) {
+			command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(login, password));
+		}
+		
+		call(command);
 	}
 	
 	/**
