@@ -1608,11 +1608,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				final int openOption = JOptionPane.showConfirmDialog(MapEditor.this, "Recharger le projet ?", "Git Pull", JOptionPane.YES_NO_OPTION);
-				if(openOption == JOptionPane.NO_OPTION) {
-					return;
-				}
-
+				// Rechargement du projet
 				openFile(currentFile);
 			}
 		});
