@@ -20,6 +20,7 @@ import fr.rca.mapmaker.model.palette.EditablePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.FormatFileFilter;
+import fr.rca.mapmaker.io.HasProgress;
 import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.autodeploy.MeltedIceAutoDeploy;
@@ -1320,23 +1321,41 @@ private void save(final Format format, final File destination) {
 
 		@Override
 		protected Void doInBackground() throws Exception {
-			format.saveProject(project, destination);
+			if (format instanceof HasProgress) {
+				((HasProgress) format).saveProject(project, destination, new HasProgress.Listener() {
+
+					@Override
+					public void onProgress(int value) {
+						setProgress(value);
+					}
+				});
+			} else {
+				format.saveProject(project, destination);
+			}
 			return null;
 		}
 	};
 	
-	worker.addPropertyChangeListener(new PropertyChangeListener() {
+	worker.getPropertyChangeSupport().addPropertyChangeListener("state", new PropertyChangeListener() {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
-			if ("state".equals(event.getPropertyName())
-                 && SwingWorker.StateValue.DONE == event.getNewValue()) {
+			if (SwingWorker.StateValue.DONE == event.getNewValue()) {
 				// Fermeture de la popup de chargement
 				dialog.setVisible(false);
 				dialog.dispose();
 			}
 		}
 	});
+	
+	worker.getPropertyChangeSupport().addPropertyChangeListener("progress", new PropertyChangeListener() {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent event) {
+			dialog.setProgress((Integer) event.getNewValue());
+		}
+	});
+	
 	worker.execute();
 	dialog.setLocationRelativeTo(this);
 	dialog.setVisible(true);
@@ -1373,16 +1392,25 @@ private void openProject(File file, Format format) {
 
 		@Override
 		protected Project doInBackground() throws Exception {
-			return currentFormat.openProject(currentFile);
+			if (currentFormat instanceof HasProgress) {
+				return ((HasProgress) currentFormat).openProject(currentFile, new HasProgress.Listener() {
+
+					@Override
+					public void onProgress(int value) {
+						setProgress(value);
+					}
+				});
+			} else {
+				return currentFormat.openProject(currentFile);
+			}
 		}
 	};
 	
-	worker.addPropertyChangeListener(new PropertyChangeListener() {
+	worker.getPropertyChangeSupport().addPropertyChangeListener("state", new PropertyChangeListener() {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
-			if ("state".equals(event.getPropertyName())
-                 && SwingWorker.StateValue.DONE == event.getNewValue()) {
+			if (SwingWorker.StateValue.DONE == event.getNewValue()) {
 				// Ouverture du projet
 				try {
 					project.morphTo(worker.get());
@@ -1403,6 +1431,15 @@ private void openProject(File file, Format format) {
 			}
 		}
 	});
+	
+	worker.getPropertyChangeSupport().addPropertyChangeListener("progress", new PropertyChangeListener() {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent event) {
+			dialog.setProgress((Integer) event.getNewValue());
+		}
+	});
+	
 	worker.execute();
 	dialog.setLocationRelativeTo(this);
 	dialog.setVisible(true);

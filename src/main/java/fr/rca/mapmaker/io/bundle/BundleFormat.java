@@ -3,6 +3,7 @@ package fr.rca.mapmaker.io.bundle;
 import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
+import fr.rca.mapmaker.io.HasProgress;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.internal.InternalFormat;
@@ -32,12 +33,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.SwingWorker;
 
 /**
  *
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
-public class BundleFormat extends AbstractFormat {
+public class BundleFormat extends AbstractFormat implements HasProgress {
 	
 	private static final String EXTENSION = ".mmkb";
 	
@@ -53,6 +55,9 @@ public class BundleFormat extends AbstractFormat {
 	private static final String MAP = "map";
 	private static final String INSTANCES = "instances";
 	private static final String SPRITES = "sprites";
+	
+	private static final int FULL_PROGRESS = 100;
+	private static final int READ_ELEMENT_PROGRESS = FULL_PROGRESS / 5;
 
 	public BundleFormat() {
 		super(EXTENSION, SupportedOperation.SAVE, SupportedOperation.LOAD);
@@ -76,6 +81,11 @@ public class BundleFormat extends AbstractFormat {
 
 	@Override
 	public void saveProject(Project project, File file) {
+		saveProject(project, file, null);
+	}
+	
+	@Override
+	public void saveProject(Project project, File file, Listener progressListener) {
 		setVersion(InternalFormat.LAST_VERSION);
 		
 		file.mkdir();
@@ -174,10 +184,16 @@ public class BundleFormat extends AbstractFormat {
 
 	@Override
 	public Project openProject(File file) {
+		return openProject(file, null);
+	}
+
+	@Override
+	public Project openProject(File file, Listener progressListener) {
 		final Project project = new Project();
 		
 		try {
 			final Map<String, Object> projectInfo = readProjectInfo(file);
+			int progress = progress(READ_ELEMENT_PROGRESS, progressListener);
 			
 			// Version
 			final Integer version = (Integer) projectInfo.get(VERSION);
@@ -185,31 +201,46 @@ public class BundleFormat extends AbstractFormat {
 			
 			// Palettes
 			final DataHandler<Palette> paletteHandler = getHandler(Palette.class);
-			for(final String palette : (List<String>) projectInfo.get(PALETTES)) {
+			final List<String> palettes = (List<String>) projectInfo.get(PALETTES);
+			for(final String palette : palettes) {
 				project.addPalette(read(file, palette, paletteHandler));
+				
+				progress = progress(progress + READ_ELEMENT_PROGRESS / palettes.size(), progressListener);
 			}
+			progress = progress(READ_ELEMENT_PROGRESS * 2, progressListener);
 			
 			// Maps
 			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
 			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
 			
-			for(final Map<String, Object> map : (List<Map<String, Object>>) projectInfo.get(MAPS)) {
-				project.addMap(
-					// Map
-					read(file, (String) map.get(MAP), tileMapHandler),
-					// Instances
-					readInstances(file, (String) map.get(INSTANCES), project, instanceHandler)
-				);
+			final List<Map<String, Object>> maps = (List<Map<String, Object>>) projectInfo.get(MAPS);
+			
+			for(final Map<String, Object> map : maps) {
+				// Map
+				final TileMap tileMap = read(file, (String) map.get(MAP), tileMapHandler);
+				progress = progress(progress + READ_ELEMENT_PROGRESS / maps.size(), progressListener);
+				
+				// Instances
+				final List<Instance> instances = readInstances(file, (String) map.get(INSTANCES), project, instanceHandler);
+				progress = progress(progress + READ_ELEMENT_PROGRESS / maps.size(), progressListener);
+				
+				project.addMap(tileMap, instances);
 			}
+			progress = progress(READ_ELEMENT_PROGRESS * 4, progressListener);
 			
 			// Sprites
 			final DataHandler<Sprite> spriteHandler = getHandler(Sprite.class);
 			final List<Sprite> sprites = project.getSprites();
 			sprites.clear();
 			
-			for(final String sprite : (List<String>) projectInfo.get(SPRITES)) {
+			final List<String> spriteFiles = (List<String>) projectInfo.get(SPRITES);
+			
+			for(final String sprite : spriteFiles) {
 				sprites.add(read(file, sprite, spriteHandler));
+				progress = progress(progress + READ_ELEMENT_PROGRESS / spriteFiles.size(), progressListener);
 			}
+			
+			progress(FULL_PROGRESS, progressListener);
 
 			return project;
 			
@@ -218,6 +249,13 @@ public class BundleFormat extends AbstractFormat {
 		}
 		
 		return Project.createEmptyProject();
+	}
+	
+	private int progress(int value, HasProgress.Listener listener) {
+		if (listener != null) {
+			listener.onProgress(value);
+		}
+		return value;
 	}
 
 	private Map<String, Object> readProjectInfo(File parent) throws IOException, FileNotFoundException {
