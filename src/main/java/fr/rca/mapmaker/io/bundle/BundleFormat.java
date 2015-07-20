@@ -57,7 +57,10 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	private static final String SPRITES = "sprites";
 	
 	private static final int FULL_PROGRESS = 100;
-	private static final int READ_ELEMENT_PROGRESS = FULL_PROGRESS / 5;
+	private static final int READ_STEPS = 5;
+	private static final int READ_ELEMENT_PROGRESS = FULL_PROGRESS / READ_STEPS;
+	private static final int WRITE_STEPS = 6;
+	private static final int WRITE_ELEMENT_PROGRESS = FULL_PROGRESS / WRITE_STEPS;
 
 	public BundleFormat() {
 		super(EXTENSION, SupportedOperation.SAVE, SupportedOperation.LOAD);
@@ -94,6 +97,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		for(final File child : file.listFiles()) {
 			child.delete();
 		}
+		progress(WRITE_ELEMENT_PROGRESS, progressListener);
 		
 		// Écriture des nouveaux fichiers
 		
@@ -110,26 +114,32 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		try {
 			// Palettes
 			write(project.getPalettes(), file, PALETTE_FILE_FORMAT, palettes, getHandler(Palette.class));
+			int progress = progress(WRITE_ELEMENT_PROGRESS * 2, progressListener);
 
 			// Cartes
 			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
 			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
-			for(int index = 0; index < project.getMaps().size(); index++) {
+			final int size = project.getMaps().size();
+			for(int index = 0; index < size; index++) {
 				final Map<String, Object> map = new HashMap<String, Object>();
 				final String mapName =  String.format(MAP_FILE_FORMAT, index);
 				final String instancesName =  String.format(INSTANCES_FILE_FORMAT, index);
 				
 				writeMap(project.getMaps().get(index), file, mapName, tileMapHandler, map);
+				progress = progress(progress + WRITE_ELEMENT_PROGRESS / size, progressListener);
 				
 				// Instances
 				final List<Instance> instances = project.getAllInstances().get(index);
 				writeInstances(instances, file, instancesName, instanceHandler, map);
+				progress = progress(progress + WRITE_ELEMENT_PROGRESS / size, progressListener);
 				
 				maps.add(map);
 			}
+			progress(WRITE_ELEMENT_PROGRESS * 4, progressListener);
 
 			// Sprites
 			write(project.getSprites(), file, SPRITE_FILE_FORMAT, sprites, getHandler(Sprite.class));
+			progress(WRITE_ELEMENT_PROGRESS * 5, progressListener);
 			
 			// Informations générales
 			final OutputStream projectOutputStream = new FileOutputStream(new File(file, INFO_FILE));
@@ -138,6 +148,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			} finally {
 				projectOutputStream.close();
 			}
+			progress(FULL_PROGRESS, progressListener);
 			
 		} catch(IOException e) {
 			Exceptions.showStackTrace(e, null);
