@@ -90,6 +90,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	@Override
 	public void saveProject(Project project, File file, Listener progressListener) {
 		setVersion(InternalFormat.LAST_VERSION);
+		progress(0, progressListener);
 		
 		file.mkdir();
 		
@@ -201,6 +202,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	@Override
 	public Project openProject(File file, Listener progressListener) {
 		final Project project = new Project();
+		progress(0, progressListener);
 		
 		try {
 			final Map<String, Object> projectInfo = readProjectInfo(file);
