@@ -48,7 +48,6 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -1804,14 +1803,39 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		
 		final int action = fileChooser.showSaveDialog(this);
 		if(action == JFileChooser.APPROVE_OPTION) {
-			try {
-				MeltedIceAutoDeploy.deploy(project, fileChooser.getSelectedFile());
-			} catch (IOException ex) {
-				LOGGER.error("Une erreur est survenue lors du déploiement automatique vers MeltedIce.", ex);
-			}
+			meltedIceAutoDeploy(fileChooser.getSelectedFile());
 		}
     }//GEN-LAST:event_meltedIceAutoDeployMenuItemActionPerformed
 
+	private void meltedIceAutoDeploy(final File destination) {
+		final ProgressDialog dialog = new ProgressDialog(this, true);
+	
+		final SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				MeltedIceAutoDeploy.deploy(project, destination);
+				return null;
+			}
+		};
+
+		worker.getPropertyChangeSupport().addPropertyChangeListener("state", new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (SwingWorker.StateValue.DONE == event.getNewValue()) {
+					// Fermeture de la popup de chargement
+					dialog.setVisible(false);
+					dialog.dispose();
+				}
+			}
+		});
+
+		worker.execute();
+		dialog.setLocationRelativeTo(this);
+		dialog.setVisible(true);
+	}
+	
     private void copy(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copy
 		final TileLayer source;
 		if(mapGrid.getOverlay().isEmpty()) {
