@@ -20,7 +20,8 @@ public enum ByteCode {
 	SINUS('s'),
 	ZOOM('z'),
 	SPRITE_VARIABLE('v'),
-	SPRITE_DIRECTION('d');
+	SPRITE_DIRECTION('d'),
+	SPRITE_HITBOX_TOP('h');
 	
 	private final byte b;
 

@@ -37,13 +37,12 @@ public class VariableDeclarationParser {
 		final List<Instruction> instructions = new ArrayList<Instruction>();
 		
 		for(final String line : script.split("\n")) {
-			
 			final int affectationIndex = line.indexOf('=');
 			if(affectationIndex > -1) {
-				final String left = line.substring(0, affectationIndex).trim();
+				final String left = line.substring(0, affectationIndex).trim().toLowerCase();
 				final String right = line.substring(affectationIndex + 1).trim();
 				
-				if("sprite.Direction".equals(left)) {
+				if("sprite.direction".equals(left)) {
 					final Double direction = DIRECTIONS.get(right);
 					
 					if(direction != null) {
@@ -54,7 +53,7 @@ public class VariableDeclarationParser {
 						LOGGER.warn("Direction incorrecte : '" + right + "'.");
 					}
 					
-				} else if(left.startsWith("sprite.Variables")) {
+				} else if(left.startsWith("sprite.variables")) {
 					final int leftQuoteIndex = left.indexOf('"');
 					final int rightQuoteIndex = left.lastIndexOf('"');
 					
@@ -62,19 +61,15 @@ public class VariableDeclarationParser {
 					OperationParser.parse(right.toLowerCase(), 0, null, instructions);
 					instructions.add(new SpriteVariable(variableName));
 					
+				} else if("sprite.hitbox.top".equals(left)) {
+					OperationParser.parse(right.toLowerCase(), 0, null, instructions);
+					instructions.add(new SpriteHitboxTop());
+					
 				} else {
 					// Ligne ignorée.
 				}
 			}
 		}
 		return new Operation(instructions);
-	}
-	
-	public static void main(String[] args) {
-		final Operation operation = parse("sprite.Direction = LeftDirection\n"
-			+ "sprite.Variables[\"Angle\"] = -3.0 * PI / 4.0\n"
-			+ "test=meuh");
-		
-		System.out.println(operation);
 	}
 }
