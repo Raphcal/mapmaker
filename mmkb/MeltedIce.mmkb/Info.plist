@@ -52,6 +52,12 @@
 			<key>map</key>
 			<string>map7.map</string>
 		</dict>
+		<dict>
+			<key>instances</key>
+			<string>map8.ins</string>
+			<key>map</key>
+			<string>map8.map</string>
+		</dict>
 	</array>
 	<key>palettes</key>
 	<array>
@@ -106,6 +112,10 @@
 		<string>sprite37.spr</string>
 		<string>sprite38.spr</string>
 		<string>sprite39.spr</string>
+		<string>sprite40.spr</string>
+		<string>sprite41.spr</string>
+		<string>sprite42.spr</string>
+		<string>sprite43.spr</string>
 	</array>
 </dict>
 </plist>
