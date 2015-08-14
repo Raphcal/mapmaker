@@ -306,7 +306,9 @@ public class TileMapEditor extends javax.swing.JDialog {
         toolButtonGroup.add(penToggleButton);
         penToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_pen.png"))); // NOI18N
         penToggleButton.setToolTipText("Stylo");
-        wireTool(penToggleButton, new PenTool(drawGrid, colorPaletteMap, memento));
+        final PenTool penTool = new PenTool(drawGrid, memento);
+        penTool.setPaletteMaps(alphaPaletteMap, colorPaletteMap);
+        wireTool(penToggleButton, penTool);
         penToggleButton.setSelected(true);
 
         toolButtonGroup.add(bucketFillToggleButton);
@@ -347,7 +349,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         toolButtonGroup.add(colorPickerToggleButton);
         colorPickerToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_color_picker.png"))); // NOI18N
         colorPickerToggleButton.setToolTipText("Pipette");
-        wireTool(colorPickerToggleButton, new ColorPickerTool(colorPaletteMap, drawGrid));
+        wireTool(colorPickerToggleButton, new ColorPickerTool(alphaPaletteMap, colorPaletteMap, drawGrid));
 
         horizontalMirrorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_horizontal_mirror.png"))); // NOI18N
         horizontalMirrorButton.setToolTipText("Inverser horizontalement");

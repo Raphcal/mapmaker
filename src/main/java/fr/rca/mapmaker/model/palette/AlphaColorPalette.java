@@ -48,6 +48,14 @@ public class AlphaColorPalette extends ColorPalette {
 		return super.getSelectedTile() + MASK * selectedAlpha;
 	}
 	
+	public static int getAlphaFromTile(int tile) {
+		return tile / MASK;
+	}
+	
+	public static int getTileFromTile(int tile) {
+		return tile % MASK;
+	}
+	
 	public static AlphaColorPalette getDefaultColorPalette() {
 		return new AlphaColorPalette(ColorPalette.getDefaultColors());
 	}

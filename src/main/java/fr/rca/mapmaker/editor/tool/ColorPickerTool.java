@@ -7,9 +7,10 @@ import java.awt.event.MouseEvent;
 
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.model.map.PaletteMap;
+import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 
 public class ColorPickerTool extends MouseAdapter implements Tool {
-	
+	private PaletteMap alphaPaletteMap;
 	private PaletteMap paletteMap;
 	private final Grid drawingGrid;
 	
@@ -18,8 +19,18 @@ public class ColorPickerTool extends MouseAdapter implements Tool {
 		this.drawingGrid = drawingGrid;
 	}
 
+	public ColorPickerTool(PaletteMap alphaPaletteMap, PaletteMap paletteMap, Grid drawingGrid) {
+		this.alphaPaletteMap = alphaPaletteMap;
+		this.paletteMap = paletteMap;
+		this.drawingGrid = drawingGrid;
+	}
+	
 	public void setPaletteMap(PaletteMap paletteMap) {
 		this.paletteMap = paletteMap;
+	}
+
+	public void setAlphaPaletteMap(PaletteMap alphaPaletteMap) {
+		this.alphaPaletteMap = alphaPaletteMap;
 	}
 	
 	@Override
@@ -46,9 +57,17 @@ public class ColorPickerTool extends MouseAdapter implements Tool {
 				
 			} else {
 				final int paletteWidth = paletteMap.getWidth();
-
-				final Point selectedPoint = new Point(tile % paletteWidth, tile / paletteWidth);
-				paletteMap.setSelection(selectedPoint);
+				
+				if(alphaPaletteMap == null) {
+					paletteMap.setSelection(new Point(tile % paletteWidth, tile / paletteWidth));
+					
+				} else {
+					final int tileFromTile = AlphaColorPalette.getTileFromTile(tile);
+					final int alphaFromTile = AlphaColorPalette.getAlphaFromTile(tile);
+					
+					alphaPaletteMap.setSelection(new Point(alphaFromTile, 0));
+					paletteMap.setSelection(new Point(tileFromTile % paletteWidth, tileFromTile / paletteWidth));
+				}
 			}
 		}
 	}

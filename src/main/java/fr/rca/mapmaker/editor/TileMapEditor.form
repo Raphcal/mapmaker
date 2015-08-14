@@ -427,7 +427,7 @@
         <Property name="toolTipText" type="java.lang.String" value="Stylo"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(penToggleButton, new PenTool(drawGrid, colorPaletteMap, memento));&#xa;penToggleButton.setSelected(true);"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="final PenTool penTool = new PenTool(drawGrid, memento);&#xa;penTool.setPaletteMaps(alphaPaletteMap, colorPaletteMap);&#xa;wireTool(penToggleButton, penTool);&#xa;penToggleButton.setSelected(true);"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JToggleButton" name="bucketFillToggleButton">
@@ -539,7 +539,7 @@
         <Property name="toolTipText" type="java.lang.String" value="Pipette"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(colorPickerToggleButton, new ColorPickerTool(colorPaletteMap, drawGrid));"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(colorPickerToggleButton, new ColorPickerTool(alphaPaletteMap, colorPaletteMap, drawGrid));"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JButton" name="horizontalMirrorButton">

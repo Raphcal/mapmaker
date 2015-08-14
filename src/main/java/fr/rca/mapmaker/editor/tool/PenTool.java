@@ -42,11 +42,12 @@ public class PenTool extends MouseAdapter implements Tool {
 		this.memento = memento;
 	}
 	
-	public void setPaletteMap(PaletteMap paletteMap) {
+	public void setPaletteMaps(PaletteMap alphaPaletteMap, PaletteMap paletteMap) {
 		if(colorPickerTool == null) {
-			this.colorPickerTool = new ColorPickerTool(paletteMap, grid);
+			this.colorPickerTool = new ColorPickerTool(alphaPaletteMap, paletteMap, grid);
 		} else {
 			this.colorPickerTool.setPaletteMap(paletteMap);
+			this.colorPickerTool.setAlphaPaletteMap(alphaPaletteMap);
 		}
 	}
 
