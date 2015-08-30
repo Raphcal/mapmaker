@@ -231,6 +231,7 @@ public class MapEditor extends javax.swing.JFrame {
         zoomLabel = new javax.swing.JLabel();
         zoomTextField = new javax.swing.JTextField();
         zoomPercentLabel = new javax.swing.JLabel();
+        previewCheckBox = new javax.swing.JCheckBox();
         paletteTabbedPane = new javax.swing.JTabbedPane();
         mapPanel = new javax.swing.JPanel();
         paletteScrollPane = new javax.swing.JScrollPane();
@@ -611,6 +612,15 @@ public class MapEditor extends javax.swing.JFrame {
 
         zoomPercentLabel.setText("%");
         gridToolBar.add(zoomPercentLabel);
+
+        previewCheckBox.setText("Aperçu");
+        previewCheckBox.setFocusable(false);
+        previewCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previewCheckBoxActionPerformed(evt);
+            }
+        });
+        gridToolBar.add(previewCheckBox);
 
         mapPanel.setPreferredSize(new java.awt.Dimension(150, 423));
 
@@ -1098,7 +1108,7 @@ public class MapEditor extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(mapScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(paletteTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
@@ -1855,6 +1865,10 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		mapGrid.addMouseMotionListener(pasteSelectionTool);
     }//GEN-LAST:event_paste
 
+    private void previewCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_previewCheckBoxActionPerformed
+
 	private void shiftTiles(Palette palette, int from, int shift) {
 		for(final TileMap map : project.getMaps()) {
 			if(map.getPalette().equals(palette)) {
@@ -1978,6 +1992,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JToggleButton penToggleButton;
     private fr.rca.mapmaker.editor.tool.PenTool penTool;
+    private javax.swing.JCheckBox previewCheckBox;
     private fr.rca.mapmaker.model.project.Project project;
     private javax.swing.JMenuItem pullMenuItem;
     private javax.swing.JMenuItem pushMenuItem;
