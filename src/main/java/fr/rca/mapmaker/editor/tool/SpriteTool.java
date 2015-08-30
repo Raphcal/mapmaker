@@ -92,7 +92,11 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	}
 	
 	public SpritePalette getPalette() {
-		return (SpritePalette) spritePaletteGrid.getTileMap().getPalette();
+		if(spritePaletteGrid != null) {
+			return (SpritePalette) spritePaletteGrid.getTileMap().getPalette();
+		} else {
+			return null;
+		}
 	}
 	
 	private void registerInstance(final Instance instance) {

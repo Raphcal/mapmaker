@@ -41,6 +41,18 @@ public class PenTool extends MouseAdapter implements Tool {
 	public void setMemento(LayerMemento memento) {
 		this.memento = memento;
 	}
+
+	public LayerMemento getMemento() {
+		return memento;
+	}
+
+	public void setPaletteMap(PaletteMap paletteMap) {
+		if(colorPickerTool == null) {
+			this.colorPickerTool = new ColorPickerTool(paletteMap, grid);
+		} else {
+			this.colorPickerTool.setPaletteMap(paletteMap);
+		}
+	}
 	
 	public void setPaletteMaps(PaletteMap alphaPaletteMap, PaletteMap paletteMap) {
 		if(colorPickerTool == null) {
