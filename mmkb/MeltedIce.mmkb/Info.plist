@@ -58,7 +58,15 @@
 			<key>map</key>
 			<string>map8.map</string>
 		</dict>
+		<dict>
+			<key>instances</key>
+			<string>map9.ins</string>
+			<key>map</key>
+			<string>map9.map</string>
+		</dict>
 	</array>
+	<key>next-map</key>
+	<integer>10</integer>
 	<key>palettes</key>
 	<array>
 		<string>palette0.pal</string>
