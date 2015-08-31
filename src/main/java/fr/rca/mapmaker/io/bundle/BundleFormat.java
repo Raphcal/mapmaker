@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -102,8 +103,9 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		
 		// Écriture des nouveaux fichiers
 		
-		final Map<String, Object> projectMap = new HashMap<String, Object>();
+		final LinkedHashMap<String, Object> projectMap = new LinkedHashMap<String, Object>();
 		projectMap.put(VERSION, InternalFormat.LAST_VERSION);
+		projectMap.put(NEXT_MAP, project.getNextMap());
 		
 		final List<String> palettes = new ArrayList<String>();
 		final List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
@@ -111,7 +113,6 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		projectMap.put(PALETTES, palettes);
 		projectMap.put(MAPS, maps);
 		projectMap.put(SPRITES, sprites);
-		projectMap.put(NEXT_MAP, project.getNextMap());
 		
 		try {
 			// Palettes
