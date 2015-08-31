@@ -30,6 +30,12 @@
 		</dict>
 		<dict>
 			<key>instances</key>
+			<string>map7.ins</string>
+			<key>map</key>
+			<string>map7.map</string>
+		</dict>
+		<dict>
+			<key>instances</key>
 			<string>map4.ins</string>
 			<key>map</key>
 			<string>map4.map</string>
@@ -48,12 +54,6 @@
 		</dict>
 		<dict>
 			<key>instances</key>
-			<string>map7.ins</string>
-			<key>map</key>
-			<string>map7.map</string>
-		</dict>
-		<dict>
-			<key>instances</key>
 			<string>map8.ins</string>
 			<key>map</key>
 			<string>map8.map</string>
@@ -69,7 +69,7 @@
 		<string>palette5.pal</string>
 	</array>
 	<key>version</key>
-	<integer>6</integer>
+	<integer>7</integer>
 	<key>sprites</key>
 	<array>
 		<string>sprite0.spr</string>
