@@ -107,7 +107,10 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	}
 
 	public void setIndex(Integer index) {
+		final Integer oldIndex = this.index;
 		this.index = index;
+		
+		propertyChangeSupport.firePropertyChange("index", oldIndex, index);
 	}
 	
 	public String getName() {

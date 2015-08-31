@@ -1166,6 +1166,7 @@ private void editMapMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//G
 		final TileMap editedTileMap = dialog.getTileMap();
 		
 		selectedTileMap.setName(editedTileMap.getName());
+		selectedTileMap.setIndex(editedTileMap.getIndex());
 		selectedTileMap.setBackgroundColor(editedTileMap.getBackgroundColor());
 		selectedTileMap.setPalette(editedTileMap.getPalette());
 		

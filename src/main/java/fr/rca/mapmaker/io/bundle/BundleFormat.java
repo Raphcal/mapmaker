@@ -54,6 +54,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	private static final String MAP = "map";
 	private static final String INSTANCES = "instances";
 	private static final String SPRITES = "sprites";
+	private static final String NEXT_MAP = "next-map";
 	
 	private static final int FULL_PROGRESS = 100;
 	private static final int READ_STEPS = 5;
@@ -110,6 +111,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		projectMap.put(PALETTES, palettes);
 		projectMap.put(MAPS, maps);
 		projectMap.put(SPRITES, sprites);
+		projectMap.put(NEXT_MAP, project.getNextMap());
 		
 		try {
 			// Palettes
@@ -239,6 +241,9 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 				progress = progress(progress + READ_ELEMENT_PROGRESS / maps.size(), progressListener);
 				
 				project.addMap(tileMap, instances);
+			}
+			if(version >= InternalFormat.VERSION_7 && projectInfo.containsKey(NEXT_MAP)) {
+				project.setNextMap((Integer) projectInfo.get(NEXT_MAP));
 			}
 			progress = progress(READ_ELEMENT_PROGRESS * 4, progressListener);
 			

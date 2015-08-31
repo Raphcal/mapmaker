@@ -251,6 +251,14 @@ public class Project implements ListModel {
 	public void removeListDataListener(ListDataListener l) {
 		listeners.remove(l);
 	}
+
+	public int getNextMap() {
+		return nextMap;
+	}
+
+	public void setNextMap(int nextMap) {
+		this.nextMap = nextMap;
+	}
 	
 	public void addMap(TileMap map) {
 		addMap(map, new ArrayList<Instance>());
@@ -261,6 +269,8 @@ public class Project implements ListModel {
 		
 		if(map.getIndex() == null) {
 			map.setIndex(nextMap++);
+		} else if(nextMap <= map.getIndex()) {
+			nextMap = map.getIndex() + 1;
 		}
 		
 		final int index = maps.size();

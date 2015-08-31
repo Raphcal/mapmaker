@@ -58,10 +58,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="fileNameTextField" max="32767" attributes="0"/>
-                          <Component id="nameTextField" max="32767" attributes="0"/>
                           <Component id="heightTextField" alignment="0" max="32767" attributes="1"/>
                           <Component id="widthTextField" alignment="0" max="32767" attributes="1"/>
                           <Component id="paletteComboBox" alignment="0" max="32767" attributes="1"/>
+                          <Component id="nameTextField" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -194,6 +194,7 @@
         </Property>
       </Properties>
       <BindingProperties>
+        <BindingProperty name="value" source="tileMap" sourcePath="${width}" target="widthTextField" targetPath="value" updateStrategy="0" immediately="false"/>
         <BindingProperty name="text" source="tileMap" sourcePath="${width}" target="widthTextField" targetPath="text" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
@@ -208,6 +209,7 @@
         </Property>
       </Properties>
       <BindingProperties>
+        <BindingProperty name="value" source="tileMap" sourcePath="${height}" target="heightTextField" targetPath="value" updateStrategy="0" immediately="false"/>
         <BindingProperty name="text" source="tileMap" sourcePath="${height}" target="heightTextField" targetPath="text" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
@@ -259,6 +261,11 @@
       </BindingProperties>
     </Component>
     <Component class="javax.swing.JTextField" name="fileNameTextField">
+      <BindingProperties>
+        <BindingProperty name="text" source="tileMap" sourcePath="${fileName}" target="fileNameTextField" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
     </Component>
     <Component class="javax.swing.JLabel" name="fileNameLabel">
       <Properties>
