@@ -1881,11 +1881,16 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			final Dimension size = getSize();
 			zoom(Math.max(size.getWidth() / (12.0 * 32), size.getHeight() / (6.8 * 32)));
 			
+			size.setSize(mapGrid.getZoom() * 12.0 * 32, mapGrid.getZoom() * 6.8 * 32);
+			setSize(size);
+			
 			sizeListener = new ComponentAdapter() {
 				@Override
 				public void componentResized(ComponentEvent e) {
-					final Dimension size = getSize();
-					zoom(Math.max(size.getWidth() / (12.0 * 32), size.getHeight() / (6.8 * 32)));
+					if(previewCheckBox.isSelected()) {
+						final Dimension size = getSize();
+						zoom(Math.max(size.getWidth() / (12.0 * 32), size.getHeight() / (6.8 * 32)));
+					}
 				}
 			};
 			
