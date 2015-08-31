@@ -34,6 +34,10 @@ public class TileMapDataHandler implements DataHandler<TileMap>, HasVersion {
 	
 	@Override
 	public void write(TileMap t, OutputStream outputStream) throws IOException {
+		if(version >= InternalFormat.VERSION_7) {
+			Streams.write(t.getIndex(), outputStream);
+		}
+		
 		if(version >= InternalFormat.VERSION_6) {
 			Streams.writeNullable(t.getName(), outputStream);
 		}
@@ -65,6 +69,11 @@ public class TileMapDataHandler implements DataHandler<TileMap>, HasVersion {
 	@Override
 	public TileMap read(InputStream inputStream) throws IOException {
 		final TileMap tileMap = new TileMap();
+		
+		// Index
+		if(version >= InternalFormat.VERSION_7) {
+			tileMap.setIndex(Streams.readInt(inputStream));
+		}
 		
 		// Nom
 		if(version >= InternalFormat.VERSION_6) {

@@ -45,13 +45,15 @@ public class InternalFormat extends AbstractFormat {
 	public static final int VERSION_4 = 4;
 	public static final int VERSION_5 = 5;
 	public static final int VERSION_6 = 6;
+	public static final int VERSION_7 = 7;
 	public static final String HEADER_VERSION_3 = "MMK3";
 	public static final String HEADER_VERSION_4 = "MMK4";
 	public static final String HEADER_VERSION_5 = "MMK5";
 	public static final String HEADER_VERSION_6 = "MMK6";
+	public static final String HEADER_VERSION_7 = "MMK7";
 	
-	public static final int LAST_VERSION = VERSION_6;
-	public static final String HEADER_LAST_VERSION = HEADER_VERSION_6;
+	public static final int LAST_VERSION = VERSION_7;
+	public static final String HEADER_LAST_VERSION = HEADER_VERSION_7;
 			
 
 	public InternalFormat() {

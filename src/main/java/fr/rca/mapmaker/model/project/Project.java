@@ -47,6 +47,7 @@ public class Project implements ListModel {
 	
 	private PaletteMap spritePaletteMap;
 
+	private int nextMap;
 	
 	public static Project createEmptyProject() {
 		final Project project = new Project();
@@ -113,6 +114,9 @@ public class Project implements ListModel {
 		} else {
 			fireContentsChanged(0, newSize -1);
 		}
+		
+		// Séquences
+		nextMap = project.nextMap;
 		
 		// Sélection + événement de modification
 		selectedIndex = 0;
@@ -254,6 +258,10 @@ public class Project implements ListModel {
 	
 	public void addMap(TileMap map, List<Instance> instances) {
 		map.setParent(this);
+		
+		if(map.getIndex() == null) {
+			map.setIndex(nextMap++);
+		}
 		
 		final int index = maps.size();
 		maps.add(map);

@@ -121,11 +121,13 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
 			final int size = project.getMaps().size();
 			for(int index = 0; index < size; index++) {
-				final Map<String, Object> map = new HashMap<String, Object>();
-				final String mapName =  String.format(MAP_FILE_FORMAT, index);
-				final String instancesName =  String.format(INSTANCES_FILE_FORMAT, index);
+				final TileMap tileMap = project.getMaps().get(index);
 				
-				writeMap(project.getMaps().get(index), file, mapName, tileMapHandler, map);
+				final Map<String, Object> map = new HashMap<String, Object>();
+				final String mapName =  String.format(MAP_FILE_FORMAT, tileMap.getIndex());
+				final String instancesName =  String.format(INSTANCES_FILE_FORMAT, tileMap.getIndex());
+				
+				writeMap(tileMap, file, mapName, tileMapHandler, map);
 				progress = progress(progress + WRITE_ELEMENT_PROGRESS / size, progressListener);
 				
 				// Instances

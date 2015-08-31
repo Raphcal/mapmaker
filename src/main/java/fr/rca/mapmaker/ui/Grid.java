@@ -384,7 +384,7 @@ public class Grid extends AbstractLayerPainter {
 		return customTileSize;
 	}
 	
-	public int getTileSize() {
+	public double getZoomedTileSize() {
 		final int baseSize;
 		
 		if(this.customTileSize != null) {
@@ -397,7 +397,11 @@ public class Grid extends AbstractLayerPainter {
 			baseSize = 1;
 		}
 		
-		return (int) (zoom * baseSize);
+		return zoom * baseSize;
+	}
+	
+	public int getTileSize() {
+		return (int) getZoomedTileSize();
 	}
 	
 	/**

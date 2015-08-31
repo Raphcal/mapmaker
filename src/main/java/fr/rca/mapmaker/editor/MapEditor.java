@@ -36,9 +36,13 @@ import fr.rca.mapmaker.preferences.PreferencesManager;
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -78,6 +82,8 @@ public class MapEditor extends javax.swing.JFrame {
 	private File currentFile;
 	private Format currentFormat;
 	private final PasteSelectionTool pasteSelectionTool;
+	
+	private ComponentListener sizeListener;
 	
 	/** Creates new form MapEditor */
 	public MapEditor() {
@@ -615,9 +621,9 @@ public class MapEditor extends javax.swing.JFrame {
 
         previewCheckBox.setText("Aperçu");
         previewCheckBox.setFocusable(false);
-        previewCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                previewCheckBoxActionPerformed(evt);
+        previewCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                previewCheckBoxStateChanged(evt);
             }
         });
         gridToolBar.add(previewCheckBox);
@@ -1579,27 +1585,29 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private void zoomTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomTextFieldActionPerformed
 		try {
 			final int size = Integer.parseInt(zoomTextField.getText());
-			final double zoom = (double)size/100.0;
-			final double ratio = zoom / mapGrid.getZoom();
-
-			final Point viewPoint = mapScrollPane.getViewport().getViewPosition();
-			
-			// Zoom de la carte.
-			mapGrid.setZoom(zoom);
-			
-			mapScrollPane.getViewport().setViewPosition(new Point((int) (viewPoint.x * ratio), (int) (viewPoint.y * ratio)));
-			
-			// Zoom des instances de sprite.
-			spriteTool.setZoom(zoom);
-			for(final Instance instance : project.getInstances()) {
-				instance.setZoom(zoom);
-			}
-			
+			zoom((double)size/100.0);
 		} catch(NumberFormatException e) {
 			// Ignoré.
 		}
     }//GEN-LAST:event_zoomTextFieldActionPerformed
 
+	private void zoom(double zoom) {
+		final double ratio = zoom / mapGrid.getZoom();
+
+		// Zoom de la carte.
+		mapGrid.setZoom(zoom);
+
+		// Recentrage de la vue.
+		final Point viewPoint = mapScrollPane.getViewport().getViewPosition();
+		mapScrollPane.getViewport().setViewPosition(new Point((int) (viewPoint.x * ratio), (int) (viewPoint.y * ratio)));
+
+		// Zoom des instances de sprite.
+		spriteTool.setZoom(zoom);
+		for(final Instance instance : project.getInstances()) {
+			instance.setZoom(zoom);
+		}
+	}
+	
 	private void spriteInstancesChanged() {
 		spriteLayerPanel.removeAll();
 		final List<Instance> instances = project.getInstances();
@@ -1865,9 +1873,29 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		mapGrid.addMouseMotionListener(pasteSelectionTool);
     }//GEN-LAST:event_paste
 
-    private void previewCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_previewCheckBoxActionPerformed
+    private void previewCheckBoxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_previewCheckBoxStateChanged
+		zoomTextField.setEnabled(!previewCheckBox.isSelected());
+		
+		if(previewCheckBox.isSelected()) {
+			final Dimension size = getSize();
+			zoom(Math.max(size.getWidth() / (12.0 * 32), size.getHeight() / (6.8 * 32)));
+			
+			sizeListener = new ComponentAdapter() {
+				@Override
+				public void componentResized(ComponentEvent e) {
+					final Dimension size = getSize();
+					zoom(Math.max(size.getWidth() / (12.0 * 32), size.getHeight() / (6.8 * 32)));
+				}
+			};
+			
+			addComponentListener(sizeListener);
+			
+		} else if(sizeListener != null) {
+			removeComponentListener(sizeListener);
+			zoomTextFieldActionPerformed(null);
+			sizeListener = null;
+		}
+    }//GEN-LAST:event_previewCheckBoxStateChanged
 
 	private void shiftTiles(Palette palette, int from, int shift) {
 		for(final TileMap map : project.getMaps()) {

@@ -27,6 +27,11 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	/**
+	 * Numéro de la carte.
+	 */
+	private Integer index;
+	
+	/**
 	 * Nom de la carte.
 	 */
 	private String name;
@@ -97,6 +102,14 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 		this.parent = parent;
 	}
 
+	public Integer getIndex() {
+		return index;
+	}
+
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
+	
 	public String getName() {
 		return name;
 	}

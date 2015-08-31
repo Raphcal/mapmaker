@@ -29,6 +29,11 @@ public abstract class AbstractLayerPainter extends JComponent {
 		this.paintLayer(layer, palette, clipBounds, tileSize, 0, viewpoint, g);
 	}
 	
+	protected void paintLayer(final Layer layer, Palette palette, final Rectangle clipBounds,
+			final double tileSize, Point viewpoint, Graphics g) {
+		this.paintLayer(layer, palette, clipBounds, tileSize, 0, viewpoint, g);
+	}
+	
 	/**
 	 * Dessine la couche donnée sur l'image représentée par <code>g</code>.
 	 * 
@@ -69,6 +74,40 @@ public abstract class AbstractLayerPainter extends JComponent {
 		for(int y = startY; y < maxY; y++) {
 			for(int x = startX; x < maxX; x++) {
 				palette.paintTile(g, layer.getTile(x, y), originX + x * spaceX, originY + y * spaceY, tileSize);
+			}
+		}
+	}
+	
+	// FIXME: Ne fonctionne pas correctement
+	protected void paintLayer(final Layer layer, Palette palette, final Rectangle clipBounds,
+			final double tileSize, final double padding, Point viewpoint, Graphics g) {
+		// Définition du point de vue, si aucun n'a été donné.
+		if(viewpoint == null) {
+			viewpoint = new Point(0, 0);
+		}
+		
+		// Emplacement du point supérieur gauche de la couche.
+		// Utilisé pour centrer correctement les plans ayant une vitesse
+		// de défilement différente de 1.
+		final double originX = viewpoint.getX() * (1.0 - layer.getScrollRate().getX()) + padding;
+		final double originY = viewpoint.getY() * (1.0 - layer.getScrollRate().getY()) + padding;
+		
+		// Coordonnées du premier point à afficher.
+		final double startX = (clipBounds.getX() * layer.getScrollRate().getX()) / tileSize;
+		final double startY = (clipBounds.getY() * layer.getScrollRate().getY()) / tileSize;
+		
+		// Coordonnées du dernier point à afficher.
+		final double maxX = Math.min((clipBounds.getX() + clipBounds.getWidth()) / tileSize, (double) layer.getWidth());
+		final double maxY = Math.min((clipBounds.getY() + clipBounds.getHeight()) / tileSize, (double) layer.getHeight());
+		
+		// Décalage entre chaque tuile
+		final double spaceX = tileSize + padding + padding;
+		final double spaceY = tileSize + padding + padding;
+		
+		// Affichage de la couche
+		for(double y = startY; y < maxY; y++) {
+			for(double x = startX; x < maxX; x++) {
+				palette.paintTile(g, layer.getTile((int) x, (int) y), (int) (originX + x * spaceX), (int) (originY + y * spaceY), (int) tileSize);
 			}
 		}
 	}
