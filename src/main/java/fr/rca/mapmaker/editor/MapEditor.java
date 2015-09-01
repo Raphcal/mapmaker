@@ -1896,10 +1896,10 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			
 			addComponentListener(sizeListener);
 			
-		} else if(sizeListener != null) {
+		} else {
+			// TODO: Comprendre pourquoi le listener n'est pas retiré.
 			removeComponentListener(sizeListener);
 			zoomTextFieldActionPerformed(null);
-			sizeListener = null;
 		}
     }//GEN-LAST:event_previewCheckBoxStateChanged
 
