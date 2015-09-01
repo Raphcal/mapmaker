@@ -188,13 +188,7 @@
       </AuxValues>
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="widthTextField">
-      <Properties>
-        <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-          <Format format="#0" subtype="-1" type="0"/>
-        </Property>
-      </Properties>
       <BindingProperties>
-        <BindingProperty name="value" source="tileMap" sourcePath="${width}" target="widthTextField" targetPath="value" updateStrategy="0" immediately="false"/>
         <BindingProperty name="text" source="tileMap" sourcePath="${width}" target="widthTextField" targetPath="text" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
@@ -203,13 +197,7 @@
       </AuxValues>
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="heightTextField">
-      <Properties>
-        <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-          <Format format="#0" subtype="-1" type="0"/>
-        </Property>
-      </Properties>
       <BindingProperties>
-        <BindingProperty name="value" source="tileMap" sourcePath="${height}" target="heightTextField" targetPath="value" updateStrategy="0" immediately="false"/>
         <BindingProperty name="text" source="tileMap" sourcePath="${height}" target="heightTextField" targetPath="text" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
