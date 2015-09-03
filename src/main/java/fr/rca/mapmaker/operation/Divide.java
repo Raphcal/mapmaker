@@ -1,7 +1,8 @@
 package fr.rca.mapmaker.operation;
 
 import java.util.Deque;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Représente l'opérateur diviser ('/').
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
  */
 public class Divide implements Operator {
 	
-	private static final Logger LOGGER = Logger.getLogger(Divide.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(Divide.class);
 
 	@Override
 	public void execute(double x, Deque<Double> stack) {
@@ -20,7 +21,7 @@ public class Divide implements Operator {
 		
 		if(o2 == 0.0) {
 			stack.push(0.0);
-			LOGGER.warning("[OPERATION] Tentative de division par zéro.");
+			LOGGER.warn("[OPERATION] Tentative de division par zéro.");
 
 		} else {
 			stack.push(o1 / o2);

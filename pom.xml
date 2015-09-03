@@ -128,9 +128,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>de.sciss</groupId>
-			<artifactId>jsyntaxpane</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.12</version>
 		</dependency>
 	</dependencies>
 </project>
