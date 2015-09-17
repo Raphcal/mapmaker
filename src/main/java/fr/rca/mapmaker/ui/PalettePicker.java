@@ -1,14 +1,13 @@
 package fr.rca.mapmaker.ui;
 
+import fr.rca.mapmaker.model.HasSelectionListeners;
 import fr.rca.mapmaker.model.Optional;
+import fr.rca.mapmaker.model.SelectionListener;
 import fr.rca.mapmaker.model.map.DataLayer;
 import fr.rca.mapmaker.model.map.TileLayer;
-import fr.rca.mapmaker.model.palette.AlphaColorPalette;
-import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.selection.AutoSelectionStyle;
 import fr.rca.mapmaker.model.selection.SelectionStyle;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -18,33 +17,35 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
 /**
  *
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
-public class PalettePicker extends JComponent {
+public class PalettePicker extends JComponent implements HasSelectionListeners {
 	
 	private final Palette palette = Optional.newInstance(Palette.class);
 	private final Rectangle selection = new Rectangle(0, 0, 1, 1);
 	private final SelectionStyle selectionStyle = new AutoSelectionStyle();
+	private final List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
 	
 	private Point dragOrigin;
 	private int columns = 1;
 	private int tileSize = 1;
-
+	
 	public PalettePicker() {
 		setOpaque(true);
 		wireEvents();
 	}
 	
-	public Rectangle getSelection() {
-		return selection;
+	public int getSelectedTile() {
+		return selection.x + selection.y * columns;
 	}
 	
-	public DataLayer getSelectionLayer() {
+	public DataLayer getSelectionAsLayer() {
 		final int[] tiles = new int[selection.width * selection.height];
 		
 		int index = 0;
@@ -69,6 +70,21 @@ public class PalettePicker extends JComponent {
 		return Optional.get(this.palette);
 	}
 
+	@Override
+	public void addSelectionListener(SelectionListener listener) {
+		selectionListeners.add(listener);
+	}
+
+	@Override
+	public void removeSelectionListener(SelectionListener listener) {
+		selectionListeners.remove(listener);
+	}
+
+	@Override
+	public Point getSelection() {
+		return new Point(selection.x, selection.y);
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		final Rectangle clipBounds = g.getClipBounds();
@@ -97,6 +113,12 @@ public class PalettePicker extends JComponent {
 		
 		// Affichage de la sélection
 		selectionStyle.paintCursor(g, palette, tileSize, selection.x, selection.y, selection.width, selection.height);
+	}
+	
+	protected void fireSelectionChanged() {
+		for(final SelectionListener listener : selectionListeners) {
+			listener.selectionChanged(null, getSelection());
+		}
 	}
 	
 	private void updateSize() {
@@ -144,7 +166,9 @@ public class PalettePicker extends JComponent {
 				selection.width = 1;
 				selection.height = 1;
 				palette.setSelectedTile(selection.x + selection.y * columns);
+				
 				repaint();
+				fireSelectionChanged();
 			}
 			
 			@Override
@@ -185,6 +209,7 @@ public class PalettePicker extends JComponent {
 				palette.setSelectedTile(selection.x + selection.y * columns);
 				
 				repaint();
+				fireSelectionChanged();
 			}
 
 		});
@@ -202,24 +227,4 @@ public class PalettePicker extends JComponent {
 		return palette.size() / columns;
 	}
 	
-	public static void main(String[] args) {
-		final AlphaColorPalette palette = new AlphaColorPalette(ColorPalette.getDefaultColorPalette().getColors()) {
-
-			@Override
-			public int getTileSize() {
-				return 32;
-			}
-			
-		};
-		
-		final PalettePicker tilePicker = new PalettePicker();
-		tilePicker.setPalette(palette);
-		
-		final JFrame frame = new JFrame();
-		frame.setSize(320, 240);
-		frame.getContentPane().setLayout(new BorderLayout());
-		frame.getContentPane().add(tilePicker);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
 }

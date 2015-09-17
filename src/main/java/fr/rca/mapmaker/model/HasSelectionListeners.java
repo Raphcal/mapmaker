@@ -11,4 +11,5 @@ public interface HasSelectionListeners {
 	void addSelectionListener(SelectionListener listener);
 	void removeSelectionListener(SelectionListener listener);
 	Point getSelection();
+	
 }

@@ -9,4 +9,5 @@ import java.awt.Point;
 public interface SelectionListener {
 	
 	void selectionChanged(Point oldSelection, Point newSelection);
+	
 }

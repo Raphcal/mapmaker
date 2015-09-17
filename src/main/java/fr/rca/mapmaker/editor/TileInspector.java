@@ -7,6 +7,7 @@ import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
+import fr.rca.mapmaker.ui.PalettePicker;
 
 /**
  *
@@ -29,12 +30,18 @@ public class TileInspector extends javax.swing.JDialog {
 		
 	}
 	
+	public void setTile(PalettePicker palettePicker) {
+		setTile(palettePicker.getSelectedTile(), palettePicker.getPalette());
+	}
+	
 	public void setTile(PaletteMap paletteMap) {
-		final int tile = paletteMap.getSelectedTile();
+		setTile(paletteMap.getSelectedTile(), paletteMap.getPalette());
+	}
+	
+	private void setTile(final int tile, Palette palette) {
 		setTitle("Infos sur la tuile n°" + tile);
 		tileIndexLabel.setText("Tuile n°" + tile);
 		
-		Palette palette = paletteMap.getPalette();
 		if(palette instanceof PaletteReference) {
 			final PaletteReference reference = (PaletteReference) palette;
 			palette = reference.getProject().getPalette(reference.getPaletteIndex());
