@@ -25,6 +25,15 @@ public class Optional<T> implements InvocationHandler {
 		}
 	}
 	
+	public static <T> T get(T proxy) {
+		if(proxy != null && Proxy.isProxyClass(proxy.getClass())) {
+			final Optional<T> optional = (Optional<T>) Proxy.getInvocationHandler(proxy);
+			return optional.value;
+		} else {
+			return proxy;
+		}
+	}
+	
 	private T value;
 
 	@Override

@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.ui;
 
+import fr.rca.mapmaker.model.Optional;
 import fr.rca.mapmaker.model.map.DataLayer;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
@@ -24,12 +25,14 @@ import javax.swing.JFrame;
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
 public class PalettePicker extends JComponent {
-	private Palette palette;
-	private int columns;
-	private int tileSize;
-	private Point dragOrigin;
+	
+	private final Palette palette = Optional.newInstance(Palette.class);
 	private final Rectangle selection = new Rectangle(0, 0, 1, 1);
 	private final SelectionStyle selectionStyle = new AutoSelectionStyle();
+	
+	private Point dragOrigin;
+	private int columns = 1;
+	private int tileSize = 1;
 
 	public PalettePicker() {
 		wireEvents();
@@ -54,12 +57,14 @@ public class PalettePicker extends JComponent {
 		return layer;
 	}
 
-	public Palette getPalette() {
-		return palette;
+	public void setPalette(Palette palette) {
+		Optional.set(this.palette, palette);
+		updateSize();
+		repaint();
 	}
 
-	public void setPalette(Palette palette) {
-		this.palette = palette;
+	public Palette getPalette() {
+		return Optional.get(this.palette);
 	}
 
 	@Override
@@ -86,31 +91,36 @@ public class PalettePicker extends JComponent {
 		selectionStyle.paintCursor(g, palette, tileSize, selection.x, selection.y, selection.width, selection.height);
 	}
 	
+	private void updateSize() {
+		final int paletteTileSize = Math.max(palette.getTileSize(), 1);
+		final Dimension size = getSize();
+		final double ratio = size.getWidth() / paletteTileSize;
+
+		columns = Math.max((int) Math.ceil(ratio), 1);
+		tileSize = (int) (size.getWidth() / columns);
+		final int rows = rowCount();
+
+		if(selection.x + selection.width > columns) {
+			selection.width = Math.max(columns - selection.x, 1);
+			selection.x = Math.min(selection.x, columns - selection.width);
+		}
+
+		if(selection.y + selection.height > rows) {
+			selection.height = Math.max(rows - selection.y, 1);
+			selection.y = Math.min(selection.y, rows - selection.height);
+		}
+
+		palette.setSelectedTile(selection.x + selection.y * columns);
+
+		setPreferredSize(new Dimension(tileSize * columns, tileSize * rows));
+	}
+	
 	private void wireEvents() {
 		addComponentListener(new ComponentAdapter() {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				final Dimension size = getSize();
-				final double ratio = size.getWidth() / palette.getTileSize();
-				
-				columns = (int) Math.ceil(ratio);
-				tileSize = (int) (size.getWidth() / columns);
-				final int rows = rowCount();
-				
-				if(selection.x + selection.width > columns) {
-					selection.width = Math.max(columns - selection.x, 1);
-					selection.x = Math.min(selection.x, columns - selection.width);
-				}
-				
-				if(selection.y + selection.height > rows) {
-					selection.height = Math.max(rows - selection.y, 1);
-					selection.y = Math.min(selection.y, rows - selection.height);
-				}
-				
-				palette.setSelectedTile(selection.x + selection.y * columns);
-				
-				setPreferredSize(new Dimension(tileSize * columns, tileSize * rows));
+				updateSize();
 			}
 
 		});
@@ -194,7 +204,7 @@ public class PalettePicker extends JComponent {
 		};
 		
 		final PalettePicker tilePicker = new PalettePicker();
-		tilePicker.palette = palette;
+		tilePicker.setPalette(palette);
 		
 		final JFrame frame = new JFrame();
 		frame.setSize(320, 240);
