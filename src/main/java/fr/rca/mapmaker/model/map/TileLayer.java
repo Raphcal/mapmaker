@@ -434,6 +434,26 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	}
 	
 	/**
+	 * Dessine le layer donné à l'emplacement donné.
+	 * Contrairement à {@link #merge(fr.rca.mapmaker.model.map.TileLayer)) Les 
+	 * points transparents sont copiés.
+	 * 
+	 * @param layer Couche à recopier.
+	 * @param destination Emplacement où dessiner
+	 */
+	public void mergeAtPoint(DataLayer layer, Point destination) {
+		final int[] copiedTiles = layer.copyData();
+		final int copiedWidth = Math.min(layer.getWidth(), this.width - destination.x);
+		final int copiedHeight = Math.min(layer.getHeight(), this.height - destination.y);
+		
+		for(int y = 0; y < copiedHeight; y++) {
+			System.arraycopy(copiedTiles, y * layer.getWidth(), tiles, destination.x + (y + destination.y) * width, copiedWidth);
+		}
+		
+		fireLayerChanged(new Rectangle(destination.x, destination.y, copiedWidth, copiedHeight));
+	}
+	
+	/**
 	 * Supprime de la couche tous les points non vide de la couche donnée.
 	 * 
 	 * @param layer Couche à exclure.

@@ -314,7 +314,7 @@ public class Grid extends AbstractLayerPainter {
 				final int y = selectedPoint.y * tileSize;
 				final Point origin = getLayerOrigin(tileMap.getLayers().get(activeLayer));
 				
-				selectionStyle.paintCursor(g, tileMap.getPalette(), origin.x + x, origin.y + y, tileSize);
+				selectionStyle.paintCursor(g, tileMap.getPalette(), origin.x + x, origin.y + y, tileSize, tileSize);
 			}
 		}
 	}
