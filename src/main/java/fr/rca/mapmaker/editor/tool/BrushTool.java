@@ -41,6 +41,7 @@ public class BrushTool extends MouseAdapter implements Tool {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		this.draw = e.getButton() == MouseEvent.BUTTON1;
 		memento.begin();
 		drawAtPoint(e.getPoint());
 	}
@@ -59,7 +60,7 @@ public class BrushTool extends MouseAdapter implements Tool {
 		final TileLayer layer = (TileLayer) grid.getActiveLayer();
 		
 		if(draw) {
-			layer.mergeAtPoint(palettePicker.getSelectionLayer(), layerLocation);
+			layer.mergeAtPoint(palettePicker.getSelectionAsLayer(), layerLocation);
 		} else {
 			layer.clear(layerLocation.x, layerLocation.y);
 		}
