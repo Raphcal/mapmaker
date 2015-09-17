@@ -10,7 +10,7 @@ import java.awt.Graphics;
 public abstract class AbstractSelectionStyle implements SelectionStyle {
 
 	@Override
-	public void paintCursor(Graphics g, Palette palette, double size, int x, int y, int width, int height) {
+	public void paintCursor(Graphics g, Palette palette, int size, int x, int y, int width, int height) {
 		paintCursor(g, palette, (int) (x * size), (int) (y * size), (int) (width * size), (int) (height * size));
 	}
 	

@@ -6,7 +6,6 @@ import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.selection.AutoSelectionStyle;
-import fr.rca.mapmaker.model.selection.DefaultSelectionStyle;
 import fr.rca.mapmaker.model.selection.SelectionStyle;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -27,7 +26,7 @@ import javax.swing.JFrame;
 public class PalettePicker extends JComponent {
 	private Palette palette;
 	private int columns;
-	private double tileSize;
+	private int tileSize;
 	private Point dragOrigin;
 	private final Rectangle selection = new Rectangle(0, 0, 1, 1);
 	private final SelectionStyle selectionStyle = new AutoSelectionStyle();
@@ -69,8 +68,8 @@ public class PalettePicker extends JComponent {
 		final Rectangle clipBounds = g.getClipBounds();
 		
 		// Coordonnées du premier point à afficher.
-		final int startX = (int) (clipBounds.x / tileSize);
-		final int startY = (int) (clipBounds.y / tileSize);
+		final int startX = clipBounds.x / tileSize;
+		final int startY = clipBounds.y / tileSize;
 		
 		// Coordonnées du dernier point à afficher.
 		final int maxX = Math.min((int) Math.ceil((double) (clipBounds.x + clipBounds.width) / tileSize), columns);
@@ -96,7 +95,7 @@ public class PalettePicker extends JComponent {
 				final double ratio = size.getWidth() / palette.getTileSize();
 				
 				columns = (int) Math.ceil(ratio);
-				tileSize = size.getWidth() / columns;
+				tileSize = (int) (size.getWidth() / columns);
 				final int rows = rowCount();
 				
 				if(selection.x + selection.width > columns) {
@@ -110,6 +109,8 @@ public class PalettePicker extends JComponent {
 				}
 				
 				palette.setSelectedTile(selection.x + selection.y * columns);
+				
+				setPreferredSize(new Dimension(tileSize * columns, tileSize * rows));
 			}
 
 		});

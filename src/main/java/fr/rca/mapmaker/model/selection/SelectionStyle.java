@@ -27,5 +27,5 @@ public interface SelectionStyle {
 	 * @param width Largeur du curseur.
 	 * @param height Hauteur du curseur.
 	 */
-	void paintCursor(Graphics g, Palette palette, double size, int x, int y, int width, int height);
+	void paintCursor(Graphics g, Palette palette, int size, int x, int y, int width, int height);
 }

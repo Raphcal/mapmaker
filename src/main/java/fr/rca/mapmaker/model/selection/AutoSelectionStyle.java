@@ -24,7 +24,7 @@ public class AutoSelectionStyle extends AbstractSelectionStyle {
 	}
 
 	@Override
-	public void paintCursor(Graphics g, Palette palette, double size, int x, int y, int width, int height) {
+	public void paintCursor(Graphics g, Palette palette, int size, int x, int y, int width, int height) {
 		if(size <= SMALL_SIZE) {
 			small.paintCursor(g, palette, size, x, y, width, height);
 		} else {
