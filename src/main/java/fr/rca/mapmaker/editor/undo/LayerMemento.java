@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 
-public class LayerMemento {
+public class LayerMemento implements Memento {
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
@@ -81,22 +81,27 @@ public class LayerMemento {
 		}
 	}
 	
+	@Override
 	public void undo() {
 		restore(undoStack, redoStack);
 	}
 	
+	@Override
 	public void redo() {
 		restore(redoStack, undoStack);
 	}
 	
+	@Override
 	public boolean isUndoable() {
 		return !undoStack.isEmpty();
 	}
 	
+	@Override
 	public boolean isRedoable() {
 		return !redoStack.isEmpty();
 	}
 	
+	@Override
 	public void clear() {
 		final boolean oldUndoable = isUndoable();
 		final boolean oldRedoable = isRedoable();
@@ -108,10 +113,12 @@ public class LayerMemento {
 		propertyChangeSupport.firePropertyChange("redoable", oldRedoable, false);
 	}
 	
+	@Override
 	public void begin() {
 		transactionActive = true;
 	}
 	
+	@Override
 	public void end() {
 		transactionActive = false;
 		

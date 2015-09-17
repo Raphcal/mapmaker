@@ -407,6 +407,15 @@ public class Grid extends AbstractLayerPainter {
 	/**
 	 * Récupère les coordonnées du point affiché à l'emplacement donné.
 	 * 
+	 * @param point Point dans la grille.
+	 * @return Le point correspondant sur la couche en focus.
+	 */
+	public Point getLayerLocation(Point point) {
+		return getLayerLocation(point.x, point.y);
+	}
+	/**
+	 * Récupère les coordonnées du point affiché à l'emplacement donné.
+	 * 
 	 * @param x Abscisse relatif à la grille.
 	 * @param y Ordonnée relatif à la grille.
 	 * @return Le point correspondant sur la couche en focus.
