@@ -11,6 +11,7 @@ import fr.rca.mapmaker.model.selection.SelectionStyle;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
@@ -35,6 +36,7 @@ public class PalettePicker extends JComponent {
 	private int tileSize = 1;
 
 	public PalettePicker() {
+		setOpaque(true);
 		wireEvents();
 	}
 	
@@ -69,8 +71,12 @@ public class PalettePicker extends JComponent {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
 		final Rectangle clipBounds = g.getClipBounds();
+		
+		if(isOpaque()) {
+			g.setColor(getBackground());
+			g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+		}
 		
 		// Coordonnées du premier point à afficher.
 		final int startX = clipBounds.x / tileSize;
@@ -83,7 +89,9 @@ public class PalettePicker extends JComponent {
 		// Affichage de la couche
 		for(int y = startY; y < maxY; y++) {
 			for(int x = startX; x < maxX; x++) {
-				palette.paintTile(g, tileAtPoint(new Point(x, y)), (int) (x * tileSize), (int) (y * tileSize), (int) tileSize);
+				((Graphics2D)g).setPaint(Paints.TRANSPARENT_PAINT);
+				g.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+				palette.paintTile(g, tileAtPoint(new Point(x, y)), x * tileSize, y * tileSize, tileSize);
 			}
 		}
 		
@@ -113,6 +121,7 @@ public class PalettePicker extends JComponent {
 		palette.setSelectedTile(selection.x + selection.y * columns);
 
 		setPreferredSize(new Dimension(tileSize * columns, tileSize * rows));
+		invalidate();
 	}
 	
 	private void wireEvents() {
