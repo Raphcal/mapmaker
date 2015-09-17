@@ -5,6 +5,7 @@ import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.model.selection.AutoSelectionStyle;
 import fr.rca.mapmaker.model.selection.DefaultSelectionStyle;
 import fr.rca.mapmaker.model.selection.SelectionStyle;
 import java.awt.BorderLayout;
@@ -29,7 +30,7 @@ public class PalettePicker extends JComponent {
 	private double tileSize;
 	private Point dragOrigin;
 	private final Rectangle selection = new Rectangle(0, 0, 1, 1);
-	private final SelectionStyle selectionStyle = new DefaultSelectionStyle();
+	private final SelectionStyle selectionStyle = new AutoSelectionStyle();
 
 	public PalettePicker() {
 		wireEvents();
@@ -107,6 +108,8 @@ public class PalettePicker extends JComponent {
 					selection.height = Math.max(rows - selection.y, 1);
 					selection.y = Math.min(selection.y, rows - selection.height);
 				}
+				
+				palette.setSelectedTile(selection.x + selection.y * columns);
 			}
 
 		});
@@ -120,6 +123,7 @@ public class PalettePicker extends JComponent {
 				selection.y = tileLocation.y;
 				selection.width = 1;
 				selection.height = 1;
+				palette.setSelectedTile(selection.x + selection.y * columns);
 				repaint();
 			}
 			
@@ -145,10 +149,21 @@ public class PalettePicker extends JComponent {
 				if(dragOrigin == null) {
 					dragOrigin = tileLocation;
 				}
-				selection.x = Math.min(dragOrigin.x, tileLocation.x);
-				selection.y = Math.min(dragOrigin.y, tileLocation.y);
-				selection.width = Math.abs(tileLocation.x - dragOrigin.x) + 1;
-				selection.height = Math.abs(tileLocation.y - dragOrigin.y) + 1;
+				
+				if(e.getButton() == MouseEvent.BUTTON1) {
+					selection.x = Math.min(dragOrigin.x, tileLocation.x);
+					selection.y = Math.min(dragOrigin.y, tileLocation.y);
+					selection.width = Math.abs(tileLocation.x - dragOrigin.x) + 1;
+					selection.height = Math.abs(tileLocation.y - dragOrigin.y) + 1;
+				} else {
+					selection.x = tileLocation.x;
+					selection.y = tileLocation.y;
+					selection.width = 1;
+					selection.height = 1;
+				}
+				
+				palette.setSelectedTile(selection.x + selection.y * columns);
+				
 				repaint();
 			}
 
