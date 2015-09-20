@@ -18,6 +18,7 @@ public enum ByteCode {
 	MAXIMUM('M'),
 	COSINUS('c'),
 	SINUS('s'),
+	SQUARE_ROOT('S'),
 	ZOOM('z'),
 	SPRITE_VARIABLE('v'),
 	SPRITE_DIRECTION('d'),

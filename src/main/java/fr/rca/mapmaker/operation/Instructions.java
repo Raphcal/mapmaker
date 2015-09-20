@@ -37,6 +37,7 @@ public final class Instructions {
 		
 		map.put("cos", new Cosinus());
 		map.put("sin", new Sinus());
+		map.put("sqrt", new SquareRoot());
 				
 		INSTRUCTIONS = map;
 	}
