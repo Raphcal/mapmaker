@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.io.bundle;
 
+import fr.rca.mapmaker.io.plist.Plists;
 import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;

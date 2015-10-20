@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.io.bundle;
 
+import fr.rca.mapmaker.io.plist.Plists;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

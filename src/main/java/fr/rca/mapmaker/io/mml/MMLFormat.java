@@ -1,0 +1,121 @@
+package fr.rca.mapmaker.io.mml;
+
+import fr.rca.mapmaker.exception.Exceptions;
+import fr.rca.mapmaker.io.AbstractFormat;
+import fr.rca.mapmaker.io.DataHandler;
+import fr.rca.mapmaker.io.HasProgress;
+import fr.rca.mapmaker.io.SupportedOperation;
+import fr.rca.mapmaker.io.internal.ColorDataHandler;
+import fr.rca.mapmaker.io.internal.InternalFormat;
+import fr.rca.mapmaker.io.internal.LayerDataHandler;
+import fr.rca.mapmaker.io.internal.ScrollRateDataHandler;
+import fr.rca.mapmaker.io.mkz.AnimationDataHandler;
+import fr.rca.mapmaker.io.mkz.BufferedImageDataHandler;
+import fr.rca.mapmaker.io.mkz.ImagePaletteDataHandler;
+import fr.rca.mapmaker.io.mkz.InstanceDataHandler;
+import fr.rca.mapmaker.io.mkz.PackMapDataHandler;
+import fr.rca.mapmaker.io.mkz.ProjectDataHandler;
+import fr.rca.mapmaker.io.mkz.SpriteDataHandler;
+import fr.rca.mapmaker.io.mkz.TileMapDataHandler;
+import fr.rca.mapmaker.model.map.PackMap;
+import fr.rca.mapmaker.model.map.ScrollRate;
+import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.model.palette.PaletteReference;
+import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Animation;
+import fr.rca.mapmaker.model.sprite.Instance;
+import fr.rca.mapmaker.model.sprite.Sprite;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+/**
+ * Export d'une seule carte à destination d'autres projets.
+ * @author Raphaël Calabro (rcalabro@ideia.fr)
+ */
+public class MMLFormat extends AbstractFormat implements HasProgress {
+	
+	private static final String EXTENSION = ".mml";
+	
+	public MMLFormat() {
+		super(EXTENSION, SupportedOperation.SAVE);
+		
+		addHandler(Color.class, new ColorDataHandler());
+		addHandler(Palette.class, new ImagePaletteDataHandler());
+		addHandler(BufferedImage.class, new BufferedImageDataHandler());
+		addHandler(TileLayer.class, new LayerDataHandler(this));
+		addHandler(ScrollRate.class, new ScrollRateDataHandler());
+		addHandler(TileMap.class, new TileMapDataHandler(this));
+		addHandler(Sprite.class, new SpriteDataHandler(this));
+		addHandler(Instance.class, new InstanceDataHandler());
+		addHandler(Animation.class, new AnimationDataHandler());
+		addHandler(PackMap.class, new PackMapDataHandler());
+	}
+
+	@Override
+	public void saveProject(Project project, File file) {
+		saveProject(project, file, null);
+	}
+
+	@Override
+	public void saveProject(Project project, File file, Listener progressListener) {
+		setVersion(InternalFormat.LAST_VERSION);
+		progress(0, progressListener);
+		
+		file.mkdir();
+		
+		// Suppression des fichiers existants
+		for(final File child : file.listFiles()) {
+			child.delete();
+		}
+		
+		progress(10, progressListener);
+		
+		final TileMap map = project.getCurrentMap();
+		final List<Instance> instances = project.getInstances();
+		
+		Palette palette = map.getPalette();
+		if(palette instanceof PaletteReference) {
+			palette = project.getPalette(((PaletteReference) palette).getPaletteIndex());
+		}
+		
+		try {
+			final DataHandler<Palette> paletteDataHandler = getHandler(Palette.class);
+			paletteDataHandler.write(palette, new FileOutputStream(new File(file, "palette.pal")));
+			
+			final DataHandler<BufferedImage> imageHandler = getHandler(BufferedImage.class);
+			imageHandler.write(ProjectDataHandler.renderPalette(palette, palette.getTileSize()), new FileOutputStream(new File(file, palette.toString() + '-' + palette.getTileSize() + ".png")));
+			
+			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
+			tileMapHandler.write(map, new FileOutputStream(new File(file, "map.map")));
+			
+			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
+			final FileOutputStream instanceStream = new FileOutputStream(new File(file, "map.sprites"));
+			for(final Instance instance : instances) {
+				instanceHandler.write(instance, instanceStream);
+			}
+			instanceStream.close();
+			
+		} catch(IOException e) {
+			Exceptions.showStackTrace(e, null);
+		}
+	}
+
+	@Override
+	public Project openProject(File file, Listener progressListener) {
+		throw new UnsupportedOperationException("Not supported.");
+	}
+	
+	private int progress(int value, HasProgress.Listener listener) {
+		if (listener != null) {
+			listener.onProgress(value);
+		}
+		return value;
+	}
+	
+}

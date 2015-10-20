@@ -6,6 +6,7 @@ import fr.rca.mapmaker.io.bundle.BundleFormat;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.io.lvl.PuzzleLevelFormat;
 import fr.rca.mapmaker.io.mkz.MKZFormat;
+import fr.rca.mapmaker.io.mml.MMLFormat;
 import fr.rca.mapmaker.io.pixellogic.PixelLogicFormat;
 import fr.rca.mapmaker.io.png.PNGImageFormat;
 import java.util.Collection;
@@ -28,6 +29,7 @@ public final class Formats {
 		addFormat(formats, INTERNAL_FORMAT);
 		addFormat(formats, new BundleFormat());
 		addFormat(formats, new MKZFormat());
+		addFormat(formats, new MMLFormat());
 		addFormat(formats, new PNGImageFormat());
 		addFormat(formats, new AVMFormat());
 		addFormat(formats, new PixelLogicFormat());

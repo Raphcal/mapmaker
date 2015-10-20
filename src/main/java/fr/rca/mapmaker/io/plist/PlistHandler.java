@@ -1,4 +1,4 @@
-package fr.rca.mapmaker.io.bundle;
+package fr.rca.mapmaker.io.plist;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

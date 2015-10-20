@@ -50,7 +50,7 @@ public abstract class AbstractFormat implements Format {
 		this.fileFilter = new FormatFileFilter(descriptionBuilder.toString(), defaultExtension, this);
 	}
 	
-	protected <T> void addHandler(Class<T> clazz, DataHandler<T> handler) {
+	protected final <T> void addHandler(Class<T> clazz, DataHandler<T> handler) {
 		handlers.put(clazz.getName(), handler);
 	}
 	
