@@ -5,6 +5,7 @@ import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.HasProgress;
 import fr.rca.mapmaker.io.SupportedOperation;
+import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.internal.ColorDataHandler;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.io.internal.LayerDataHandler;
@@ -32,6 +33,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -77,7 +81,20 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 		progress(10, progressListener);
 		
 		final TileMap map = project.getCurrentMap();
-		final List<Instance> instances = project.getInstances();
+		final List<Instance> instances = new ArrayList<Instance>(project.getInstances());
+		
+		Collections.sort(instances, new Comparator<Instance>() {
+
+			@Override
+			public int compare(Instance o1, Instance o2) {
+				int order = Integer.valueOf(o1.getX()).compareTo(o2.getX());
+				if(order == 0) {
+					return Integer.valueOf(o1.getY()).compareTo(o2.getY());
+				} else {
+					return order;
+				}
+			}
+		});
 		
 		Palette palette = map.getPalette();
 		if(palette instanceof PaletteReference) {
@@ -96,6 +113,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 			
 			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
 			final FileOutputStream instanceStream = new FileOutputStream(new File(file, "map.sprites"));
+			Streams.write(instances.size(), instanceStream);
 			for(final Instance instance : instances) {
 				instanceHandler.write(instance, instanceStream);
 			}
