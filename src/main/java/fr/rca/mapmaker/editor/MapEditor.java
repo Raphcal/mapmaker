@@ -36,6 +36,7 @@ import fr.rca.mapmaker.preferences.PreferencesManager;
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -52,6 +53,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -233,6 +235,7 @@ public class MapEditor extends javax.swing.JFrame {
         redoButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         devicePreviewButton = new javax.swing.JButton();
+        runButton = new javax.swing.JButton();
         zoomSeparator = new javax.swing.JToolBar.Separator();
         zoomLabel = new javax.swing.JLabel();
         zoomTextField = new javax.swing.JTextField();
@@ -602,6 +605,18 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         gridToolBar.add(devicePreviewButton);
+
+        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/run.png"))); // NOI18N
+        runButton.setToolTipText("");
+        runButton.setFocusable(false);
+        runButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        runButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runButtonActionPerformed(evt);
+            }
+        });
+        gridToolBar.add(runButton);
         gridToolBar.add(zoomSeparator);
 
         zoomLabel.setText(LANGUAGE.getString("view.zoom")); // NOI18N
@@ -1114,7 +1129,7 @@ public class MapEditor extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(mapScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(gridToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(paletteTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
@@ -1903,6 +1918,21 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_previewCheckBoxStateChanged
 
+    private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
+		try {
+			final File temporaryFile = File.createTempFile("map", "mapmaker");
+			final File mmlFile = new File(temporaryFile.getParentFile(), temporaryFile.getName() + ".mml");
+			mmlFile.deleteOnExit();
+			
+			final Format mmlFormat = Formats.getFormat(mmlFile.getName());
+			mmlFormat.saveProject(project, mmlFile);
+			
+			Desktop.getDesktop().open(mmlFile);
+		} catch (IOException ex) {
+			LOGGER.error("Erreur lors de la génération du niveau.", ex);
+		}
+    }//GEN-LAST:event_runButtonActionPerformed
+
 	private void shiftTiles(Palette palette, int from, int shift) {
 		for(final TileMap map : project.getMaps()) {
 			if(map.getPalette().equals(palette)) {
@@ -2037,6 +2067,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem redoMenuItem;
     private javax.swing.JButton removeLayerButton;
     private javax.swing.JMenuItem removeRowMenuItem;
+    private javax.swing.JButton runButton;
     private javax.swing.JToggleButton selectionToggleButton;
     private javax.swing.JPanel spriteBackgroundPanel;
     private fr.rca.mapmaker.editor.SpriteInspector spriteInspector;

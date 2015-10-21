@@ -145,13 +145,9 @@ public class InternalFormat extends AbstractFormat {
 			final InputStream inputStream = openInputStream(file);
 			try {
 				final String header = readHeader(inputStream);
-				if(HEADER_VERSION_4.equals(header)) {
-					return VERSION_4;
-					
-				} else if(HEADER_VERSION_3.equals(header)) {
-					return VERSION_3;
+				if(header.length() == HEADER_LENGTH && header.startsWith("MMK")) {
+					return header.charAt(3) - '0';
 				}
-
 			} finally {
 				inputStream.close();
 			}

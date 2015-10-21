@@ -2,6 +2,7 @@ package fr.rca.mapmaker.io.internal;
 
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
+import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -13,9 +14,10 @@ import java.io.OutputStream;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class LayerDataHandler implements DataHandler<TileLayer> {
+public class LayerDataHandler implements DataHandler<TileLayer>, HasVersion {
 
 	private final Format format;
+	private int version;
 
 	public LayerDataHandler(Format format) {
 		this.format = format;
@@ -36,7 +38,12 @@ public class LayerDataHandler implements DataHandler<TileLayer> {
 	public TileLayer read(InputStream inputStream) throws IOException {
 		final DataHandler<ScrollRate> scrollRateHandler = format.getHandler(ScrollRate.class);
 		
-		final String name = Streams.readString(inputStream);
+		final String name;
+		if(version > 0) {
+			name = Streams.readString(inputStream);
+		} else {
+			name = "Sans nom";
+		}
 		final int width = Streams.readInt(inputStream);
 		final int height = Streams.readInt(inputStream);
 		final ScrollRate scrollRate = scrollRateHandler.read(inputStream);
@@ -49,4 +56,10 @@ public class LayerDataHandler implements DataHandler<TileLayer> {
 		
 		return layer;
 	}
+	
+	@Override
+	public void setVersion(int version) {
+		this.version = version;
+	}
+	
 }
