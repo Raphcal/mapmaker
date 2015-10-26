@@ -1,8 +1,8 @@
 package fr.rca.mapmaker.model.map;
 
-import com.sun.istack.internal.logging.Logger;
 import java.awt.Point;
 import java.awt.Rectangle;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -52,7 +52,7 @@ public class SpanningTileLayer implements DataLayer {
 	@Override
 	public void restoreData(int[] tiles, int width, int height) {
 		if (width != this.width || height != this.height) {
-			Logger.getLogger(SpanningTileLayer.class).warning("restoreData(int[], int, int) n'est pas supporté par SpanningTileLayer.");
+			LoggerFactory.getLogger(SpanningTileLayer.class).warn("restoreData(int[], int, int) n'est pas supporté par SpanningTileLayer.");
 		}
 		restoreData(tiles, null);
 	}
