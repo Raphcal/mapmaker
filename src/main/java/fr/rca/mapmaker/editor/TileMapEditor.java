@@ -15,7 +15,6 @@ import fr.rca.mapmaker.editor.tool.RectangleStrokeTool;
 import fr.rca.mapmaker.editor.tool.ReplaceColorTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
-import fr.rca.mapmaker.editor.tool.TreeTool;
 import fr.rca.mapmaker.model.map.DataLayer;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -48,7 +47,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 	
 	private final List<ActionListener> listeners;
 	private final List<DataLayer> layers;
-	private int[][] tiles;
+	private TileLayer[] tiles;
 	private int layerIndex;
 	
 	private DataLayer editedLayer;
@@ -98,7 +97,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 		this.layers.addAll(layers);
 		this.editedLayer = null;
 		
-		tiles = new int[layers.size()][];
+		tiles = new TileLayer[layers.size()];
 		
 		setPalette(palette);
 		setLayerIndex(index);
@@ -125,10 +124,10 @@ public class TileMapEditor extends javax.swing.JDialog {
 		final DataLayer layer = layers.get(layerIndex);
 		
 		if(tiles[layerIndex] == null) {
-			tiles[layerIndex] = layer.copyData();
+			tiles[layerIndex] = new TileLayer(layer);
 		}
 		
-		drawLayer.restoreData(tiles[layerIndex], layer.getWidth(), layer.getHeight());
+		drawLayer.restoreData(tiles[layerIndex].copyData(), tiles[layerIndex].getWidth(), tiles[layerIndex].getHeight());
 		memento.clear();
 		
 		firePropertyChange("previousAvailable", null, isPreviousAvailable());
@@ -216,6 +215,8 @@ public class TileMapEditor extends javax.swing.JDialog {
         jList1 = new javax.swing.JList();
         treeToggleButton = new javax.swing.JToggleButton();
         nextStepTreeButton = new javax.swing.JButton();
+        widthTextField = new javax.swing.JTextField();
+        heightTextField = new javax.swing.JTextField();
 
         drawMap.setBackgroundColor(new java.awt.Color(0, 153, 153));
         drawMap.setHeight(32);
@@ -488,13 +489,27 @@ public class TileMapEditor extends javax.swing.JDialog {
             }
         });
 
+        widthTextField.setText("32");
+        widthTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resizeLayer(evt);
+            }
+        });
+
+        heightTextField.setText("32");
+        heightTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resizeLayer(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(selectionToggleButton)
@@ -543,7 +558,9 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addGap(0, 0, 0)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nextStepTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(nextStepTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(widthTextField)
+                    .addComponent(heightTextField))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -613,6 +630,10 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(treeToggleButton)
                             .addComponent(nextStepTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(paletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -665,14 +686,15 @@ public class TileMapEditor extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
 		if(editedLayer != null) {
-			editedLayer.restoreData(drawLayer.copyData(), null);
+			editedLayer.restoreData(drawLayer.copyData(), drawLayer.getWidth(), drawLayer.getHeight());
 		}
 		if(!layers.isEmpty()) {
 			copyDrawLayerDataToCurrentTile();
 			
 			for(int index = 0; index < layers.size(); index++) {
 				if(tiles[index] != null) {
-					layers.get(index).restoreData(tiles[index], null);
+					final TileLayer layer = tiles[index];
+					layers.get(index).restoreData(layer.copyData(), layer.getWidth(), layer.getHeight());
 				}
 			}
 		}
@@ -742,9 +764,14 @@ public class TileMapEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_rotateButtonActionPerformed
 
     private void nextStepTreeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextStepTreeButtonActionPerformed
-        // TODO add your handling code here:
 		treeTool.nextStep();
     }//GEN-LAST:event_nextStepTreeButtonActionPerformed
+
+    private void resizeLayer(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resizeLayer
+		final int width = Integer.parseInt(widthTextField.getText());
+		final int height = Integer.parseInt(heightTextField.getText());
+		drawLayer.resize(width, height);
+    }//GEN-LAST:event_resizeLayer
 
 	private void selectColor(MouseEvent event) {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
@@ -783,7 +810,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 	
 	private void copyDrawLayerDataToCurrentTile() {
 		if(layerIndex >= 0 && layerIndex < tiles.length && tiles[layerIndex] != null) {
-			tiles[layerIndex] = drawLayer.copyData();
+			tiles[layerIndex].restoreData(drawLayer.copyData(), drawLayer.getWidth(), drawLayer.getHeight());
 		}
 	}
 	
@@ -806,6 +833,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private javax.swing.JToggleButton ellipseFillToggleButton;
     private javax.swing.JToggleButton ellipseToggleButton;
     private javax.swing.JScrollPane gridScrollPane;
+    private javax.swing.JTextField heightTextField;
     private javax.swing.JButton horizontalMirrorButton;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -833,6 +861,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private fr.rca.mapmaker.editor.tool.TreeTool treeTool;
     private javax.swing.JButton undoButton;
     private javax.swing.JButton verticalMirrorButton;
+    private javax.swing.JTextField widthTextField;
     private javax.swing.JLabel zoomPercentLabel;
     private javax.swing.JTextField zoomTextField;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;

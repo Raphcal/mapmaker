@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.model.map;
 
+import com.sun.istack.internal.logging.Logger;
 import java.awt.Point;
 import java.awt.Rectangle;
 
@@ -46,6 +47,14 @@ public class SpanningTileLayer implements DataLayer {
 				getLayer(column, row).restoreData(data, null);
 			}
 		}
+	}
+
+	@Override
+	public void restoreData(int[] tiles, int width, int height) {
+		if (width != this.width || height != this.height) {
+			Logger.getLogger(SpanningTileLayer.class).warning("restoreData(int[], int, int) n'est pas supporté par SpanningTileLayer.");
+		}
+		restoreData(tiles, null);
 	}
 
 	@Override

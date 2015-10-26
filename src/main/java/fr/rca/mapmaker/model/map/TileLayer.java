@@ -76,6 +76,15 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 		this(layer.tiles, new Dimension(layer.width, layer.height), null);
 	}
 	
+	/**
+	 * Créé une copie de la couche donnée en argument.
+	 * 
+	 * @param layer Couche à copier.
+	 */
+	public TileLayer(DataLayer layer) {
+		this(layer.copyData(), new Dimension(layer.getWidth(), layer.getHeight()), null);
+	}
+	
 	public TileLayer(int[] data, Dimension dimension, Rectangle copySurface) {
 		if(copySurface == null) {
 			copySurface = new Rectangle(0, 0, dimension.width, dimension.height);
@@ -601,6 +610,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	 * @param width Nouvelle largeur.
 	 * @param height Nouvelle hauteur.
 	 */
+	@Override
 	public void restoreData(int[] tiles, int width, int height) {
 		final Dimension oldDimension = new Dimension(this.width, this.height);
 		
