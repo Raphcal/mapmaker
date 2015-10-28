@@ -2,6 +2,7 @@ package fr.rca.mapmaker.model.sprite;
 
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.operation.VariableDeclarationParser;
 import fr.rca.mapmaker.ui.ImageRenderer;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -105,6 +106,9 @@ public class Instance extends JComponent {
 		return (point.x + sprite.getWidth() / 2) + " x " + (point.y + sprite.getHeight() / 2);
 	}
 	
+	/**
+	 * Met à jour le cache et demande un repaint.
+	 */
 	public void redraw() {
 		updateSprite();
 		repaint();
@@ -130,6 +134,7 @@ public class Instance extends JComponent {
 
 	public void setScript(String script) {
 		this.script = script;
+		repaint();
 	}
 	
 	private void updateSprite() {
@@ -163,6 +168,13 @@ public class Instance extends JComponent {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		g.drawImage(image, 0, 0, (int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom), null);
+		final int width = (int) (image.getWidth() * zoom);
+		final int height = (int) (image.getHeight() * zoom);
+		
+		if(VariableDeclarationParser.isFacingRight(script)) {
+			g.drawImage(image, 0, 0, width, height, null);
+		} else {
+			g.drawImage(image, width, 0, -width, height, null);
+		}
 	}
 }
