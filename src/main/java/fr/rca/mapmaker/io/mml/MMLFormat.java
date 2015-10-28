@@ -105,12 +105,15 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 			final DataHandler<Palette> paletteDataHandler = getHandler(Palette.class);
 			paletteDataHandler.write(palette, new FileOutputStream(new File(file, "palette.pal")));
 			
+			// Palette
 			final DataHandler<BufferedImage> imageHandler = getHandler(BufferedImage.class);
 			imageHandler.write(ProjectDataHandler.renderPalette(palette, palette.getTileSize()), new FileOutputStream(new File(file, palette.toString() + '-' + palette.getTileSize() + ".png")));
 			
+			// Carte
 			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
 			tileMapHandler.write(map, new FileOutputStream(new File(file, "map.map")));
 			
+			// Instances
 			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
 			final FileOutputStream instanceStream = new FileOutputStream(new File(file, "map.sprites"));
 			Streams.write(instances.size(), instanceStream);
@@ -118,6 +121,30 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 				instanceHandler.write(instance, instanceStream);
 			}
 			instanceStream.close();
+			
+			// Sprites
+			final PackMap packMap = PackMap.packSprites(project.getSprites(), 1);
+			if(packMap != null) {
+				// Image
+				final DataHandler<BufferedImage> imageDataHandler = getHandler(BufferedImage.class);
+
+				final FileOutputStream imageOutputStream = new FileOutputStream(new File(file, ProjectDataHandler.IMAGE_FILE_NAME));
+				try {
+					imageDataHandler.write(packMap.renderImage(), imageOutputStream);
+				} finally {
+					imageOutputStream.close();
+				}
+
+				// Atlas
+				final DataHandler<PackMap> packMapDataHandler = getHandler(PackMap.class);
+
+				final FileOutputStream dataOutputStream = new FileOutputStream(new File(file, ProjectDataHandler.DATA_FILE_NAME));
+				try {
+					packMapDataHandler.write(packMap, dataOutputStream);
+				} finally {
+					dataOutputStream.close();
+				}
+			}
 			
 		} catch(IOException e) {
 			Exceptions.showStackTrace(e, null);
