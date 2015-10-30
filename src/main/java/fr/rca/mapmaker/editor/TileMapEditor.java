@@ -76,6 +76,8 @@ public class TileMapEditor extends javax.swing.JDialog {
 		layers.clear();
 		
 		setPalette(palette);
+		widthTextField.setText(Integer.toString(layer.getWidth()));
+		heightTextField.setText(Integer.toString(layer.getHeight()));
 		
 		previousLayerButton.setVisible(false);
 		nextLayerButton.setVisible(false);
@@ -121,14 +123,18 @@ public class TileMapEditor extends javax.swing.JDialog {
 		
 		this.layerIndex = layerIndex;
 		
-		final DataLayer layer = layers.get(layerIndex);
-		
 		if(tiles[layerIndex] == null) {
-			tiles[layerIndex] = new TileLayer(layer);
+			final DataLayer source = layers.get(layerIndex);
+			tiles[layerIndex] = new TileLayer(source);
 		}
 		
-		drawLayer.restoreData(tiles[layerIndex].copyData(), tiles[layerIndex].getWidth(), tiles[layerIndex].getHeight());
+		final DataLayer layer = tiles[layerIndex];
+		
+		drawLayer.restoreData(layer.copyData(), layer.getWidth(), layer.getHeight());
 		memento.clear();
+		
+		widthTextField.setText(Integer.toString(layer.getWidth()));
+		heightTextField.setText(Integer.toString(layer.getHeight()));
 		
 		firePropertyChange("previousAvailable", null, isPreviousAvailable());
 		firePropertyChange("nextAvailable", null, isNextAvailable());

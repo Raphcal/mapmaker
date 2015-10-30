@@ -13,6 +13,6 @@ public class EllipseStrokeTool extends AbstractShapeStrokeTool {
 
 	@Override
 	protected Shape createShape(int x, int y, int width, int height) {
-		return new Ellipse2D.Double(x, y, width, height);
+		return new Ellipse2D.Double(x - 1, y - 1, width + 2, height + 2);
 	}
 }

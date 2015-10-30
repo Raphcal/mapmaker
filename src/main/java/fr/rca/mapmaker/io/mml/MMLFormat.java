@@ -96,6 +96,8 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 			}
 		});
 		
+		progress(20, progressListener);
+		
 		Palette palette = map.getPalette();
 		if(palette instanceof PaletteReference) {
 			palette = project.getPalette(((PaletteReference) palette).getPaletteIndex());
@@ -104,14 +106,17 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 		try {
 			final DataHandler<Palette> paletteDataHandler = getHandler(Palette.class);
 			paletteDataHandler.write(palette, new FileOutputStream(new File(file, "palette.pal")));
+			progress(30, progressListener);
 			
 			// Palette
 			final DataHandler<BufferedImage> imageHandler = getHandler(BufferedImage.class);
 			imageHandler.write(ProjectDataHandler.renderPalette(palette, palette.getTileSize()), new FileOutputStream(new File(file, palette.toString() + '-' + palette.getTileSize() + ".png")));
+			progress(40, progressListener);
 			
 			// Carte
 			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
 			tileMapHandler.write(map, new FileOutputStream(new File(file, "map.map")));
+			progress(50, progressListener);
 			
 			// Instances
 			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
@@ -121,6 +126,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 				instanceHandler.write(instance, instanceStream);
 			}
 			instanceStream.close();
+			progress(60, progressListener);
 			
 			// Sprites
 			final PackMap packMap = PackMap.packSprites(project.getSprites(), 1);
@@ -134,6 +140,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 				} finally {
 					imageOutputStream.close();
 				}
+				progress(70, progressListener);
 
 				// Atlas
 				final DataHandler<PackMap> packMapDataHandler = getHandler(PackMap.class);
@@ -144,8 +151,10 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 				} finally {
 					dataOutputStream.close();
 				}
+				progress(80, progressListener);
 			}
 			
+			progress(100, progressListener);
 		} catch(IOException e) {
 			Exceptions.showStackTrace(e, null);
 		}
