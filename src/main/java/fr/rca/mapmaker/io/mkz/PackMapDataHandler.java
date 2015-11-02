@@ -3,8 +3,8 @@ package fr.rca.mapmaker.io.mkz;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.map.PackMap;
+import fr.rca.mapmaker.model.map.SingleLayerTileMap;
 import fr.rca.mapmaker.model.map.TileLayer;
-import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Point;
@@ -25,7 +25,7 @@ public class PackMapDataHandler implements DataHandler<PackMap> {
 	@Override
 	public void write(PackMap t, OutputStream outputStream) throws IOException {
 		final Collection<Sprite> sprites = t.getSprites();
-		final Map<TileLayer, TileMap> maps = t.getTileLayerToTileMap();
+		final Map<TileLayer, SingleLayerTileMap> maps = t.getTileLayerToTileMap();
 		
 		Streams.write(sprites.size(), outputStream);
 			
