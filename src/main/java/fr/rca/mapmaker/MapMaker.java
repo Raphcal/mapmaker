@@ -9,8 +9,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.List;
 import java.util.prefs.BackingStoreException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -26,6 +29,8 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class MapMaker {
 	
+	private static Object nsApplication;
+	
 	/**
 	 * Démarre l'application.
 	 * 
@@ -38,6 +43,7 @@ public class MapMaker {
 		System.setProperty("apple.awt.brushMetalLook", "true");
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MapMaker");
 		
+		getNSApplication();
 		setDockIcon();
 		setLookAndFeel();
 		
@@ -72,6 +78,8 @@ public class MapMaker {
 				editor.setExtendedState(extendedState);
 				editor.setVisible(true);
 
+				setOpenAction(editor);
+				
 				if(args.length == 1) {
 					final File file = new File(args[0]);
 					if(file.exists()) {
@@ -100,21 +108,37 @@ public class MapMaker {
 	}
 	
 	/**
+	 * Récupère l'instance de l'objet Application de Mac OS X.
+	 */
+	private static void getNSApplication() {
+		try {
+			final Class<?> applicationClass = MapMaker.class.getClassLoader().loadClass("com.apple.eawt.Application");
+			final Method getApplicationMethod = applicationClass.getMethod("getApplication");
+			nsApplication = getApplicationMethod.invoke(null);
+		} catch (ClassNotFoundException ex) {
+			// Ignoré.
+		} catch (NoSuchMethodException ex) {
+			// Ignoré.
+		} catch (SecurityException ex) {
+			// Ignoré.
+		} catch (IllegalAccessException ex) {
+			// Ignoré.
+		} catch (IllegalArgumentException ex) {
+			// Ignoré.
+		} catch (InvocationTargetException ex) {
+			// Ignoré.
+		}
+	}
+	
+	/**
 	 * Défini l'icône de l'application dans le dock sous Mac OS X.
 	 */
 	private static void setDockIcon() {
 		try {
-			final Class<?> applicationClass = MapMaker.class.getClassLoader().loadClass("com.apple.eawt.Application");
-			final Method getApplicationMethod = applicationClass.getMethod("getApplication");
-			final Object application = getApplicationMethod.invoke(null);
-			
-			if(application != null) {
-				final Method setDockIconImageMethod = applicationClass.getMethod("setDockIconImage", java.awt.Image.class);
-				setDockIconImageMethod.invoke(application, ImageIO.read(MapMaker.class.getResourceAsStream("/resources/icon.png")));
+			if (nsApplication != null) {
+				final Method setDockIconImageMethod = nsApplication.getClass().getMethod("setDockIconImage", java.awt.Image.class);
+				setDockIconImageMethod.invoke(nsApplication, ImageIO.read(MapMaker.class.getResourceAsStream("/resources/icon.png")));
 			}
-			
-		} catch (ClassNotFoundException ex) {
-			// Ignoré.
 		} catch (NoSuchMethodException ex) {
 			// Ignoré.
 		} catch (SecurityException ex) {
@@ -129,4 +153,51 @@ public class MapMaker {
 			// Ignoré.
 		}
 	}
+	
+	/**
+	 * Configure l'action d'ouverture des fichiers sous Mac OS X.
+	 * @param editor Fenêtre principale de l'éditeur.
+	 */
+	private static void setOpenAction(final MapEditor editor) {
+		if (nsApplication != null) {
+			try {
+				final Class<?> openFileHandlerClass = MapMaker.class.getClassLoader().loadClass("com.apple.eawt.OpenFilesHandler");
+				final Object proxy = Proxy.newProxyInstance(MapMaker.class.getClassLoader(), new Class<?>[] {openFileHandlerClass}, new InvocationHandler() {
+					@Override
+					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+						if ("openFiles".equals(method.getName())) {
+							final Object event = args[0];
+							final Method getFilesMethod = event.getClass().getMethod("getFiles");
+							final Object result = getFilesMethod.invoke(event);
+							
+							if (result instanceof List) {
+								final List<File> files = (List<File>) result;
+								if (files.size() == 1) {
+									editor.openFile(files.get(0));
+								}
+							}
+						}
+						return null;
+					}
+				});
+				
+				final Method setOpenFileHandlerMethod = nsApplication.getClass().getMethod("setOpenFileHandler", openFileHandlerClass);
+				setOpenFileHandlerMethod.invoke(nsApplication, proxy);
+				
+			} catch (ClassNotFoundException ex) {
+				// Ignoré.
+			} catch (NoSuchMethodException ex) {
+				// Ignoré.
+			} catch (SecurityException ex) {
+				// Ignoré.
+			} catch (IllegalAccessException ex) {
+				// Ignoré.
+			} catch (IllegalArgumentException ex) {
+				// Ignoré.
+			} catch (InvocationTargetException ex) {
+				// Ignoré.
+			}
+		}
+	}
+	
 }
