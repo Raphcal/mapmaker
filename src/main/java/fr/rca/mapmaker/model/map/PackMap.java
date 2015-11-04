@@ -149,7 +149,6 @@ public class PackMap {
 			}
 			if(location != null) {
 				locations.put(map, location);
-				
 			} else {
 				return false;
 			}

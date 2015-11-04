@@ -42,7 +42,6 @@ public class SingleLayerTileMap implements Comparable<SingleLayerTileMap> {
 	@Override
 	public int hashCode() {
 		int hash = 3;
-		hash = 79 * hash + (this.layer != null ? this.layer.hashCode() : 0);
 		if (layer != null) {
 			hash = 79 * hash + layer.getWidth();
 			hash = 79 * hash + layer.getHeight();

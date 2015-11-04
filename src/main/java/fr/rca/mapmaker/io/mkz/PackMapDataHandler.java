@@ -15,12 +15,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
 public class PackMapDataHandler implements DataHandler<PackMap> {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PackMapDataHandler.class);
 	
 	@Override
 	public void write(PackMap t, OutputStream outputStream) throws IOException {
@@ -61,13 +65,15 @@ public class PackMapDataHandler implements DataHandler<PackMap> {
 
 						for(final TileLayer frame : frames) {
 							final Point point = t.getPoint(maps.get(frame));
-
+							
 							Streams.write(point.x, outputStream);
 							Streams.write(point.y, outputStream);
 							Streams.write(frame.getWidth(), outputStream);
 							Streams.write(frame.getHeight(), outputStream);
 						}
 					}
+				} else {
+					LOGGER.warn("Animation '" + defaultAnimation + "' vide pour le sprite '" + sprite + "'.");
 				}
 			}
 		}
