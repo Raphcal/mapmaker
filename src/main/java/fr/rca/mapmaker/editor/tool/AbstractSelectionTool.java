@@ -202,8 +202,8 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 			if (component instanceof Instance) {
 				final Instance instance = (Instance) component;
 				final Point point = pointInGridForInstance(instance);
-				if (point.x >= x1 && point.x <= x2 &&
-						point.y >= y1 && point.y <= y2) {
+				if (point.x >= x1 && point.x < x2 &&
+						point.y >= y1 && point.y < y2) {
 					selectedInstances.add(instance);
 				} 
 			}

@@ -308,7 +308,8 @@ public class Grid extends AbstractLayerPainter {
 
 	protected void repaintFromParent(int x, int y, int width, int height) {
 		final Container parent = getParent();
-		if (parent != null && parent.getLayout() instanceof LayerLayout) {
+		if (parent != null && parent.getLayout() instanceof LayerLayout && ((LayerLayout) parent.getLayout()).getDisposition() == LayerLayout.Disposition.TOP_LEFT) {
+			// TODO: Gérer la disposition CENTER
 			parent.repaint(x, y, width, height);
 		} else {
 			repaint(x, y, width, height);

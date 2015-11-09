@@ -88,5 +88,9 @@ public class LayerLayout implements LayoutManager {
 			component.setBounds(disposition.getBounds(parent, component));
 		}
 	}
+
+	public Disposition getDisposition() {
+		return disposition;
+	}
 	
 }
