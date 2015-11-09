@@ -1165,9 +1165,8 @@ private void addMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 private void mapListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_mapListValueChanged
 	project.setSelectedIndex(mapList.getSelectedIndex());
-	mapBackgroundPanel.repaint();
-	
 	refreshScrollMode();
+	repaintMapGrid();
 }//GEN-LAST:event_mapListValueChanged
 
 private void editMapMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editMapMenuItemActionPerformed
@@ -1449,6 +1448,7 @@ private void openProject(File file, Format format) {
 
 					spritePaletteGrid.refresh();
 					refreshScrollMode();
+					repaintMapGrid();
 				
 				} catch (InterruptedException ex) {
 					Exceptions.showStackTrace(ex, MapEditor.this);
@@ -1612,16 +1612,19 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 		// Zoom de la carte.
 		mapGrid.setZoom(zoom);
-
+		
 		// Recentrage de la vue.
 		final Point viewPoint = mapScrollPane.getViewport().getViewPosition();
 		mapScrollPane.getViewport().setViewPosition(new Point((int) (viewPoint.x * ratio), (int) (viewPoint.y * ratio)));
 
 		// Zoom des instances de sprite.
-		spriteTool.setZoom(zoom);
+		final double actualZoom = mapGrid.getActualZoom();
+		
+		spriteTool.setZoom(actualZoom);
 		for(final Instance instance : project.getInstances()) {
-			instance.setZoom(zoom);
+			instance.setZoom(actualZoom);
 		}
+		repaintMapGrid();
 	}
 	
 	private void spriteInstancesChanged() {

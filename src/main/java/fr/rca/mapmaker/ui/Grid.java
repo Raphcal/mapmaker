@@ -198,6 +198,10 @@ public class Grid extends AbstractLayerPainter {
 	public int getZoomAsInteger() {
 		return (int) (zoom * 100.0);
 	}
+	
+	public double getActualZoom() {
+		return (double) getTileSize() / (double) tileMap.getPalette().getTileSize();
+	}
 
 	private void drawBackground(Graphics g, Rectangle clipBounds, Dimension size) {
 		// Choix de la couleur de fond
