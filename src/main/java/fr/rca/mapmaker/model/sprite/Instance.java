@@ -159,11 +159,19 @@ public class Instance extends JComponent {
 		}
 	}
 	
-	private void updateBounds() {
+	public void updateBounds() {
 		final Sprite sprite = getSprite();
 		
 		setPreferredSize(new Dimension((int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom)));
 		setBounds((int) (point.x * zoom), (int) (point.y * zoom), (int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom));
+	}
+	
+	public void previewTranslation(int x, int y) {
+		final Sprite sprite = getSprite();
+		
+		int translationX = (int) ((point.x + x) * zoom);
+		int translationY = (int) ((point.y + y) * zoom);
+		setBounds(translationX, translationY, (int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom));
 	}
 
 	@Override

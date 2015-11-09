@@ -6,18 +6,26 @@ import java.awt.event.MouseEvent;
 
 import fr.rca.mapmaker.ui.Grid;
 import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.sprite.Instance;
+import java.awt.Component;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.HashSet;
+import java.util.Set;
+import javax.swing.JPanel;
 
 public class AbstractSelectionTool extends MouseAdapter implements Tool {
 
 	protected final Grid grid;
+	protected JPanel spriteLayerPanel;
 	protected TileLayer selectionLayer;
 	
 	protected Point startPoint;
 	protected Point translation;
 	
 	protected boolean selected = false;
+	
+	protected Set<Instance> selectedInstances = new HashSet<Instance>();
 	
 	public AbstractSelectionTool(Grid grid) {
 		this.grid = grid;
@@ -32,6 +40,11 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 			}
 		});
 	}
+	
+	public AbstractSelectionTool(Grid grid, JPanel spriteLayerPanel) {
+		this(grid);
+		this.spriteLayerPanel = spriteLayerPanel;
+	}
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
@@ -39,6 +52,7 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 		if(selected) {
 			translation = new Point(0, 0);
 			grid.getOverlay().copyAndTranslate(selectionLayer, 0, 0);
+			selectInstances();
 		}
 	}
 	
@@ -61,6 +75,18 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 		drawingLayer.merge(previewLayer);
 		previewLayer.clear();
 		selectionLayer.clear();
+		
+		final int tileSize = gridTileSize();
+		final int x = translation.x * tileSize;
+		final int y = translation.y * tileSize;
+		for (final Instance instance : selectedInstances) {
+			final Point p = instance.getPoint();
+			p.x += x;
+			p.y += y;
+			instance.updateBounds();
+		}
+		selectedInstances.clear();
+		
 		selected = false;
 	}
 	
@@ -72,7 +98,6 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 			if(grid.getOverlay().getTile(point) == -1) {
 				releaseSelection();
 			}
-			
 		} else {
 			handleMouseClicked(e);
 		}
@@ -91,7 +116,6 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 	public void mouseReleased(MouseEvent e) {
 		if(!selected) {
 			handleMouseReleased(e);
-			
 		} else {
 			final Point releasePoint = grid.getLayerLocation(e.getX(), e.getY());
 			translation.x += releasePoint.x - startPoint.x;
@@ -107,7 +131,6 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 		
 		if(!selected) {
 			handleMouseDragged(e);
-			
 		} else {
 			moveLayer(grid.getOverlay(), e, false);
 		}
@@ -117,10 +140,30 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 		final Point point = grid.getLayerLocation(event.getX(), event.getY());
 			
 		if(!directly) {
-			layer.copyAndTranslate(selectionLayer, point.x - startPoint.x + translation.x, point.y - startPoint.y + translation.y);
+			final int x = point.x - startPoint.x + translation.x;
+			final int y = point.y - startPoint.y + translation.y;
+			layer.copyAndTranslate(selectionLayer, x, y);
+			
+			final int tileSize = gridTileSize();
+			
+			for (final Instance instance : selectedInstances) {
+				instance.previewTranslation(x * tileSize, y * tileSize);
+			}
 		} else {
 			if(startPoint != null) {
-				layer.translate(point.x - startPoint.x, point.y - startPoint.y);
+				final int x = point.x - startPoint.x;
+				final int y = point.y - startPoint.y;
+				
+				layer.translate(x, y);
+				
+				final int tileSize = gridTileSize();
+				
+				for (final Instance instance : selectedInstances) {
+					final Point p = instance.getPoint();
+					p.x += x * tileSize;
+					p.y += y * tileSize;
+					instance.updateBounds();
+				}
 			}
 			startPoint = point;
 		}
@@ -130,9 +173,50 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 	public void reset() {
 		if(selected) {
 			releaseSelection();
-			
 		} else {
 			grid.getOverlay().clear();
 		}
+		selectedInstances.clear();
+	}
+	
+	protected void selectInstances() {
+		if (spriteLayerPanel == null) {
+			return;
+		}
+		for (final Component component : spriteLayerPanel.getComponents()) {
+			if (component instanceof Instance) {
+				final Instance instance = (Instance) component;
+				final Point point = pointInGridForInstance(instance);
+				if (selectionLayer.getTile(point.x, point.y) >= 0) {
+					selectedInstances.add(instance);
+				} 
+			}
+		}
+	}
+	
+	protected void selectInstancesInRect(int x1, int y1, int x2, int y2) {
+		if (spriteLayerPanel == null) {
+			return;
+		}
+		for (final Component component : spriteLayerPanel.getComponents()) {
+			if (component instanceof Instance) {
+				final Instance instance = (Instance) component;
+				final Point point = pointInGridForInstance(instance);
+				if (point.x >= x1 && point.x <= x2 &&
+						point.y >= y1 && point.y <= y2) {
+					selectedInstances.add(instance);
+				} 
+			}
+		}
+	}
+	
+	private int gridTileSize() {
+		return grid.getTileMap().getPalette().getTileSize();
+	}
+	
+	private Point pointInGridForInstance(Instance instance) {
+		final int tileSize = gridTileSize();
+		final Point point = instance.getPoint();
+		return new Point(point.x / tileSize, point.y / tileSize);
 	}
 }

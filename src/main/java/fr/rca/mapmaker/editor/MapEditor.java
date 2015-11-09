@@ -134,7 +134,7 @@ public class MapEditor extends javax.swing.JFrame {
 	}
 	
 	private void repaintMapGrid() {
-		mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
+		mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
 	}
 	
 	private void configureButton(final JToggleButton button, final Tool tool) {
@@ -815,7 +815,7 @@ public class MapEditor extends javax.swing.JFrame {
         selectionToggleButton.setFocusable(false);
         selectionToggleButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         selectionToggleButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        configureButton(selectionToggleButton, new SelectionTool(mapGrid));
+        configureButton(selectionToggleButton, new SelectionTool(mapGrid, spriteLayerPanel));
         paletteToolBar.add(selectionToggleButton);
 
         javax.swing.GroupLayout mapPanelLayout = new javax.swing.GroupLayout(mapPanel);
@@ -1238,7 +1238,7 @@ private void removeLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {/
 	final TileMap tileMap = project.getCurrentMap();
 	tileMap.remove(layerList.getSelectedIndex());
 	
-	mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
+	mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
 }//GEN-LAST:event_removeLayerButtonActionPerformed
 
 private void removeMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMapButtonActionPerformed
@@ -1564,7 +1564,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			tileMap.swapLayers(selectedIndex, selectedIndex - 1);
 			layerList.setSelectedIndex(selectedIndex - 1);
 
-			mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
+			mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
 		}
     }//GEN-LAST:event_layerUpButtonActionPerformed
 
@@ -1575,7 +1575,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			tileMap.swapLayers(selectedIndex, selectedIndex + 1);
 			layerList.setSelectedIndex(selectedIndex + 1);
 
-			mapGrid.repaint(mapScrollPane.getViewport().getViewRect());
+			mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
 		}
     }//GEN-LAST:event_layerDownButtonActionPerformed
 
@@ -1628,9 +1628,6 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		spriteLayerPanel.removeAll();
 		final List<Instance> instances = project.getInstances();
 		if(instances != null) {
-			final int size = Integer.parseInt(zoomTextField.getText());
-			final double zoom = (double)size/100.0;
-			
 			final int mapWidth = mapGrid.getTileMapWidth() * mapGrid.getTileSize();
 			final int mapHeight = mapGrid.getTileMapHeight() * mapGrid.getTileSize();
 			

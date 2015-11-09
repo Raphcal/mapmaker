@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
 import fr.rca.mapmaker.ui.Grid;
+import javax.swing.JPanel;
 
 public class SelectionTool extends AbstractSelectionTool {
 
@@ -14,6 +15,10 @@ public class SelectionTool extends AbstractSelectionTool {
 	
 	public SelectionTool(Grid grid) {
 		super(grid);
+	}
+
+	public SelectionTool(Grid grid, JPanel spriteLayerPanel) {
+		super(grid, spriteLayerPanel);
 	}
 
 	@Override
@@ -44,6 +49,7 @@ public class SelectionTool extends AbstractSelectionTool {
 
 			startPoint = null;
 			setSelected(true);
+			selectInstancesInRect(startX, startY, endX, endY);
 		}
 	}
 	

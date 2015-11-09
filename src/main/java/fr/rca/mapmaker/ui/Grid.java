@@ -15,6 +15,7 @@ import fr.rca.mapmaker.model.selection.SelectionStyle;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -88,7 +89,7 @@ public class Grid extends AbstractLayerPainter {
 				final Point origin = getLayerOrigin(layer);
 
 				// Rafraîchissement de la vue
-				repaint(origin.x + dirtyRectangle.x * tileSize, origin.y + dirtyRectangle.y * tileSize,
+				repaintFromParent(origin.x + dirtyRectangle.x * tileSize, origin.y + dirtyRectangle.y * tileSize,
 						dirtyRectangle.width * tileSize, dirtyRectangle.height * tileSize);
 			}
 		};
@@ -99,11 +100,11 @@ public class Grid extends AbstractLayerPainter {
 				final int tileSize = getTileSize();
 				
 				if(oldSelection != null) {
-					repaint(oldSelection.x * tileSize, oldSelection.y * tileSize, tileSize, tileSize);
+					repaintFromParent(oldSelection.x * tileSize, oldSelection.y * tileSize, tileSize, tileSize);
 				}
 				
 				if(newSelection != null) {
-					repaint(newSelection.x * tileSize, newSelection.y * tileSize, tileSize, tileSize);
+					repaintFromParent(newSelection.x * tileSize, newSelection.y * tileSize, tileSize, tileSize);
 				}
 			}
 		};
@@ -302,9 +303,18 @@ public class Grid extends AbstractLayerPainter {
 	public void repaint(Point p) {
 		// TODO: prendre en compte le scrolling
 		final int tileSize = getTileSize();
-		repaint(new Rectangle(p.x * tileSize, p.y * tileSize, tileSize, tileSize));
+		repaintFromParent(p.x * tileSize, p.y * tileSize, tileSize, tileSize);
 	}
 
+	protected void repaintFromParent(int x, int y, int width, int height) {
+		final Container parent = getParent();
+		if (parent != null && parent.getLayout() instanceof LayerLayout) {
+			parent.repaint(x, y, width, height);
+		} else {
+			repaint(x, y, width, height);
+		}
+	}
+	
 	protected void paintSelection(int tileSize, Graphics g) {
 		if(tileMap instanceof HasSelectionListeners) {
 			final Point selectedPoint = ((HasSelectionListeners)tileMap).getSelection();

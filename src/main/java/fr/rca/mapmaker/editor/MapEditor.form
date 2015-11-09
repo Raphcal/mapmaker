@@ -1233,7 +1233,7 @@
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="configureButton(selectionToggleButton, new SelectionTool(mapGrid));"/>
+                    <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="configureButton(selectionToggleButton, new SelectionTool(mapGrid, spriteLayerPanel));"/>
                   </AuxValues>
                 </Component>
               </SubComponents>
