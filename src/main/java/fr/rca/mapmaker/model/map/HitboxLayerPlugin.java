@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.model.map;
 
 import java.awt.Rectangle;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Permet d'ajouter une hitbox à une couche.
@@ -9,7 +10,7 @@ import java.awt.Rectangle;
  */
 public class HitboxLayerPlugin implements LayerPlugin {
 	
-	private Rectangle hitbox;
+	private Rectangle hitbox = new Rectangle(1, 1, 2, 3);
 
 	@Override
 	public LayerPlugin copy() {
@@ -22,11 +23,12 @@ public class HitboxLayerPlugin implements LayerPlugin {
 		return copy;
 	}
 	
+	@Nullable
 	public Rectangle getHitbox() {
 		return hitbox;
 	}
 
-	public void setHitbox(Rectangle hitbox) {
+	public void setHitbox(@Nullable Rectangle hitbox) {
 		this.hitbox = hitbox;
 	}
 	

@@ -1,13 +1,14 @@
 package fr.rca.mapmaker.editor.tool;
 
 import fr.rca.mapmaker.model.HasPropertyChangeListeners;
+import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.ui.Grid;
-import java.awt.Rectangle;
-import java.awt.Shape;
+import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -18,12 +19,25 @@ import java.beans.PropertyChangeListener;
  * </p>
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class HitboxTool extends AbstractShapeFillTool {
+public class HitboxTool extends MouseAdapter implements Tool {
 	
+	private final Grid grid;
 	private TileLayer hitboxLayer;
+	
+	private HitboxLayerPlugin hitboxPlugin;
 
 	public HitboxTool(Grid grid) {
-		super(grid);
+		this.grid = grid;
+		this.hitboxLayer = new TileLayer(grid.getTileMapWidth(), grid.getTileMapHeight());
+		
+		// TODO: Faire un HitboxLayer qui se base sur HitboxLayerPlugin ?
+		
+		grid.getTileMap().addSizeChangeListener(new SizeChangeListener() {
+			@Override
+			public void sizeChanged(Object source, Dimension oldSize, Dimension newSize) {
+				hitboxLayer.resize(newSize.width, newSize.height);
+			}
+		});
 		
 		final Layer layer = grid.getActiveLayer();
 		if (layer instanceof HasPropertyChangeListeners) {
@@ -32,26 +46,33 @@ public class HitboxTool extends AbstractShapeFillTool {
 				public void propertyChange(PropertyChangeEvent evt) {
 					final LayerPlugin plugin = (LayerPlugin) evt.getNewValue();
 					if (plugin instanceof HitboxLayerPlugin) {
-						// TODO: Dessiner la hitbox
+						hitboxPlugin = (HitboxLayerPlugin) plugin;
+					} else {
+						hitboxPlugin = null;
 					}
+					redrawHitbox();
 				}
 			});
 		}
 	}
 
 	@Override
-	protected Shape createShape(int x, int y, int width, int height) {
-		return new Rectangle(x, y, width, height);
-	}
-
-	@Override
 	public void setup() {
-		getGrid().getTileMap().add(hitboxLayer);
+		grid.getTileMap().add(hitboxLayer);
+		grid.repaint();
 	}
 
 	@Override
 	public void reset() {
-		getGrid().getTileMap().remove(hitboxLayer);
+		grid.getTileMap().remove(hitboxLayer);
+		grid.repaint();
+	}
+	
+	private void redrawHitbox() {
+		hitboxLayer.clear();
+		if (hitboxPlugin != null && hitboxPlugin.getHitbox() != null) {
+			hitboxLayer.setTiles(hitboxPlugin.getHitbox(), 0);
+		}
 	}
 	
 }

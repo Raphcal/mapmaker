@@ -89,6 +89,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 */
 	public TileLayer(TileLayer layer) {
 		this(layer.tiles, new Dimension(layer.width, layer.height), null);
+		this.plugin = ((TileLayer) layer).getPluginCopy();
 	}
 	
 	/**
@@ -98,6 +99,9 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 */
 	public TileLayer(DataLayer layer) {
 		this(layer.copyData(), new Dimension(layer.getWidth(), layer.getHeight()), null);
+		if (layer instanceof TileLayer) {
+			this.plugin = ((TileLayer) layer).getPluginCopy();
+		}
 	}
 	
 	public TileLayer(int[] data, Dimension dimension, Rectangle copySurface) {
@@ -681,7 +685,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	public void restoreData(DataLayer source) {
 		restoreData(source.copyData(), source.getWidth(), source.getHeight());
 		if (source instanceof TileLayer) {
-			this.plugin = ((TileLayer) source).getPluginCopy();
+			setPlugin(((TileLayer) source).getPluginCopy());
 		}
 	}
 	
