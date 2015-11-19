@@ -58,6 +58,11 @@ public class SpanningTileLayer implements DataLayer {
 	}
 
 	@Override
+	public void restoreData(DataLayer source) {
+		restoreData(source.copyData(), source.getWidth(), source.getHeight());
+	}
+
+	@Override
 	public int getWidth() {
 		return width;
 	}

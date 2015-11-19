@@ -1,6 +1,7 @@
 
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
@@ -408,7 +409,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 		final List<TileLayer> layers = new ArrayList<TileLayer>(tileLayerList.getElements());
 		
 		if(GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
-			layers.add(new TileLayer(sprite.getWidth(), sprite.getHeight()));
+			layers.add(new TileLayer(sprite.getWidth(), sprite.getHeight(), new HitboxLayerPlugin()));
 		}
 		final int index = evt.getID();
 		
@@ -478,7 +479,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 			
 			for(double angle = step; angle < 360; angle += step) {
 				for(final TileLayer frame : frames) {
-					final TileLayer rotatedFrame = new TileLayer(frame.getWidth(), frame.getHeight());
+					final TileLayer rotatedFrame = new TileLayer(frame.getWidth(), frame.getHeight(), frame.getPluginCopy());
 					rotatedFrame.restoreData(frame.copyData(), null);
 					
 					if(((int)angle) % 90 == 0) {
@@ -500,7 +501,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 		PASTEBOARD.clear();
 		
 		for(final TileLayer layer : tileLayerList.getSelection()) {
-			final TileLayer copy = new TileLayer(layer.getWidth(), layer.getHeight());
+			final TileLayer copy = new TileLayer(layer.getWidth(), layer.getHeight(), layer.getPluginCopy());
 			copy.restoreData(layer.copyData(), null);
 			
 			PASTEBOARD.add(copy);
@@ -509,7 +510,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 
     private void pasteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteButtonActionPerformed
 		for(final TileLayer layer : PASTEBOARD) {
-			final TileLayer copy = new TileLayer(layer.getWidth(), layer.getHeight());
+			final TileLayer copy = new TileLayer(layer.getWidth(), layer.getHeight(), layer.getPluginCopy());
 			copy.restoreData(layer.copyData(), null);
 			
 			tileLayerList.add(copy);

@@ -9,6 +9,9 @@ public class AlphaColorPalette extends ColorPalette {
 	private static final int MASK = 1000;
 	
 	private int selectedAlpha = 0;
+
+	public AlphaColorPalette() {
+	}
 	
 	public AlphaColorPalette(int length) {
 		super(length);

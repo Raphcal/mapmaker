@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.model.map;
 
+import fr.rca.mapmaker.model.HasPropertyChangeListeners;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.LayerChangeListener;
 import fr.rca.mapmaker.model.SizeChangeListener;
@@ -7,12 +8,14 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
-public class TileLayer implements DataLayer, HasSizeChangeListeners {
+public class TileLayer implements DataLayer, HasSizeChangeListeners, HasPropertyChangeListeners {
 
 	/**
 	 * Nom de la couche.
@@ -45,10 +48,17 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	private boolean visible = true;
 	
 	/**
+	 * Décorateur de TileLayer.
+	 */
+	private LayerPlugin plugin;
+	
+	/**
 	 * Liste de listeners.
 	 */
 	private final List<LayerChangeListener> listeners = new ArrayList<LayerChangeListener>();
 	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	
+	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
 	public TileLayer() {
 		this(0, 0);
@@ -65,6 +75,11 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 		this.height = height;
 		this.tiles = new int[width * height];
 		Arrays.fill(this.tiles, -1);
+	}
+	
+	public TileLayer(int width, int height, LayerPlugin plugin) {
+		this(width, height);
+		this.plugin = plugin;
 	}
 	
 	/**
@@ -106,7 +121,9 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	 * @param name Nom du calque.
 	 */
 	public void setName(String name) {
+		final String oldName = this.name;
 		this.name = name;
+		propertyChangeSupport.firePropertyChange("name", oldName, this.name);
 	}
 	
 	/**
@@ -293,6 +310,24 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	public LayerPlugin getPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(LayerPlugin plugin) {
+		final LayerPlugin oldPlugin = this.plugin;
+		this.plugin = plugin;
+		propertyChangeSupport.firePropertyChange("plugin", oldPlugin, this.plugin);
+	}
+	
+	public LayerPlugin getPluginCopy() {
+		if(plugin != null) {
+			return plugin.copy();
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -575,6 +610,26 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 		}
 	}
 	
+	@Override
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+
+	@Override
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	}
+
+	@Override
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+
+	@Override
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
+	
 	/**
 	 * Renvoie une copie des données de cette couche.
 	 * 
@@ -620,6 +675,14 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners {
 		
 		fireSizeChanged(oldDimension, new Dimension(width, height));
 		fireLayerChanged(new Rectangle(0, 0, width, height));
+	}
+
+	@Override
+	public void restoreData(DataLayer source) {
+		restoreData(source.copyData(), source.getWidth(), source.getHeight());
+		if (source instanceof TileLayer) {
+			this.plugin = ((TileLayer) source).getPluginCopy();
+		}
 	}
 	
 	/**

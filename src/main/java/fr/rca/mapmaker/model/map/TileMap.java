@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.model.map;
 
+import fr.rca.mapmaker.model.HasPropertyChangeListeners;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.LayerChangeListener;
 import fr.rca.mapmaker.model.SizeChangeListener;
@@ -22,7 +23,7 @@ import javax.swing.event.ListDataListener;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class TileMap implements HasSizeChangeListeners, ListModel {
+public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListeners, ListModel {
 	
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
@@ -409,11 +410,24 @@ public class TileMap implements HasSizeChangeListeners, ListModel {
 		listDataListeners.remove(l);
 	}
 	
-	public void addPropertyChangeListener(PropertyChangeListener pl) {
-		propertyChangeSupport.addPropertyChangeListener(pl);
+	@Override
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
 
-	public void removePropertyChangeListener(PropertyChangeListener pl) {
-		propertyChangeSupport.removePropertyChangeListener(pl);
+	@Override
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
+
+	@Override
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+
+	@Override
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
+	
 }

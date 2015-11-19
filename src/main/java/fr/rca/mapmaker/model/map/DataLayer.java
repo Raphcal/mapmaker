@@ -23,4 +23,12 @@ public interface DataLayer extends Layer {
 	 * @param height Nouvelle hauteur de la couche. 
 	 */
 	void restoreData(int[] tiles, int width, int height);
+	
+	/**
+	 * Remplace les données et la taille de la couche par
+	 * ceux de la couche donnée.
+	 * 
+	 * @param source Couche à copier.
+	 */
+	void restoreData(DataLayer source);
 }

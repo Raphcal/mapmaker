@@ -71,7 +71,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 
 	public void setLayerAndPalette(DataLayer layer, ColorPalette palette) {
 		editedLayer = layer;
-		drawLayer.restoreData(layer.copyData(), layer.getWidth(), layer.getHeight());
+		drawLayer.restoreData(layer);
 		memento.clear();
 		layers.clear();
 		
@@ -130,7 +130,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 		
 		final DataLayer layer = tiles[layerIndex];
 		
-		drawLayer.restoreData(layer.copyData(), layer.getWidth(), layer.getHeight());
+		drawLayer.restoreData(layer);
 		memento.clear();
 		
 		widthTextField.setText(Integer.toString(layer.getWidth()));
@@ -692,7 +692,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
 		if(editedLayer != null) {
-			editedLayer.restoreData(drawLayer.copyData(), drawLayer.getWidth(), drawLayer.getHeight());
+			editedLayer.restoreData(drawLayer);
 		}
 		if(!layers.isEmpty()) {
 			copyDrawLayerDataToCurrentTile();
@@ -700,7 +700,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 			for(int index = 0; index < layers.size(); index++) {
 				if(tiles[index] != null) {
 					final TileLayer layer = tiles[index];
-					layers.get(index).restoreData(layer.copyData(), layer.getWidth(), layer.getHeight());
+					layers.get(index).restoreData(layer);
 				}
 			}
 		}
@@ -817,7 +817,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 	
 	private void copyDrawLayerDataToCurrentTile() {
 		if(layerIndex >= 0 && layerIndex < tiles.length && tiles[layerIndex] != null) {
-			tiles[layerIndex].restoreData(drawLayer.copyData(), drawLayer.getWidth(), drawLayer.getHeight());
+			tiles[layerIndex].restoreData(drawLayer);
 		}
 	}
 	
