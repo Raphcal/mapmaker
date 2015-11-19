@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class HitboxLayerPlugin implements LayerPlugin {
 	
-	private Rectangle hitbox = new Rectangle(1, 1, 2, 3);
+	private Rectangle hitbox = new Rectangle(1, 1, 6, 7);
 
 	@Override
 	public LayerPlugin copy() {

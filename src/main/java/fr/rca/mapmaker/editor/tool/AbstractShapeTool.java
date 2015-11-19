@@ -11,7 +11,7 @@ import fr.rca.mapmaker.model.map.TileLayer;
 
 public abstract class AbstractShapeTool extends MouseAdapter implements Tool {
 
-	private final Grid grid;
+	protected final Grid grid;
 	private int target;
 	
 	private Point startPoint;

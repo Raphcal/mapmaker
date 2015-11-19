@@ -62,6 +62,9 @@ public class TileMapEditor extends javax.swing.JDialog {
 		super(parent, true);
 		initComponents();
 		
+		treeToggleButton.setVisible(false);
+		nextStepTreeButton.setVisible(false);
+		
 		listeners = new ArrayList<ActionListener>();
 		layers = new ArrayList<DataLayer>();
 		

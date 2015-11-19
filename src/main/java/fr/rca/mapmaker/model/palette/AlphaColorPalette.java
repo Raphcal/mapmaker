@@ -48,7 +48,11 @@ public class AlphaColorPalette extends ColorPalette {
 
 	@Override
 	public int getSelectedTile() {
-		return super.getSelectedTile() + MASK * selectedAlpha;
+		return getTile(super.getSelectedTile(), selectedAlpha);
+	}
+	
+	public static int getTile(int tile, int alpha) {
+		return tile + MASK * alpha;
 	}
 	
 	public static int getAlphaFromTile(int tile) {
