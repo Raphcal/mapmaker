@@ -90,6 +90,12 @@ public class CircleStrokeTool extends MouseAdapter implements Tool {
 	}
 	
 	@Override
+	public void setup() {
+		// Pas d'action.
+	}
+	
+	@Override
 	public void reset() {
+		// Pas d'action.
 	}
 }

@@ -139,7 +139,13 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	}
 	
 	@Override
+	public void setup() {
+		// Pas d'action.
+	}
+	
+	@Override
 	public void reset() {
+		// Pas d'action.
 	}
 	
 	private MouseAdapter createMouseAdapter(final Instance instance) {

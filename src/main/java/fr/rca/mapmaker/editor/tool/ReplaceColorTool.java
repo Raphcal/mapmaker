@@ -26,6 +26,11 @@ public class ReplaceColorTool implements Tool {
 	}
 	
 	@Override
+	public void setup() {
+		// Pas d'action.
+	}
+	
+	@Override
 	public void reset() {
 		// Pas d'action.
 	}

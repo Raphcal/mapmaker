@@ -55,7 +55,6 @@ public abstract class AbstractShapeTool extends MouseAdapter implements Tool {
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
 		if(startPoint == null) {
 			return;
 		}
@@ -81,6 +80,17 @@ public abstract class AbstractShapeTool extends MouseAdapter implements Tool {
 	}
 	
 	@Override
-	public void reset() {
+	public void setup() {
+		// Pas d'action.
 	}
+	
+	@Override
+	public void reset() {
+		// Pas d'action.
+	}
+
+	protected Grid getGrid() {
+		return grid;
+	}
+	
 }

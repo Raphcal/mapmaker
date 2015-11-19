@@ -799,10 +799,11 @@ public class TileMapEditor extends javax.swing.JDialog {
 			
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				
 				if(e.getStateChange() == ItemEvent.SELECTED) {
 					drawGrid.addMouseListener(tool);
 					drawGrid.addMouseMotionListener(tool);
+					
+					tool.setup();
 					
 				} else {
 					drawGrid.removeMouseListener(tool);

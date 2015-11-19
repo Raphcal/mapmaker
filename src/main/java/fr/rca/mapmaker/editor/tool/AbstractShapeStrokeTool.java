@@ -17,7 +17,6 @@ public abstract class AbstractShapeStrokeTool extends AbstractShapeTool {
 
 	@Override
 	protected void drawShape(Rectangle rectangle, int tile, TileLayer layer) {
-		
 		final Shape shape = createShape(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 		final Shape innerShape = createShape(rectangle.x + 1, rectangle.y + 1, rectangle.width - 2, rectangle.height - 2);
 		

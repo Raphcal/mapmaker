@@ -39,6 +39,11 @@ public class TreeTool extends MouseAdapter implements Tool {
 	}
 	
 	@Override
+	public void setup() {
+		// Pas d'action.
+	}
+	
+	@Override
 	public void reset() {
 		// Rien à remettre à zéro.
 	}

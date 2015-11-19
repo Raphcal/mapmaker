@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JPanel;
 
-public class AbstractSelectionTool extends MouseAdapter implements Tool {
+public abstract class AbstractSelectionTool extends MouseAdapter implements Tool {
 
 	protected final Grid grid;
 	protected JPanel spriteLayerPanel;
@@ -167,6 +167,11 @@ public class AbstractSelectionTool extends MouseAdapter implements Tool {
 			}
 			startPoint = point;
 		}
+	}
+
+	@Override
+	public void setup() {
+		// Pas d'action.
 	}
 	
 	@Override
