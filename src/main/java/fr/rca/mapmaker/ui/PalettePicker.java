@@ -94,6 +94,10 @@ public class PalettePicker extends JComponent implements HasSelectionListeners {
 			g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 		}
 		
+		if (tileSize == 0) {
+			return;
+		}
+		
 		// Coordonnées du premier point à afficher.
 		final int startX = clipBounds.x / tileSize;
 		final int startY = clipBounds.y / tileSize;
@@ -121,7 +125,7 @@ public class PalettePicker extends JComponent implements HasSelectionListeners {
 		}
 	}
 	
-	private void updateSize() {
+	public void updateSize() {
 		final int paletteTileSize = Math.max(palette.getTileSize(), 1);
 		final Dimension size = getSize();
 		final double ratio = size.getWidth() / paletteTileSize;
