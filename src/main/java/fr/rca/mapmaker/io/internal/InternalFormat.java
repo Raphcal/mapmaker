@@ -20,6 +20,7 @@ import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,14 +47,10 @@ public class InternalFormat extends AbstractFormat {
 	public static final int VERSION_5 = 5;
 	public static final int VERSION_6 = 6;
 	public static final int VERSION_7 = 7;
-	public static final String HEADER_VERSION_3 = "MMK3";
-	public static final String HEADER_VERSION_4 = "MMK4";
-	public static final String HEADER_VERSION_5 = "MMK5";
-	public static final String HEADER_VERSION_6 = "MMK6";
-	public static final String HEADER_VERSION_7 = "MMK7";
+	public static final int VERSION_8 = 8;
 	
-	public static final int LAST_VERSION = VERSION_7;
-	public static final String HEADER_LAST_VERSION = HEADER_VERSION_7;
+	public static final int LAST_VERSION = VERSION_8;
+	public static final String HEADER_LAST_VERSION = "MMK" + LAST_VERSION;
 			
 
 	public InternalFormat() {
@@ -75,6 +72,7 @@ public class InternalFormat extends AbstractFormat {
 		addHandler(Sprite.class, new SpriteDataHandler(this));
 		addHandler(Animation.class, new AnimationDataHandler(this));
 		addHandler(Instance.class, new InstanceDataHandler());
+		addHandler(Rectangle.class, new RectangleDataHandler());
 	}
 
 	@Override

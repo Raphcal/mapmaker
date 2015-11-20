@@ -4,8 +4,11 @@ import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
+import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
+import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,6 +44,7 @@ public class AnimationDataHandler implements DataHandler<Animation>, HasVersion 
 		}
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
+		final DataHandler<Rectangle> rectangleHandler = format.getHandler(Rectangle.class);
 		
 		t.overrideFrameNames();
 		
@@ -56,6 +60,17 @@ public class AnimationDataHandler implements DataHandler<Animation>, HasVersion 
 			
 			for(final TileLayer frame : frames) {
 				tileLayerHandler.write(frame, outputStream);
+				
+				if (version >= InternalFormat.VERSION_8) {
+					final LayerPlugin plugin = frame.getPlugin();
+					final Rectangle hitbox;
+					if (plugin instanceof HitboxLayerPlugin) {
+						hitbox = ((HitboxLayerPlugin) plugin).getHitbox();
+					} else {
+						hitbox = null;
+					}
+					rectangleHandler.write(hitbox, outputStream);
+				}
 			}
 		}
 	}
@@ -69,6 +84,7 @@ public class AnimationDataHandler implements DataHandler<Animation>, HasVersion 
 		}
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
+		final DataHandler<Rectangle> rectangleHandler = format.getHandler(Rectangle.class);
 		
 		final int directionCount = Streams.readInt(inputStream);
 		for(int i = 0; i < directionCount; i++) {
@@ -78,7 +94,15 @@ public class AnimationDataHandler implements DataHandler<Animation>, HasVersion 
 			final List<TileLayer> frames = new ArrayList<TileLayer>();
 			
 			for(int frame = 0; frame < frameCount; frame++) {
-				frames.add(tileLayerHandler.read(inputStream));
+				final TileLayer frameLayer = tileLayerHandler.read(inputStream);
+				
+				final HitboxLayerPlugin hitboxPlugin = new HitboxLayerPlugin();
+				if (version >= InternalFormat.VERSION_8) {
+					hitboxPlugin.setHitbox(rectangleHandler.read(inputStream));
+				}
+				
+				frameLayer.setPlugin(hitboxPlugin);
+				frames.add(frameLayer);
 			}
 			
 			animation.setFrames(direction, frames);

@@ -23,6 +23,7 @@ import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,6 +83,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		addHandler(Sprite.class, new fr.rca.mapmaker.io.internal.SpriteDataHandler(this));
 		addHandler(Animation.class, new fr.rca.mapmaker.io.internal.AnimationDataHandler(this));
 		addHandler(Instance.class, new fr.rca.mapmaker.io.internal.InstanceDataHandler());
+		addHandler(Rectangle.class, new fr.rca.mapmaker.io.internal.RectangleDataHandler());
 	}
 
 	@Override
