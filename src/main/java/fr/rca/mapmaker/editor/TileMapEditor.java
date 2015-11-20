@@ -17,6 +17,8 @@ import fr.rca.mapmaker.editor.tool.ReplaceColorTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
 import fr.rca.mapmaker.model.map.DataLayer;
+import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
+import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
@@ -43,6 +45,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 	private static final int PALETTE_WIDTH = 8;
 	
 	private static TileLayer clipboardData;
+	private static LayerPlugin pluginClipboardData;
 
 	private final PasteSelectionTool pasteSelectionTool;
 	
@@ -85,6 +88,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 		
 		previousLayerButton.setVisible(false);
 		nextLayerButton.setVisible(false);
+		hitboxToggleButton.setVisible(isHitboxAvailable());
 		
 		pack();
 	}
@@ -140,6 +144,8 @@ public class TileMapEditor extends javax.swing.JDialog {
 		widthTextField.setText(Integer.toString(layer.getWidth()));
 		heightTextField.setText(Integer.toString(layer.getHeight()));
 		
+		hitboxToggleButton.setVisible(isHitboxAvailable());
+		
 		firePropertyChange("previousAvailable", null, isPreviousAvailable());
 		firePropertyChange("nextAvailable", null, isNextAvailable());
 	}
@@ -157,7 +163,19 @@ public class TileMapEditor extends javax.swing.JDialog {
 	}
 	
 	public boolean isClipboardFull() {
-		return clipboardData != null;
+		if (!isEditingPlugin()) {
+			return clipboardData != null;
+		} else {
+			return pluginClipboardData != null;
+		}
+	}
+	
+	public boolean isHitboxAvailable() {
+		return drawLayer.getPlugin() instanceof HitboxLayerPlugin;
+	}
+	
+	public boolean isEditingPlugin() {
+		return hitboxToggleButton.isSelected();
 	}
 	
 	public void addActionListener(ActionListener listener) {
@@ -735,24 +753,36 @@ public class TileMapEditor extends javax.swing.JDialog {
     private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
 		final boolean oldClipboardFull = isClipboardFull();
 		
-		final TileLayer source;
-		if(drawGrid.getOverlay().isEmpty()) {
-			source = drawLayer;
+		if (!isEditingPlugin()) {
+			final TileLayer source;
+			if(drawGrid.getOverlay().isEmpty()) {
+				source = drawLayer;
+			} else {
+				source = drawGrid.getOverlay();
+			}
+			clipboardData = new TileLayer(source);
+			
 		} else {
-			source = drawGrid.getOverlay();
+			pluginClipboardData = drawLayer.getPluginCopy();
 		}
-		
-		clipboardData = new TileLayer(source);
 		
 		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());
     }//GEN-LAST:event_copyButtonActionPerformed
 
     private void pasteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteButtonActionPerformed
-		toolButtonGroup.clearSelection();
-		pasteSelectionTool.setSelection(clipboardData);
+		if (!isEditingPlugin()) {
+			toolButtonGroup.clearSelection();
+			pasteSelectionTool.setSelection(clipboardData);
 
-		drawGrid.addMouseListener(pasteSelectionTool);
-		drawGrid.addMouseMotionListener(pasteSelectionTool);
+			drawGrid.addMouseListener(pasteSelectionTool);
+			drawGrid.addMouseMotionListener(pasteSelectionTool);
+		} else {
+			if(pluginClipboardData != null) {
+				drawLayer.setPlugin(pluginClipboardData.copy());
+			} else {
+				drawLayer.setPlugin(null);
+			}
+		}
     }//GEN-LAST:event_pasteButtonActionPerformed
 
     private void horizontalMirrorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalMirrorButtonActionPerformed
@@ -818,6 +848,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 					drawGrid.addMouseMotionListener(tool);
 					
 					tool.setup();
+					firePropertyChange("clipboardFull", null, isClipboardFull());
 					
 				} else {
 					drawGrid.removeMouseListener(tool);

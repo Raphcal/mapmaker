@@ -501,19 +501,13 @@ public class SpriteEditor extends javax.swing.JDialog {
 		PASTEBOARD.clear();
 		
 		for(final TileLayer layer : tileLayerList.getSelection()) {
-			final TileLayer copy = new TileLayer(layer.getWidth(), layer.getHeight(), layer.getPluginCopy());
-			copy.restoreData(layer.copyData(), null);
-			
-			PASTEBOARD.add(copy);
+			PASTEBOARD.add(new TileLayer(layer));
 		}
     }//GEN-LAST:event_copyButtonActionPerformed
 
     private void pasteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteButtonActionPerformed
 		for(final TileLayer layer : PASTEBOARD) {
-			final TileLayer copy = new TileLayer(layer.getWidth(), layer.getHeight(), layer.getPluginCopy());
-			copy.restoreData(layer.copyData(), null);
-			
-			tileLayerList.add(copy);
+			tileLayerList.add(new TileLayer(layer));
 		}
     }//GEN-LAST:event_pasteButtonActionPerformed
 

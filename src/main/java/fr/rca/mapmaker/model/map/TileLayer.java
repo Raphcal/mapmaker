@@ -85,22 +85,22 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	/**
 	 * Créé une copie de la couche donnée en argument.
 	 * 
-	 * @param layer Couche à copier.
+	 * @param other Couche à copier.
 	 */
-	public TileLayer(TileLayer layer) {
-		this(layer.tiles, new Dimension(layer.width, layer.height), null);
-		this.plugin = ((TileLayer) layer).getPluginCopy();
+	public TileLayer(TileLayer other) {
+		this(other.tiles, new Dimension(other.width, other.height), null);
+		copyTileLayerFields(other);
 	}
 	
 	/**
 	 * Créé une copie de la couche donnée en argument.
 	 * 
-	 * @param layer Couche à copier.
+	 * @param other Couche à copier.
 	 */
-	public TileLayer(DataLayer layer) {
-		this(layer.copyData(), new Dimension(layer.getWidth(), layer.getHeight()), null);
-		if (layer instanceof TileLayer) {
-			this.plugin = ((TileLayer) layer).getPluginCopy();
+	public TileLayer(DataLayer other) {
+		this(other.copyData(), new Dimension(other.getWidth(), other.getHeight()), null);
+		if (other instanceof TileLayer) {
+			copyTileLayerFields((TileLayer) other);
 		}
 	}
 	
@@ -119,6 +119,15 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		}
 	}
 
+	private void copyTileLayerFields(TileLayer other) {
+		this.name = other.name;
+		this.plugin = ((TileLayer) other).getPluginCopy();
+		
+		if (other.scrollRate != null) {
+			this.scrollRate = new ScrollRate(other.scrollRate);
+		}
+	}
+	
 	/**
 	 * Modifie le nom de ce calque.
 	 * 

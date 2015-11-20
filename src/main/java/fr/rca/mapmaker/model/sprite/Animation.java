@@ -59,9 +59,7 @@ public class Animation {
 		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
 			final List<TileLayer> layersCopy = new ArrayList<TileLayer>();
 			for(final TileLayer layer : entry.getValue()) {
-				final TileLayer layerCopy = new TileLayer(layer.getWidth(), layer.getHeight());
-				layerCopy.restoreData(layer.copyData(), null);
-				layersCopy.add(layerCopy);
+				layersCopy.add(new TileLayer(layer));
 			}
 			copy.frames.put(entry.getKey(), layersCopy);
 		}
