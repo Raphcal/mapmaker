@@ -1,7 +1,6 @@
 package fr.rca.mapmaker.editor.tool;
 
 import fr.rca.mapmaker.model.HasPropertyChangeListeners;
-import fr.rca.mapmaker.model.Optional;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.Layer;
@@ -11,7 +10,6 @@ import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.ui.Grid;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -26,8 +24,7 @@ public class HitboxTool extends AbstractShapeTool implements Tool {
 	
 	private TileLayer hitboxLayer;
 	
-	// TODO: Optional
-	private HitboxLayerPlugin hitboxPlugin = Optional.newInstance(HitboxLayerPlugin.class);
+	private HitboxLayerPlugin hitboxPlugin;
 
 	public HitboxTool(Grid grid) {
 		super(grid);
@@ -73,27 +70,22 @@ public class HitboxTool extends AbstractShapeTool implements Tool {
 
 	@Override
 	protected void drawShape(Rectangle rectangle, int tile, TileLayer layer) {
+		if (hitboxPlugin.getHitbox() != null) {
+			hitboxLayer.clear(hitboxPlugin.getHitbox());
+		}
+		
 		hitboxPlugin.setHitbox(rectangle);
 		
 		final Rectangle inner = new Rectangle(rectangle.x + 1, rectangle.y + 1, rectangle.width - 2, rectangle.height - 2);
-		hitboxLayer.setTiles(rectangle, AlphaColorPalette.getTile(0, 2));
-		hitboxLayer.setTiles(inner, AlphaColorPalette.getTile(0, 4));
+		hitboxLayer.setTiles(rectangle, AlphaColorPalette.getTile(0, 3));
+		hitboxLayer.setTiles(inner, AlphaColorPalette.getTile(0, 5));
 	}
 	
-	@Deprecated
 	private void redrawHitbox() {
 		hitboxLayer.clear();
 		if (hitboxPlugin != null && hitboxPlugin.getHitbox() != null) {
-			final Rectangle hitbox = hitboxPlugin.getHitbox();
-			final Rectangle inner = new Rectangle(hitbox.x + 1, hitbox.y + 1, hitbox.width - 2, hitbox.height - 2);
-			hitboxLayer.setTiles(hitbox, AlphaColorPalette.getTile(0, 2));
-			hitboxLayer.setTiles(inner, AlphaColorPalette.getTile(0, 4));
+			drawShape(hitboxPlugin.getHitbox(), 0, hitboxLayer);
 		}
 	}
 
-	@Override
-	protected Shape createShape(int x, int y, int width, int height) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-	
 }

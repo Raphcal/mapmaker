@@ -49,8 +49,6 @@ public abstract class AbstractShapeTool extends MouseAdapter implements Tool {
 		previewLayer.clear();
 	}
 	
-	protected abstract Shape createShape(int x, int y, int width, int height);
-	
 	protected abstract void drawShape(Rectangle rectangle, int tile, TileLayer layer);
 	
 	@Override
