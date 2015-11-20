@@ -4,20 +4,17 @@ import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.SupportedOperation;
-import fr.rca.mapmaker.io.internal.ColorDataHandler;
 import fr.rca.mapmaker.io.internal.InternalFormat;
-import fr.rca.mapmaker.io.internal.LayerDataHandler;
 import fr.rca.mapmaker.model.map.PackMap;
-import fr.rca.mapmaker.io.internal.ScrollRateDataHandler;
 import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.project.Project;
-import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,16 +33,18 @@ public class MKZFormat extends AbstractFormat {
 		super(EXTENSION, SupportedOperation.SAVE);
 		
 		addHandler(Project.class, new ProjectDataHandler(this));
-		addHandler(Color.class, new ColorDataHandler());
 		addHandler(Palette.class, new ImagePaletteDataHandler());
 		addHandler(BufferedImage.class, new BufferedImageDataHandler());
-		addHandler(TileLayer.class, new LayerDataHandler(this));
-		addHandler(ScrollRate.class, new ScrollRateDataHandler());
 		addHandler(TileMap.class, new TileMapDataHandler(this));
 		addHandler(Sprite.class, new SpriteDataHandler(this));
 		addHandler(Instance.class, new InstanceDataHandler());
-		addHandler(Animation.class, new AnimationDataHandler());
-		addHandler(PackMap.class, new PackMapDataHandler());
+		addHandler(PackMap.class, new PackMapDataHandler(this));
+		
+		// Handlers du format interne.
+		addHandler(Color.class, new fr.rca.mapmaker.io.internal.ColorDataHandler());
+		addHandler(TileLayer.class, new fr.rca.mapmaker.io.internal.LayerDataHandler(this));
+		addHandler(ScrollRate.class, new fr.rca.mapmaker.io.internal.ScrollRateDataHandler());
+		addHandler(Rectangle.class, new fr.rca.mapmaker.io.internal.RectangleDataHandler());
 	}
 	
 	@Override

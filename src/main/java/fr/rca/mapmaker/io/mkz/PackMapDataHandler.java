@@ -1,13 +1,19 @@
 package fr.rca.mapmaker.io.mkz;
 
 import fr.rca.mapmaker.io.DataHandler;
+import fr.rca.mapmaker.io.Format;
+import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
+import fr.rca.mapmaker.io.internal.InternalFormat;
+import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
+import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.PackMap;
 import fr.rca.mapmaker.model.map.SingleLayerTileMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,9 +28,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
-public class PackMapDataHandler implements DataHandler<PackMap> {
+public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PackMapDataHandler.class);
+	
+	private final Format format;
+	private int version;
+
+	public PackMapDataHandler(Format format) {
+		this.format = format;
+	}
 	
 	@Override
 	public void write(PackMap t, OutputStream outputStream) throws IOException {
@@ -32,6 +45,8 @@ public class PackMapDataHandler implements DataHandler<PackMap> {
 		final Map<TileLayer, SingleLayerTileMap> maps = t.getTileLayerToTileMap();
 		
 		Streams.write(sprites.size(), outputStream);
+		
+		final DataHandler<Rectangle> rectangleHandler = format.getHandler(Rectangle.class);
 			
 		for(final Sprite sprite : sprites) {
 			Streams.writeNullable(sprite.getName(), outputStream);
@@ -70,6 +85,17 @@ public class PackMapDataHandler implements DataHandler<PackMap> {
 							Streams.write(point.y, outputStream);
 							Streams.write(frame.getWidth(), outputStream);
 							Streams.write(frame.getHeight(), outputStream);
+							
+							if (version >= InternalFormat.VERSION_8) {
+								final LayerPlugin plugin = frame.getPlugin();
+								final Rectangle hitbox;
+								if (plugin instanceof HitboxLayerPlugin) {
+									hitbox = ((HitboxLayerPlugin) plugin).getHitbox();
+								} else {
+									hitbox = null;
+								}
+								rectangleHandler.write(hitbox, outputStream);
+							}
 						}
 					}
 				} else {
@@ -82,6 +108,11 @@ public class PackMapDataHandler implements DataHandler<PackMap> {
 	@Override
 	public PackMap read(InputStream inputStream) throws IOException {
 		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void setVersion(int version) {
+		this.version = version;
 	}
 	
 }
