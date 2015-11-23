@@ -107,13 +107,26 @@ public class PackMap {
 	}
 	
 	public static PackMap packSprites(Collection<Sprite> sprites, final int margin) {
+		return packSprites(sprites, margin, null);
+	}
+	
+	public static PackMap packSprites(Collection<Sprite> sprites, final int margin, final Double direction) {
 		final Map<TileLayer, SingleLayerTileMap> maps = new HashMap<TileLayer, SingleLayerTileMap>();
 		
 		for(final Sprite sprite : sprites) {
 			for(final Animation animation : sprite.getAnimations()) {
-				for(final List<TileLayer> frames : animation.getFrames().values()) {
-					for(final TileLayer frame : frames) {
-						maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
+				if (direction == null) {
+					for(final List<TileLayer> frames : animation.getFrames().values()) {
+						for(final TileLayer frame : frames) {
+							maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
+						}
+					}
+				} else {
+					final List<TileLayer> frames = animation.getFrames(direction);
+					if (frames != null) {
+						for(final TileLayer frame : frames) {
+							maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
+						}
 					}
 				}
 			}
