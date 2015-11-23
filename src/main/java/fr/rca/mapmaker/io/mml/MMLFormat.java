@@ -36,6 +36,8 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 	
 	private static final String EXTENSION = ".mml";
 	
+	private static final double STEP = 100 / 8;
+	
 	public MMLFormat() {
 		super(EXTENSION, SupportedOperation.SAVE);
 		
@@ -61,6 +63,8 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 
 	@Override
 	public void saveProject(Project project, File file, Listener progressListener) {
+		double progression = 0;
+		
 		setVersion(InternalFormat.LAST_VERSION);
 		progress(0, progressListener);
 		
@@ -71,7 +75,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 			child.delete();
 		}
 		
-		progress(10, progressListener);
+		progression = progress(progression + STEP, progressListener);
 		
 		final TileMap map = project.getCurrentMap();
 		final List<Instance> instances = new ArrayList<Instance>(project.getInstances());
@@ -89,7 +93,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 			}
 		});
 		
-		progress(20, progressListener);
+		progression = progress(progression + STEP, progressListener);
 		
 		Palette palette = map.getPalette();
 		if(palette instanceof PaletteReference) {
@@ -99,27 +103,30 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 		try {
 			final DataHandler<Palette> paletteDataHandler = getHandler(Palette.class);
 			paletteDataHandler.write(palette, new FileOutputStream(new File(file, "palette.pal")));
-			progress(30, progressListener);
+			progression = progress(progression + STEP, progressListener);
 			
 			// Palette
 			final DataHandler<BufferedImage> imageHandler = getHandler(BufferedImage.class);
 			imageHandler.write(ProjectDataHandler.renderPalette(palette, palette.getTileSize()), new FileOutputStream(new File(file, palette.toString() + '-' + palette.getTileSize() + ".png")));
-			progress(40, progressListener);
+			progression = progress(progression + STEP, progressListener);
 			
 			// Carte
 			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
 			tileMapHandler.write(map, new FileOutputStream(new File(file, "map.map")));
-			progress(50, progressListener);
+			progression = progress(progression + STEP, progressListener);
 			
 			// Instances
 			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
 			final FileOutputStream instanceStream = new FileOutputStream(new File(file, "map.sprites"));
 			Streams.write(instances.size(), instanceStream);
+			
+			final double instanceStep = STEP / instances.size();
+			
 			for(final Instance instance : instances) {
 				instanceHandler.write(instance, instanceStream);
+				progression = progress(progression + instanceStep, progressListener);
 			}
 			instanceStream.close();
-			progress(60, progressListener);
 			
 			// Sprites
 			final PackMap packMap = PackMap.packSprites(project.getSprites(), 1);
@@ -133,7 +140,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 				} finally {
 					imageOutputStream.close();
 				}
-				progress(70, progressListener);
+				progression = progress(progression + STEP, progressListener);
 
 				// Atlas
 				final DataHandler<PackMap> packMapDataHandler = getHandler(PackMap.class);
@@ -144,7 +151,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 				} finally {
 					dataOutputStream.close();
 				}
-				progress(80, progressListener);
+				progress(progression + STEP, progressListener);
 			}
 			
 			progress(100, progressListener);
@@ -158,9 +165,9 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 		throw new UnsupportedOperationException("Not supported.");
 	}
 	
-	private int progress(int value, HasProgress.Listener listener) {
+	private double progress(double value, HasProgress.Listener listener) {
 		if (listener != null) {
-			listener.onProgress(value);
+			listener.onProgress((int) value);
 		}
 		return value;
 	}

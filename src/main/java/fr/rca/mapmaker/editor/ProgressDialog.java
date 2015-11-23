@@ -1,11 +1,62 @@
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.exception.Exceptions;
+import java.awt.Frame;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.concurrent.ExecutionException;
+import javax.swing.SwingWorker;
+
 /**
  *
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
 public class ProgressDialog extends javax.swing.JDialog {
+	
+	public static interface Callback<T> {
+		void whenDone(T t) throws Exception;
+	}
 
+	public static <T> void showFor(final Frame parent, final SwingWorker<T, Integer> worker, final ProgressDialog.Callback<T> callback) {
+		final ProgressDialog dialog = new ProgressDialog(parent, true);
+	
+		worker.getPropertyChangeSupport().addPropertyChangeListener("state", new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (SwingWorker.StateValue.DONE == event.getNewValue()) {
+					if (callback != null) {
+						try {
+							callback.whenDone(worker.get());
+						} catch (InterruptedException ex) {
+							Exceptions.showStackTrace(ex, parent);
+						} catch (ExecutionException ex) {
+							Exceptions.showStackTrace(ex, parent);
+						} catch (Exception ex) {
+							Exceptions.showStackTrace(ex, parent);
+						}
+					}
+					
+					// Fermeture de la popup de chargement
+					dialog.setVisible(false);
+					dialog.dispose();
+				}
+			}
+		});
+
+		worker.getPropertyChangeSupport().addPropertyChangeListener("progress", new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				dialog.setProgress((Integer) event.getNewValue());
+			}
+		});
+
+		worker.execute();
+		dialog.setLocationRelativeTo(parent);
+		dialog.setVisible(true);
+	}
+	
 	/**
 	 * Creates new form ProgressDialog
 	 * @param parent
@@ -15,7 +66,7 @@ public class ProgressDialog extends javax.swing.JDialog {
 		super(parent, modal);
 		initComponents();
 	}
-
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
