@@ -32,6 +32,8 @@ public class PackMap {
 	private static final int WIDTH = 0;
 	private static final int HEIGHT = 1;
 	
+	public static boolean ONLY_RIGHT_DIRECTION = true;
+	
 	private Entry topLeft;
 	
 	private int width;
@@ -111,9 +113,18 @@ public class PackMap {
 		
 		for(final Sprite sprite : sprites) {
 			for(final Animation animation : sprite.getAnimations()) {
-				for(final List<TileLayer> frames : animation.getFrames().values()) {
-					for(final TileLayer frame : frames) {
-						maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
+				if (ONLY_RIGHT_DIRECTION) {
+					final List<TileLayer> frames = animation.getFrames(0);
+					if (frames != null) {
+						for(final TileLayer frame : frames) {
+							maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
+						}
+					}
+				} else {
+					for(final List<TileLayer> frames : animation.getFrames().values()) {
+						for(final TileLayer frame : frames) {
+							maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
+						}
 					}
 				}
 			}
