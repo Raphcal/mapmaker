@@ -49,16 +49,27 @@ public class TileInspector extends javax.swing.JDialog {
 		
 		this.palette = palette;
 		
+		final TileMap tileMap;
+		final double zoom;
+		
 		if(palette instanceof EditableImagePalette) {
 			final EditableImagePalette imagePalette = (EditableImagePalette)palette;
-			
 			final TileLayer source = imagePalette.getSource(tile);
 			
-			tileGrid.setTileMap(new TileMap(source, imagePalette.getColorPalette()));
-			tileAndHitboxGrid.setTileMap(new TileMap(source, imagePalette.getColorPalette()));
+			tileMap = new TileMap(source, imagePalette.getColorPalette());
+			zoom = 256.0 / (double)source.getWidth();
 			
-			tileAndHitboxGrid.setZoom(256.0 / (double)source.getWidth());
+		} else {
+			final TileLayer tileLayer = new TileLayer(1, 1);
+			tileLayer.setTile(0, 0, tile);
+			
+			tileMap = new TileMap(tileLayer, palette);
+			zoom = 256.0 / palette.getTileSize();
 		}
+		
+		tileGrid.setTileMap(tileMap);
+		tileAndHitboxGrid.setTileMap(tileMap);
+		tileAndHitboxGrid.setZoom(zoom);
 		
 		final boolean hasFunctionHitbox = palette instanceof HasFunctionHitbox;
 		hitboxCheckBox.setVisible(hasFunctionHitbox);
@@ -68,7 +79,7 @@ public class TileInspector extends javax.swing.JDialog {
 		functionTextField.setVisible(hasFunctionHitbox);
 		function.setVisible(hasFunctionHitbox);
 		
-		if(hasFunctionHitbox && palette != null) {
+		if(hasFunctionHitbox) {
 			final String hitbox = ((HasFunctionHitbox)palette).getFunction(palette.getSelectedTile());
 			
 			hitboxCheckBox.setSelected(hitbox != null);
