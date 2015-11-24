@@ -85,7 +85,7 @@ public class MeltedIceAutoDeploy {
 	}
 	
 	private static void deploySprites(Collection<Sprite> sprites, File folder, List<String> files) throws IOException {
-		final PackMap packMap = PackMap.packSprites(sprites, 1);
+		final PackMap packMap = PackMap.packSprites(sprites, 1, 0.0);
 		if(packMap != null) {
 			// Image
 			final DataHandler<BufferedImage> imageDataHandler = FORMAT.getHandler(BufferedImage.class);
