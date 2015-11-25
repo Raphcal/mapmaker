@@ -79,7 +79,12 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 						Streams.write(frames.size(), outputStream);
 
 						for(final TileLayer frame : frames) {
-							final Point point = t.getPoint(maps.get(frame));
+							Point point = t.getPoint(maps.get(frame));
+							
+							if (point == null) {
+								LOGGER.warn("Frame " + frame + " non trouvée dans PackMap.");
+								point = new Point();
+							}
 							
 							Streams.write(point.x, outputStream);
 							Streams.write(point.y, outputStream);

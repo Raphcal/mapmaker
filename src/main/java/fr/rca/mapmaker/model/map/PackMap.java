@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Table qui agence ses objets pour tenir dans la surface donnée.
@@ -79,6 +80,7 @@ public class PackMap {
 		return point;
 	}
 	
+	@Nullable
 	public Point getPoint(SingleLayerTileMap map) {
 		return locations.get(map);
 	}
