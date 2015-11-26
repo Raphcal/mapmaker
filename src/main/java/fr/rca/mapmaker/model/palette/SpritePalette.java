@@ -2,6 +2,8 @@
 package fr.rca.mapmaker.model.palette;
 
 import fr.rca.mapmaker.editor.SpriteEditor;
+import fr.rca.mapmaker.event.Event;
+import fr.rca.mapmaker.event.EventBus;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -145,6 +147,7 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				expand(index);
+				EventBus.INSTANCE.fireEvent(Event.SPRITE_CHANGED, sprites);
 			}
 		});
 		editor.setVisible(true);

@@ -25,11 +25,11 @@ public class EventBus {
 		listeners.add(listener);
 	}
 	
-	public void fireEvent(Event event) {
+	public void fireEvent(Event event, Object... arguments) {
 		final List<EventListener> listeners = allListeners.get(event);
 		if (listeners != null) {
 			for (final EventListener listener : listeners) {
-				listener.onEvent(event);
+				listener.onEvent(event, arguments);
 			}
 		}
 	}

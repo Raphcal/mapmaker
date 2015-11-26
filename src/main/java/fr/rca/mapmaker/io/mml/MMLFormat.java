@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import javax.swing.SwingWorker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Export d'une seule carte à destination d'autres projets.
@@ -39,6 +42,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 	
 	private static final String EXTENSION = ".mml";
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MMLFormat.class);
 	private static final double STEP = 100 / 8;
 	
 	private PackMap cachedPackMap;
@@ -63,9 +67,27 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 		
 		EventBus.INSTANCE.listenToEventsOfType(Event.SPRITE_CHANGED, new EventListener() {
 			@Override
-			public void onEvent(Event event) {
+			public void onEvent(Event event, Object[] arguments) {
 				cachedPackMap = null;
 				cachedAtlas = null;
+				
+				if (arguments.length == 1 && arguments[0] instanceof List) {
+					final List<Sprite> sprites = (List<Sprite>) arguments[0];
+					
+					// Met à jour le cache.
+					final SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+						@Override
+						protected Void doInBackground() throws Exception {
+							LOGGER.info("Mise en cache des sprites...");
+							cachedPackMap = PackMap.packSprites(sprites, 1);
+							LOGGER.info("PackMap mis en cache.");
+							cachedAtlas = cachedPackMap.renderImage();
+							LOGGER.info("Atlas mis en cache.");
+							return null;
+						}
+					};
+					worker.execute();
+				}
 			}
 		});
 	}

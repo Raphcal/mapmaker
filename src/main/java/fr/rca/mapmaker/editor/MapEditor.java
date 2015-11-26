@@ -11,6 +11,8 @@ import fr.rca.mapmaker.editor.tool.PenTool;
 import fr.rca.mapmaker.editor.tool.RectangleFillTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
+import fr.rca.mapmaker.event.Event;
+import fr.rca.mapmaker.event.EventBus;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -1407,6 +1409,7 @@ private void openProject(File file, Format format) {
 			// Ouverture du projet
 			project.morphTo(p);
 			mapList.setSelectedIndex(0);
+			EventBus.INSTANCE.fireEvent(Event.SPRITE_CHANGED, p.getSprites());
 
 			spritePaletteGrid.refresh();
 			refreshScrollMode();

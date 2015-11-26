@@ -1,8 +1,6 @@
 
 package fr.rca.mapmaker.editor;
 
-import fr.rca.mapmaker.event.Event;
-import fr.rca.mapmaker.event.EventBus;
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
@@ -446,7 +444,6 @@ public class SpriteEditor extends javax.swing.JDialog {
 		animationPreview.stop();
 		
 		editedSprite.merge(sprite);
-		EventBus.INSTANCE.fireEvent(Event.SPRITE_CHANGED);
 		
 		fireActionPerformed();
     }//GEN-LAST:event_okButtonActionPerformed
