@@ -1,5 +1,8 @@
 package fr.rca.mapmaker.io.mml;
 
+import fr.rca.mapmaker.event.Event;
+import fr.rca.mapmaker.event.EventBus;
+import fr.rca.mapmaker.event.EventListener;
 import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
@@ -38,6 +41,9 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 	
 	private static final double STEP = 100 / 8;
 	
+	private PackMap cachedPackMap;
+	private BufferedImage cachedAtlas;
+	
 	public MMLFormat() {
 		super(EXTENSION, SupportedOperation.SAVE);
 		
@@ -54,6 +60,14 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 		addHandler(TileLayer.class, new fr.rca.mapmaker.io.internal.LayerDataHandler(this));
 		addHandler(ScrollRate.class, new fr.rca.mapmaker.io.internal.ScrollRateDataHandler());
 		addHandler(Rectangle.class, new fr.rca.mapmaker.io.internal.RectangleDataHandler());
+		
+		EventBus.INSTANCE.listenToEventsOfType(Event.SPRITE_CHANGED, new EventListener() {
+			@Override
+			public void onEvent(Event event) {
+				cachedPackMap = null;
+				cachedAtlas = null;
+			}
+		});
 	}
 
 	@Override
@@ -129,14 +143,18 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 			instanceStream.close();
 			
 			// Sprites
-			final PackMap packMap = PackMap.packSprites(project.getSprites(), 1);
+			final PackMap packMap = cachedPackMap != null ? cachedPackMap : PackMap.packSprites(project.getSprites(), 1);
+			cachedPackMap = packMap;
+			
 			if(packMap != null) {
 				// Image
 				final DataHandler<BufferedImage> imageDataHandler = getHandler(BufferedImage.class);
 
 				final FileOutputStream imageOutputStream = new FileOutputStream(new File(file, ProjectDataHandler.IMAGE_FILE_NAME));
 				try {
-					imageDataHandler.write(packMap.renderImage(), imageOutputStream);
+					final BufferedImage image = cachedAtlas != null ? cachedAtlas : packMap.renderImage();
+					cachedAtlas = image;
+					imageDataHandler.write(image, imageOutputStream);
 				} finally {
 					imageOutputStream.close();
 				}
