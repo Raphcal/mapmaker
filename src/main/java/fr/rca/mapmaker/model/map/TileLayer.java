@@ -3,6 +3,7 @@ package fr.rca.mapmaker.model.map;
 import fr.rca.mapmaker.model.HasPropertyChangeListeners;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.LayerChangeListener;
+import fr.rca.mapmaker.model.MMath;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -148,11 +149,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 */
 	@Override
 	public int getTile(int x, int y) {
-		if(x >= 0 && x < width && y >= 0 && y < height) {
-			return tiles[y * width + x];
-		} else {
-			return -1;
-		}
+		return tiles[MMath.mod(y, height) * width + MMath.mod(x, width)];
 	}
 	
 	/**
@@ -163,7 +160,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 */
 	@Override
 	public int getTile(Point p) {
-		return tiles[p.y * width + p.x];
+		return getTile(p.x, p.y);
 	}
 	
 	/**
