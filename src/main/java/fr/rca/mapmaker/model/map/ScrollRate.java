@@ -58,4 +58,5 @@ public class ScrollRate {
 		this.y = y;
 		propertyChangeSupport.firePropertyChange("y", oldY, y);
 	}
+	
 }

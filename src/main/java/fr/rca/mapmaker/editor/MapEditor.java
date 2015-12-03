@@ -1215,17 +1215,14 @@ private void quitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 private void addLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addLayerButtonActionPerformed
 	final TileMap tileMap = project.getCurrentMap();
 	
-	final TileLayerPropertiesDialog dialog = new TileLayerPropertiesDialog("Calque " + (tileMap.getSize() + 1), this, true);
+	final TileLayerPropertiesDialog dialog = new TileLayerPropertiesDialog("Calque " + (tileMap.getSize() + 1), tileMap, this, true);
 	dialog.setTitle(LANGUAGE.getString("dialog.layer.title.new"));
 	dialog.setVisible(true);
 	
 	if(dialog.hasBeenConfirmed()) {
 		final LayerProperties properties = dialog.getLayerProperties();
 		
-		final int width = (int) (tileMap.getWidth() * Math.max(properties.getScrollRate().getX(), 1.0f));
-		final int height = (int) (tileMap.getHeight() * Math.max(properties.getScrollRate().getY(), 1.0f));
-		
-		final TileLayer tileLayer = new TileLayer(width, height);
+		final TileLayer tileLayer = new TileLayer(properties.getWidth(), properties.getHeight());
 		tileLayer.setScrollRate(properties.getScrollRate());
 		tileLayer.setName(properties.getName());
 		tileMap.add(tileLayer);
@@ -1251,13 +1248,9 @@ private void editLayerMenuItemActionPerformed(java.awt.event.ActionEvent evt) {/
 	
 	if(dialog.hasBeenConfirmed()) {
 		final LayerProperties properties = dialog.getLayerProperties();
-		final TileMap tileMap = project.getCurrentMap();
-		
-		final int width = (int) (tileMap.getWidth() * Math.max(properties.getScrollRate().getX(), 1.0f));
-		final int height = (int) (tileMap.getHeight() * Math.max(properties.getScrollRate().getY(), 1.0f));
 		
 		selectedLayer.setScrollRate(properties.getScrollRate());
-		selectedLayer.resize(width, height);
+		selectedLayer.resize(properties.getWidth(), properties.getHeight());
 		selectedLayer.setName(properties.getName());
 		
 		repaintMapGrid();

@@ -32,10 +32,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -98,10 +101,8 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		
 		file.mkdir();
 		
-		// Suppression des fichiers existants
-		for(final File child : file.listFiles()) {
-			child.delete();
-		}
+		final HashSet<File> files = new HashSet<File>(Arrays.asList(file.listFiles()));
+		
 		progress(WRITE_ELEMENT_PROGRESS, progressListener);
 		
 		// Écriture des nouveaux fichiers
@@ -119,7 +120,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		
 		try {
 			// Palettes
-			write(project.getPalettes(), file, PALETTE_FILE_FORMAT, palettes, getHandler(Palette.class));
+			write(project.getPalettes(), file, files, PALETTE_FILE_FORMAT, palettes, getHandler(Palette.class));
 			int progress = progress(WRITE_ELEMENT_PROGRESS * 2, progressListener);
 
 			// Cartes
@@ -133,12 +134,12 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 				final String mapName =  String.format(MAP_FILE_FORMAT, tileMap.getIndex());
 				final String instancesName =  String.format(INSTANCES_FILE_FORMAT, tileMap.getIndex());
 				
-				writeMap(tileMap, file, mapName, tileMapHandler, map);
+				writeMap(tileMap, file, files, mapName, tileMapHandler, map);
 				progress = progress(progress + WRITE_ELEMENT_PROGRESS / size, progressListener);
 				
 				// Instances
 				final List<Instance> instances = project.getAllInstances().get(index);
-				writeInstances(instances, file, instancesName, instanceHandler, map);
+				writeInstances(instances, file, files, instancesName, instanceHandler, map);
 				progress = progress(progress + WRITE_ELEMENT_PROGRESS / size, progressListener);
 				
 				maps.add(map);
@@ -146,16 +147,25 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			progress(WRITE_ELEMENT_PROGRESS * 4, progressListener);
 
 			// Sprites
-			write(project.getSprites(), file, SPRITE_FILE_FORMAT, sprites, getHandler(Sprite.class));
+			write(project.getSprites(), file, files, SPRITE_FILE_FORMAT, sprites, getHandler(Sprite.class));
 			progress(WRITE_ELEMENT_PROGRESS * 5, progressListener);
 			
 			// Informations générales
-			final OutputStream projectOutputStream = new FileOutputStream(new File(file, INFO_FILE));
+			final File infoFile = new File(file, INFO_FILE);
+			files.remove(infoFile);
+			
+			final OutputStream projectOutputStream = new FileOutputStream(infoFile);
 			try {
 				Plists.write(projectMap, projectOutputStream);
 			} finally {
 				projectOutputStream.close();
 			}
+			
+			// Suppression des fichiers restants
+			for (final File unusedFile : files) {
+				unusedFile.delete();
+			}
+			
 			progress(FULL_PROGRESS, progressListener);
 			
 		} catch(IOException e) {
@@ -163,10 +173,12 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		}
 	}
 
-	private <T> void write(List<T> objects, File parent, String format, final List<String> infoEntries, DataHandler<T> handler) throws IOException {
+	private <T> void write(List<T> objects, File parent, Set<File> files, String format, final List<String> infoEntries, DataHandler<T> handler) throws IOException {
 		for(int index = 0; index < objects.size(); index++) {
 			final String name = String.format(format, index);
-			final OutputStream outputStream = new FileOutputStream(new File(parent, name));
+			final File file = new File(parent, name);
+			files.remove(file);
+			final OutputStream outputStream = new FileOutputStream(file);
 			try {
 				handler.write(objects.get(index), outputStream);
 				infoEntries.add(name);
@@ -176,9 +188,11 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		}
 	}
 	
-	private void writeMap(TileMap tileMap, File parent, final String mapName, final DataHandler<TileMap> tileMapHandler, final Map<String, Object> map) throws IOException, FileNotFoundException {
+	private void writeMap(TileMap tileMap, File parent, Set<File> files, final String mapName, final DataHandler<TileMap> tileMapHandler, final Map<String, Object> map) throws IOException, FileNotFoundException {
 		// Carte
-		final OutputStream mapOutputStream = new FileOutputStream(new File(parent, mapName));
+		final File file = new File(parent, mapName);
+		files.remove(file);
+		final OutputStream mapOutputStream = new FileOutputStream(file);
 		try {
 			tileMapHandler.write(tileMap, mapOutputStream);
 			map.put(MAP, mapName);
@@ -188,8 +202,10 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		}
 	}
 	
-	private void writeInstances(final List<Instance> instances, File parent, final String instancesName, final DataHandler<Instance> instanceHandler, final Map<String, Object> map) throws FileNotFoundException, IOException {
-		final OutputStream instancesOutputStream = new FileOutputStream(new File(parent, instancesName));
+	private void writeInstances(final List<Instance> instances, File parent, Set<File> files, final String instancesName, final DataHandler<Instance> instanceHandler, final Map<String, Object> map) throws FileNotFoundException, IOException {
+		final File file = new File(parent, instancesName);
+		files.remove(file);
+		final OutputStream instancesOutputStream = new FileOutputStream(file);
 		try {
 			Streams.write(instances.size(), instancesOutputStream);
 			for(Instance instance : instances) {

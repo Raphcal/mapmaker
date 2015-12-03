@@ -63,8 +63,8 @@ public abstract class AbstractLayerPainter extends JComponent {
 		final int startY = (int) ((clipBounds.y * layer.getScrollRate().getY()) / tileSize);
 		
 		// Coordonnées du dernier point à afficher.
-		final int maxX = Math.min((int) Math.ceil((double) (clipBounds.x + clipBounds.width) / tileSize), layer.getWidth());
-		final int maxY = Math.min((int) Math.ceil((double) (clipBounds.y + clipBounds.height) / tileSize), layer.getHeight());
+		final int maxX = (int) Math.ceil((double) (clipBounds.x + clipBounds.width) / tileSize);
+		final int maxY = (int) Math.ceil((double) (clipBounds.y + clipBounds.height) / tileSize);
 		
 		// Décalage entre chaque tuile
 		final int spaceX = tileSize + padding + padding;
