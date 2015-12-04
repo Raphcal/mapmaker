@@ -5,7 +5,7 @@
 	<key>version</key>
 	<integer>8</integer>
 	<key>next-map</key>
-	<integer>11</integer>
+	<integer>12</integer>
 	<key>palettes</key>
 	<array>
 		<string>palette0.pal</string>
@@ -82,6 +82,12 @@
 			<string>map10.ins</string>
 			<key>map</key>
 			<string>map10.map</string>
+		</dict>
+		<dict>
+			<key>instances</key>
+			<string>map11.ins</string>
+			<key>map</key>
+			<string>map11.map</string>
 		</dict>
 	</array>
 	<key>sprites</key>
