@@ -37,9 +37,10 @@ public class LayerDataHandler implements DataHandler<TileLayer>, HasVersion {
 	@Override
 	public TileLayer read(InputStream inputStream) throws IOException {
 		final DataHandler<ScrollRate> scrollRateHandler = format.getHandler(ScrollRate.class);
-		
+
+		// TODO: trouver comment identifier les versions 0 sans nom.
 		final String name;
-		if(version > 0) {
+		if(version >= 0) {
 			name = Streams.readString(inputStream);
 		} else {
 			name = "Sans nom";
