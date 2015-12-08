@@ -20,9 +20,7 @@ import javax.swing.ListCellRenderer;
  */
 public class TileMapListRenderer extends JComponent implements ListCellRenderer {
 	
-	private static final int TILE_SIZE = 6;
 	private static final int THUMBNAIL_SIZE = 72;
-	private static final int TILE_COUNT = THUMBNAIL_SIZE / TILE_SIZE;
 	
 	private static final int HORIZONTAL_PADDING = 16;
 	private static final int VERTICAL_PADDING = 10;
@@ -50,16 +48,25 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 		}
 		
 		final Palette palette = map.getPalette();
-
-		final int tilesX = Math.min(map.getWidth(), TILE_COUNT);
-		final int tilesY = Math.min(map.getHeight(), TILE_COUNT);
 		
-		final int width = tilesX * TILE_SIZE;
-		final int height = tilesY * TILE_SIZE;
+		final int tileSize;
+		if (map.getWidth() < map.getHeight()) {
+			tileSize = (int) Math.ceil(THUMBNAIL_SIZE / (double) map.getWidth());
+		} else {
+			tileSize = (int) Math.ceil(THUMBNAIL_SIZE / (double) map.getHeight());
+		}
+		
+		final int tileCount = THUMBNAIL_SIZE / tileSize;
+
+		final int tilesX = Math.min(map.getWidth(), tileCount);
+		final int tilesY = Math.min(map.getHeight(), tileCount);
+		
+		final int width = tilesX * tileSize;
+		final int height = tilesY * tileSize;
 		
 		final Point origin = new Point((clipBounds.width - width) / 2, (clipBounds.height - height) / 2);
 		
-		float ratio = (float)tilesX / TILE_COUNT;
+		float ratio = (float)tilesX / tileCount;
 		
 		DropShadows.drawShadow(new Rectangle(
 				origin.x - (int) (7.0f * ratio), origin.y - (int) (4.0f * ratio),
@@ -85,8 +92,8 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 				for(int y = 0; y < maxY; y++) {
 					for (int x = 0; x < maxX; x++) {
 						palette.paintTile(g, layer.getTile(x, y),
-							origin.x + x * TILE_SIZE,
-							origin.y + y * TILE_SIZE, TILE_SIZE);
+							origin.x + x * tileSize,
+							origin.y + y * tileSize, tileSize);
 					}
 				}
 			}
