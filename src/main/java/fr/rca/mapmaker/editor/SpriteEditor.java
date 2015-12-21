@@ -203,7 +203,7 @@ public class SpriteEditor extends javax.swing.JDialog {
                 if(editedSprite != null) {
                     final Animation animation = (Animation) value;
 
-                    if(editedSprite.contains(animation) && !editedSprite.get(animation.getName()).getAnglesWithValue().isEmpty()) {
+                    if(contains(sprite, animation) || contains(editedSprite, animation)) {
                         setFont(list.getFont().deriveFont(Font.BOLD));
                     } else {
                         setFont(list.getFont().deriveFont(Font.PLAIN));
@@ -212,6 +212,11 @@ public class SpriteEditor extends javax.swing.JDialog {
 
                 return this;
             }
+
+            private boolean contains(Sprite sprite, Animation animation) {
+                return sprite.contains(animation) && !sprite.get(animation.getName()).getAnglesWithValue().isEmpty();
+            }
+
         });
         animationComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -426,6 +431,10 @@ public class SpriteEditor extends javax.swing.JDialog {
 				}
 				
 				directionChooser.setAnglesWithValue(currentAnimation.getAnglesWithValue());
+				
+				final Animation animation = (Animation) animationComboBoxModel.getSelectedItem();
+				animationComboBoxModel.setSelectedItem(null);
+				animationComboBoxModel.setSelectedItem(animation);
 			}
 		});
 		editor.setVisible(true);
