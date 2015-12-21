@@ -62,49 +62,43 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 			for(Animation defaultAnimation : defaultAnimations) {
 				final Animation animation = sprite.get(defaultAnimation.getName());
 
-				Streams.write(animation != null, outputStream);
+				Streams.write(animation.getName(), outputStream);
+				Streams.write(animation.getFrequency(), outputStream);
+				Streams.write(animation.isLooping(), outputStream);
 
-				if(animation != null) {
-					Streams.write(animation.getName(), outputStream);
-					Streams.write(animation.getFrequency(), outputStream);
-					Streams.write(animation.isLooping(), outputStream);
+				final Set<Double> directions = animation.getAnglesWithValue();
+				Streams.write(directions.size(), outputStream);
 
-					final Set<Double> directions = animation.getAnglesWithValue();
-					Streams.write(directions.size(), outputStream);
+				for(final double direction : directions) {
+					Streams.write(direction, outputStream);
 
-					for(final double direction : directions) {
-						Streams.write(direction, outputStream);
+					final List<TileLayer> frames = animation.getFrames(direction);
+					Streams.write(frames.size(), outputStream);
 
-						final List<TileLayer> frames = animation.getFrames(direction);
-						Streams.write(frames.size(), outputStream);
+					for(final TileLayer frame : frames) {
+						Point point = t.getPoint(maps.get(frame));
 
-						for(final TileLayer frame : frames) {
-							Point point = t.getPoint(maps.get(frame));
-							
-							if (point == null) {
-								LOGGER.warn("Frame " + frame + " non trouvée dans PackMap.");
-								point = new Point();
+						if (point == null) {
+							LOGGER.warn("Frame " + frame + " non trouvée dans PackMap.");
+							point = new Point();
+						}
+
+						Streams.write(point.x, outputStream);
+						Streams.write(point.y, outputStream);
+						Streams.write(frame.getWidth(), outputStream);
+						Streams.write(frame.getHeight(), outputStream);
+
+						if (version >= InternalFormat.VERSION_8) {
+							final LayerPlugin plugin = frame.getPlugin();
+							final Rectangle hitbox;
+							if (plugin instanceof HitboxLayerPlugin) {
+								hitbox = ((HitboxLayerPlugin) plugin).getHitbox();
+							} else {
+								hitbox = null;
 							}
-							
-							Streams.write(point.x, outputStream);
-							Streams.write(point.y, outputStream);
-							Streams.write(frame.getWidth(), outputStream);
-							Streams.write(frame.getHeight(), outputStream);
-							
-							if (version >= InternalFormat.VERSION_8) {
-								final LayerPlugin plugin = frame.getPlugin();
-								final Rectangle hitbox;
-								if (plugin instanceof HitboxLayerPlugin) {
-									hitbox = ((HitboxLayerPlugin) plugin).getHitbox();
-								} else {
-									hitbox = null;
-								}
-								rectangleHandler.write(hitbox, outputStream);
-							}
+							rectangleHandler.write(hitbox, outputStream);
 						}
 					}
-				} else {
-					LOGGER.warn("Animation '" + defaultAnimation + "' vide pour le sprite '" + sprite + "'.");
 				}
 			}
 		}

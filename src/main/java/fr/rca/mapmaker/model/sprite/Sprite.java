@@ -8,6 +8,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -87,6 +88,7 @@ public class Sprite {
 		return animations.contains(animation);
 	}
 	
+	@NotNull
 	public Animation get(String name) {
 		Animation animation = findByName(name);
 		if(animation == null) {

@@ -29,6 +29,8 @@ public class Animation {
 	public static final String ATTACK = "attack";
 	public static final String HURT = "hurt";
 	public static final String DIE = "die";
+	public static final String SKID = "skid";
+	public static final String SHAKY = "shaky";
 	
 	private String name;
 	private int frequency;
@@ -161,8 +163,10 @@ public class Animation {
 			new Animation(STAND),
 			new Animation(WALK),
 			new Animation(RUN),
+			new Animation(SKID),
 			new Animation(JUMP),
 			new Animation(FALL),
+			new Animation(SHAKY),
 			new Animation(BOUNCE),
 			new Animation(DUCK),
 			new Animation(RAISE),
