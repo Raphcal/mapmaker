@@ -17,8 +17,8 @@ public class VariableDeclarationParser {
 	
 	static {
 		final Map<String, Double> map = new HashMap<String, Double>();
-		map.put("LeftDirection", 0.0);
-		map.put("RightDirection", 1.0);
+		map.put("leftdirection", 0.0);
+		map.put("rightdirection", 1.0);
 		
 		DIRECTIONS = map;
 	}
@@ -34,13 +34,17 @@ public class VariableDeclarationParser {
 	 * @return  
 	 */
 	public static Operation parse(String script) {
+		if (script == null || script.trim().isEmpty()) {
+			return new Operation();
+		}
+		
 		final List<Instruction> instructions = new ArrayList<Instruction>();
 		
 		for(final String line : script.split("\n")) {
 			final int affectationIndex = line.indexOf('=');
 			if(affectationIndex > -1) {
 				final String left = line.substring(0, affectationIndex).trim().toLowerCase();
-				final String right = line.substring(affectationIndex + 1).trim();
+				final String right = line.substring(affectationIndex + 1).trim().toLowerCase();
 				
 				if("sprite.direction".equals(left)) {
 					final Double direction = DIRECTIONS.get(right);
@@ -73,20 +77,4 @@ public class VariableDeclarationParser {
 		return new Operation(instructions);
 	}
 	
-	public static boolean isFacingRight(String script) {
-		if(script == null) {
-			return true;
-		}
-		
-		final Operation operation = parse(script);
-		
-		Instruction previousInstruction = null;
-		for(final Instruction instruction : operation.getInstructions()) {
-			if(instruction instanceof SpriteDirection && previousInstruction instanceof Constant) {
-				return ((Constant) previousInstruction).getValue() == 1;
-			}
-			previousInstruction = instruction;
-		}
-		return true;
-	}
 }

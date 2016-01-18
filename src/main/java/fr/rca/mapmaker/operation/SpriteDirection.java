@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.operation;
 
+import fr.rca.mapmaker.model.sprite.Direction;
 import java.util.Deque;
 
 /**
@@ -9,8 +10,8 @@ import java.util.Deque;
 public class SpriteDirection implements Instruction {
 
 	@Override
-	public void execute(double x, Deque<Double> stack) {
-		throw new UnsupportedOperationException("Not supported.");
+	public void execute(double x, Deque<Double> stack, fr.rca.mapmaker.model.sprite.Instance instance) {
+		instance.setDirection(Direction.from(stack.pop()));
 	}
 
 	@Override

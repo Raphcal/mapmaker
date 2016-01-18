@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.operation;
 
+import fr.rca.mapmaker.model.sprite.Instance;
 import java.util.Deque;
 
 /**
@@ -18,8 +19,8 @@ public class SpriteVariable implements Instruction {
 	}
 	
 	@Override
-	public void execute(double x, Deque<Double> stack) {
-		throw new UnsupportedOperationException("Not supported.");
+	public void execute(double x, Deque<Double> stack, Instance instance) {
+		instance.getVariables().put(name, stack.pop());
 	}
 
 	public String getName() {

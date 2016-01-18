@@ -8,7 +8,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JComponent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -25,7 +28,11 @@ public class Instance extends JComponent {
 	private boolean unique;
 	
 	private double zoom = 1.0;
+	
+	private Direction direction = Direction.RIGHT;
 
+	private final Map<String, Double> variables = new HashMap<String, Double>();
+	
 	/**
 	 * Script d'initialisation de l'instance. 
 	 * <p/>
@@ -49,6 +56,65 @@ public class Instance extends JComponent {
 		this.unique = unique;
 		this.script = script;
 		updateSprite();
+	}
+	
+	private void updateSprite() {
+		final Sprite sprite = getSprite();
+		
+		final TileLayer defaultLayer;
+		if(sprite != null) {
+			updateBounds();
+			defaultLayer = sprite.getDefaultLayer();
+			
+		} else {
+			defaultLayer = null;
+		}
+		
+		final ImageRenderer renderer = new ImageRenderer();
+		if(sprite != null && defaultLayer != null) {
+			image = renderer.renderImage(defaultLayer, sprite.getPalette(), TILE_SIZE);
+		} else {
+			final int width = sprite != null ? sprite.getWidth(): 32;
+			final int height = sprite != null ? sprite.getHeight(): 32;
+			image = renderer.renderImage(width, height, TILE_SIZE);
+		}
+	}
+	
+	public void updateBounds() {
+		final Sprite sprite = getSprite();
+		
+		setPreferredSize(new Dimension((int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom)));
+		setBounds((int) (point.x * zoom), (int) (point.y * zoom), (int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom));
+	}
+	
+	public void previewTranslation(int x, int y) {
+		final Sprite sprite = getSprite();
+		
+		int translationX = (int) ((point.x + x) * zoom);
+		int translationY = (int) ((point.y + y) * zoom);
+		setBounds(translationX, translationY, (int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom));
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		final int width = (int) (image.getWidth() * zoom);
+		final int height = (int) (image.getHeight() * zoom);
+		
+		VariableDeclarationParser.parse(script).execute(this);
+		
+		if (direction == Direction.RIGHT) {
+			g.drawImage(image, 0, 0, width, height, null);
+		} else {
+			g.drawImage(image, width, 0, -width, height, null);
+		}
+	}
+	
+	/**
+	 * Met à jour le cache et demande un repaint.
+	 */
+	public void redraw() {
+		updateSprite();
+		repaint();
 	}
 
 	public int getIndex() {
@@ -106,14 +172,6 @@ public class Instance extends JComponent {
 		return (point.x + sprite.getWidth() / 2) + " x " + (point.y + sprite.getHeight() / 2);
 	}
 	
-	/**
-	 * Met à jour le cache et demande un repaint.
-	 */
-	public void redraw() {
-		updateSprite();
-		repaint();
-	}
-
 	public void setZoom(double zoom) {
 		this.zoom = zoom;
 		updateBounds();
@@ -128,6 +186,7 @@ public class Instance extends JComponent {
 		}
 	}
 
+	@Nullable
 	public String getScript() {
 		return script;
 	}
@@ -136,53 +195,19 @@ public class Instance extends JComponent {
 		this.script = script;
 		repaint();
 	}
-	
-	private void updateSprite() {
-		final Sprite sprite = getSprite();
-		
-		final TileLayer defaultLayer;
-		if(sprite != null) {
-			updateBounds();
-			defaultLayer = sprite.getDefaultLayer();
-			
-		} else {
-			defaultLayer = null;
-		}
-		
-		final ImageRenderer renderer = new ImageRenderer();
-		if(sprite != null && defaultLayer != null) {
-			image = renderer.renderImage(defaultLayer, sprite.getPalette(), TILE_SIZE);
-		} else {
-			final int width = sprite != null ? sprite.getWidth(): 32;
-			final int height = sprite != null ? sprite.getHeight(): 32;
-			image = renderer.renderImage(width, height, TILE_SIZE);
-		}
-	}
-	
-	public void updateBounds() {
-		final Sprite sprite = getSprite();
-		
-		setPreferredSize(new Dimension((int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom)));
-		setBounds((int) (point.x * zoom), (int) (point.y * zoom), (int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom));
-	}
-	
-	public void previewTranslation(int x, int y) {
-		final Sprite sprite = getSprite();
-		
-		int translationX = (int) ((point.x + x) * zoom);
-		int translationY = (int) ((point.y + y) * zoom);
-		setBounds(translationX, translationY, (int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom));
+
+	@NotNull
+	public Map<String, Double> getVariables() {
+		return variables;
 	}
 
-	@Override
-	protected void paintComponent(Graphics g) {
-		final int width = (int) (image.getWidth() * zoom);
-		final int height = (int) (image.getHeight() * zoom);
-		
-		if(VariableDeclarationParser.isFacingRight(script)) {
-			g.drawImage(image, 0, 0, width, height, null);
-		} else {
-			g.drawImage(image, width, 0, -width, height, null);
-		}
+	@NotNull
+	public Direction getDirection() {
+		return direction;
 	}
+
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+	}
+	
 }

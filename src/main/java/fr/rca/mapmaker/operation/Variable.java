@@ -11,7 +11,7 @@ import java.util.Deque;
 public class Variable implements Instruction {
 	
 	@Override
-	public void execute(double x, Deque<Double> stack) {
+	public void execute(double x, Deque<Double> stack, fr.rca.mapmaker.model.sprite.Instance instance) {
 		stack.push(x);
 	}
 

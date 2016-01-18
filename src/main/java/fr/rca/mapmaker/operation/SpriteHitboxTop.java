@@ -9,7 +9,7 @@ import java.util.Deque;
 public class SpriteHitboxTop implements Instruction {
 	
 	@Override
-	public void execute(double x, Deque<Double> stack) {
+	public void execute(double x, Deque<Double> stack, fr.rca.mapmaker.model.sprite.Instance instance) {
 		throw new UnsupportedOperationException("Not supported.");
 	}
 

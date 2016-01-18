@@ -15,7 +15,7 @@ public class Divide implements Operator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Divide.class);
 
 	@Override
-	public void execute(double x, Deque<Double> stack) {
+	public void execute(double x, Deque<Double> stack, fr.rca.mapmaker.model.sprite.Instance instance) {
 		final Double o2 = stack.pop();
 		final Double o1 = stack.pop();
 		

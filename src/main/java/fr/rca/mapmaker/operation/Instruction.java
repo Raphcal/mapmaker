@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.operation;
 
+import fr.rca.mapmaker.model.sprite.Instance;
 import java.io.Serializable;
 import java.util.Deque;
 
@@ -16,8 +17,9 @@ public interface Instruction extends Serializable {
 	 * 
 	 * @param x Valeur de x.
 	 * @param stack Pile d'exécution.
+	 * @param instance Instance à modifier.
 	 */
-	void execute(double x, Deque<Double> stack);
+	void execute(double x, Deque<Double> stack, Instance instance);
 	
 	ByteCode toByteCode();
 }

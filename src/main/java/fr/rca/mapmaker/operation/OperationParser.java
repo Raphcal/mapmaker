@@ -2,6 +2,8 @@ package fr.rca.mapmaker.operation;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Instancie des objets {@link Operation} à partir de leur représentation
@@ -83,11 +85,13 @@ public final class OperationParser {
 	 * @param operation Opération sous forme de texte.
 	 * @return Un objet {@link Operation}.
 	 */
-	public static Operation parse(String operation) {
+	public static @NotNull Operation parse(@Nullable String operation) {
+		if (operation == null || operation.trim().isEmpty()) {
+			return new Operation();
+		}
+		
 		final List<Instruction> instructions = new ArrayList<Instruction>();
-		
 		parse(operation, 0, null, instructions);
-		
 		return new Operation(instructions);
 	}
 	
