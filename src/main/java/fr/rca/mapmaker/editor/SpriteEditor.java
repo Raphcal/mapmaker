@@ -113,6 +113,23 @@ public class SpriteEditor extends javax.swing.JDialog {
 		}
 	}
 	
+	public boolean isAnimationScrolling() {
+		if(currentAnimation != null) {
+			animationPreview.setScroll(currentAnimation.isScrolling());
+			return currentAnimation.isScrolling();
+		} else {
+			return false;
+		}
+	}
+	
+	public void setAnimationScrolling(boolean scrolling) {
+		if(currentAnimation != null) {
+			final boolean oldScrolling = currentAnimation.isScrolling();
+			currentAnimation.setScrolling(scrolling);
+			firePropertyChange("animationScrolling", oldScrolling, scrolling);
+		}
+	}
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -148,6 +165,7 @@ public class SpriteEditor extends javax.swing.JDialog {
         autoRotateButton = new javax.swing.JButton();
         copyButton = new javax.swing.JButton();
         pasteButton = new javax.swing.JButton();
+        scrollCheckBox = new javax.swing.JCheckBox();
 
         setTitle("Sprite");
 
@@ -301,6 +319,11 @@ public class SpriteEditor extends javax.swing.JDialog {
             }
         });
 
+        scrollCheckBox.setText("Défilement");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${animationScrolling}"), scrollCheckBox, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -356,6 +379,8 @@ public class SpriteEditor extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(loopCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrollCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -387,7 +412,9 @@ public class SpriteEditor extends javax.swing.JDialog {
                             .addComponent(frequencyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(directionChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(loopCheckBox)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(loopCheckBox)
+                    .addComponent(scrollCheckBox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gridScrollPane)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -523,6 +550,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 	private void animationChanged() {
 		final int oldFrequency = getCurrentFrequency();
 		final boolean oldLooping = isAnimationLooping();
+		final boolean oldScrolling = isAnimationScrolling();
 		
 		updateAnimation();
 		
@@ -536,6 +564,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 		
 		firePropertyChange("currentFrequency", oldFrequency, getCurrentFrequency());
 		firePropertyChange("animationLooping", oldLooping, isAnimationLooping());
+		firePropertyChange("animationScrolling", oldScrolling, isAnimationScrolling());
 	}
 	
 	public void addActionListener(ActionListener listener) {
@@ -569,6 +598,7 @@ public class SpriteEditor extends javax.swing.JDialog {
     private javax.swing.JCheckBox loopCheckBox;
     private javax.swing.JButton okButton;
     private javax.swing.JButton pasteButton;
+    private javax.swing.JCheckBox scrollCheckBox;
     private javax.swing.JLabel sizeByLabel;
     private javax.swing.JLabel sizeLabel;
     private fr.rca.mapmaker.model.sprite.Sprite sprite;

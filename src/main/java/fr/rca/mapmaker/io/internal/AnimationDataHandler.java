@@ -42,6 +42,9 @@ public class AnimationDataHandler implements DataHandler<Animation>, HasVersion 
 		if(version >= InternalFormat.VERSION_4) {
 			Streams.write(t.isLooping(), outputStream);
 		}
+		if(version >= InternalFormat.VERSION_9) {
+			Streams.write(t.isScrolling(), outputStream);
+		}
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
 		final DataHandler<Rectangle> rectangleHandler = format.getHandler(Rectangle.class);
@@ -81,6 +84,9 @@ public class AnimationDataHandler implements DataHandler<Animation>, HasVersion 
 		animation.setFrequency(Streams.readInt(inputStream));
 		if(version >= InternalFormat.VERSION_4) {
 			animation.setLooping(Streams.readBoolean(inputStream));
+		}
+		if(version >= InternalFormat.VERSION_9) {
+			animation.setScrolling(Streams.readBoolean(inputStream));
 		}
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);

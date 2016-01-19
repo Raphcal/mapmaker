@@ -36,6 +36,7 @@ public class Animation {
 	private int frequency;
 	private Map<Double, List<TileLayer>> frames;
 	private boolean looping;
+	private boolean scrolling;
 
 	public Animation() {
 		this(null);
@@ -57,6 +58,7 @@ public class Animation {
 		copy.name = name;
 		copy.frequency = frequency;
 		copy.looping = looping;
+		copy.scrolling = scrolling;
 		
 		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
 			final List<TileLayer> layersCopy = new ArrayList<TileLayer>();
@@ -135,6 +137,14 @@ public class Animation {
 
 	public void setLooping(boolean looping) {
 		this.looping = looping;
+	}
+
+	public boolean isScrolling() {
+		return scrolling;
+	}
+
+	public void setScrolling(boolean scrolling) {
+		this.scrolling = scrolling;
 	}
 
 	public Set<Double> getAnglesWithValue() {

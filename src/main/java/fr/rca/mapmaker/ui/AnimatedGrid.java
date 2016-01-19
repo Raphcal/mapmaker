@@ -1,7 +1,5 @@
 package fr.rca.mapmaker.ui;
 
-import fr.rca.mapmaker.model.HasSizeChangeListeners;
-import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
@@ -31,12 +29,10 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	private Timer timer;
 	private int frequency = 24;
+	private boolean scroll;
 	
 	private int frameWidth = 32;
 	private int frameHeight = 32;
-	
-	private HasSizeChangeListeners sizeListenerParent;
-	private SizeChangeListener sizeListener;
 	
 	/**
 	 * Niveau de zoom des carreaux.
@@ -85,16 +81,9 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	public void setFrames(List<L> frames) {
 		this.frames = frames;
-		
-		if(sizeListenerParent != null && sizeListener != null) {
-			sizeListenerParent.removeSizeChangeListener(sizeListener);
-			sizeListenerParent = null;
-			sizeListener = null;
-		}
-		
 		repaint();
 	}
-
+	
 	public void setPalette(Palette palette) {
 		this.palette = palette;
 	}
@@ -133,6 +122,14 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 		this.frameHeight = frameHeight;
 		updateSize();
 	}
+
+	public void setScroll(boolean scroll) {
+		this.scroll = scroll;
+	}
+
+	public boolean isScroll() {
+		return scroll;
+	}
 	
 	private void updateSize() {
 		final Dimension dimension = new Dimension((int) (frameWidth * zoom), (int) (frameHeight * zoom));
@@ -142,7 +139,7 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	public void nextFrame() {
 		if(!frames.isEmpty()) {
-			index = (index + 1) % frames.size();
+			index = (index + 1) % frameCount();
 			repaint();
 		}
 	}
@@ -157,17 +154,37 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 		g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 		
 		// Étape d'animation
-		if(index >= 0 && index < frames.size()) {
-			final Layer layer = frames.get(index);
+		if(index >= 0 && index < frameCount()) {
+			if (!scroll) {
+				final Layer layer = frames.get(index);
 
-			for(int y = 0; y < layer.getHeight(); y++) {
-				for(int x = 0; x < layer.getWidth(); x++) {
-					palette.paintTile(g, layer.getTile(x, y), (int) (x * zoom), (int) (y * zoom), (int) zoom);
+				for(int y = 0; y < layer.getHeight(); y++) {
+					for(int x = 0; x < layer.getWidth(); x++) {
+						palette.paintTile(g, layer.getTile(x, y), (int) (x * zoom), (int) (y * zoom), (int) zoom);
+					}
+				}
+			} else {
+				final Layer layer = frames.get(0);
+				
+				for(int y = 0; y < frameHeight; y++) {
+					final int frameY = frames.get(0).getHeight() - frameHeight - index + y;
+					for(int x = 0; x < layer.getWidth(); x++) {
+						palette.paintTile(g, layer.getTile(x, frameY), (int) (x * zoom), (int) (y * zoom), (int) zoom);
+					}
 				}
 			}
 		}
 		
 		g.dispose();
+	}
+	
+	private int frameCount() {
+		if (scroll && !frames.isEmpty()) {
+			// TODO: Gérer le scrolling horizontal aussi.
+			return Math.max(frames.get(0).getHeight() - frameHeight, 1);
+		} else {
+			return frames.size();
+		}
 	}
 	
 }
