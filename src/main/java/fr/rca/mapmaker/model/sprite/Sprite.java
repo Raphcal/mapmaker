@@ -12,16 +12,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- *
+ * Définition d'un objet actif.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class Sprite {
+	
 	private String name;
 	private int type;
 	private ColorPalette palette;
 	private int width;
 	private int height;
 	private final Set<Animation> animations;
+	private Distance distance = Distance.BEHIND;
 	
 	/**
 	 * Script utilisé pour gérer le mouvement de ce type de sprite.
@@ -53,12 +56,13 @@ public class Sprite {
 		this.animations = animations;
 	}
 
-	public Sprite(String name, int width, int height, int type, String loadScript, String scriptFile, Set<Animation> animations) {
+	public Sprite(String name, int width, int height, int type, Distance distance, String loadScript, String scriptFile, Set<Animation> animations) {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
 		this.name = name;
 		this.width = width;
 		this.height = height;
 		this.type = type;
+		this.distance = distance;
 		this.loadScript = loadScript;
 		this.scriptFile = scriptFile;
 		this.animations = animations;
@@ -203,6 +207,14 @@ public class Sprite {
 
 	public void setLoadScript(String loadScript) {
 		this.loadScript = loadScript;
+	}
+
+	public Distance getDistance() {
+		return distance;
+	}
+
+	public void setDistance(Distance distance) {
+		this.distance = distance;
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener pl) {

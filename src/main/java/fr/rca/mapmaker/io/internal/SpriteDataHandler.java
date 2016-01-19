@@ -5,6 +5,7 @@ import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.sprite.Animation;
+import fr.rca.mapmaker.model.sprite.Distance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,10 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		Streams.write(t.getHeight(), outputStream);
 		Streams.write(t.getType(), outputStream);
 		
+		if (version >= InternalFormat.VERSION_9) {
+			Streams.write(t.getDistance().ordinal(), outputStream);
+		}
+		
 		// Script
 		Streams.writeNullable(t.getLoadScript(), outputStream);
 		Streams.writeNullable(t.getScriptFile(), outputStream);
@@ -58,6 +63,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		final String name;
 		final int width, height;
 		final int type;
+		final Distance distance;
 		final String loadScript;
 		final String scriptFile;
 		
@@ -66,6 +72,11 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			width = Streams.readInt(inputStream);
 			height = Streams.readInt(inputStream);
 			type = Streams.readInt(inputStream);
+			if (version >= InternalFormat.VERSION_9) {
+				distance = Distance.values()[Streams.readInt(inputStream)];
+			} else {
+				distance = Distance.BEHIND;
+			}
 			loadScript = Streams.readNullableString(inputStream);
 			scriptFile = Streams.readNullableString(inputStream);
 			
@@ -74,6 +85,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			width = Streams.readInt(inputStream);
 			height = Streams.readInt(inputStream);
 			type = 0;
+			distance = Distance.BEHIND;
 			loadScript = null;
 			scriptFile = null;
 			
@@ -82,6 +94,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			width = Streams.readInt(inputStream);
 			height = width;
 			type = 0;
+			distance = Distance.BEHIND;
 			loadScript = null;
 			scriptFile = null;
 		}
@@ -95,7 +108,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			animations.add(animationHandler.read(inputStream));
 		}
 		
-		return new Sprite(name, width, height, type, loadScript, scriptFile, animations);
+		return new Sprite(name, width, height, type, distance, loadScript, scriptFile, animations);
 	}
 	
 }

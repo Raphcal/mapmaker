@@ -48,8 +48,9 @@ public class InternalFormat extends AbstractFormat {
 	public static final int VERSION_6 = 6;
 	public static final int VERSION_7 = 7;
 	public static final int VERSION_8 = 8;
+	public static final int VERSION_9 = 9;
 	
-	public static final int LAST_VERSION = VERSION_8;
+	public static final int LAST_VERSION = VERSION_9;
 	public static final String HEADER_LAST_VERSION = "MMK" + LAST_VERSION;
 			
 
