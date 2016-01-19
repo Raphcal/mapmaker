@@ -53,7 +53,7 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 			Streams.write(sprite.getWidth(), outputStream);
 			Streams.write(sprite.getHeight(), outputStream);
 			Streams.write(sprite.getType(), outputStream);
-			Streams.writeNullable(sprite.getLoadScript(), outputStream);
+			// INFO: Suppression du script de chargement.
 			Streams.writeNullable(sprite.getScriptFile(), outputStream);
 
 			final Animation[] defaultAnimations = Animation.getDefaultAnimations();

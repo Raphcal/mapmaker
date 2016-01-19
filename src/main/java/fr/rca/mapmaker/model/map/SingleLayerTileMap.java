@@ -86,11 +86,13 @@ public class SingleLayerTileMap implements Comparable<SingleLayerTileMap> {
 		if (layer == null) {
             return 0;
 		}
+		
+		final int[] primes = {3, 5, 7, 11, 13, 17, 31};
 
         int result = 1;
         for (int y = 0; y < layer.getHeight(); y++) {
 			for (int x = 0; x < layer.getWidth(); x++) {
-				result = 31 * result + layer.getTile(x, y);
+				result = primes[(y * layer.getWidth() + x) % primes.length] * result + layer.getTile(x, y);
 			}
 		}
 
