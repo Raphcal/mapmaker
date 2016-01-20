@@ -121,6 +121,7 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 		
 		if (frames != null && !frames.isEmpty()) {
 			Streams.write(1, outputStream);
+			Streams.write(0.0, outputStream);
 			
 			final TileLayer frame = frames.get(0);
 			final int height = sprite.getHeight();
