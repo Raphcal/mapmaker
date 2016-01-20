@@ -126,7 +126,7 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 			final TileLayer frame = frames.get(0);
 			final int height = sprite.getHeight();
 			
-			final int frameCount = Math.max(height - frame.getHeight(), 1);
+			final int frameCount = Math.max(frame.getHeight() - height, 1);
 			Streams.write(frameCount, outputStream);
 			
 			Point point = t.getPoint(maps.get(frame));
