@@ -123,8 +123,9 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 			Streams.write(1, outputStream);
 			
 			final TileLayer frame = frames.get(0);
+			final int height = sprite.getHeight();
 			
-			final int frameCount = Math.max(sprite.getHeight() - frame.getHeight(), 1);
+			final int frameCount = Math.max(height - frame.getHeight(), 1);
 			Streams.write(frameCount, outputStream);
 			
 			Point point = t.getPoint(maps.get(frame));
@@ -136,9 +137,9 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 			
 			for (int index = 0; index < frameCount; index++) {
 				Streams.write(point.x, outputStream);
-				Streams.write(point.y + frame.getHeight() - sprite.getHeight() - index, outputStream);
+				Streams.write(point.y + frame.getHeight() - height - index, outputStream);
 				Streams.write(frame.getWidth(), outputStream);
-				Streams.write(frame.getHeight(), outputStream);
+				Streams.write(height, outputStream);
 				
 				if (version >= InternalFormat.VERSION_8) {
 					// Hitbox non supporté.
