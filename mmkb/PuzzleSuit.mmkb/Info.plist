@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>version</key>
+	<integer>9</integer>
+	<key>next-map</key>
+	<integer>1</integer>
+	<key>palettes</key>
+	<array>
+		<string>palette0.pal</string>
+	</array>
+	<key>maps</key>
+	<array>
+		<dict>
+			<key>instances</key>
+			<string>map0.ins</string>
+			<key>map</key>
+			<string>map0.map</string>
+		</dict>
+	</array>
+	<key>sprites</key>
+	<array>
+		<string>sprite0.spr</string>
+		<string>sprite1.spr</string>
+		<string>sprite2.spr</string>
+		<string>sprite3.spr</string>
+	</array>
+</dict>
+</plist>
