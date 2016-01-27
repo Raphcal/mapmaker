@@ -106,17 +106,19 @@ public class SpriteInspector extends javax.swing.JDialog {
         scriptLabel = new javax.swing.JLabel();
         scriptTextField = new javax.swing.JTextField();
         hitboxSeparator1 = new javax.swing.JSeparator();
-        hitboxLabel = new javax.swing.JLabel();
-        hitboxLabel2 = new javax.swing.JLabel();
-        typeLabel1 = new javax.swing.JLabel();
+        generalLabel = new javax.swing.JLabel();
+        behaviorLabel = new javax.swing.JLabel();
+        nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         animatedGrid = new fr.rca.mapmaker.ui.AnimatedGrid<>();
-        hitboxLabel1 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        initializationScriptLabel = new javax.swing.JLabel();
+        initializationScriptScrollPane = new javax.swing.JScrollPane();
+        initializationScriptTextArea = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         distanceComboBox = new javax.swing.JComboBox<>();
+        exportableCheckBox = new javax.swing.JCheckBox();
+        exportableCheckBox.putClientProperty("JComponent.sizeVariant", "small");
 
         setTitle("Infos sur la tuile n°12");
         setBackground(new java.awt.Color(236, 236, 236));
@@ -147,31 +149,32 @@ public class SpriteInspector extends javax.swing.JDialog {
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.scriptFile}"), scriptTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        hitboxLabel.setFont(hitboxLabel.getFont().deriveFont(hitboxLabel.getFont().getSize()-1f));
-        hitboxLabel.setText("Général :");
+        generalLabel.setFont(generalLabel.getFont().deriveFont(generalLabel.getFont().getSize()-1f));
+        generalLabel.setText("Général :");
 
-        hitboxLabel2.setFont(hitboxLabel2.getFont().deriveFont(hitboxLabel2.getFont().getSize()-1f));
-        hitboxLabel2.setText("Comportement :");
+        behaviorLabel.setFont(behaviorLabel.getFont().deriveFont(behaviorLabel.getFont().getSize()-1f));
+        behaviorLabel.setText("Comportement :");
 
-        typeLabel1.setFont(typeLabel1.getFont().deriveFont(typeLabel1.getFont().getSize()-1f));
-        typeLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        typeLabel1.setText("Nom :");
-        typeLabel1.setToolTipText("");
+        nameLabel.setFont(nameLabel.getFont().deriveFont(nameLabel.getFont().getSize()-1f));
+        nameLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        nameLabel.setText("Nom :");
+        nameLabel.setToolTipText("");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.name}"), nameTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        hitboxLabel1.setFont(hitboxLabel1.getFont().deriveFont(hitboxLabel1.getFont().getSize()-1f));
-        hitboxLabel1.setText("Script d'initialisation :");
+        initializationScriptLabel.setFont(initializationScriptLabel.getFont().deriveFont(initializationScriptLabel.getFont().getSize()-1f));
+        initializationScriptLabel.setText("Script d'initialisation :");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
+        initializationScriptTextArea.setColumns(20);
+        initializationScriptTextArea.setRows(5);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.loadScript}"), jTextArea1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.loadScript}"), initializationScriptTextArea, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        jScrollPane2.setViewportView(jTextArea1);
+        initializationScriptScrollPane.setViewportView(initializationScriptTextArea);
 
+        jLabel1.setFont(jLabel1.getFont().deriveFont(jLabel1.getFont().getSize()-1f));
         jLabel1.setText("Distance :");
 
         distanceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Loin", "Moyen", "Proche" }));
@@ -181,14 +184,42 @@ public class SpriteInspector extends javax.swing.JDialog {
             }
         });
 
+        exportableCheckBox.setText("Exportable");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.exportable}"), exportableCheckBox, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(hitboxSeparator)
             .addComponent(hitboxSeparator1)
+            .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(scriptLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62)
+                        .addComponent(scriptTextField))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nameTextField))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(initializationScriptScrollPane)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(animatedGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(tileIndexLabel))
+                                    .addComponent(generalLabel)
+                                    .addComponent(behaviorLabel)
+                                    .addComponent(initializationScriptLabel))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(typeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -196,33 +227,11 @@ public class SpriteInspector extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(typeComboBox, 0, 216, Short.MAX_VALUE)
-                            .addComponent(distanceComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(scriptLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
-                        .addComponent(scriptTextField))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(typeLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nameTextField))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(animatedGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(tileIndexLabel))
-                                    .addComponent(hitboxLabel)
-                                    .addComponent(hitboxLabel2))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                            .addComponent(distanceComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
-            .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(hitboxLabel1)
+                .addGap(63, 63, 63)
+                .addComponent(exportableCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -235,10 +244,10 @@ public class SpriteInspector extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hitboxSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(hitboxLabel)
+                .addComponent(generalLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(typeLabel1)
+                    .addComponent(nameLabel)
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -248,9 +257,12 @@ public class SpriteInspector extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(distanceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addComponent(exportableCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hitboxSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(hitboxLabel2)
+                .addGap(0, 0, 0)
+                .addComponent(behaviorLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(scriptLabel)
@@ -258,9 +270,9 @@ public class SpriteInspector extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(hitboxLabel1)
+                .addComponent(initializationScriptLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
+                .addComponent(initializationScriptScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -279,23 +291,24 @@ public class SpriteInspector extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.rca.mapmaker.ui.AnimatedGrid<TileLayer> animatedGrid;
+    private javax.swing.JLabel behaviorLabel;
     private javax.swing.JComboBox<String> distanceComboBox;
-    private javax.swing.JLabel hitboxLabel;
-    private javax.swing.JLabel hitboxLabel1;
-    private javax.swing.JLabel hitboxLabel2;
+    private javax.swing.JCheckBox exportableCheckBox;
+    private javax.swing.JLabel generalLabel;
     private javax.swing.JSeparator hitboxSeparator;
     private javax.swing.JSeparator hitboxSeparator1;
+    private javax.swing.JLabel initializationScriptLabel;
+    private javax.swing.JScrollPane initializationScriptScrollPane;
+    private javax.swing.JTextArea initializationScriptTextArea;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JLabel scriptLabel;
     private javax.swing.JTextField scriptTextField;
     private javax.swing.JLabel tileIndexLabel;
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JLabel typeLabel;
-    private javax.swing.JLabel typeLabel1;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

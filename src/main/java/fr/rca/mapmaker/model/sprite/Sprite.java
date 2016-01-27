@@ -27,6 +27,11 @@ public class Sprite {
 	private Distance distance = Distance.BEHIND;
 	
 	/**
+	 * Défini si ce sprite sera inclus dans les exports MKZ.
+	 */
+	private boolean exportable;
+	
+	/**
 	 * Script utilisé pour gérer le mouvement de ce type de sprite.
 	 * Doit définir une méthode <code>Update(<i>delta</i>)</code>.
 	 */
@@ -56,13 +61,14 @@ public class Sprite {
 		this.animations = animations;
 	}
 
-	public Sprite(String name, int width, int height, int type, Distance distance, String loadScript, String scriptFile, Set<Animation> animations) {
+	public Sprite(String name, int width, int height, int type, Distance distance, boolean exportable, String loadScript, String scriptFile, Set<Animation> animations) {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
 		this.name = name;
 		this.width = width;
 		this.height = height;
 		this.type = type;
 		this.distance = distance;
+		this.exportable = exportable;
 		this.loadScript = loadScript;
 		this.scriptFile = scriptFile;
 		this.animations = animations;
@@ -215,6 +221,17 @@ public class Sprite {
 
 	public void setDistance(Distance distance) {
 		this.distance = distance;
+	}
+
+	public boolean isExportable() {
+		return exportable;
+	}
+
+	public void setExportable(boolean exportable) {
+		final boolean oldExportable = this.exportable;
+		this.exportable = exportable;
+		
+		propertyChangeSupport.firePropertyChange("exportable", oldExportable, exportable);
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener pl) {

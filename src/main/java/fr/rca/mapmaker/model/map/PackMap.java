@@ -5,6 +5,7 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -115,22 +116,12 @@ public class PackMap {
 	public static PackMap packSprites(Collection<Sprite> sprites, final int margin, final Double direction) {
 		final Map<TileLayer, SingleLayerTileMap> maps = new HashMap<TileLayer, SingleLayerTileMap>();
 		
+		final ArrayList<Sprite> exportedSprites = new ArrayList<Sprite>();
+		
 		for(final Sprite sprite : sprites) {
-			for(final Animation animation : sprite.getAnimations()) {
-				if (direction == null) {
-					for(final List<TileLayer> frames : animation.getFrames().values()) {
-						for(final TileLayer frame : frames) {
-							maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
-						}
-					}
-				} else {
-					final List<TileLayer> frames = animation.getFrames(direction);
-					if (frames != null) {
-						for(final TileLayer frame : frames) {
-							maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
-						}
-					}
-				}
+			if (sprite.isExportable()) {
+				exportedSprites.add(sprite);
+				addMapsOfSprite(sprite, direction, maps);
 			}
 		}
 		
@@ -140,6 +131,25 @@ public class PackMap {
 			result.sprites = sprites;
 		}
 		return result;
+	}
+
+	private static void addMapsOfSprite(final Sprite sprite, final Double direction, final Map<TileLayer, SingleLayerTileMap> maps) {
+		for(final Animation animation : sprite.getAnimations()) {
+			if (direction == null) {
+				for(final List<TileLayer> frames : animation.getFrames().values()) {
+					for(final TileLayer frame : frames) {
+						maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
+					}
+				}
+			} else {
+				final List<TileLayer> frames = animation.getFrames(direction);
+				if (frames != null) {
+					for(final TileLayer frame : frames) {
+						maps.put(frame, new SingleLayerTileMap(frame, sprite.getPalette()));
+					}
+				}
+			}
+		}
 	}
 	
 	/**

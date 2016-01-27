@@ -49,9 +49,10 @@ public class InternalFormat extends AbstractFormat {
 	public static final int VERSION_7 = 7;
 	public static final int VERSION_8 = 8;
 	public static final int VERSION_9 = 9;
+	public static final int VERSION_10 = 10;
 	
-	public static final int LAST_VERSION = VERSION_9;
-	public static final String HEADER_LAST_VERSION = "MMK" + LAST_VERSION;
+	public static final int LAST_VERSION = VERSION_10;
+	public static final String HEADER_LAST_VERSION = "MM" + LAST_VERSION;
 			
 
 	public InternalFormat() {
@@ -146,7 +147,9 @@ public class InternalFormat extends AbstractFormat {
 				final String header = readHeader(inputStream);
 				if(header.length() == HEADER_LENGTH && header.startsWith("MMK")) {
 					return header.charAt(3) - '0';
-				}
+				} else if(header.length() == HEADER_LENGTH && header.startsWith("MM")) {
+					return (header.charAt(2) - '0') * 10 + header.charAt(3) - '0';
+				} 
 			} finally {
 				inputStream.close();
 			}
