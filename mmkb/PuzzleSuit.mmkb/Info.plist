@@ -5,18 +5,19 @@
 	<key>version</key>
 	<integer>10</integer>
 	<key>next-map</key>
-	<integer>1</integer>
+	<integer>2</integer>
 	<key>palettes</key>
 	<array>
 		<string>palette0.pal</string>
+		<string>palette1.pal</string>
 	</array>
 	<key>maps</key>
 	<array>
 		<dict>
 			<key>instances</key>
-			<string>map0.ins</string>
+			<string>map1.ins</string>
 			<key>map</key>
-			<string>map0.map</string>
+			<string>map1.map</string>
 		</dict>
 	</array>
 	<key>sprites</key>
