@@ -5,7 +5,6 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -116,11 +115,8 @@ public class PackMap {
 	public static PackMap packSprites(Collection<Sprite> sprites, final int margin, final Double direction) {
 		final Map<TileLayer, SingleLayerTileMap> maps = new HashMap<TileLayer, SingleLayerTileMap>();
 		
-		final ArrayList<Sprite> exportedSprites = new ArrayList<Sprite>();
-		
 		for(final Sprite sprite : sprites) {
 			if (sprite.isExportable()) {
-				exportedSprites.add(sprite);
 				addMapsOfSprite(sprite, direction, maps);
 			}
 		}
