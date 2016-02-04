@@ -5,7 +5,7 @@
 	<key>version</key>
 	<integer>10</integer>
 	<key>next-map</key>
-	<integer>2</integer>
+	<integer>3</integer>
 	<key>palettes</key>
 	<array>
 		<string>palette0.pal</string>
@@ -19,6 +19,12 @@
 			<key>map</key>
 			<string>map1.map</string>
 		</dict>
+		<dict>
+			<key>instances</key>
+			<string>map2.ins</string>
+			<key>map</key>
+			<string>map2.map</string>
+		</dict>
 	</array>
 	<key>sprites</key>
 	<array>
@@ -30,6 +36,10 @@
 		<string>sprite5.spr</string>
 		<string>sprite6.spr</string>
 		<string>sprite7.spr</string>
+		<string>sprite8.spr</string>
+		<string>sprite9.spr</string>
+		<string>sprite10.spr</string>
+		<string>sprite11.spr</string>
 	</array>
 </dict>
 </plist>
