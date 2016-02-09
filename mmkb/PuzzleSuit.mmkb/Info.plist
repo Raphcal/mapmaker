@@ -15,12 +15,6 @@
 	<array>
 		<dict>
 			<key>instances</key>
-			<string>map1.ins</string>
-			<key>map</key>
-			<string>map1.map</string>
-		</dict>
-		<dict>
-			<key>instances</key>
 			<string>map2.ins</string>
 			<key>map</key>
 			<string>map2.map</string>
