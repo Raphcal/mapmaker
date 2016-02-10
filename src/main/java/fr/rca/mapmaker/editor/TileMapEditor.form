@@ -176,7 +176,6 @@
               <Component id="gridScrollPane" pref="488" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="2" attributes="0">
-                  <Component id="jScrollPane1" alignment="2" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="alphaPaletteGrid" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Component id="paletteGrid" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Component id="previewGrid" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -247,7 +246,7 @@
                           <Component id="zoomTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="zoomPercentLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="previousLayerButton" min="-2" max="-2" attributes="0"/>
                           <Component id="nextLayerButton" min="-2" max="-2" attributes="0"/>
@@ -259,7 +258,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="widthTextField" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="heightTextField" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="hitboxToggleButton" min="-2" max="-2" attributes="0"/>
@@ -269,9 +268,7 @@
                       <Component id="paletteGrid" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="alphaPaletteGrid" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="23" max="32767" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="35" max="32767" attributes="0"/>
                       <Component id="previewGrid" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="okButton" min="-2" max="-2" attributes="0"/>
@@ -739,25 +736,6 @@
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(replaceColorToggleButton, new ReplaceColorTool(drawGrid));"/>
       </AuxValues>
     </Component>
-    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
-      <AuxValues>
-        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-      </AuxValues>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JList" name="jList1">
-          <Properties>
-            <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-              <StringArray count="2">
-                <StringItem index="0" value="Layer"/>
-                <StringItem index="1" value="Mask"/>
-              </StringArray>
-            </Property>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
     <Component class="javax.swing.JToggleButton" name="treeToggleButton">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
