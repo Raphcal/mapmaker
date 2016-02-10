@@ -3,11 +3,19 @@ package fr.rca.mapmaker.model.map;
 import java.awt.Rectangle;
 
 /**
- *
+ * Couche basée sur un tableau de tuiles.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public interface DataLayer extends Layer {
+	
+	/**
+	 * Copie le contenu de la couche.
+	 * 
+	 * @return Une copie du contenu de la tuile.
+	 */
 	int[] copyData();
+	
 	/**
 	 * Met à jour tout ou partie de la couche.
 	 * 
@@ -15,6 +23,7 @@ public interface DataLayer extends Layer {
 	 * @param source Rectangle modifié.
 	 */
 	void restoreData(int[] tiles, Rectangle source);
+	
 	/**
 	 * Remplace les données et la taille de la couche.
 	 * 
@@ -31,4 +40,5 @@ public interface DataLayer extends Layer {
 	 * @param source Couche à copier.
 	 */
 	void restoreData(DataLayer source);
+	
 }

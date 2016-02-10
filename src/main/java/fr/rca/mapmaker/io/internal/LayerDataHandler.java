@@ -11,7 +11,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- *
+ * Gère la lecture et l'écriture de <code>TileLayer</code>.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class LayerDataHandler implements DataHandler<TileLayer>, HasVersion {
@@ -23,6 +24,9 @@ public class LayerDataHandler implements DataHandler<TileLayer>, HasVersion {
 		this.format = format;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void write(TileLayer t, OutputStream outputStream) throws IOException {
 		final DataHandler<ScrollRate> scrollRateHandler = format.getHandler(ScrollRate.class);
@@ -34,6 +38,9 @@ public class LayerDataHandler implements DataHandler<TileLayer>, HasVersion {
 		Streams.write(t.copyData(), outputStream);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TileLayer read(InputStream inputStream) throws IOException {
 		final DataHandler<ScrollRate> scrollRateHandler = format.getHandler(ScrollRate.class);
@@ -50,14 +57,16 @@ public class LayerDataHandler implements DataHandler<TileLayer>, HasVersion {
 		final ScrollRate scrollRate = scrollRateHandler.read(inputStream);
 		final int[] tiles = Streams.readIntArray(inputStream);
 		
-		final TileLayer layer = new TileLayer(width, height);
+		final TileLayer layer = new TileLayer(width, height, tiles);
 		layer.setName(name);
 		layer.setScrollRate(scrollRate);
-		layer.restoreData(tiles, null);
 		
 		return layer;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setVersion(int version) {
 		this.version = version;

@@ -119,10 +119,26 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 			System.arraycopy(data, (y + copySurface.y) * dimension.width + copySurface.x, tiles, y * width, Math.min(width, dimension.width - copySurface.x));
 		}
 	}
+	
+	/**
+	 * Créé une nouvelle couche à partir des informations données.
+	 * <p>
+	 * Attention, le tableau de tuiles donné est utilisé tel quel et n'est pas
+	 * copié.
+	 * 
+	 * @param width Largeur de la couche.
+	 * @param height Hauteur de la couche.
+	 * @param data Données de la couche.
+	 */
+	public TileLayer(int width, int height, int[] data) {
+		this.width = width;
+		this.height = height;
+		this.tiles = data;
+	}
 
 	private void copyTileLayerFields(TileLayer other) {
 		this.name = other.name;
-		this.plugin = ((TileLayer) other).getPluginCopy();
+		this.plugin = other.getPluginCopy();
 		
 		if (other.scrollRate != null) {
 			this.scrollRate = new ScrollRate(other.scrollRate);
