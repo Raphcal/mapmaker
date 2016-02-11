@@ -24,7 +24,9 @@ import fr.rca.mapmaker.io.FormatFileFilter;
 import fr.rca.mapmaker.io.HasProgress;
 import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
-import fr.rca.mapmaker.io.autodeploy.MeltedIceAutoDeploy;
+import fr.rca.mapmaker.io.autodeploy.AutoDeployer;
+import fr.rca.mapmaker.io.autodeploy.MeltedIceAutoDeployer;
+import fr.rca.mapmaker.io.autodeploy.PuzzleSuitAutoDeployer;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.SpanningTileLayer;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
@@ -54,6 +56,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.JFileChooser;
@@ -95,6 +98,18 @@ public class MapEditor extends javax.swing.JFrame {
 		refreshScrollMode();
 		
 		pasteSelectionTool = new PasteSelectionTool(mapGrid);
+		
+		// AutoDeployers
+		for (final AutoDeployer deployer : Arrays.asList(new MeltedIceAutoDeployer(), new PuzzleSuitAutoDeployer())) {
+			final JMenuItem deployerItem = new JMenuItem(deployer.getName());
+			deployerItem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					deployer.selectDeployTargetForProject(project, fileChooser, MapEditor.this);
+				}
+			});
+			autoDeployMenu.add(deployerItem);
+		}
 		
 		addWindowListener(new WindowAdapter() {
 
@@ -290,7 +305,6 @@ public class MapEditor extends javax.swing.JFrame {
         toolMenu = new javax.swing.JMenu();
         trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
         autoDeployMenu = new javax.swing.JMenu();
-        meltedIceAutoDeployMenuItem = new javax.swing.JMenuItem();
         gitMenu = new javax.swing.JMenu();
         initMenuItem = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator initSeparator = new javax.swing.JPopupMenu.Separator();
@@ -1047,15 +1061,6 @@ public class MapEditor extends javax.swing.JFrame {
         toolMenu.add(trajectoryPreviewMenuItem);
 
         autoDeployMenu.setText(LANGUAGE.getString("menu.tools.deploy")); // NOI18N
-
-        meltedIceAutoDeployMenuItem.setText("MeltedIce");
-        meltedIceAutoDeployMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                meltedIceAutoDeployMenuItemActionPerformed(evt);
-            }
-        });
-        autoDeployMenu.add(meltedIceAutoDeployMenuItem);
-
         toolMenu.add(autoDeployMenu);
 
         gitMenu.setText("Git");
@@ -1750,42 +1755,6 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_removeRowMenuItemActionPerformed
 
-    private void meltedIceAutoDeployMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_meltedIceAutoDeployMenuItemActionPerformed
-		fileChooser.setMultiSelectionEnabled(false);
-		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters()) {
-			fileChooser.removeChoosableFileFilter(fileFilter);
-		}
-		
-		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fileChooser.setFileFilter(new FileFilter() {
-
-			@Override
-			public boolean accept(File f) {
-				return MeltedIceAutoDeploy.accept(f);
-			}
-
-			@Override
-			public String getDescription() {
-				return "Dossier de MeltedIce";
-			}
-		});
-		
-		final int action = fileChooser.showSaveDialog(this);
-		if(action == JFileChooser.APPROVE_OPTION) {
-			meltedIceAutoDeploy(fileChooser.getSelectedFile());
-		}
-    }//GEN-LAST:event_meltedIceAutoDeployMenuItemActionPerformed
-
-	private void meltedIceAutoDeploy(final File destination) {
-		ProgressDialog.showFor(this, new SwingWorker<Void, Integer>() {
-			@Override
-			protected Void doInBackground() throws Exception {
-				MeltedIceAutoDeploy.deploy(project, destination);
-				return null;
-			}
-		}, null);
-	}
-	
     private void copy(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copy
 		final TileLayer source;
 		if(mapGrid.getOverlay().isEmpty()) {
@@ -1970,7 +1939,6 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPanel mapPanel;
     private javax.swing.JPopupMenu mapPopupMenu;
     private javax.swing.JScrollPane mapScrollPane;
-    private javax.swing.JMenuItem meltedIceAutoDeployMenuItem;
     private javax.swing.JButton moveMapBottomButton;
     private javax.swing.JButton moveMapUpButton;
     private javax.swing.JMenuItem multipleEditMenuItem;

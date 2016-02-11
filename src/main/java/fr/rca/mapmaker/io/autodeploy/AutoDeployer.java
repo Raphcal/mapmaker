@@ -1,10 +1,8 @@
 package fr.rca.mapmaker.io.autodeploy;
 
+import fr.rca.mapmaker.editor.ProgressDialog;
 import fr.rca.mapmaker.io.DataHandler;
-import fr.rca.mapmaker.io.Format;
-import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.io.common.Streams;
-import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.io.mkz.MKZFormat;
 import fr.rca.mapmaker.model.map.PackMap;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -21,19 +19,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.SwingWorker;
+import javax.swing.filechooser.FileFilter;
 
 /**
- *
+ * Classe abstraite pour l'écriture d'une classe de déploiement automatique.
+ * 
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
-public class MeltedIceAutoDeploy {
-	private static final String SOURCE_PATH = "/Users/daeke/Documents/Java/mapmaker/mmkb/MeltedIce.mmkb";
-	private static final String DEPLOY_PATH = "/Users/daeke/Documents/C#/MeltedIce";
-	private static final String MAPS_FOLDER = "maps";
-	private static final String SPRITES_FOLDER = "sprites";
+public abstract class AutoDeployer extends FileFilter {
 	
-	private static final String PROJECT_FILE = "MeltedIce.csproj";
 	private static final String PALETTE_IMAGE_EXTENSION = ".png";
 	private static final String PALETTE_EXTENSION = ".pal";
 	private static final String MAP_INSTANCES_EXTENSION = ".sprites";
@@ -41,52 +38,77 @@ public class MeltedIceAutoDeploy {
 	
 	private static final MKZFormat FORMAT = new MKZFormat();
 	
-	public static void main(String[] args) throws IOException {
-		final Project project = open(new File(SOURCE_PATH));
-		final File root = new File(DEPLOY_PATH);
-		
-		deploy(project, root);
-	}
+	/**
+	 * Renvoi le nom de l'auto-deployer.
+	 * 
+	 * @return Nom de l'auto-deployer.
+	 */
+	public abstract String getName();
 	
-	public static void deploy(Project project, File root) throws IOException {
-		final File mapsFolder = isCSharp(root) ? new File(root, MAPS_FOLDER) : root;
-		final File spritesFolder = isCSharp(root) ? new File(root, SPRITES_FOLDER) : root;
+	/**
+	 * Déploie le projet donné à l'emplacement donné.
+	 * 
+	 * @param project Projet à déployer.
+	 * @param root Emplacement où déployer.
+	 * @throws IOException En cas d'erreur lors du déploiement.
+	 */
+	public abstract void deployProjectInFolder(Project project, File root) throws IOException;
+	
+	/**
+	 * Demande l'emplacement où déployer le projet donné puis déploie en 
+	 * arrière-plan.
+	 * 
+	 * @param project Projet à déployer.
+	 * @param fileChooser Sélecteur de fichier.
+	 * @param parent Frame parente.
+	 */
+	public void selectDeployTargetForProject(final Project project, final JFileChooser fileChooser, final JFrame parent) {
+		fileChooser.setMultiSelectionEnabled(false);
+		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters()) {
+			fileChooser.removeChoosableFileFilter(fileFilter);
+		}
 		
-		FORMAT.setVersion(InternalFormat.LAST_VERSION);
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		fileChooser.setFileFilter(this);
 		
-		final List<String> contents = new ArrayList<String>();
-		
-		deploySprites(project.getSprites(), spritesFolder, contents);
-		deployPalettes(project.getPalettes(), mapsFolder, contents);
-		deployMaps(project.getMaps(), project, mapsFolder, contents);
-		
-		if(isCSharp(root)) {
-			try {
-				VSProjectWriter.write(project, root, contents, new FileOutputStream(new File(root, PROJECT_FILE)));
-			} catch (XMLStreamException ex) {
-				throw new IOException("Erreur lors de l'écriture du fichier de projet VisualStudio.", ex);
-			}
+		final int action = fileChooser.showSaveDialog(parent);
+		if(action == JFileChooser.APPROVE_OPTION) {
+			deployInBackground(project, fileChooser.getSelectedFile(), parent);
 		}
 	}
 	
-	public static boolean accept(File file) {
-		return isCSharp(file) || isSwift(file);
+	/**
+	 * Lance le déploiement en arrière-plan.
+	 * 
+	 * @param project
+	 * @param destination
+	 * @param parent 
+	 */
+	private void deployInBackground(final Project project, final File destination, final JFrame parent) {
+		ProgressDialog.showFor(parent, new SwingWorker<Void, Integer>() {
+			@Override
+			protected Void doInBackground() throws Exception {
+				deployProjectInFolder(project, destination);
+				return null;
+			}
+		}, null);
 	}
 	
-	private static boolean isCSharp(File file) {
-		final File mapsFolder = new File(file, MAPS_FOLDER);
-		final File spritesFolder = new File(file, SPRITES_FOLDER);
-		
-		return file.isDirectory() && mapsFolder.isDirectory() && spritesFolder.isDirectory();
+	// --
+	// Méthodes utilitaires pour le déploiement.
+	// --
+	
+	static void setVersion(int version) {
+		FORMAT.setVersion(version);
 	}
 	
-	private static boolean isSwift(File file) {
-		return file.isDirectory() && new File(file, "Images.xcassets").isDirectory();
+	static void deploySprites(Collection<Sprite> sprites, File folder) throws IOException {
+		deploySprites(sprites, folder, null);
 	}
 	
-	private static void deploySprites(Collection<Sprite> sprites, File folder, List<String> files) throws IOException {
+	static void deploySprites(Collection<Sprite> sprites, File folder, List<String> files) throws IOException {
 		final PackMap packMap = PackMap.packSprites(sprites, 1, 0.0);
-		if(packMap != null) {
+		if (packMap != null) {
 			// Image
 			final DataHandler<BufferedImage> imageDataHandler = FORMAT.getHandler(BufferedImage.class);
 			
@@ -113,7 +135,11 @@ public class MeltedIceAutoDeploy {
 		}
 	}
 	
-	private static void deployPalettes(List<Palette> palettes, File folder, List<String> files) throws IOException {
+	static void deployPalettes(List<Palette> palettes, File folder) throws IOException {
+		deployPalettes(palettes, folder, null);
+	}
+	
+	static void deployPalettes(List<Palette> palettes, File folder, List<String> files) throws IOException {
 		final DataHandler<Palette> paletteDataHandler = FORMAT.getHandler(Palette.class);
 		final DataHandler<BufferedImage> imageHandler = FORMAT.getHandler(BufferedImage.class);
 		
@@ -142,7 +168,11 @@ public class MeltedIceAutoDeploy {
 		}
 	}
 	
-	private static void deployMaps(List<TileMap> maps, Project project, File folder, List<String> files) throws IOException {
+	static void deployMaps(List<TileMap> maps, Project project, File folder) throws IOException {
+		deployMaps(maps, project, folder, null);
+	}
+	
+	static void deployMaps(List<TileMap> maps, Project project, File folder, List<String> files) throws IOException {
 		final DataHandler<TileMap> tileMapHandler = FORMAT.getHandler(TileMap.class);
 		final DataHandler<Instance> instanceHandler = FORMAT.getHandler(Instance.class);
 		
@@ -192,18 +222,10 @@ public class MeltedIceAutoDeploy {
 		}
 	}
 	
-	private static Project open(File file) {
-		final Format format = Formats.getFormat(file.getName());
-		
-		if(format != null) {
-			return format.openProject(file);
-		} else {
-			throw new UnsupportedOperationException("Format non reconnu.");
-		}
-	}
-	
 	private static void addFile(File file, List<String> files) {
-		files.add(file.getParentFile().getName() + '\\' + file.getName());
+		if (files != null) {
+			files.add(file.getParentFile().getName() + '\\' + file.getName());
+		}
 	}
 	
 	private static String getBaseName(TileMap map) {
@@ -221,4 +243,5 @@ public class MeltedIceAutoDeploy {
 		
 		return name.toLowerCase().replace(' ', '-');
 	}
+	
 }

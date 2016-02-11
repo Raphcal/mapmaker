@@ -457,16 +457,6 @@
                   <ResourceString bundle="resources/language.properties" key="menu.tools.deploy" replaceFormat="LANGUAGE.getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
-              <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="meltedIceAutoDeployMenuItem">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="MeltedIce"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="meltedIceAutoDeployMenuItemActionPerformed"/>
-                  </Events>
-                </MenuItem>
-              </SubComponents>
             </Menu>
             <Menu class="javax.swing.JMenu" name="gitMenu">
               <Properties>
