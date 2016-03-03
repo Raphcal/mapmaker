@@ -1,6 +1,5 @@
 package fr.rca.mapmaker.model.map;
 
-import fr.rca.mapmaker.operation.Operation;
 import fr.rca.mapmaker.operation.OperationParser;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -22,18 +21,24 @@ public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
 	
 	private LayerPlugin plugin;
 	
+	private int[] tiles;
+	
 	@Override
 	public int[] copyData() {
-		final int[] data = new int[width * height];
-		
-		int index = 0;
-		for(int y = 0; y < height; y++) {
-			for(int x = 0; x < width; x++) {
-				data[index++] = getTile(x, y);
+		if (tiles == null) {
+			final int[] data = new int[width * height];
+
+			int index = 0;
+			for(int y = 0; y < height; y++) {
+				for(int x = 0; x < width; x++) {
+					data[index++] = getTile(x, y);
+				}
 			}
+			tiles = data;
 		}
-		
-		return data;
+		final int[] copy = new int[tiles.length];
+		System.arraycopy(tiles, 0, copy, 0, tiles.length);
+		return copy;
 	}
 
 	@Override

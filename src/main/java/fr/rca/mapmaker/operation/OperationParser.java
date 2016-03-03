@@ -118,9 +118,9 @@ public final class OperationParser {
 		}
 		
 		if (y > 0) {
-			result += " + zoom(" + y + ')';
+			result += " - zoom(" + y + ')';
 		} else if (y < 0) {
-			result += " - zoom(" + Math.abs(y) + ')';
+			result += " + zoom(" + Math.abs(y) + ')';
 		}
 		
 		return result;

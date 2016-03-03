@@ -32,8 +32,9 @@ public class ApplyFunctionTool {
 				destination[y * width + x] = -1;
 			}
 			for (int y = Math.max(top, 0); y < height; y++) {
-				if (y - top >= 0) {
-					destination[y * width + x] = source[(y - top) * width + x];
+				final int sourceY = y - top;
+				if (sourceY >= 0 && sourceY < height) {
+					destination[y * width + x] = source[sourceY * width + x];
 				} else {
 					destination[y * width + x] = -1;
 				}
