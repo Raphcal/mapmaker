@@ -5,7 +5,8 @@ import java.awt.Rectangle;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Couche regroupant les données de plusieurs autres couches.
+ * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
@@ -62,6 +63,9 @@ public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
 	@Override
 	public void restoreData(DataLayer source) {
 		restoreData(source.copyData(), source.getWidth(), source.getHeight());
+		if (source instanceof HasLayerPlugin) {
+			setPlugin(LayerPlugins.copyOf(((HasLayerPlugin) source).getPlugin()));
+		}
 	}
 
 	@Override

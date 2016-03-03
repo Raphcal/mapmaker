@@ -765,11 +765,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 			drawGrid.addMouseListener(pasteSelectionTool);
 			drawGrid.addMouseMotionListener(pasteSelectionTool);
 		} else {
-			if(pluginClipboardData != null) {
-				drawLayer.setPlugin(pluginClipboardData.copy());
-			} else {
-				drawLayer.setPlugin(null);
-			}
+			drawLayer.setPlugin(LayerPlugins.copyOf(pluginClipboardData));
 		}
     }//GEN-LAST:event_pasteButtonActionPerformed
 

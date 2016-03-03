@@ -701,7 +701,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	public void restoreData(DataLayer source) {
 		restoreData(source.copyData(), source.getWidth(), source.getHeight());
 		if (source instanceof HasLayerPlugin) {
-			setPlugin(((HasLayerPlugin) source).getPlugin().copy());
+			setPlugin(LayerPlugins.copyOf(((HasLayerPlugin) source).getPlugin()));
 		}
 	}
 	
