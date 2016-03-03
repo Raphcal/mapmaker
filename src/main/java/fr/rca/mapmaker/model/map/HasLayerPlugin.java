@@ -6,6 +6,7 @@ package fr.rca.mapmaker.model.map;
  */
 public interface HasLayerPlugin {
 	
+	void setPlugin(LayerPlugin plugin);
 	LayerPlugin getPluginCopy();
 	
 }

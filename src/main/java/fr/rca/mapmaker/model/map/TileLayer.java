@@ -342,6 +342,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		return plugin;
 	}
 
+	@Override
 	public void setPlugin(LayerPlugin plugin) {
 		final LayerPlugin oldPlugin = this.plugin;
 		this.plugin = plugin;
