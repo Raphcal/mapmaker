@@ -5,6 +5,8 @@ import fr.rca.mapmaker.model.Duplicatable;
 import fr.rca.mapmaker.model.HasFunctionHitbox;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
+import fr.rca.mapmaker.model.map.FunctionLayerPlugin;
+import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.ui.ImageRenderer;
 import java.awt.Dimension;
@@ -24,8 +26,6 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	private final int columns;
 	private int selectedTile;
 	
-	private String[] hitboxes;
-	
 	private String name;
 	
 	private ColorPalette palette;
@@ -38,7 +38,6 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 		this.tileSize = tileSize;
 		this.columns = columns;
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
-		this.hitboxes = new String[columns];
 		
 		for(int index = 0; index < columns; index++) {
 			sources.add(new TileLayer(tileSize, tileSize));
@@ -47,14 +46,9 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	}
 	
 	public EditableImagePalette(int tileSize, int columns, ColorPalette palette, List<TileLayer> tiles) {
-		this(tileSize, columns, palette, tiles, new String[tiles.size()]);
-	}
-	
-	public EditableImagePalette(int tileSize, int columns, ColorPalette palette, List<TileLayer> tiles, String[] hitboxes) {
 		this.tileSize = tileSize;
 		this.columns = columns;
 		this.palette = palette;
-		this.hitboxes = hitboxes.clone();
 		
 		for(int index = 0; index < tiles.size(); index++) {
 			sources.add(tiles.get(index));
@@ -144,12 +138,17 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 
 	@Override
 	public String getFunction(int index) {
-		return hitboxes[index];
+		final LayerPlugin plugin = sources.get(index).getPlugin();
+		if (plugin instanceof FunctionLayerPlugin) {
+			return ((FunctionLayerPlugin) plugin).getFunction();
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public void setFunction(int index, String function) {
-		hitboxes[index] = function;
+		sources.get(index).setPlugin(new FunctionLayerPlugin(function));
 	}
 
 	public ColorPalette getColorPalette() {
@@ -160,7 +159,6 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	public void editTile(final int index, JFrame parent) {
 		final TileMapEditor editor = new TileMapEditor(parent);
 		editor.setLayerAndPalette(sources.get(index), palette);
-		editor.setHitbox(hitboxes[index]);
 		editor.addActionListener(new ActionListener() {
 
 			@Override
@@ -199,12 +197,6 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 			tiles.add(index, render(layer));
 		}
 		
-		// Redimensionnement du tableau de hitbox.
-		final String[] newArray = new String[sources.size()];
-		System.arraycopy(hitboxes, 0, newArray, 0, index);
-		System.arraycopy(hitboxes, index, newArray, index + count, sources.size() - index - count);
-		hitboxes = newArray;
-		
 		fireSizeChanged(oldSize, getSize());
 	}
 	
@@ -222,12 +214,6 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 			tiles.remove(index);
 		}
 		
-		// Redimensionnement du tableau de hitbox.
-		final String[] newArray = new String[sources.size()];
-		System.arraycopy(hitboxes, 0, newArray, 0, index);
-		System.arraycopy(hitboxes, index + count, newArray, index, sources.size() - index - count);
-		hitboxes = newArray;
-		
 		fireSizeChanged(oldSize, getSize());
 	}
 	
@@ -239,11 +225,6 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 				sources.add(new TileLayer(tileSize, tileSize));
 				renderTile(sources.size() - 1);
 			}
-			
-			// Redimensionnement du tableau de hitbox.
-			final String[] newArray = new String[sources.size()];
-			System.arraycopy(hitboxes, 0, newArray, 0, hitboxes.length);
-			hitboxes = newArray;
 			
 			fireSizeChanged(oldSize, getSize());
 		}
@@ -283,13 +264,12 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	@Override
 	public EditableImagePalette duplicate() {
 		final List<TileLayer> duplicatedSources = new ArrayList<TileLayer>();
-		final String[] duplicatedHitboxes = hitboxes.clone();
 		
 		for(final TileLayer source : sources) {
 			duplicatedSources.add(new TileLayer(source));
 		}
 		
-		final EditableImagePalette duplicate = new EditableImagePalette(tileSize, columns, AlphaColorPalette.getDefaultColorPalette(), duplicatedSources, duplicatedHitboxes);
+		final EditableImagePalette duplicate = new EditableImagePalette(tileSize, columns, AlphaColorPalette.getDefaultColorPalette(), duplicatedSources);
 		duplicate.name = name + " 2";
 		
 		return duplicate;

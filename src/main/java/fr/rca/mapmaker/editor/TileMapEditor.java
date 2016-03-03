@@ -17,8 +17,10 @@ import fr.rca.mapmaker.editor.tool.ReplaceColorTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
 import fr.rca.mapmaker.model.map.DataLayer;
+import fr.rca.mapmaker.model.map.FunctionLayerPlugin;
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.LayerPlugin;
+import fr.rca.mapmaker.model.map.LayerPlugins;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
@@ -90,16 +92,14 @@ public class TileMapEditor extends javax.swing.JDialog {
 		nextLayerButton.setVisible(false);
 		hitboxToggleButton.setVisible(isHitboxAvailable());
 		
+		if (drawLayer.getPlugin() instanceof FunctionLayerPlugin) {
+			final String function = ((FunctionLayerPlugin) drawLayer.getPlugin()).getFunction();
+			if (function != null) {
+				drawMap.add(Function.asTileLayer(function, drawLayer.getWidth(), drawLayer.getHeight()));
+			}
+		}
+		
 		pack();
-	}
-	
-	public void setHitbox(String hitbox) {
-		if(drawMap.getLayers().size() == 2) {
-			drawMap.remove(1);
-		}
-		if(hitbox != null) {
-			drawMap.add(Function.asTileLayer(hitbox, drawLayer.getWidth(), drawLayer.getHeight()));
-		}
 	}
 	
 	public void setLayers(List<TileLayer> layers, int index, ColorPalette palette) {
@@ -751,7 +751,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 			clipboardData = new TileLayer(source);
 			
 		} else {
-			pluginClipboardData = drawLayer.getPluginCopy();
+			pluginClipboardData = LayerPlugins.copyOf(drawLayer.getPlugin());
 		}
 		
 		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());

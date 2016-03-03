@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class SpanningTileLayer implements DataLayer {
+public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
 	
 	private DataLayer[] layers;
 	private int columns;
@@ -16,6 +16,8 @@ public class SpanningTileLayer implements DataLayer {
 	
 	private int width;
 	private int height;
+	
+	private LayerPlugin plugin;
 	
 	@Override
 	public int[] copyData() {
@@ -91,6 +93,29 @@ public class SpanningTileLayer implements DataLayer {
 	@Override
 	public int getTile(Point p) {
 		return getTile(p.x, p.y);
+	}
+
+	@Override
+	public LayerPlugin getPlugin() {
+		return plugin;
+	}
+
+	@Override
+	public void setPlugin(LayerPlugin plugin) {
+		this.plugin = plugin;
+		
+		int y = 0;
+		for (int row = 0; row < rows; row++) {
+			int x = 0;
+			for (int column = 0; column < columns; column++) {
+				final DataLayer layer = getLayer(column, row);
+				if (layer instanceof HasLayerPlugin) {
+					// TODO: Propager le plugin aux sous layers.
+				}
+				x += getLayerWidth();
+			}
+			y += getLayerHeight();
+		}
 	}
 	
 	public void setSize(int columns, int rows) {

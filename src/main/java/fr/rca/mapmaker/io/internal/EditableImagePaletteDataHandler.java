@@ -7,6 +7,7 @@ import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
+import fr.rca.mapmaker.model.map.FunctionLayerPlugin;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,18 +69,22 @@ public class EditableImagePaletteDataHandler implements DataHandler<EditableImag
 		
 		final int size = Streams.readInt(inputStream);
 		final List<TileLayer> tiles = new ArrayList<TileLayer>();
-		final String[] functions = new String[size];
 		
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
 		for(int index = 0; index < size; index++) {
-			tiles.add(tileLayerHandler.read(inputStream));
+			final TileLayer layer = tileLayerHandler.read(inputStream);
 			
 			if(version >= InternalFormat.VERSION_3) {
-				functions[index] = Streams.readNullableString(inputStream);
+				final String function = Streams.readNullableString(inputStream);
+				if (function != null) {
+					layer.setPlugin(new FunctionLayerPlugin(function));
+				}
 			}
+			
+			tiles.add(layer);
 		}
 		
-		final EditableImagePalette imagePalette = new EditableImagePalette(tileSize, columns, palette, tiles, functions);
+		final EditableImagePalette imagePalette = new EditableImagePalette(tileSize, columns, palette, tiles);
 		imagePalette.setName(name);
 		
 		return imagePalette;

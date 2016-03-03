@@ -2,6 +2,7 @@
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
+import fr.rca.mapmaker.model.map.LayerPlugins;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
@@ -515,7 +516,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 			
 			for(double angle = step; angle < 360; angle += step) {
 				for(final TileLayer frame : frames) {
-					final TileLayer rotatedFrame = new TileLayer(frame.getWidth(), frame.getHeight(), frame.getPluginCopy());
+					final TileLayer rotatedFrame = new TileLayer(frame.getWidth(), frame.getHeight(), LayerPlugins.copyOf(frame.getPlugin()));
 					rotatedFrame.restoreData(frame.copyData(), null);
 					
 					if(((int)angle) % 90 == 0) {

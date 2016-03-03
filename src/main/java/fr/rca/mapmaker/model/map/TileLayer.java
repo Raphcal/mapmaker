@@ -138,7 +138,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 
 	private void copyTileLayerFields(TileLayer other) {
 		this.name = other.name;
-		this.plugin = other.getPluginCopy();
+		this.plugin = LayerPlugins.copyOf(other.getPlugin());
 		
 		if (other.scrollRate != null) {
 			this.scrollRate = new ScrollRate(other.scrollRate);
@@ -338,6 +338,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		this.visible = visible;
 	}
 
+	@Override
 	public LayerPlugin getPlugin() {
 		return plugin;
 	}
@@ -347,15 +348,6 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		final LayerPlugin oldPlugin = this.plugin;
 		this.plugin = plugin;
 		propertyChangeSupport.firePropertyChange("plugin", oldPlugin, this.plugin);
-	}
-	
-	@Override
-	public LayerPlugin getPluginCopy() {
-		if(plugin != null) {
-			return plugin.copy();
-		} else {
-			return null;
-		}
 	}
 	
 	/**
@@ -709,7 +701,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	public void restoreData(DataLayer source) {
 		restoreData(source.copyData(), source.getWidth(), source.getHeight());
 		if (source instanceof HasLayerPlugin) {
-			setPlugin(((HasLayerPlugin) source).getPluginCopy());
+			setPlugin(((HasLayerPlugin) source).getPlugin().copy());
 		}
 	}
 	
