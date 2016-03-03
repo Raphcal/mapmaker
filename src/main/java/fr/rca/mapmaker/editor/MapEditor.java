@@ -1778,18 +1778,20 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		zoomTextField.setEnabled(!previewCheckBox.isSelected());
 		
 		if(previewCheckBox.isSelected()) {
+			final int tileSize = mapGrid.getTileSize();
 			final Dimension size = getSize();
-			zoom(Math.max(size.getWidth() / (12.0 * 32), size.getHeight() / (6.8 * 32)));
+			zoom(Math.max(size.getWidth() / (12.0 * tileSize), size.getHeight() / (6.8 * tileSize)));
 			
-			size.setSize(mapGrid.getZoom() * 12.0 * 32, mapGrid.getZoom() * 6.8 * 32);
+			size.setSize(mapGrid.getZoom() * 12.0 * tileSize, mapGrid.getZoom() * 6.8 * tileSize);
 			setSize(size);
 			
 			sizeListener = new ComponentAdapter() {
 				@Override
 				public void componentResized(ComponentEvent e) {
 					if(previewCheckBox.isSelected()) {
+						final int tileSize = mapGrid.getTileSize();
 						final Dimension size = getSize();
-						zoom(Math.max(size.getWidth() / (12.0 * 32), size.getHeight() / (6.8 * 32)));
+						zoom(Math.max(size.getWidth() / (12.0 * tileSize), size.getHeight() / (6.8 * tileSize)));
 					}
 				}
 			};
