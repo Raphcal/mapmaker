@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class TileLayer implements DataLayer, HasSizeChangeListeners, HasPropertyChangeListeners {
+public class TileLayer implements DataLayer, HasSizeChangeListeners, HasPropertyChangeListeners, HasLayerPlugin {
 
 	/**
 	 * Nom de la couche.
@@ -348,6 +348,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		propertyChangeSupport.firePropertyChange("plugin", oldPlugin, this.plugin);
 	}
 	
+	@Override
 	public LayerPlugin getPluginCopy() {
 		if(plugin != null) {
 			return plugin.copy();
@@ -706,8 +707,8 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	@Override
 	public void restoreData(DataLayer source) {
 		restoreData(source.copyData(), source.getWidth(), source.getHeight());
-		if (source instanceof TileLayer) {
-			setPlugin(((TileLayer) source).getPluginCopy());
+		if (source instanceof HasLayerPlugin) {
+			setPlugin(((HasLayerPlugin) source).getPluginCopy());
 		}
 	}
 	
