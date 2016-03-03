@@ -92,8 +92,8 @@ public class OperationParserTest {
 	public void testShift() {
 		Assert.assertEquals("x * 2", OperationParser.shift("x * 2", 0, 0));
 		Assert.assertEquals("(x + zoom(32)) * 2", OperationParser.shift("x * 2", 32, 0));
-		Assert.assertEquals("(x - zoom(32)) * 2 + zoom(32)", OperationParser.shift("x * 2", -32, 32));
-		Assert.assertEquals("x * 2 - zoom(32)", OperationParser.shift("x * 2", 0, -32));
+		Assert.assertEquals("(x - zoom(32)) * 2 - zoom(32)", OperationParser.shift("x * 2", -32, 32));
+		Assert.assertEquals("x * 2 + zoom(32)", OperationParser.shift("x * 2", 0, -32));
 	}
 	
 }
