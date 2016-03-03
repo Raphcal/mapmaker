@@ -82,6 +82,7 @@ public final class OperationParser {
 	
 	/**
 	 * Créé une opération à partir de sa représentation sous forme de texte.
+	 * 
 	 * @param operation Opération sous forme de texte.
 	 * @return Un objet {@link Operation}.
 	 */
@@ -96,7 +97,38 @@ public final class OperationParser {
 	}
 	
 	/**
+	 * Fait un décalage de l'opération donnée.
+	 * 
+	 * @param operation Opération à décaler.
+	 * @param x Décalage horizontal.
+	 * @param y Décalage vertical.
+	 * @return L'opération décalée.
+	 */
+	public static String shift(@Nullable String operation, int x, int y) {
+		if (operation == null || operation.trim().isEmpty()) {
+			return null;
+		}
+		
+		String result = operation;
+		
+		if (x > 0) {
+			result = result.replace("x", "(x + zoom(" + x + "))");
+		} else if (x < 0) {
+			result = result.replace("x", "(x - zoom(" + Math.abs(x) + "))");
+		}
+		
+		if (y > 0) {
+			result += " + zoom(" + y + ')';
+		} else if (y < 0) {
+			result += " - zoom(" + Math.abs(y) + ')';
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Analyse un morceau d'une opération.
+	 * 
 	 * @param operation Texte complet de l'opération.
 	 * @param index Indice de début à traiter.
 	 * @param parent L'opérateur qui a conduit à exécuter cette méthode.

@@ -1,5 +1,7 @@
 package fr.rca.mapmaker.model.map;
 
+import fr.rca.mapmaker.operation.Operation;
+import fr.rca.mapmaker.operation.OperationParser;
 import java.awt.Point;
 import java.awt.Rectangle;
 import org.slf4j.LoggerFactory;
@@ -108,17 +110,25 @@ public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
 	public void setPlugin(LayerPlugin plugin) {
 		this.plugin = plugin;
 		
-		int y = 0;
-		for (int row = 0; row < rows; row++) {
-			int x = 0;
-			for (int column = 0; column < columns; column++) {
-				final DataLayer layer = getLayer(column, row);
-				if (layer instanceof HasLayerPlugin) {
-					// TODO: Propager le plugin aux sous layers.
-				}
-				x += getLayerWidth();
+		if (plugin instanceof FunctionLayerPlugin) {
+			final String function = ((FunctionLayerPlugin) plugin).getFunction();
+			
+			if (function == null || function.trim().isEmpty()) {
+				return;
 			}
-			y += getLayerHeight();
+			
+			int y = 0;
+			for (int row = 0; row < rows; row++) {
+				int x = 0;
+				for (int column = 0; column < columns; column++) {
+					final DataLayer layer = getLayer(column, row);
+					if (layer instanceof HasLayerPlugin) {
+						((HasLayerPlugin) layer).setPlugin(new FunctionLayerPlugin(OperationParser.shift(function, x, y)));
+					}
+					x += getLayerWidth();
+				}
+				y += getLayerHeight();
+			}
 		}
 	}
 	

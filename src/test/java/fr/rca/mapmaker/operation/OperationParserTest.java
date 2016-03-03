@@ -87,4 +87,13 @@ public class OperationParserTest {
 		final Operation operation = OperationParser.parse("-3.0*pi/4.0");
 		Assert.assertEquals(-3.0 * Math.PI / 4.0, operation.execute(5));
 	}
+	
+	@Test
+	public void testShift() {
+		Assert.assertEquals("x * 2", OperationParser.shift("x * 2", 0, 0));
+		Assert.assertEquals("(x + zoom(32)) * 2", OperationParser.shift("x * 2", 32, 0));
+		Assert.assertEquals("(x - zoom(32)) * 2 + zoom(32)", OperationParser.shift("x * 2", -32, 32));
+		Assert.assertEquals("x * 2 - zoom(32)", OperationParser.shift("x * 2", 0, -32));
+	}
+	
 }
