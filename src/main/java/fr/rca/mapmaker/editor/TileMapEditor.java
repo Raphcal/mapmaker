@@ -530,7 +530,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         hitboxToggleButton.setToolTipText("Tramage");
         wireTool(hitboxToggleButton, new HitboxTool(drawGrid));
 
-        applyFunctionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_line.png"))); // NOI18N
+        applyFunctionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_function.png"))); // NOI18N
         applyFunctionButton.setToolTipText("Appliquer une fonction");
         applyFunctionButton.setPreferredSize(new java.awt.Dimension(32, 32));
         applyFunctionButton.addActionListener(new java.awt.event.ActionListener() {
