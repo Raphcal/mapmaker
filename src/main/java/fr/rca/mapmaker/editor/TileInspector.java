@@ -140,6 +140,8 @@ public class TileInspector extends javax.swing.JDialog {
         tileAndHitboxGrid = new fr.rca.mapmaker.ui.Grid();
         hitboxCheckBox = new javax.swing.JCheckBox();
         hitboxCheckBox.putClientProperty("JComponent.sizeVariant", "small");
+        yFunctionField = new javax.swing.JTextField();
+        functionLabel1 = new javax.swing.JLabel();
 
         setTitle("Infos sur la tuile n°12");
         setBackground(new java.awt.Color(236, 236, 236));
@@ -159,7 +161,7 @@ public class TileInspector extends javax.swing.JDialog {
 
         functionLabel.setFont(functionLabel.getFont().deriveFont(functionLabel.getFont().getSize()-1f));
         functionLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        functionLabel.setText("f(x) :");
+        functionLabel.setText("f(y) :");
         functionLabel.setToolTipText("");
 
         functionTextField.setFont(functionTextField.getFont().deriveFont(functionTextField.getFont().getSize()-1f));
@@ -199,6 +201,17 @@ public class TileInspector extends javax.swing.JDialog {
             }
         });
 
+        yFunctionField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yFunctionFieldActionPerformed(evt);
+            }
+        });
+
+        functionLabel1.setFont(functionLabel1.getFont().deriveFont(functionLabel1.getFont().getSize()-1f));
+        functionLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        functionLabel1.setText("f(x) :");
+        functionLabel1.setToolTipText("");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -207,31 +220,40 @@ public class TileInspector extends javax.swing.JDialog {
                 .addGap(6, 6, 6)
                 .addComponent(previewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(6, 6, 6))
+            .addComponent(hitboxSeparator)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(functionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(functionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(functionTextField)
                 .addContainerGap())
-            .addComponent(hitboxSeparator)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(tileGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(functionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(yFunctionField))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(hitboxCheckBox)
-                            .addComponent(passThroughCheckBox)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addComponent(tileIndexLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(hitboxLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(previewLabel)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(tileGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(hitboxCheckBox)
+                                    .addComponent(passThroughCheckBox)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(44, 44, 44)
+                                .addComponent(tileIndexLabel))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(hitboxLabel))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(previewLabel)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
             .addComponent(previewSeparator)
         );
         layout.setVerticalGroup(
@@ -252,15 +274,19 @@ public class TileInspector extends javax.swing.JDialog {
                 .addComponent(hitboxCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(functionLabel)
-                    .addComponent(functionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(functionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(functionLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(yFunctionField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(functionLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(previewSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(previewLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(previewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         bindingGroup.bind();
@@ -277,9 +303,14 @@ public class TileInspector extends javax.swing.JDialog {
 		}
     }//GEN-LAST:event_hitboxCheckBoxActionPerformed
 
+    private void yFunctionFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yFunctionFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_yFunctionFieldActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.rca.mapmaker.ui.Function function;
     private javax.swing.JLabel functionLabel;
+    private javax.swing.JLabel functionLabel1;
     private javax.swing.JTextField functionTextField;
     private javax.swing.JCheckBox hitboxCheckBox;
     private javax.swing.JLabel hitboxLabel;
@@ -291,6 +322,7 @@ public class TileInspector extends javax.swing.JDialog {
     private fr.rca.mapmaker.ui.Grid tileAndHitboxGrid;
     private fr.rca.mapmaker.ui.Grid tileGrid;
     private javax.swing.JLabel tileIndexLabel;
+    private javax.swing.JTextField yFunctionField;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
