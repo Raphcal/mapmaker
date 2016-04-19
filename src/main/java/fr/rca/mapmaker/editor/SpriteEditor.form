@@ -94,6 +94,8 @@
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="playButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="loopCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="scrollCheckBox" min="-2" max="-2" attributes="0"/>
@@ -140,9 +142,10 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="loopCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="scrollCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="playButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="gridScrollPane" max="32767" attributes="0"/>
+              <Component id="gridScrollPane" pref="39" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -267,6 +270,7 @@
         <BindingProperty name="frameHeight" source="sprite" sourcePath="${height}" target="animationPreview" targetPath="frameHeight" updateStrategy="0" immediately="false"/>
         <BindingProperty name="frameWidth" source="sprite" sourcePath="${width}" target="animationPreview" targetPath="frameWidth" updateStrategy="0" immediately="false"/>
         <BindingProperty name="frequency" source="Form" sourcePath="${currentFrequency}" target="animationPreview" targetPath="frequency" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="looping" source="Form" sourcePath="${animationLooping}" target="animationPreview" targetPath="looping" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <Events>
         <EventHandler event="componentResized" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="animationPreviewComponentResized"/>
@@ -387,6 +391,16 @@
       <BindingProperties>
         <BindingProperty name="selected" source="Form" sourcePath="${animationScrolling}" target="scrollCheckBox" targetPath="selected" updateStrategy="0" immediately="false"/>
       </BindingProperties>
+    </Component>
+    <Component class="javax.swing.JButton" name="playButton">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/resources/animation_play.png"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="playButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

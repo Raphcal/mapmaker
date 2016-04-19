@@ -22,6 +22,7 @@ import javax.swing.Timer;
 public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	private static final double ONE_SECOND = 1000.0;
+    private static final double MAX_SIZE = 256.0;
 	
 	private int index;
 	private List<L> frames = Collections.<L>emptyList();
@@ -29,6 +30,7 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	private Timer timer;
 	private int frequency = 24;
+	private boolean looping;
 	private boolean scroll;
 	
 	private int frameWidth = 32;
@@ -55,6 +57,13 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 			timer.start();
 		}
 	}
+    
+    public void restart() {
+        stop();
+        index = 0;
+        repaint();
+        start();
+    }
 	
 	public void stop() {
 		if(timer != null) {
@@ -74,6 +83,14 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	public int getFrequency() {
 		return frequency;
 	}
+
+    public boolean isLooping() {
+        return looping;
+    }
+
+    public void setLooping(boolean looping) {
+        this.looping = looping;
+    }
 	
 	private int getDelay() {
 		return (int) (ONE_SECOND / (double)frequency);
@@ -132,18 +149,27 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	}
 	
 	private void updateSize() {
+        while (zoom > 1.0 && frameWidth * zoom > MAX_SIZE || frameHeight * zoom > MAX_SIZE) {
+            zoom = Math.max(zoom - 1, 1);
+        }
+        
 		final Dimension dimension = new Dimension((int) (frameWidth * zoom), (int) (frameHeight * zoom));
 		setPreferredSize(dimension);
 		setSize(dimension);
 	}
 	
 	public void nextFrame() {
-		if(!frames.isEmpty()) {
-			index = (index + 1) % frameCount();
-			repaint();
+		if (!frames.isEmpty()) {
+            if (looping) {
+                index = (index + 1) % frameCount();
+                repaint();
+            } else {
+                index = Math.min(index + 1, frameCount() - 1);
+                repaint();
+            }
 		}
 	}
-
+    
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);

@@ -149,11 +149,11 @@ public class SpriteEditor extends javax.swing.JDialog {
         tileLayerList = new fr.rca.mapmaker.ui.TileLayerList();
         cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
-        animationComboBox = new javax.swing.JComboBox<Animation>();
+        animationComboBox = new javax.swing.JComboBox<>();
         animationLabel = new javax.swing.JLabel();
         directionLabel = new javax.swing.JLabel();
         directionChooser = new fr.rca.mapmaker.ui.DirectionChooser();
-        animationPreview = new fr.rca.mapmaker.ui.AnimatedGrid<TileLayer>();
+        animationPreview = new fr.rca.mapmaker.ui.AnimatedGrid<>();
         animationPreview.start();
         frequencyLabel = new javax.swing.JLabel();
         frequencyTextField = new javax.swing.JTextField();
@@ -167,6 +167,7 @@ public class SpriteEditor extends javax.swing.JDialog {
         copyButton = new javax.swing.JButton();
         pasteButton = new javax.swing.JButton();
         scrollCheckBox = new javax.swing.JCheckBox();
+        playButton = new javax.swing.JButton();
 
         setTitle("Sprite");
 
@@ -261,6 +262,8 @@ public class SpriteEditor extends javax.swing.JDialog {
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFrequency}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("frequency"));
         bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${animationLooping}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("looping"));
+        bindingGroup.addBinding(binding);
 
         animationPreview.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
@@ -325,6 +328,13 @@ public class SpriteEditor extends javax.swing.JDialog {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${animationScrolling}"), scrollCheckBox, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
+        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/animation_play.png"))); // NOI18N
+        playButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -379,6 +389,8 @@ public class SpriteEditor extends javax.swing.JDialog {
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(playButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(loopCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scrollCheckBox)
@@ -415,9 +427,10 @@ public class SpriteEditor extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loopCheckBox)
-                    .addComponent(scrollCheckBox))
+                    .addComponent(scrollCheckBox)
+                    .addComponent(playButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridScrollPane)
+                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -548,6 +561,10 @@ public class SpriteEditor extends javax.swing.JDialog {
 		}
     }//GEN-LAST:event_pasteButtonActionPerformed
 
+    private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
+        animationPreview.restart();
+    }//GEN-LAST:event_playButtonActionPerformed
+
 	private void animationChanged() {
 		final int oldFrequency = getCurrentFrequency();
 		final boolean oldLooping = isAnimationLooping();
@@ -599,6 +616,7 @@ public class SpriteEditor extends javax.swing.JDialog {
     private javax.swing.JCheckBox loopCheckBox;
     private javax.swing.JButton okButton;
     private javax.swing.JButton pasteButton;
+    private javax.swing.JButton playButton;
     private javax.swing.JCheckBox scrollCheckBox;
     private javax.swing.JLabel sizeByLabel;
     private javax.swing.JLabel sizeLabel;
