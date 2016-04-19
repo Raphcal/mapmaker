@@ -21,7 +21,7 @@ public class FormatFileFilter extends FileFilter {
 
 	@Override
 	public boolean accept(File f) {
-		return f.isDirectory() || f.getName().endsWith(extension);
+		return f.getName().endsWith(extension);
 	}
 
 	@Override
