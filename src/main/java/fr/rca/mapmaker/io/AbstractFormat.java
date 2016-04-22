@@ -1,7 +1,10 @@
 package fr.rca.mapmaker.io;
 
+import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.project.Project;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -70,6 +73,19 @@ public abstract class AbstractFormat implements Format {
 		return (DataHandler<T>) handlers.get(name);
 	}
 	
+    public <T> void write(T t, OutputStream outputStream) throws IOException {
+        final DataHandler<T> dataHandler = getHandler((Class<T>) t.getClass());
+        dataHandler.write(t, outputStream);
+    }
+	
+    public <T> void writeNullable(T t, OutputStream outputStream) throws IOException {
+        Streams.write(t != null, outputStream);
+        if (t != null) {
+            final DataHandler<T> dataHandler = getHandler((Class<T>) t.getClass());
+            dataHandler.write(t, outputStream);
+        }
+    }
+    
 	/**
 	 * Défini le numéro de version à utiliser pour les instances de {@link 
 	 * DataHandler} qui supportent différentes versions.
