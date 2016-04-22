@@ -66,7 +66,7 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 				Streams.write(animation.isLooping(), outputStream);
 				
 				if (!animation.isScrolling()) {
-					writeAnimation(animation, t, maps, outputStream);
+					writeAnimation(animation, sprite, t, maps, outputStream);
 				} else {
 					writeScrollingAnimation(animation, sprite, t, maps, outputStream);
 				}
@@ -74,7 +74,7 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 		}
 	}
 
-	private void writeAnimation(final Animation animation, final PackMap t, final Map<TileLayer, SingleLayerTileMap> maps, final OutputStream outputStream) throws IOException {
+	private void writeAnimation(final Animation animation, final Sprite sprite, final PackMap t, final Map<TileLayer, SingleLayerTileMap> maps, final OutputStream outputStream) throws IOException {
 		final Set<Double> directions = animation.getAnglesWithValue();
 		Streams.write(directions.size(), outputStream);
 		
@@ -90,7 +90,7 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 				Point point = t.getPoint(maps.get(frame));
 				
 				if (point == null) {
-					LOGGER.warn("Frame " + frame + " non trouvée dans PackMap.");
+					LOGGER.warn(sprite.getName() + " : frame " + frame + " non trouvée dans PackMap.");
 					point = new Point();
 				}
 				
@@ -132,7 +132,7 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 			Point point = t.getPoint(maps.get(frame));
 			
 			if (point == null) {
-				LOGGER.warn("Frame " + frame + " non trouvée dans PackMap.");
+				LOGGER.warn(sprite.getName() + " : frame " + frame + " non trouvée dans PackMap.");
 				point = new Point();
 			}
 			
