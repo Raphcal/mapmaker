@@ -87,7 +87,7 @@ public class SingleLayerTileMap implements Comparable<SingleLayerTileMap> {
             return 0;
 		}
 		
-		final int[] primes = {3, 5, 7, 11, 13, 17, 31};
+		final int[] primes = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71};
 
         int result = 1;
         for (int y = 0; y < layer.getHeight(); y++) {
