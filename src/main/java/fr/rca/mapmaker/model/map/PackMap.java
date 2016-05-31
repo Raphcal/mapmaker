@@ -96,11 +96,13 @@ public class PackMap {
 		
 		PackMap map = null;
 		
+        // TODO: Donner une taille initiale en argument ?
 		for(int pot = 0; map == null; pot++) {
 			final int size = (int) Math.pow(2, pot);
 			map = new PackMap(size, size, margin);
 			
 			if(!map.addAll(orderedSet)) {
+                // TODO: Agrandir la taille de la map.
 				map = null;
 			}
 		}
