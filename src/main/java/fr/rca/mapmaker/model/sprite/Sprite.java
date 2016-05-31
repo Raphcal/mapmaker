@@ -1,5 +1,7 @@
 package fr.rca.mapmaker.model.sprite;
 
+import fr.rca.mapmaker.event.Event;
+import fr.rca.mapmaker.event.EventBus;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
@@ -232,6 +234,10 @@ public class Sprite {
 		this.exportable = exportable;
 		
 		propertyChangeSupport.firePropertyChange("exportable", oldExportable, exportable);
+        
+        if (oldExportable != exportable) {
+            EventBus.INSTANCE.fireEvent(Event.SPRITE_CHANGED);
+        }
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener pl) {
