@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
 public class HitboxLayerPlugin implements LayerPlugin {
+    
+    public static final String NAME = "hitbox";
 	
 	private Rectangle hitbox;
 
@@ -31,5 +33,10 @@ public class HitboxLayerPlugin implements LayerPlugin {
 	public void setHitbox(@Nullable Rectangle hitbox) {
 		this.hitbox = hitbox;
 	}
+
+    @Override
+    public String name() {
+        return NAME;
+    }
 	
 }

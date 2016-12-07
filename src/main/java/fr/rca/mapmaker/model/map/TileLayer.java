@@ -13,7 +13,11 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class TileLayer implements DataLayer, HasSizeChangeListeners, HasPropertyChangeListeners, HasLayerPlugin {
@@ -51,7 +55,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	/**
 	 * Décorateur de TileLayer.
 	 */
-	private LayerPlugin plugin;
+	private final Map<String, LayerPlugin> plugins = new HashMap<String, LayerPlugin>();
 	
 	/**
 	 * Liste de listeners.
@@ -79,8 +83,16 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	}
 	
 	public TileLayer(int width, int height, LayerPlugin plugin) {
+        this(width, height, Collections.singleton(plugin));
+    }
+    
+	public TileLayer(int width, int height, Collection<LayerPlugin> plugins) {
 		this(width, height);
-		this.plugin = plugin;
+        if (plugins != null) {
+            for (final LayerPlugin plugin : plugins) {
+                this.plugins.put(plugin.name(), plugin);
+            }
+        }
 	}
 	
 	/**
@@ -138,7 +150,9 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 
 	private void copyTileLayerFields(TileLayer other) {
 		this.name = other.name;
-		this.plugin = LayerPlugins.copyOf(other.getPlugin());
+        for (final LayerPlugin plugin : other.plugins.values()) {
+            this.plugins.put(plugin.name(), plugin.copy());
+        }
 		
 		if (other.scrollRate != null) {
 			this.scrollRate = new ScrollRate(other.scrollRate);
@@ -338,17 +352,27 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		this.visible = visible;
 	}
 
-	@Override
-	public LayerPlugin getPlugin() {
-		return plugin;
-	}
-
+    @Override
+    public <L extends LayerPlugin> L getPlugin(Class<L> clazz) {
+        return (L) plugins.get(LayerPlugins.nameOf(clazz));
+    }
+    
 	@Override
 	public void setPlugin(LayerPlugin plugin) {
-		final LayerPlugin oldPlugin = this.plugin;
-		this.plugin = plugin;
-		propertyChangeSupport.firePropertyChange("plugin", oldPlugin, this.plugin);
+		final LayerPlugin oldPlugin = plugins.get(plugin.name());
+		plugins.put(plugin.name(), plugin);
+		propertyChangeSupport.firePropertyChange("plugin-" + plugin.name(), oldPlugin, plugin);
 	}
+
+    @Override
+    public <L extends LayerPlugin> void removePlugin(Class<L> clazz) {
+        plugins.remove(LayerPlugins.nameOf(clazz));
+    }
+    
+    @Override
+    public Collection<LayerPlugin> getPlugins() {
+        return plugins.values();
+    }
 	
 	/**
 	 * Détermine si au moins une tuile a été positionnée sur cette couche.
@@ -701,7 +725,10 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	public void restoreData(DataLayer source) {
 		restoreData(source.copyData(), source.getWidth(), source.getHeight());
 		if (source instanceof HasLayerPlugin) {
-			setPlugin(LayerPlugins.copyOf(((HasLayerPlugin) source).getPlugin()));
+            plugins.clear();
+            for (final LayerPlugin plugin : ((HasLayerPlugin) source).getPlugins()) {
+                setPlugin(plugin);
+            }
 		}
 	}
 	

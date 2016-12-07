@@ -3,6 +3,9 @@ package fr.rca.mapmaker.model.map;
 import fr.rca.mapmaker.operation.OperationParser;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -19,7 +22,7 @@ public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
 	private int width;
 	private int height;
 	
-	private LayerPlugin plugin;
+	private final Map<String, LayerPlugin> plugins = new HashMap<String, LayerPlugin>();
 	
 	private int[] tiles;
 	
@@ -71,7 +74,9 @@ public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
 	public void restoreData(DataLayer source) {
 		restoreData(source.copyData(), source.getWidth(), source.getHeight());
 		if (source instanceof HasLayerPlugin) {
-			setPlugin(LayerPlugins.copyOf(((HasLayerPlugin) source).getPlugin()));
+            for (final LayerPlugin plugin : ((HasLayerPlugin) source).getPlugins()) {
+                setPlugin(plugin);
+            }
 		}
 	}
 
@@ -106,15 +111,15 @@ public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
 		return getTile(p.x, p.y);
 	}
 
-	@Override
-	public LayerPlugin getPlugin() {
-		return plugin;
-	}
-
+    @Override
+    public <L extends LayerPlugin> L getPlugin(Class<L> clazz) {
+        return (L) plugins.get(LayerPlugins.nameOf(clazz));
+    }
+    
 	@Override
 	public void setPlugin(LayerPlugin plugin) {
-		this.plugin = plugin;
-		
+		plugins.put(plugin.name(), plugin);
+        
 		if (plugin instanceof FunctionLayerPlugin) {
 			final String function = ((FunctionLayerPlugin) plugin).getFunction();
 			
@@ -136,7 +141,17 @@ public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
 			}
 		}
 	}
-	
+
+    @Override
+    public <L extends LayerPlugin> void removePlugin(Class<L> clazz) {
+        plugins.remove(LayerPlugins.nameOf(clazz));
+    }
+    
+    @Override
+    public Collection<LayerPlugin> getPlugins() {
+        return plugins.values();
+    }
+
 	public void setSize(int columns, int rows) {
 		this.columns = columns;
 		this.rows = rows;

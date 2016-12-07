@@ -93,8 +93,9 @@ public class TileMapEditor extends javax.swing.JDialog {
 		nextLayerButton.setVisible(false);
 		hitboxToggleButton.setVisible(isHitboxAvailable());
 		
-		if (drawLayer.getPlugin() instanceof FunctionLayerPlugin) {
-			final String function = ((FunctionLayerPlugin) drawLayer.getPlugin()).getFunction();
+        final FunctionLayerPlugin plugin = drawLayer.getPlugin(FunctionLayerPlugin.class);
+		if (plugin != null) {
+			final String function = plugin.getFunction();
 			if (function != null) {
 				drawMap.add(Function.asTileLayer(function, drawLayer.getWidth(), drawLayer.getHeight()));
 			}
@@ -172,7 +173,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 	}
 	
 	public boolean isHitboxAvailable() {
-		return drawLayer.getPlugin() instanceof HitboxLayerPlugin;
+		return drawLayer.getPlugin(HitboxLayerPlugin.class) != null;
 	}
 	
 	public boolean isEditingPlugin() {
@@ -766,7 +767,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 			clipboardData = new TileLayer(source);
 			
 		} else {
-			pluginClipboardData = LayerPlugins.copyOf(drawLayer.getPlugin());
+			pluginClipboardData = LayerPlugins.copyOf(drawLayer.getPlugin(HitboxLayerPlugin.class));
 		}
 		
 		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());

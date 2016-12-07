@@ -4,7 +4,6 @@ import fr.rca.mapmaker.model.HasPropertyChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.Layer;
-import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.ui.Grid;
@@ -41,15 +40,10 @@ public class HitboxTool extends AbstractShapeTool implements Tool {
 		
 		final Layer layer = grid.getActiveLayer();
 		if (layer instanceof HasPropertyChangeListeners) {
-			((HasPropertyChangeListeners) layer).addPropertyChangeListener("plugin", new PropertyChangeListener() {
+			((HasPropertyChangeListeners) layer).addPropertyChangeListener("plugin-hitbox", new PropertyChangeListener() {
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
-					final LayerPlugin plugin = (LayerPlugin) evt.getNewValue();
-					if (plugin instanceof HitboxLayerPlugin) {
-						hitboxPlugin = (HitboxLayerPlugin) plugin;
-					} else {
-						hitboxPlugin = null;
-					}
+					hitboxPlugin = (HitboxLayerPlugin) evt.getNewValue();
 					redrawHitbox();
 				}
 			});

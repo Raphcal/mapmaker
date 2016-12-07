@@ -7,6 +7,13 @@ package fr.rca.mapmaker.model.map;
  */
 public interface LayerPlugin {
 	
+    /**
+     * Nom du plugin.
+     * 
+     * @return Le nom du plugin.
+     */
+    String name();
+    
 	/**
 	 * Copie les données du plugin.
 	 * 

@@ -6,7 +6,6 @@ import fr.rca.mapmaker.model.HasFunctionHitbox;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.FunctionLayerPlugin;
-import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.ui.ImageRenderer;
 import java.awt.Dimension;
@@ -138,9 +137,9 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 
 	@Override
 	public String getFunction(int index) {
-		final LayerPlugin plugin = sources.get(index).getPlugin();
-		if (plugin instanceof FunctionLayerPlugin) {
-			return ((FunctionLayerPlugin) plugin).getFunction();
+		final FunctionLayerPlugin plugin = sources.get(index).getPlugin(FunctionLayerPlugin.class);
+		if (plugin != null) {
+			return plugin.getFunction();
 		} else {
 			return null;
 		}
@@ -148,7 +147,11 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 
 	@Override
 	public void setFunction(int index, String function) {
-		sources.get(index).setPlugin(new FunctionLayerPlugin(function));
+        if (function != null) {
+            sources.get(index).setPlugin(new FunctionLayerPlugin(function));
+        } else {
+            sources.get(index).removePlugin(FunctionLayerPlugin.class);
+        }
 	}
 
 	public ColorPalette getColorPalette() {

@@ -6,7 +6,6 @@ import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
-import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.PackMap;
 import fr.rca.mapmaker.model.map.SingleLayerTileMap;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -100,10 +99,10 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 				Streams.write(frame.getHeight(), outputStream);
 				
 				if (version >= InternalFormat.VERSION_8) {
-					final LayerPlugin plugin = frame.getPlugin();
+					final HitboxLayerPlugin plugin = frame.getPlugin(HitboxLayerPlugin.class);
 					final Rectangle hitbox;
-					if (plugin instanceof HitboxLayerPlugin) {
-						hitbox = ((HitboxLayerPlugin) plugin).getHitbox();
+					if (plugin != null) {
+						hitbox = plugin.getHitbox();
 					} else {
 						hitbox = null;
 					}

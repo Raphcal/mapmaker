@@ -65,10 +65,10 @@ public class AnimationDataHandler implements DataHandler<Animation>, HasVersion 
 				tileLayerHandler.write(frame, outputStream);
 				
 				if (version >= InternalFormat.VERSION_8) {
-					final LayerPlugin plugin = frame.getPlugin();
+					final HitboxLayerPlugin plugin = frame.getPlugin(HitboxLayerPlugin.class);
 					final Rectangle hitbox;
-					if (plugin instanceof HitboxLayerPlugin) {
-						hitbox = ((HitboxLayerPlugin) plugin).getHitbox();
+					if (plugin != null) {
+						hitbox = plugin.getHitbox();
 					} else {
 						hitbox = null;
 					}

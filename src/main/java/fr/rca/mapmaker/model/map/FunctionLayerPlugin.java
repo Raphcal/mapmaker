@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public class FunctionLayerPlugin implements LayerPlugin {
 	
+    public static final String NAME = "function";
+    
 	private String function;
 
 	public FunctionLayerPlugin() {
@@ -30,5 +32,10 @@ public class FunctionLayerPlugin implements LayerPlugin {
 	public void setFunction(@Nullable String function) {
 		this.function = function;
 	}
+
+    @Override
+    public String name() {
+        return NAME;
+    }
 	
 }

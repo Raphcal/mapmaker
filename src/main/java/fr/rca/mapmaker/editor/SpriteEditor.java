@@ -529,7 +529,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 			
 			for(double angle = step; angle < 360; angle += step) {
 				for(final TileLayer frame : frames) {
-					final TileLayer rotatedFrame = new TileLayer(frame.getWidth(), frame.getHeight(), LayerPlugins.copyOf(frame.getPlugin()));
+					final TileLayer rotatedFrame = new TileLayer(frame.getWidth(), frame.getHeight(), LayerPlugins.copyOf(frame.getPlugins()));
 					rotatedFrame.restoreData(frame.copyData(), null);
 					
 					if(((int)angle) % 90 == 0) {
