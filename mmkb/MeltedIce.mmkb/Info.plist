@@ -116,12 +116,6 @@
 		</dict>
 		<dict>
 			<key>instances</key>
-			<string>map16.ins</string>
-			<key>map</key>
-			<string>map16.map</string>
-		</dict>
-		<dict>
-			<key>instances</key>
 			<string>map17.ins</string>
 			<key>map</key>
 			<string>map17.map</string>
