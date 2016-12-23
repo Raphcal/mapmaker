@@ -30,6 +30,7 @@ public final class Instructions {
 		map.put("-", new Substract());
 		map.put("*", new Multiply());
 		map.put("/", new Divide());
+		map.put("^", new Pow());
 		
 		map.put("min", new Minimum());
 		map.put("max", new Maximum());

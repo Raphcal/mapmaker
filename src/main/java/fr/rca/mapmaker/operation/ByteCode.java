@@ -9,6 +9,7 @@ public enum ByteCode {
 	SUBSTRACT('-'),
 	MULTIPLY('*'),
 	DIVIDE('/'),
+	POW('^'),
 	NEGATIVE('n'),
 	CONSTANT('C'),
 	X('x'),
@@ -35,7 +36,14 @@ public enum ByteCode {
 	}
 	
 	public String nameCapitalized() {
-		return name().substring(0, 1) + name().substring(1).toLowerCase();
+        final String[] parts = name().toLowerCase().split("_");
+        final StringBuilder stringBuilder = new StringBuilder(parts[0]);
+        for (int index = 1; index < parts.length; index++) {
+            final String part = parts[index];
+            stringBuilder.append(Character.toUpperCase(part.charAt(0)))
+                    .append(part.substring(1));
+        }
+		return stringBuilder.toString();
 	}
 	
 	public static void main(String[] args) {
