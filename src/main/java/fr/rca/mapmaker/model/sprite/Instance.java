@@ -97,8 +97,11 @@ public class Instance extends JComponent {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		final int width = (int) (image.getWidth() * zoom);
-		final int height = (int) (image.getHeight() * zoom);
+		final Double variableWidth = variables.get("width");
+		final Double variableHeight = variables.get("height");
+		
+		final int width = (int) (zoom * (variableWidth == null ? image.getWidth() : variableWidth));
+		final int height = (int) (zoom * (variableHeight == null ? image.getHeight() : variableHeight));
 		
 		VariableDeclarationParser.parse(script).execute(this);
 		
