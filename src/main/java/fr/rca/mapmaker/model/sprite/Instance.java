@@ -81,10 +81,10 @@ public class Instance extends JComponent {
 	}
 	
 	public void updateBounds() {
-		final Sprite sprite = getSprite();
+		final Dimension dimension = getDimension();
 		
-		setPreferredSize(new Dimension((int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom)));
-		setBounds((int) (point.x * zoom), (int) (point.y * zoom), (int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom));
+		setPreferredSize(dimension);
+		setBounds((int) (point.x * zoom), (int) (point.y * zoom), dimension.width, dimension.height);
 	}
 	
 	public void previewTranslation(int x, int y) {
@@ -97,18 +97,14 @@ public class Instance extends JComponent {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		final Double variableWidth = variables.get("width");
-		final Double variableHeight = variables.get("height");
-		
-		final int width = (int) (zoom * (variableWidth == null ? image.getWidth() : variableWidth));
-		final int height = (int) (zoom * (variableHeight == null ? image.getHeight() : variableHeight));
+		final Dimension dimension = getDimension();
 		
 		VariableDeclarationParser.parse(script).execute(this);
 		
 		if (direction == Direction.RIGHT) {
-			g.drawImage(image, 0, 0, width, height, null);
+			g.drawImage(image, 0, 0, dimension.width, dimension.height, null);
 		} else {
-			g.drawImage(image, width, 0, -width, height, null);
+			g.drawImage(image, dimension.width, 0, -dimension.width, dimension.height, null);
 		}
 	}
 	
@@ -211,6 +207,24 @@ public class Instance extends JComponent {
 
 	public void setDirection(Direction direction) {
 		this.direction = direction;
+	}
+	
+	public Dimension getDimension() {
+		final Sprite sprite = getSprite();
+		
+		if (sprite == null) {
+			return new Dimension(32, 32);
+		}
+		
+		VariableDeclarationParser.parse(script).execute(this);
+		
+		final Double variableWidth = variables.get("width");
+		final Double variableHeight = variables.get("height");
+		
+		final int width = (int) (zoom * (variableWidth == null ? sprite.getWidth() : variableWidth));
+		final int height = (int) (zoom * (variableHeight == null ? sprite.getHeight() : variableHeight));
+		
+		return new Dimension(width, height);
 	}
 	
 }
