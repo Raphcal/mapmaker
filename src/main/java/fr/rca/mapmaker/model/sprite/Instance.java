@@ -81,25 +81,29 @@ public class Instance extends JComponent {
 	}
 	
 	public void updateBounds() {
-		final Dimension dimension = getDimension();
-		
+		updateBounds(getDimension());
+	}
+	
+	private void updateBounds(Dimension dimension) {
 		setPreferredSize(dimension);
 		setBounds((int) (point.x * zoom), (int) (point.y * zoom), dimension.width, dimension.height);
 	}
 	
 	public void previewTranslation(int x, int y) {
-		final Sprite sprite = getSprite();
+		final Dimension dimension = getDimension();
 		
 		int translationX = (int) ((point.x + x) * zoom);
 		int translationY = (int) ((point.y + y) * zoom);
-		setBounds(translationX, translationY, (int) (sprite.getWidth() * zoom), (int) (sprite.getHeight() * zoom));
+		setBounds(translationX, translationY, dimension.width, dimension.height);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		final Dimension dimension = getDimension();
 		
-		VariableDeclarationParser.parse(script).execute(this);
+		if (!getPreferredSize().equals(dimension)) {
+			updateBounds(dimension);
+		}
 		
 		if (direction == Direction.RIGHT) {
 			g.drawImage(image, 0, 0, dimension.width, dimension.height, null);
