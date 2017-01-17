@@ -61,7 +61,18 @@ public class Operation {
 	 * @param instance Instance à modifier.
 	 */
 	public void execute(final Instance instance) {
-		final Deque<Double> stack = new ArrayDeque<Double>();
+		final Deque<Double> stack = new ArrayDeque<Double>() {
+
+			@Override
+			public Double pop() {
+				if (!isEmpty()) {
+					return super.pop();
+				} else {
+					return 1.0;
+				}
+			}
+			
+		};
 		
 		for(final Instruction instruction : instructions) {
 			instruction.execute(0, stack, instance);
