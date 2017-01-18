@@ -87,16 +87,20 @@ public class PackMapDataHandler implements DataHandler<PackMap>, HasVersion {
 			
 			for(final TileLayer frame : frames) {
 				Point point = t.getPoint(maps.get(frame));
+				int width = frame.getWidth();
+				int height = frame.getHeight();
 				
 				if (point == null) {
 					LOGGER.warn(sprite.getName() + " : frame " + frame + " non trouvée dans PackMap.");
 					point = new Point();
+					width = 0;
+					height = 0;
 				}
 				
 				Streams.write(point.x, outputStream);
 				Streams.write(point.y, outputStream);
-				Streams.write(frame.getWidth(), outputStream);
-				Streams.write(frame.getHeight(), outputStream);
+				Streams.write(width, outputStream);
+				Streams.write(height, outputStream);
 				
 				if (version >= InternalFormat.VERSION_8) {
 					final HitboxLayerPlugin plugin = frame.getPlugin(HitboxLayerPlugin.class);
