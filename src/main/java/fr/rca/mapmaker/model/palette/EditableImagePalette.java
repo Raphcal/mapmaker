@@ -3,12 +3,9 @@ package fr.rca.mapmaker.model.palette;
 import fr.rca.mapmaker.editor.TileMapEditor;
 import fr.rca.mapmaker.model.Duplicatable;
 import fr.rca.mapmaker.model.HasFunctionHitbox;
-import fr.rca.mapmaker.model.HasSizeChangeListeners;
-import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.FunctionLayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.ui.ImageRenderer;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,22 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 
-public class EditableImagePalette implements EditablePalette, HasSizeChangeListeners, HasFunctionHitbox, Duplicatable<EditableImagePalette> {
-
-	private final List<BufferedImage> tiles = new ArrayList<BufferedImage>();
-	private final List<TileLayer> sources = new ArrayList<TileLayer>();
-	private final int tileSize;
-	private final int columns;
-	private int selectedTile;
+public class EditableImagePalette extends AbstractEditablePalette<TileLayer> implements HasFunctionHitbox, Duplicatable<EditableImagePalette> {
 	
-	private String name;
-	
-	private ColorPalette palette;
+	private final ColorPalette palette;
 	
 	private final ImageRenderer renderer = new ImageRenderer();
 			
-	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
-	
 	public EditableImagePalette(int tileSize, int columns) {
 		this.tileSize = tileSize;
 		this.columns = columns;
@@ -56,16 +43,6 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	}
 
 	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	@Override
-	public boolean isEditable() {
-		return true;
-	}
-
-	@Override
 	public void paintTile(Graphics g, int tile, int x, int y, int size) {
 		if(tile >= 0 && tile < tiles.size()) {
 			g.drawImage(tiles.get(tile), x, y, size, size, null);
@@ -73,68 +50,10 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	}
 
 	@Override
-	public int getTileSize() {
-		return tileSize;
-	}
-
-	@Override
-	public int getTileSize(int tile) {
-		return getTileSize();
-	}
-	
-	@Override
-	public int size() {
-		return tiles.size(); //  + (tiles.size() % columns) + columns
-	}
-	
-	@Override
-	public int getSelectedTile() {
-		return selectedTile;
-	}
-	
-	@Override
-	public void setSelectedTile(int tile) {
-		this.selectedTile = tile;
-	}
-	
-	@Override
-	public void refresh() {
-	}
-
-	public int getColumns() {
-		return columns;
-	}
-	
-	public void add(BufferedImage tile) {
-		tiles.add(tile);
-	}
-	
-	public BufferedImage get(int index) {
-		return tiles.get(index);
-	}
-	
-	private void renderTile(int index) {
-		final BufferedImage image = render(sources.get(index));
-		
-		if(tiles.size() == index) {
-			tiles.add(image);
-		
-		} else if(tiles.size() > index) {
-			tiles.set(index, image);
-		
-		} else {
-			throw new IndexOutOfBoundsException("L'index " + index + " n'existe pas.");
-		}
-	}
-	
-	private BufferedImage render(TileLayer layer) {
+	protected BufferedImage render(TileLayer layer) {
 		return renderer.renderImage(layer, palette, 1);
 	}
 	
-	public TileLayer getSource(int index) {
-		return sources.get(index);
-	}
-
 	@Override
 	public String getFunction(int index) {
 		final FunctionLayerPlugin plugin = sources.get(index).getPlugin(FunctionLayerPlugin.class);
@@ -173,98 +92,6 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 	}
 
 	@Override
-	public void removeTile(int index) {
-		if(index >= 0 && index < sources.size()) {
-			sources.set(index, new TileLayer(tileSize, tileSize));
-			refreshSource(index);
-		}
-	}
-	
-	@Override
-	public void insertRowBefore() {
-		insert(selectedTile - selectedTile % columns, columns);
-	}
-	
-	@Override
-	public void insertRowAfter() {
-		insert(columns + selectedTile - selectedTile % columns, columns);
-	}
-	
-	public void insert(int index, int count) {
-		final Dimension oldSize = getSize();
-		
-		// Ajout des nouvelles tuiles
-		for(int i = 0; i < count; i++) {
-			final TileLayer layer = new TileLayer(tileSize, tileSize);
-			sources.add(index, layer);
-			tiles.add(index, render(layer));
-		}
-		
-		fireSizeChanged(oldSize, getSize());
-	}
-	
-	@Override
-	public void removeRow() {
-		remove(selectedTile - selectedTile % columns, columns);
-	}
-	
-	public void remove(int index, int count) {
-		final Dimension oldSize = getSize();
-		
-		// Suppression des tuiles
-		for(int i = 0; i < count; i++) {
-			sources.remove(index);
-			tiles.remove(index);
-		}
-		
-		fireSizeChanged(oldSize, getSize());
-	}
-	
-	public void refreshSource(int index) {
-		if(index >= sources.size() - columns) {
-			final Dimension oldSize = getSize();
-			
-			for(int i = 0; i < columns; i++) {
-				sources.add(new TileLayer(tileSize, tileSize));
-				renderTile(sources.size() - 1);
-			}
-			
-			fireSizeChanged(oldSize, getSize());
-		}
-		
-		renderTile(index);
-	}
-	
-	private Dimension getSize() {
-		return new Dimension(columns, sources.size() / columns);
-	}
-	
-	@Override
-	public void addSizeChangeListener(SizeChangeListener listener) {
-		sizeChangeListeners.add(listener);
-	}
-	
-	@Override
-	public void removeSizeChangeListener(SizeChangeListener listener) {
-		sizeChangeListeners.remove(listener);
-	}
-	
-	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
-		for(final SizeChangeListener listener : sizeChangeListeners) {
-			listener.sizeChanged(this, oldSize, newSize);
-		}
-	}
-
-	@Override
-	public String toString() {
-		if(name != null) {
-			return name;
-		} else {
-			return super.toString();
-		}
-	}
-
-	@Override
 	public EditableImagePalette duplicate() {
 		final List<TileLayer> duplicatedSources = new ArrayList<TileLayer>();
 		
@@ -277,4 +104,10 @@ public class EditableImagePalette implements EditablePalette, HasSizeChangeListe
 		
 		return duplicate;
 	}
+
+	@Override
+	protected TileLayer createEmptySource() {
+		return new TileLayer(tileSize, tileSize);
+	}
+	
 }
