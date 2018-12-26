@@ -13,6 +13,8 @@
 		<java.version>1.7</java.version>
 		<java.source.encoding>UTF-8</java.source.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <bundle.java.version>jdk1.8.0_191.jdk</bundle.java.version>
+        <bundle.signing.certificate>Mac Developer: Raphael Calabro</bundle.signing.certificate>
 	</properties>
 	
 	<build>
@@ -66,7 +68,7 @@
 									shortversion="1.0"
 									icon="src/main/app/MapMaker.icns"
 									mainclassname="fr.rca.mapmaker.MapMaker">
-									<runtime dir="/Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home/" />
+									<runtime dir="/Library/Java/JavaVirtualMachines/${bundle.java.version}/Contents/Home/" />
 									<classpath file="target/mapmaker-1.0.0.jar" />
 									<classpath file="${env.HOME}/.m2/repository/org/jdesktop/beansbinding/1.2.1/beansbinding-1.2.1.jar" />
 									<classpath file="${env.HOME}/.m2/repository/org/eclipse/jgit/org.eclipse.jgit/3.7.0.201502260915-r/org.eclipse.jgit-3.7.0.201502260915-r.jar" />
@@ -81,6 +83,18 @@
 								<copy file="Info.plist" toFile="target/MapMaker.app/Contents/Info.plist" overwrite="true"/>
 								<copy file="src/main/app/MmkDocument.icns" toDir="target/MapMaker.app/Contents/Resources"/>
 								<copy file="src/main/app/MmkbDocument.icns" toDir="target/MapMaker.app/Contents/Resources"/>
+                                
+                                <exec executable="codesign">
+                                    <arg value="-s"/>
+                                    <arg value="${bundle.signing.certificate}"/>
+                                    <arg value="target/MapMaker.app/Contents/PlugIns/${bundle.java.version}"/>
+                                </exec>
+                                
+                                <exec executable="codesign">
+                                    <arg value="-s"/>
+                                    <arg value="${bundle.signing.certificate}"/>
+                                    <arg value="target/MapMaker.app"/>
+                                </exec>
 							</target>
 						</configuration>
 						<goals>
