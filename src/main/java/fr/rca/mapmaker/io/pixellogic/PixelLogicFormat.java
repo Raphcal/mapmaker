@@ -16,7 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- *
+ * Format dédié à l'export vers PixelLogic.
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class PixelLogicFormat extends AbstractFormat {

@@ -9,6 +9,7 @@ import fr.rca.mapmaker.io.mkz.MKZFormat;
 import fr.rca.mapmaker.io.mml.MMLFormat;
 import fr.rca.mapmaker.io.pixellogic.PixelLogicFormat;
 import fr.rca.mapmaker.io.png.PNGImageFormat;
+import fr.rca.mapmaker.io.shmup.ShmupFormat;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,6 +35,7 @@ public final class Formats {
 		addFormat(formats, new AVMFormat());
 		addFormat(formats, new PixelLogicFormat());
 		addFormat(formats, new PuzzleLevelFormat());
+        addFormat(formats, new ShmupFormat());
 		
 		FORMATS = formats;
 	}

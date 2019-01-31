@@ -4,6 +4,7 @@ import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  *
@@ -22,11 +23,12 @@ public class SingleLayerTileMap implements Comparable<SingleLayerTileMap> {
     public static SingleLayerTileMap withTileFromImagePalette(EditableImagePalette palette, int index) {
         final TileLayer source = palette.getSource(index);
         final TileLayer cross = new TileLayer(source.getWidth() + 2, source.getHeight() + 2);
-        cross.copyAndTranslate(source, 1, 0);
-        cross.copyAndTranslate(source, 0, 1);
-        cross.copyAndTranslate(source, 2, 1);
-        cross.copyAndTranslate(source, 1, 2);
-        cross.copyAndTranslate(source, 1, 1);
+        cross.mergeAtPoint(source, new Point(1, 0));
+        cross.mergeAtPoint(source, new Point(0, 1));
+        cross.mergeAtPoint(source, new Point(2, 1));
+        cross.mergeAtPoint(source, new Point(1, 2));
+        cross.clear(new Rectangle(1, 1, source.getWidth(), source.getHeight()));
+        cross.mergeAtPoint(source, new Point(1, 1));
         return new SingleLayerTileMap(cross, palette.getColorPalette());
     }
     
