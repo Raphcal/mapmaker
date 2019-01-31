@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.model.map;
 
+import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Graphics2D;
@@ -7,6 +8,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
  * 
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class PackMap {
+public class PackMap implements Packer {
 	private static final int HORIZONTAL = 0;
 	private static final int VERTICAL = 1;
 
@@ -44,6 +46,7 @@ public class PackMap {
 	
 	private Map<TileLayer, SingleLayerTileMap> tileLayerToTileMap;
 	private Collection<Sprite> sprites;
+    private EditableImagePalette imagePalette;
 	
 	public PackMap(int width, int height, int margin) {
 		this.width = width;
@@ -52,6 +55,47 @@ public class PackMap {
 		this.topLeft = new Entry(width, height);
 		this.locations = new HashMap<SingleLayerTileMap, Point>();
 	}
+
+    @Override
+    public void addAll(EditableImagePalette palette, Collection<Sprite> sprites, Double direction) {
+        final Map<TileLayer, SingleLayerTileMap> maps = new LinkedHashMap<TileLayer, SingleLayerTileMap>();
+		
+        if (palette != null) {
+            for (int index = 0; index < palette.size(); index++) {
+                final TileLayer map = palette.getSource(index);
+                maps.put(map, SingleLayerTileMap.withTileFromImagePalette(palette, index));
+            }
+        }
+        
+        if (sprites != null) {
+            for(final Sprite sprite : sprites) {
+                if (sprite.isExportable()) {
+                    addMapsOfSprite(sprite, direction, maps);
+                }
+            }
+        }
+		
+        // Tri des cartes du plus haut au plus petit.
+		final TreeSet<SingleLayerTileMap> orderedSet = new TreeSet<>();
+		orderedSet.addAll(maps.values());
+		
+        boolean valid = false;
+		for(int pot = 0; !valid; pot++) {
+			final int size = (int) Math.pow(2, pot);
+			this.width = size;
+            this.height = size;
+            this.topLeft = new Entry(width, height);
+            this.locations = new HashMap<>();
+            
+            if (addAll(orderedSet)) {
+                valid = true;
+            }
+		}
+        
+		this.tileLayerToTileMap = maps;
+		this.sprites = sprites;
+        this.imagePalette = palette;
+    }
 	
 	public Entry get(int column, int row) {
 		Entry cell = topLeft;
@@ -81,6 +125,7 @@ public class PackMap {
 	}
 	
 	@Nullable
+    @Override
 	public Point getPoint(SingleLayerTileMap map) {
 		return locations.get(map);
 	}
@@ -155,6 +200,7 @@ public class PackMap {
 	 * @param maps
 	 * @return 
 	 */
+    @Override
 	public boolean addAll(Set<SingleLayerTileMap> maps) {
 		for(final SingleLayerTileMap map : maps) {
 			Point location = null;
@@ -280,14 +326,21 @@ public class PackMap {
 		return getEnclosingWidth() * height;
 	}
 
+    @Override
 	public Map<TileLayer, SingleLayerTileMap> getTileLayerToTileMap() {
 		return tileLayerToTileMap;
 	}
 
+    @Override
 	public Collection<Sprite> getSprites() {
 		return sprites;
 	}
+
+    public EditableImagePalette getImagePalette() {
+        return imagePalette;
+    }
 	
+    @Override
 	public BufferedImage renderImage() {
 		final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		final Graphics2D graphics = image.createGraphics();

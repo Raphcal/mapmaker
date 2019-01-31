@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.model.map;
 
+import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -18,6 +19,17 @@ public class SingleLayerTileMap implements Comparable<SingleLayerTileMap> {
 	 */
 	private final Layer layer;
 
+    public static SingleLayerTileMap withTileFromImagePalette(EditableImagePalette palette, int index) {
+        final TileLayer source = palette.getSource(index);
+        final TileLayer cross = new TileLayer(source.getWidth() + 2, source.getHeight() + 2);
+        cross.copyAndTranslate(source, 1, 0);
+        cross.copyAndTranslate(source, 0, 1);
+        cross.copyAndTranslate(source, 2, 1);
+        cross.copyAndTranslate(source, 1, 2);
+        cross.copyAndTranslate(source, 1, 1);
+        return new SingleLayerTileMap(cross, palette.getColorPalette());
+    }
+    
 	public SingleLayerTileMap(Layer layer, Palette palette) {
 		this.layer = layer;
 		this.palette = palette;

@@ -5,7 +5,7 @@ import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.internal.InternalFormat;
-import fr.rca.mapmaker.model.map.PackMap;
+import fr.rca.mapmaker.model.map.Packer;
 import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -38,7 +38,7 @@ public class MKZFormat extends AbstractFormat {
 		addHandler(TileMap.class, new TileMapDataHandler(this));
 		addHandler(Sprite.class, new SpriteDataHandler(this));
 		addHandler(Instance.class, new InstanceDataHandler());
-		addHandler(PackMap.class, new PackMapDataHandler(this));
+		addHandler(Packer.class, new PackMapDataHandler(this));
 		
 		// Handlers du format interne.
 		addHandler(Color.class, new fr.rca.mapmaker.io.internal.ColorDataHandler());

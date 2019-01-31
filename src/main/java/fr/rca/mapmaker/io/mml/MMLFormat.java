@@ -11,7 +11,8 @@ import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.io.mkz.ProjectDataHandler;
-import fr.rca.mapmaker.model.map.PackMap;
+import fr.rca.mapmaker.model.map.Packer;
+import fr.rca.mapmaker.model.map.PackerFactory;
 import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -45,7 +46,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MMLFormat.class);
 	private static final double STEP = 100 / 8;
 	
-	private PackMap cachedPackMap;
+	private Packer cachedPackMap;
 	private BufferedImage cachedAtlas;
 	
 	public MMLFormat() {
@@ -57,7 +58,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 		addHandler(TileMap.class, new fr.rca.mapmaker.io.mkz.TileMapDataHandler(this));
 		addHandler(Sprite.class, new fr.rca.mapmaker.io.mkz.SpriteDataHandler(this));
 		addHandler(Instance.class, new fr.rca.mapmaker.io.mkz.InstanceDataHandler());
-		addHandler(PackMap.class, new fr.rca.mapmaker.io.mkz.PackMapDataHandler(this));
+		addHandler(Packer.class, new fr.rca.mapmaker.io.mkz.PackMapDataHandler(this));
 		
 		// Handlers du format interne.
 		addHandler(Color.class, new fr.rca.mapmaker.io.internal.ColorDataHandler());
@@ -78,12 +79,14 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 					final SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 						@Override
 						protected Void doInBackground() throws Exception {
-							LOGGER.info("Mise en cache des sprites...");
-							cachedPackMap = PackMap.packSprites(sprites, 1);
-							LOGGER.info("PackMap mis en cache.");
-							cachedAtlas = cachedPackMap.renderImage();
-							LOGGER.info("Atlas mis en cache.");
-							return null;
+                            LOGGER.info("Mise en cache des sprites...");
+                            final Packer packer = PackerFactory.createPacker();
+                            packer.addAll(null, sprites, null);
+                            cachedPackMap = packer;
+                            LOGGER.info("PackMap mis en cache.");
+                            cachedAtlas = cachedPackMap.renderImage();
+                            LOGGER.info("Atlas mis en cache.");
+                            return null;
 						}
 					};
 					worker.execute();
@@ -165,34 +168,39 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 			instanceStream.close();
 			
 			// Sprites
-			final PackMap packMap = cachedPackMap != null ? cachedPackMap : PackMap.packSprites(project.getSprites(), 1);
-			cachedPackMap = packMap;
+            final Packer packMap;
+            if (cachedPackMap != null) {
+                packMap = cachedPackMap;
+            } else {
+                final Packer packer = PackerFactory.createPacker();
+                packer.addAll(null, project.getSprites(), null);
+                packMap = packer;
+                cachedPackMap = packer;
+            }
 			
-			if(packMap != null) {
-				// Image
-				final DataHandler<BufferedImage> imageDataHandler = getHandler(BufferedImage.class);
+            // Image
+            final DataHandler<BufferedImage> imageDataHandler = getHandler(BufferedImage.class);
 
-				final FileOutputStream imageOutputStream = new FileOutputStream(new File(file, ProjectDataHandler.IMAGE_FILE_NAME));
-				try {
-					final BufferedImage image = cachedAtlas != null ? cachedAtlas : packMap.renderImage();
-					cachedAtlas = image;
-					imageDataHandler.write(image, imageOutputStream);
-				} finally {
-					imageOutputStream.close();
-				}
-				progression = progress(progression + STEP, progressListener);
+            final FileOutputStream imageOutputStream = new FileOutputStream(new File(file, ProjectDataHandler.IMAGE_FILE_NAME));
+            try {
+                final BufferedImage image = cachedAtlas != null ? cachedAtlas : packMap.renderImage();
+                cachedAtlas = image;
+                imageDataHandler.write(image, imageOutputStream);
+            } finally {
+                imageOutputStream.close();
+            }
+            progression = progress(progression + STEP, progressListener);
 
-				// Atlas
-				final DataHandler<PackMap> packMapDataHandler = getHandler(PackMap.class);
+            // Atlas
+            final DataHandler<Packer> packMapDataHandler = getHandler(Packer.class);
 
-				final FileOutputStream dataOutputStream = new FileOutputStream(new File(file, ProjectDataHandler.DATA_FILE_NAME));
-				try {
-					packMapDataHandler.write(packMap, dataOutputStream);
-				} finally {
-					dataOutputStream.close();
-				}
-				progress(progression + STEP, progressListener);
-			}
+            final FileOutputStream dataOutputStream = new FileOutputStream(new File(file, ProjectDataHandler.DATA_FILE_NAME));
+            try {
+                packMapDataHandler.write(packMap, dataOutputStream);
+            } finally {
+                dataOutputStream.close();
+            }
+            progress(progression + STEP, progressListener);
 			
 			progress(100, progressListener);
 		} catch(IOException e) {

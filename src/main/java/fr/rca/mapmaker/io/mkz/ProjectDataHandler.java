@@ -5,7 +5,8 @@ import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.common.Streams;
-import fr.rca.mapmaker.model.map.PackMap;
+import fr.rca.mapmaker.model.map.Packer;
+import fr.rca.mapmaker.model.map.PackerFactory;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
@@ -107,18 +108,17 @@ public class ProjectDataHandler implements DataHandler<Project> {
 		final List<Sprite> sprites = t.getSprites();
 		
 		// Feuille contenant tous les sprites
-		final PackMap spritePackMap = PackMap.packSprites(sprites, 1);
+        final Packer spritePackMap = PackerFactory.createPacker();
+        spritePackMap.addAll(null, sprites, null);
 		
-		if(spritePackMap != null) {
-			zipOutputStream.putNextEntry(new ZipEntry(IMAGE_FILE_NAME));
-			imageHandler.write(spritePackMap.renderImage(), zipOutputStream);
-			zipOutputStream.closeEntry();
-			
-			final DataHandler<PackMap> packMapHandler = format.getHandler(PackMap.class);
-			zipOutputStream.putNextEntry(new ZipEntry(DATA_FILE_NAME));
-			packMapHandler.write(spritePackMap, zipOutputStream);
-			zipOutputStream.closeEntry();
-		}
+        zipOutputStream.putNextEntry(new ZipEntry(IMAGE_FILE_NAME));
+        imageHandler.write(spritePackMap.renderImage(), zipOutputStream);
+        zipOutputStream.closeEntry();
+
+        final DataHandler<Packer> packMapHandler = format.getHandler(Packer.class);
+        zipOutputStream.putNextEntry(new ZipEntry(DATA_FILE_NAME));
+        packMapHandler.write(spritePackMap, zipOutputStream);
+        zipOutputStream.closeEntry();
 		
 		// Feuilles de sprites individuelles
 		final DataHandler<Sprite> spriteHandler = format.getHandler(Sprite.class);

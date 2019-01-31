@@ -4,7 +4,8 @@ import fr.rca.mapmaker.editor.ProgressDialog;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.mkz.MKZFormat;
-import fr.rca.mapmaker.model.map.PackMap;
+import fr.rca.mapmaker.model.map.Packer;
+import fr.rca.mapmaker.model.map.PackerFactory;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.project.Project;
@@ -107,32 +108,32 @@ public abstract class AutoDeployer extends FileFilter {
 	}
 	
 	static void deploySprites(Collection<Sprite> sprites, File folder, List<String> files) throws IOException {
-		final PackMap packMap = PackMap.packSprites(sprites, 1, 0.0);
-		if (packMap != null) {
-			// Image
-			final DataHandler<BufferedImage> imageDataHandler = FORMAT.getHandler(BufferedImage.class);
-			
-			final File imageFile = new File(folder, fr.rca.mapmaker.io.mkz.ProjectDataHandler.IMAGE_FILE_NAME);
-			final FileOutputStream imageOutputStream = new FileOutputStream(imageFile);
-			try {
-				imageDataHandler.write(packMap.renderImage(), imageOutputStream);
-				addFile(imageFile, files);
-			} finally {
-				imageOutputStream.close();
-			}
-			
-			// Atlas
-			final DataHandler<PackMap> packMapDataHandler = FORMAT.getHandler(PackMap.class);
-			
-			final File dataFile = new File(folder, fr.rca.mapmaker.io.mkz.ProjectDataHandler.DATA_FILE_NAME);
-			final FileOutputStream dataOutputStream = new FileOutputStream(dataFile);
-			try {
-				packMapDataHandler.write(packMap, dataOutputStream);
-				addFile(dataFile, files);
-			} finally {
-				dataOutputStream.close();
-			}
-		}
+        final Packer packMap = PackerFactory.createPacker();
+        packMap.addAll(null, sprites, 0.0);
+        
+        // Image
+        final DataHandler<BufferedImage> imageDataHandler = FORMAT.getHandler(BufferedImage.class);
+
+        final File imageFile = new File(folder, fr.rca.mapmaker.io.mkz.ProjectDataHandler.IMAGE_FILE_NAME);
+        final FileOutputStream imageOutputStream = new FileOutputStream(imageFile);
+        try {
+            imageDataHandler.write(packMap.renderImage(), imageOutputStream);
+            addFile(imageFile, files);
+        } finally {
+            imageOutputStream.close();
+        }
+
+        // Atlas
+        final DataHandler<Packer> packMapDataHandler = FORMAT.getHandler(Packer.class);
+
+        final File dataFile = new File(folder, fr.rca.mapmaker.io.mkz.ProjectDataHandler.DATA_FILE_NAME);
+        final FileOutputStream dataOutputStream = new FileOutputStream(dataFile);
+        try {
+            packMapDataHandler.write(packMap, dataOutputStream);
+            addFile(dataFile, files);
+        } finally {
+            dataOutputStream.close();
+        }
 	}
 	
 	static void deployPalettes(List<Palette> palettes, File folder) throws IOException {
