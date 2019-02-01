@@ -14,6 +14,7 @@ import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +36,7 @@ public class ShmupFormat extends AbstractFormat {
         super(EXTENSION, SupportedOperation.SAVE);
         
         addHandler(BufferedImage.class, new BufferedImageDataHandler());
+        addHandler(Point.class, new PointDataHandler());
     }
 
     /**
@@ -42,11 +44,12 @@ public class ShmupFormat extends AbstractFormat {
      */
     @Override
     public void saveProject(Project project, File file) {
-        final DataHandler<BufferedImage> imageHandler = getHandler(BufferedImage.class);
-        
         if (!file.exists()) {
             file.mkdirs();
         }
+        
+        final DataHandler<Packer> packerDataHandler = getHandler(Packer.class);
+        final DataHandler<BufferedImage> imageHandler = getHandler(BufferedImage.class);
 
         for (int index = 0; index < project.getSize(); index++) {
             final TileMap map = project.getMaps().get(index);
@@ -65,10 +68,15 @@ public class ShmupFormat extends AbstractFormat {
 
             final Packer packer = PackerFactory.createPacker();
             packer.addAll(imagePalette, sprites, null);
-            final BufferedImage image = packer.renderImage();
             
-            try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + ".png"))) {
-                imageHandler.write(image, outputStream);
+            try {
+                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "texture" + index + ".png"))) {
+                    final BufferedImage image = packer.renderImage();
+                    imageHandler.write(image, outputStream);
+                }
+                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "texture" + index + ".atlas"))) {
+                    packerDataHandler.write(packer, outputStream);
+                }
             } catch (IOException ex) {
                 Exceptions.showStackTrace(ex, null);
             }
