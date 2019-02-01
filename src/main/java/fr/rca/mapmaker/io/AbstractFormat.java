@@ -56,6 +56,10 @@ public abstract class AbstractFormat implements Format {
 	protected final <T> void addHandler(Class<T> clazz, DataHandler<T> handler) {
 		handlers.put(clazz.getName(), handler);
 	}
+    
+    protected final <T> void addNamedHandler(Class<T> clazz, String name, DataHandler<T> handler) {
+		handlers.put(clazz.getName() + '@' + name, handler);
+	}
 	
 	@Override
 	public <T> DataHandler<T> getHandler(Class<? extends T> t) {
@@ -68,6 +72,16 @@ public abstract class AbstractFormat implements Format {
 		return handler;
 	}
 	
+	public <T> DataHandler<T> getNamedHandler(Class<? extends T> t, String name) {
+		final DataHandler<T> handler = (DataHandler<T>) handlers.get(t.getName() + '@' + name);
+		
+		if(handler == null) {
+			throw new IllegalStateException("Le handler de la classe '" + t + "' avec le nom '" + name + "' n'existe pas pour le format '" + getDefaultExtension() + "'.");
+		}
+		
+		return handler;
+	}
+    
 	@Override
 	public <T> DataHandler<T> getHandler(String name) {
 		return (DataHandler<T>) handlers.get(name);

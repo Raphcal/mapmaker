@@ -4,6 +4,7 @@ import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.SupportedOperation;
+import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.Packer;
 import fr.rca.mapmaker.model.map.PackerFactory;
@@ -40,9 +41,12 @@ public class ShmupFormat extends AbstractFormat {
         super(EXTENSION, SupportedOperation.SAVE);
         
         addHandler(Point.class, new PointDataHandler());
+        addHandler(Packer.class, new PackerDataHandler(this));
+        addNamedHandler(Packer.class, "Sprites", new SpritesDataHandler(this));
         
         addHandler(BufferedImage.class, new fr.rca.mapmaker.io.mkz.BufferedImageDataHandler());
         addHandler(TileMap.class, new fr.rca.mapmaker.io.mkz.TileMapDataHandler(this));
+        addHandler(Instance.class, new fr.rca.mapmaker.io.mkz.InstanceDataHandler());
         
         addHandler(Color.class, new fr.rca.mapmaker.io.internal.ColorDataHandler());
 		addHandler(TileLayer.class, new fr.rca.mapmaker.io.internal.LayerDataHandler(this));
@@ -62,8 +66,10 @@ public class ShmupFormat extends AbstractFormat {
         }
         
         final DataHandler<Packer> packerDataHandler = getHandler(Packer.class);
+        final DataHandler<Packer> spritePackerDataHandler = getNamedHandler(Packer.class, "Sprites");
         final DataHandler<BufferedImage> imageHandler = getHandler(BufferedImage.class);
         final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
+        final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
 
         for (int index = 0; index < project.getSize(); index++) {
             final TileMap map = project.getMaps().get(index);
@@ -95,10 +101,13 @@ public class ShmupFormat extends AbstractFormat {
                     tileMapHandler.write(map, outputStream);
                 }
                 try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + "-sprites.def"))) {
-                    // TODO: Écrire les définitions des sprites
+                    spritePackerDataHandler.write(packer, outputStream);
                 }
                 try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + "-sprites.inst"))) {
-                    // TODO: Écrire les instances
+                    Streams.write(instances.size(), outputStream);
+					for(final Instance instance : instances) {
+						instanceHandler.write(instance, outputStream);
+					}
                 }
             } catch (IOException ex) {
                 Exceptions.showStackTrace(ex, null);
