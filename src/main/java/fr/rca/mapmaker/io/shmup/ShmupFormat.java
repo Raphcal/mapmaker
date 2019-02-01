@@ -4,9 +4,11 @@ import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.SupportedOperation;
-import fr.rca.mapmaker.io.mkz.BufferedImageDataHandler;
+import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.Packer;
 import fr.rca.mapmaker.model.map.PackerFactory;
+import fr.rca.mapmaker.model.map.ScrollRate;
+import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
@@ -14,7 +16,9 @@ import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import java.awt.Color;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,8 +39,15 @@ public class ShmupFormat extends AbstractFormat {
     public ShmupFormat() {
         super(EXTENSION, SupportedOperation.SAVE);
         
-        addHandler(BufferedImage.class, new BufferedImageDataHandler());
         addHandler(Point.class, new PointDataHandler());
+        
+        addHandler(BufferedImage.class, new fr.rca.mapmaker.io.mkz.BufferedImageDataHandler());
+        addHandler(TileMap.class, new fr.rca.mapmaker.io.mkz.TileMapDataHandler(this));
+        
+        addHandler(Color.class, new fr.rca.mapmaker.io.internal.ColorDataHandler());
+		addHandler(TileLayer.class, new fr.rca.mapmaker.io.internal.LayerDataHandler(this));
+		addHandler(ScrollRate.class, new fr.rca.mapmaker.io.internal.ScrollRateDataHandler());
+		addHandler(Rectangle.class, new fr.rca.mapmaker.io.internal.RectangleDataHandler());
     }
 
     /**
@@ -44,12 +55,15 @@ public class ShmupFormat extends AbstractFormat {
      */
     @Override
     public void saveProject(Project project, File file) {
+        setVersion(InternalFormat.LAST_VERSION);
+        
         if (!file.exists()) {
             file.mkdirs();
         }
         
         final DataHandler<Packer> packerDataHandler = getHandler(Packer.class);
         final DataHandler<BufferedImage> imageHandler = getHandler(BufferedImage.class);
+        final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
 
         for (int index = 0; index < project.getSize(); index++) {
             final TileMap map = project.getMaps().get(index);
@@ -70,12 +84,21 @@ public class ShmupFormat extends AbstractFormat {
             packer.addAll(imagePalette, sprites, null);
             
             try {
-                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "texture" + index + ".png"))) {
+                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + "-texture.png"))) {
                     final BufferedImage image = packer.renderImage();
                     imageHandler.write(image, outputStream);
                 }
-                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "texture" + index + ".atlas"))) {
+                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + "-texture.atlas"))) {
                     packerDataHandler.write(packer, outputStream);
+                }
+                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + ".grid"))) {
+                    tileMapHandler.write(map, outputStream);
+                }
+                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + "-sprites.def"))) {
+                    // TODO: Écrire les définitions des sprites
+                }
+                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + "-sprites.inst"))) {
+                    // TODO: Écrire les instances
                 }
             } catch (IOException ex) {
                 Exceptions.showStackTrace(ex, null);
