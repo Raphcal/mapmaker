@@ -3,6 +3,7 @@ package fr.rca.mapmaker.model.map;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -342,8 +343,18 @@ public class PackMap implements Packer {
 	
     @Override
 	public BufferedImage renderImage() {
+        return renderImage(null);
+    }
+    
+    @Override
+	public BufferedImage renderImage(Color backgroundColor) {
 		final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		final Graphics2D graphics = image.createGraphics();
+        
+        if (backgroundColor != null) {
+            graphics.setColor(backgroundColor);
+            graphics.fillRect(0, 0, width, height);
+        }
 		
 		for(Map.Entry<SingleLayerTileMap, Point> entry : locations.entrySet()) {
 			entry.getKey().paintAtLocation(entry.getValue(), graphics);

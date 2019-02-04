@@ -43,8 +43,8 @@ public class ShmupFormat extends AbstractFormat {
         addHandler(Point.class, new PointDataHandler());
         addHandler(Packer.class, new PackerDataHandler(this));
         addNamedHandler(Packer.class, "Sprites", new SpritesDataHandler(this));
+        addHandler(BufferedImage.class, new BmpBufferedImageDataHandler());
         
-        addHandler(BufferedImage.class, new fr.rca.mapmaker.io.mkz.BufferedImageDataHandler());
         addHandler(TileMap.class, new fr.rca.mapmaker.io.mkz.TileMapDataHandler(this));
         addHandler(Instance.class, new fr.rca.mapmaker.io.mkz.InstanceDataHandler());
         
@@ -90,8 +90,8 @@ public class ShmupFormat extends AbstractFormat {
             packer.addAll(imagePalette, sprites, null);
             
             try {
-                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + "-texture.png"))) {
-                    final BufferedImage image = packer.renderImage();
+                try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + "-texture.bmp"))) {
+                    final BufferedImage image = packer.renderImage(new Color(0, 128, 128));
                     imageHandler.write(image, outputStream);
                 }
                 try (final FileOutputStream outputStream = new FileOutputStream(new File(file, "map" + index + "-texture.atlas"))) {

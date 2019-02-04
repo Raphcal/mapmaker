@@ -2,6 +2,7 @@ package fr.rca.mapmaker.model.map;
 
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
@@ -46,6 +47,11 @@ public class PackMap2 implements Packer {
 
     @Override
     public BufferedImage renderImage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BufferedImage renderImage(Color backgroundColor) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
