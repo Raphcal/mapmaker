@@ -348,7 +348,7 @@ public class PackMap implements Packer {
     
     @Override
 	public BufferedImage renderImage(Color backgroundColor) {
-		final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		final BufferedImage image = new BufferedImage(width, height, backgroundColor == null ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
 		final Graphics2D graphics = image.createGraphics();
         
         if (backgroundColor != null) {
