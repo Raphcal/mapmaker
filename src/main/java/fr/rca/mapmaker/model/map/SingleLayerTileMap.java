@@ -19,6 +19,8 @@ public class SingleLayerTileMap implements Comparable<SingleLayerTileMap> {
 	 * Données de la grille.
 	 */
 	private final Layer layer;
+    
+    private Rectangle insets;
 
     public static SingleLayerTileMap withTileFromImagePalette(EditableImagePalette palette, int index) {
         final TileLayer source = palette.getSource(index);
@@ -29,12 +31,15 @@ public class SingleLayerTileMap implements Comparable<SingleLayerTileMap> {
         cross.mergeAtPoint(source, new Point(1, 2));
         cross.clear(new Rectangle(1, 1, source.getWidth(), source.getHeight()));
         cross.mergeAtPoint(source, new Point(1, 1));
-        return new SingleLayerTileMap(cross, palette.getColorPalette());
+        final SingleLayerTileMap tileMap = new SingleLayerTileMap(cross, palette.getColorPalette());
+        tileMap.insets = new Rectangle(1, 1, source.getWidth(), source.getHeight());
+        return tileMap;
     }
     
 	public SingleLayerTileMap(Layer layer, Palette palette) {
 		this.layer = layer;
 		this.palette = palette;
+        this.insets = new Rectangle(0, 0, layer.getWidth(), layer.getHeight());
 	}
 	
 	public int getWidth() {
@@ -44,7 +49,19 @@ public class SingleLayerTileMap implements Comparable<SingleLayerTileMap> {
 	public int getHeight() {
 		return layer.getHeight();
 	}
-	
+    
+    public int getEffectiveWidth() {
+        return insets.width;
+    }
+    
+    public int getEffectiveHeight() {
+        return insets.height;
+    }
+
+    public Rectangle getInsets() {
+        return insets;
+    }
+    
 	public void paintAtLocation(Point location, Graphics graphics) {
 		for(int y = 0; y < layer.getHeight(); y++) {
 			for(int x = 0; x < layer.getWidth(); x++) {
