@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public final class Streams {
 	
 	private static final int CHAR_SIZE = 2;
+    private static final int SHORT_SIZE = 2;
 	private static final int INTEGER_SIZE = 4;
 	private static final int LONG_SIZE = 8;
 	
@@ -52,6 +53,10 @@ public final class Streams {
 		outputStream.write(asArray(c, CHAR_SIZE));
 	}
 	
+    public static void write(short i, OutputStream outputStream) throws IOException {
+		outputStream.write(asArray(i, SHORT_SIZE));
+	}
+    
 	public static void write(int i, OutputStream outputStream) throws IOException {
 		outputStream.write(asArray(i, INTEGER_SIZE));
 	}
