@@ -17,7 +17,7 @@ public class BmpWithAlphaBufferedImageDataHandlerTest {
     /**
      * Test of write method, of class BmpWithAlphaBufferedImageDataHandler.
      */
-    // @Test
+//     @Test
     public void testWrite() throws Exception {
         System.out.println("write");
         BufferedImage t = createTestImage();
@@ -25,6 +25,7 @@ public class BmpWithAlphaBufferedImageDataHandlerTest {
             BmpWithAlphaBufferedImageDataHandler instance = new BmpWithAlphaBufferedImageDataHandler();
             instance.write(t, outputStream);
         }
+        // TODO: Vérifier les données.
     }
     
     private BufferedImage createTestImage() {

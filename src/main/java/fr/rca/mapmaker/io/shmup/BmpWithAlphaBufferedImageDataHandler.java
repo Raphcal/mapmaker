@@ -43,8 +43,8 @@ public class BmpWithAlphaBufferedImageDataHandler implements DataHandler<Buffere
     public void write(BufferedImage t, OutputStream outputStream) throws IOException {
         final int width = t.getWidth();
         final int height = t.getHeight();
-        final int[] rgbArray = new int[width * height];
-        t.getRGB(0, 0, width, height, rgbArray, 0, width);
+        final int[] BGRAs = new int[width * height];
+        t.getRGB(0, 0, width, height, BGRAs, 0, width);
         
         // TODO: Convertir le BGRA en RGBA
 
@@ -84,11 +84,11 @@ public class BmpWithAlphaBufferedImageDataHandler implements DataHandler<Buffere
         // Nombre de couleurs importantes (0 = tout).
         Streams.write(0, outputStream);
         // Masque binaire de la couleur rouge.
-        Streams.write(0x00FF0000, outputStream);
+        Streams.write(0x000000FF, outputStream);
         // Masque binaire de la couleur bleu.
         Streams.write(0x0000FF00, outputStream);
         // Masque binaire de la couleur verte.
-        Streams.write(0x000000FF, outputStream);
+        Streams.write(0x00FF0000, outputStream);
         // Masque binaire de la transparence.
         Streams.write(0xFF000000, outputStream); // D'ici il doit rester 52 octets
         // Colorspace
@@ -109,7 +109,16 @@ public class BmpWithAlphaBufferedImageDataHandler implements DataHandler<Buffere
         // Pixels
         for (int y = height - 1; y >= 0; y--) {
             for (int x = 0; x < width; x++) {
-                Streams.write(rgbArray[y * width + x], outputStream);
+                final int BGRA = BGRAs[y * width + x];
+                final int red = (BGRA & 0x00FF0000) >> 16;
+                final int green = (BGRA & 0x0000FF00) >> 8;
+                final int blue = BGRA & 0x000000FF;
+                final int alpha = (BGRA & 0xFF000000) >> 24;
+                
+                Streams.write((byte) red, outputStream);
+                Streams.write((byte) green, outputStream);
+                Streams.write((byte) blue, outputStream);
+                Streams.write((byte) alpha, outputStream);
             }
         }
     }
