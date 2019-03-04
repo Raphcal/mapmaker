@@ -38,7 +38,6 @@ public class SpritesDataHandler implements DataHandler<Packer> {
     @Override
     public void write(Packer t, OutputStream outputStream) throws IOException {
         final Collection<Sprite> sprites = t.getSprites();
-        Streams.write(sprites.size(), outputStream);
         
         final Map<TileLayer, SingleLayerTileMap> maps = t.getTileLayerToTileMap();
         final List<TileLayer> layers = new ArrayList<>(maps.keySet());
