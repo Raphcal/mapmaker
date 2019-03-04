@@ -33,7 +33,11 @@ public class PackerDataHandler implements DataHandler<Packer> {
         
         final DataHandler<Point> pointHandler = format.getHandler(Point.class);
         for (final SingleLayerTileMap layer : layers) {
-            pointHandler.write(packer.getPoint(layer), outputStream);
+            Point point = packer.getPoint(layer);
+            if (point == null) {
+                point = new Point();
+            }
+            pointHandler.write(point, outputStream);
             Streams.write(layer.getEffectiveWidth(), outputStream);
             Streams.write(layer.getEffectiveHeight(), outputStream);
         }

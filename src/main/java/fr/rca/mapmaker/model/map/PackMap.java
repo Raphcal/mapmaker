@@ -129,7 +129,11 @@ public class PackMap implements Packer {
     @Override
 	public Point getPoint(SingleLayerTileMap map) {
 		final Point point = locations.get(map);
-        return new Point(point.x + map.getInsets().x, point.y + map.getInsets().y);
+        if (point != null) {
+            return new Point(point.x + map.getInsets().x, point.y + map.getInsets().y);
+        } else {
+            return null;
+        }
 	}
 	
 	public static PackMap packMaps(Collection<SingleLayerTileMap> maps, final int margin) {

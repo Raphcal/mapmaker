@@ -51,15 +51,15 @@ public class SingleLayerTileMap implements Comparable<SingleLayerTileMap> {
 	}
     
     public int getEffectiveWidth() {
-        return insets.width;
+        return getInsets().width;
     }
     
     public int getEffectiveHeight() {
-        return insets.height;
+        return getInsets().height;
     }
 
     public Rectangle getInsets() {
-        return insets;
+        return insets != null ? insets : new Rectangle();
     }
     
 	public void paintAtLocation(Point location, Graphics graphics) {
