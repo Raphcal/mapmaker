@@ -45,7 +45,7 @@ public class ShmupFormat extends AbstractFormat {
         addHandler(Point.class, new PointDataHandler());
         addHandler(Packer.class, new PackerDataHandler(this));
         addNamedHandler(Packer.class, "Sprites", new SpritesDataHandler(this));
-        addHandler(BufferedImage.class, new BmpWithAlphaBufferedImageDataHandler());
+        addHandler(BufferedImage.class, new BmpWithAlphaBufferedImageDataHandler(true));
         
         addHandler(TileMap.class, new fr.rca.mapmaker.io.mkz.TileMapDataHandler(this));
         addHandler(Instance.class, new fr.rca.mapmaker.io.mkz.InstanceDataHandler());

@@ -38,6 +38,12 @@ public class BmpWithAlphaBufferedImageDataHandler implements DataHandler<Buffere
      * Valeur représentant 72 DPI.
      */
     private static final double DPI_72 = 72 * DPI_1;
+    
+    private final boolean applyPremultiplication;
+
+    public BmpWithAlphaBufferedImageDataHandler(boolean applyPremultiplication) {
+        this.applyPremultiplication = applyPremultiplication;
+    }
 
     @Override
     public void write(BufferedImage t, OutputStream outputStream) throws IOException {
@@ -115,17 +121,27 @@ public class BmpWithAlphaBufferedImageDataHandler implements DataHandler<Buffere
                 final int blue = BGRA & 0x000000FF;
                 final int alpha = (BGRA & 0xFF000000) >> 24;
                 
-                Streams.write((byte) red, outputStream);
-                Streams.write((byte) green, outputStream);
-                Streams.write((byte) blue, outputStream);
+                if (applyPremultiplication) {
+                    Streams.write((byte) premultiplyAlpha(red, alpha), outputStream);
+                    Streams.write((byte) premultiplyAlpha(green, alpha), outputStream);
+                    Streams.write((byte) premultiplyAlpha(blue, alpha), outputStream);
+                } else {
+                    Streams.write((byte) red, outputStream);
+                    Streams.write((byte) green, outputStream);
+                    Streams.write((byte) blue, outputStream);
+                }
                 Streams.write((byte) alpha, outputStream);
             }
         }
     }
-
+    
     @Override
     public BufferedImage read(InputStream inputStream) throws IOException {
         throw new UnsupportedOperationException("Not implemented yet");
+    }
+    
+    private static int premultiplyAlpha(int value, int alpha) {
+        return alpha == -1 ? value : (value * alpha) / 255;
     }
 
 }
