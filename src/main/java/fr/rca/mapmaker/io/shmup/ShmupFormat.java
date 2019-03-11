@@ -24,6 +24,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -71,13 +73,22 @@ public class ShmupFormat extends AbstractFormat {
         final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
         final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
 
+        final List<Sprite> allSprites = project.getSprites();
+        
         for (int index = 0; index < project.getSize(); index++) {
             final TileMap map = project.getMaps().get(index);
             final List<Instance> instances = project.getAllInstances().get(index);
-            final HashSet<Sprite> sprites = new HashSet<>();
+            final HashSet<Sprite> spriteSet = new HashSet<>();
             for (final Instance instance : instances) {
-                sprites.add(instance.getSprite());
+                spriteSet.add(instance.getSprite());
             }
+            final ArrayList<Sprite> sprites = new ArrayList<>(spriteSet);
+            sprites.sort(new Comparator<Sprite>() {
+                @Override
+                public int compare(Sprite lhs, Sprite rhs) {
+                    return allSprites.indexOf(lhs) - allSprites.indexOf(rhs);
+                }
+            });
 
             Palette palette = map.getPalette();
             if (palette instanceof PaletteReference) {
