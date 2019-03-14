@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import org.junit.Test;
 
 /**
  *
@@ -22,7 +21,7 @@ public class BmpWithAlphaBufferedImageDataHandlerTest {
         System.out.println("write");
         BufferedImage t = createTestImage();
         try (OutputStream outputStream = new FileOutputStream(new File("/Users/raphael/Downloads/toto.bmp"))) {
-            BmpWithAlphaBufferedImageDataHandler instance = new BmpWithAlphaBufferedImageDataHandler();
+            BmpWithAlphaBufferedImageDataHandler instance = new BmpWithAlphaBufferedImageDataHandler(false);
             instance.write(t, outputStream);
         }
         // TODO: Vérifier les données.
