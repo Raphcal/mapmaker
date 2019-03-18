@@ -119,6 +119,8 @@ public class SpriteInspector extends javax.swing.JDialog {
         distanceComboBox = new javax.swing.JComboBox<>();
         exportableCheckBox = new javax.swing.JCheckBox();
         exportableCheckBox.putClientProperty("JComponent.sizeVariant", "small");
+        globalCheckBox = new javax.swing.JCheckBox();
+        globalCheckBox.putClientProperty("JComponent.sizeVariant", "small");
 
         setTitle("Infos sur la tuile n°12");
         setBackground(new java.awt.Color(236, 236, 236));
@@ -189,6 +191,11 @@ public class SpriteInspector extends javax.swing.JDialog {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.exportable}"), exportableCheckBox, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
+        globalCheckBox.setText("Global");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sprite.global}"), globalCheckBox, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -231,7 +238,9 @@ public class SpriteInspector extends javax.swing.JDialog {
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(63, 63, 63)
-                .addComponent(exportableCheckBox)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(globalCheckBox)
+                    .addComponent(exportableCheckBox))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -259,6 +268,8 @@ public class SpriteInspector extends javax.swing.JDialog {
                     .addComponent(distanceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(4, 4, 4)
                 .addComponent(exportableCheckBox)
+                .addGap(0, 0, 0)
+                .addComponent(globalCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hitboxSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -272,7 +283,7 @@ public class SpriteInspector extends javax.swing.JDialog {
                 .addGap(0, 0, 0)
                 .addComponent(initializationScriptLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(initializationScriptScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                .addComponent(initializationScriptScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -295,6 +306,7 @@ public class SpriteInspector extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> distanceComboBox;
     private javax.swing.JCheckBox exportableCheckBox;
     private javax.swing.JLabel generalLabel;
+    private javax.swing.JCheckBox globalCheckBox;
     private javax.swing.JSeparator hitboxSeparator;
     private javax.swing.JSeparator hitboxSeparator1;
     private javax.swing.JLabel initializationScriptLabel;

@@ -81,7 +81,10 @@
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-              <Component id="exportableCheckBox" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="globalCheckBox" min="-2" max="-2" attributes="0"/>
+                  <Component id="exportableCheckBox" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -115,6 +118,8 @@
               </Group>
               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
               <Component id="exportableCheckBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+              <Component id="globalCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="hitboxSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
@@ -129,7 +134,7 @@
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="initializationScriptLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="initializationScriptScrollPane" pref="206" max="32767" attributes="0"/>
+              <Component id="initializationScriptScrollPane" pref="183" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -313,6 +318,17 @@
       </BindingProperties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="exportableCheckBox.putClientProperty(&quot;JComponent.sizeVariant&quot;, &quot;small&quot;);"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="globalCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Global"/>
+      </Properties>
+      <BindingProperties>
+        <BindingProperty name="selected" source="Form" sourcePath="${sprite.global}" target="globalCheckBox" targetPath="selected" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="globalCheckBox.putClientProperty(&quot;JComponent.sizeVariant&quot;, &quot;small&quot;);"/>
       </AuxValues>
     </Component>
   </SubComponents>
