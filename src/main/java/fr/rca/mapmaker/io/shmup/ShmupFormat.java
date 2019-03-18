@@ -79,6 +79,13 @@ public class ShmupFormat extends AbstractFormat {
             final TileMap map = project.getMaps().get(index);
             final List<Instance> instances = project.getAllInstances().get(index);
             final HashSet<Sprite> spriteSet = new HashSet<>();
+            // Ajout des sprites globaux.
+            for (final Sprite sprite : allSprites) {
+                if (sprite.isGlobal()) {
+                    spriteSet.add(sprite);
+                }
+            }
+            // Ajout des sprites de la carte.
             for (final Instance instance : instances) {
                 spriteSet.add(instance.getSprite());
             }

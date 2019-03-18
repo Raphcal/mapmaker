@@ -44,10 +44,12 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		if (version >= InternalFormat.VERSION_9) {
 			Streams.write(t.getDistance().ordinal(), outputStream);
 		}
-		
 		if (version >= InternalFormat.VERSION_10) {
 			Streams.write(t.isExportable(), outputStream);
 		}
+        if (version >= InternalFormat.VERSION_11) {
+            Streams.write(t.isGlobal(), outputStream);
+        }
 		
 		// Script
 		Streams.writeNullable(t.getLoadScript(), outputStream);
@@ -69,6 +71,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 		int type = 0;
 		Distance distance = Distance.BEHIND;
 		boolean exportable = true;
+        boolean global = false;
 		String loadScript = null;
 		String scriptFile = null;
 		
@@ -82,6 +85,9 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			}
 			if (version >= InternalFormat.VERSION_10) {
 				exportable = Streams.readBoolean(inputStream);
+			}
+			if (version >= InternalFormat.VERSION_11) {
+				global = Streams.readBoolean(inputStream);
 			}
 			loadScript = Streams.readNullableString(inputStream);
 			scriptFile = Streams.readNullableString(inputStream);
@@ -104,7 +110,7 @@ public class SpriteDataHandler implements DataHandler<Sprite>, HasVersion {
 			animations.add(animationHandler.read(inputStream));
 		}
 		
-		return new Sprite(name, width, height, type, distance, exportable, loadScript, scriptFile, animations);
+		return new Sprite(name, width, height, type, distance, exportable, global, loadScript, scriptFile, animations);
 	}
 	
 }

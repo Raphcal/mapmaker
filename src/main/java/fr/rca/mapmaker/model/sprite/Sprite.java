@@ -31,7 +31,12 @@ public class Sprite {
 	/**
 	 * Défini si ce sprite sera inclus dans les exports MKZ.
 	 */
-	private boolean exportable;
+	private boolean exportable = true;
+    
+    /**
+     * Défini si ce sprite doit être exporté même s'il n'est pas présent dans une carte.
+     */
+    private boolean global;
 	
 	/**
 	 * Script utilisé pour gérer le mouvement de ce type de sprite.
@@ -63,18 +68,19 @@ public class Sprite {
 		this.animations = animations;
 	}
 
-	public Sprite(String name, int width, int height, int type, Distance distance, boolean exportable, String loadScript, String scriptFile, Set<Animation> animations) {
+	public Sprite(String name, int width, int height, int type, Distance distance, boolean exportable, boolean global, String loadScript, String scriptFile, Set<Animation> animations) {
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
-		this.name = name;
-		this.width = width;
-		this.height = height;
+        this.name = name;
+        this.width = width;
+        this.height = height;
 		this.type = type;
 		this.distance = distance;
 		this.exportable = exportable;
+        this.global = global;
 		this.loadScript = loadScript;
 		this.scriptFile = scriptFile;
-		this.animations = animations;
-	}
+        this.animations = animations;
+    }
 
 	public void morphTo(Sprite sprite) {
 		final ColorPalette oldPalette = getPalette();
@@ -239,7 +245,22 @@ public class Sprite {
             EventBus.INSTANCE.fireEvent(Event.SPRITE_CHANGED);
         }
 	}
-	
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        final boolean oldGlobal = this.global;
+		this.global = global;
+		
+		propertyChangeSupport.firePropertyChange("global", oldGlobal, global);
+        
+        if (oldGlobal != global) {
+            EventBus.INSTANCE.fireEvent(Event.SPRITE_CHANGED);
+        }
+    }
+    
 	public void addPropertyChangeListener(PropertyChangeListener pl) {
 		propertyChangeSupport.addPropertyChangeListener(pl);
 	}

@@ -25,12 +25,16 @@ public class Instance extends JComponent {
 	private int index;
 	private BufferedImage image;
 	private Point point;
+    /**
+     * Numéro de la couche où est affiché l'instance du sprite.
+     */
+    private int layer;
 	private boolean unique;
 	
 	private double zoom = 1.0;
 	
 	private Direction direction = Direction.RIGHT;
-
+    
 	private final Map<String, Double> variables = new HashMap<String, Double>();
 	
 	/**
@@ -188,6 +192,14 @@ public class Instance extends JComponent {
 			return null;
 		}
 	}
+
+    public int getLayer() {
+        return layer;
+    }
+
+    public void setLayer(int layer) {
+        this.layer = layer;
+    }
 
 	@Nullable
 	public String getScript() {

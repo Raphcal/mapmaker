@@ -50,6 +50,16 @@ public class InternalFormat extends AbstractFormat {
 	public static final int VERSION_8 = 8;
 	public static final int VERSION_9 = 9;
 	public static final int VERSION_10 = 10;
+    
+    /**
+     * Version 11. Depuis le 18/03/2019.
+     * <p/>
+     * Ajoute les fonctionnalités suivantes :<ul>
+     * <li>Sprites globaux</li>
+     * <li>Instances liées à une couche</li>
+     * </ul>
+     */
+	public static final int VERSION_11 = 11;
 	
 	public static final int LAST_VERSION = VERSION_10;
 	public static final String HEADER_LAST_VERSION = "MM" + LAST_VERSION;
