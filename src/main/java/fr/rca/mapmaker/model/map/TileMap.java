@@ -4,6 +4,8 @@ import fr.rca.mapmaker.model.HasPropertyChangeListeners;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.LayerChangeListener;
 import fr.rca.mapmaker.model.SizeChangeListener;
+import fr.rca.mapmaker.model.palette.ColorPalette;
+import fr.rca.mapmaker.model.palette.HasColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
@@ -20,52 +22,68 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 /**
+ * Carte composée de couches de tuiles.
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListeners, ListModel {
+public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListeners, ListModel, HasColorPalette {
 	
+    /**
+     * Gestion des événements de changement des propriétés.
+     */
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-	
+
 	/**
 	 * Numéro de la carte.
 	 */
 	private Integer index;
-	
+
 	/**
 	 * Nom de la carte.
 	 */
 	private String name;
+
 	/**
 	 * Nom de la carte après export.
 	 * REM: Inutilisé.
 	 */
 	private String fileName;
+
 	/**
 	 * Largeur de la grille.
 	 */
 	private int width;
+
 	/**
 	 * Hauteur de la grille.
 	 */
 	private int height;
+
+    /**
+     * Palette de couleur utilisée pour afficher la palette de la grille.
+     */
+    private ColorPalette colorPalette;
+
 	/**
 	 * Palette utilisée pour afficher la grille.
 	 */
 	private Palette palette;
+
 	/**
 	 * Project contenant la carte.
 	 */
 	private Project parent;
+
 	/**
 	 * Liste des couches de la grille.
 	 */
 	private final List<Layer> layers = new ArrayList<Layer>();
+
 	/**
 	 * Couleur de fond.
 	 */
 	private Color backgroundColor;
-
+    
 	private final SizeChangeListener sizeChangeListener;
 	private final List<LayerChangeListener> layerChangeListeners = new ArrayList<LayerChangeListener>();
 	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
@@ -157,6 +175,15 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 		
 		propertyChangeSupport.firePropertyChange("height", oldHeight, height);
 	}
+
+    @Override
+    public ColorPalette getColorPalette() {
+        return colorPalette != null ? colorPalette : parent.getColorPalette();
+    }
+
+    public void setColorPalette(ColorPalette colorPalette) {
+        this.colorPalette = colorPalette;
+    }
 	
 	public Palette getPalette() {
 		return palette;

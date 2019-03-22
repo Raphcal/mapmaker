@@ -1,6 +1,9 @@
 package fr.rca.mapmaker.model.sprite;
 
+import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.operation.VariableDeclarationParser;
 import fr.rca.mapmaker.ui.ImageRenderer;
@@ -20,9 +23,17 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Instance extends JComponent {
 	private static final int TILE_SIZE = 1;
-	
+
+    /**
+     * Projet parent.
+     */
 	private Project project;
+    
+    /**
+     * Numéro du sprite.
+     */
 	private int index;
+
 	private BufferedImage image;
 	private Point point;
     /**
@@ -69,14 +80,18 @@ public class Instance extends JComponent {
 		if(sprite != null) {
 			updateBounds();
 			defaultLayer = sprite.getDefaultLayer();
-			
 		} else {
 			defaultLayer = null;
 		}
 		
 		final ImageRenderer renderer = new ImageRenderer();
 		if(sprite != null && defaultLayer != null) {
-			image = renderer.renderImage(defaultLayer, sprite.getPalette(), TILE_SIZE);
+            ColorPalette palette = sprite.getPalette();
+            if (palette == null) {
+                final TileMap map = getMap();
+                palette = map != null ? map.getColorPalette() : project.getColorPalette();
+            }
+			image = renderer.renderImage(defaultLayer, palette, TILE_SIZE);
 		} else {
 			final int width = sprite != null ? sprite.getWidth(): 32;
 			final int height = sprite != null ? sprite.getHeight(): 32;
@@ -192,6 +207,19 @@ public class Instance extends JComponent {
 			return null;
 		}
 	}
+    
+    @Nullable
+    public TileMap getMap() {
+        if (project == null) {
+            return null;
+        }
+        for (final MapAndInstances mapAndInstances : project.getMaps()) {
+            if (mapAndInstances.getSpriteInstances().contains(this)) {
+                return mapAndInstances.getTileMap();
+            }
+        }
+        return null;
+    }
 
     public int getLayer() {
         return layer;

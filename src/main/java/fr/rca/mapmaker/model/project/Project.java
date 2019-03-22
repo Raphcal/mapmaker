@@ -4,7 +4,11 @@ import fr.rca.mapmaker.model.palette.PaletteComboBoxModel;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.map.MapAndInstances;
+import fr.rca.mapmaker.model.palette.AlphaColorPalette;
+import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
+import fr.rca.mapmaker.model.palette.HasColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.palette.SpritePalette;
@@ -24,7 +28,7 @@ import javax.swing.event.ListDataListener;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class Project implements ListModel {
+public class Project implements ListModel, HasColorPalette {
 	
 	public static final String CURRENT_MAP = "currentMap";
 	public static final String CURRENT_PALETTE_MAP = "currentPaletteMap";
@@ -37,13 +41,27 @@ public class Project implements ListModel {
 	
 	private int selectedIndex;
 	
-	private final List<TileMap> maps = new ArrayList<TileMap>();
-	private final List<Sprite> sprites = new ArrayList<Sprite>();
-	private final List<Palette> palettes = new ArrayList<Palette>();
+    /**
+     * Palette de couleur principale du projet.
+     */
+    private ColorPalette colorPalette;
+    
+    /**
+     * Liste de toutes les cartes.
+     */
+	private final List<MapAndInstances> maps = new ArrayList<>();
+    
+    /**
+     * Liste des sprites.
+     */
+	private final List<Sprite> sprites = new ArrayList<>();
+    
+    /**
+     * Liste de toutes les palettes.
+     */
+	private final List<Palette> palettes = new ArrayList<>();
 	
-	private final List<List<Instance>> instancesByMaps = new ArrayList<List<Instance>>();
-	
-	private final List<ListDataListener> listeners = new ArrayList<ListDataListener>();
+	private final List<ListDataListener> listeners = new ArrayList<>();
 	
 	private PaletteMap spritePaletteMap;
 
@@ -51,6 +69,8 @@ public class Project implements ListModel {
 	
 	public static Project createEmptyProject() {
 		final Project project = new Project();
+        
+        project.colorPalette = AlphaColorPalette.getDefaultColorPalette();
 		
 		final EditableImagePalette emptyPalette = new EditableImagePalette(32, 4);
 		emptyPalette.setName("Palette 1");
@@ -81,19 +101,15 @@ public class Project implements ListModel {
 		maps.clear();
 		palettes.clear();
 		sprites.clear();
-		instancesByMaps.clear();
 		
 		// Palettes
 		palettes.addAll(project.getPalettes());
 		
 		// Cartes
-		maps.addAll(project.getMaps());
+		maps.addAll(project.maps);
 		
 		// Sprites
 		sprites.addAll(project.getSprites());
-		
-		// Instances
-		instancesByMaps.addAll(project.instancesByMaps);
 		
 		for(final List<Instance> instances : project.getAllInstances()) {
 			for(final Instance instance : instances) {
@@ -160,7 +176,7 @@ public class Project implements ListModel {
 			return null;
 		}
 		
-		return maps.get(selectedIndex);
+		return maps.get(selectedIndex).getTileMap();
 	}
 	
 	public TileMap getCurrentPaletteMap() {
@@ -190,10 +206,15 @@ public class Project implements ListModel {
 		return spritePaletteMap;
 	}
 	
-	public List<TileMap> getMaps() {
+	public List<MapAndInstances> getMaps() {
 		return maps;
 	}
-	
+
+    @Override
+    public ColorPalette getColorPalette() {
+        return colorPalette;
+    }
+    
 	public Palette getPalette(int index) {
 		return palettes.get(index);
 	}
@@ -226,20 +247,24 @@ public class Project implements ListModel {
 	 * si aucune carte n'est sélectionnée.
 	 */
 	public List<Instance> getInstances() {
-		if(selectedIndex >= 0 && selectedIndex < instancesByMaps.size()) {
-			return instancesByMaps.get(selectedIndex);
+		if(selectedIndex >= 0 && selectedIndex < maps.size()) {
+			return maps.get(selectedIndex).getSpriteInstances();
 		} else {
 			return Collections.<Instance>emptyList();
 		}
 	}
 
 	public List<List<Instance>> getAllInstances() {
-		return instancesByMaps;
+        final ArrayList<List<Instance>> allInstances = new ArrayList<>();
+        for (final MapAndInstances map : maps) {
+            allInstances.add(map.getSpriteInstances());
+        }
+		return allInstances;
 	}
 	
 	@Override
 	public TileMap getElementAt(int index) {
-		return maps.get(index);
+		return maps.get(index).getTileMap();
 	}
 
 	@Override
@@ -274,10 +299,7 @@ public class Project implements ListModel {
 		}
 		
 		final int index = maps.size();
-		maps.add(map);
-		
-		// Création d'une liste d'instances pour la map donnée.
-		instancesByMaps.add(instances);
+		maps.add(new MapAndInstances(map, instances));
 		
 		fireIntervalAdded(index, index);
 	}
@@ -285,29 +307,18 @@ public class Project implements ListModel {
 	public void removeMap(int index) {
 		if(index >= 0 && index < maps.size()) {
 			maps.remove(index);
-			instancesByMaps.remove(index);
 			fireIntervalRemoved(index, index);
 		}
 	}
 	
 	public void swapMaps(int first, int second) {
-		final TileMap firstMap = maps.get(first);
-		final TileMap secondMap = maps.get(second);
+		final MapAndInstances firstMap = maps.get(first);
+		final MapAndInstances secondMap = maps.get(second);
 		
 		maps.set(second, firstMap);
 		maps.set(first, secondMap);
 		
-		swapInstances(first, second);
-		
 		fireContentsChanged(Math.min(first, second), Math.max(first, second));
-	}
-	
-	private void swapInstances(int first, int second) {
-		final List<Instance> firstList = instancesByMaps.get(first);
-		final List<Instance> secondList = instancesByMaps.get(second);
-		
-		instancesByMaps.set(second, firstList);
-		instancesByMaps.set(first, secondList);
 	}
 	
 	protected void fireIntervalAdded(int from, int to) {

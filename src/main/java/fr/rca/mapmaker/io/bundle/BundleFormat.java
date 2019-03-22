@@ -8,6 +8,7 @@ import fr.rca.mapmaker.io.HasProgress;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.internal.InternalFormat;
+import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -127,10 +128,10 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
 			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
 			final int size = project.getMaps().size();
-			for(int index = 0; index < size; index++) {
-				final TileMap tileMap = project.getMaps().get(index);
+			for(final MapAndInstances mapAndInstances : project.getMaps()) {
+				final TileMap tileMap = mapAndInstances.getTileMap();
 				
-				final Map<String, Object> map = new HashMap<String, Object>();
+				final Map<String, Object> map = new HashMap<>();
 				final String mapName =  String.format(MAP_FILE_FORMAT, tileMap.getIndex());
 				final String instancesName =  String.format(INSTANCES_FILE_FORMAT, tileMap.getIndex());
 				
@@ -138,7 +139,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 				progress = progress(progress + WRITE_ELEMENT_PROGRESS / size, progressListener);
 				
 				// Instances
-				final List<Instance> instances = project.getAllInstances().get(index);
+				final List<Instance> instances = mapAndInstances.getSpriteInstances();
 				writeInstances(instances, file, files, instancesName, instanceHandler, map);
 				progress = progress(progress + WRITE_ELEMENT_PROGRESS / size, progressListener);
 				
@@ -154,11 +155,8 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			final File infoFile = new File(file, INFO_FILE);
 			files.remove(infoFile);
 			
-			final OutputStream projectOutputStream = new FileOutputStream(infoFile);
-			try {
+			try (FileOutputStream projectOutputStream = new FileOutputStream(infoFile)) {
 				Plists.write(projectMap, projectOutputStream);
-			} finally {
-				projectOutputStream.close();
 			}
 			
 			// Suppression des fichiers restants
@@ -178,12 +176,9 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			final String name = String.format(format, index);
 			final File file = new File(parent, name);
 			files.remove(file);
-			final OutputStream outputStream = new FileOutputStream(file);
-			try {
+			try (FileOutputStream outputStream = new FileOutputStream(file)) {
 				handler.write(objects.get(index), outputStream);
 				infoEntries.add(name);
-			} finally {
-				outputStream.close();
 			}
 		}
 	}
@@ -192,28 +187,21 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		// Carte
 		final File file = new File(parent, mapName);
 		files.remove(file);
-		final OutputStream mapOutputStream = new FileOutputStream(file);
-		try {
+		try (FileOutputStream mapOutputStream = new FileOutputStream(file)) {
 			tileMapHandler.write(tileMap, mapOutputStream);
 			map.put(MAP, mapName);
-			
-		} finally {
-			mapOutputStream.close();
 		}
 	}
 	
 	private void writeInstances(final List<Instance> instances, File parent, Set<File> files, final String instancesName, final DataHandler<Instance> instanceHandler, final Map<String, Object> map) throws FileNotFoundException, IOException {
 		final File file = new File(parent, instancesName);
 		files.remove(file);
-		final OutputStream instancesOutputStream = new FileOutputStream(file);
-		try {
+		try (FileOutputStream instancesOutputStream = new FileOutputStream(file)) {
 			Streams.write(instances.size(), instancesOutputStream);
 			for(Instance instance : instances) {
 				instanceHandler.write(instance, instancesOutputStream);
 			}
 			map.put(INSTANCES, instancesName);
-		} finally {
-			instancesOutputStream.close();
 		}
 	}
 
@@ -298,20 +286,14 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	}
 
 	private Map<String, Object> readProjectInfo(File parent) throws IOException, FileNotFoundException {
-		final FileInputStream inputStream = new FileInputStream(new File(parent, INFO_FILE));
-		try {
+		try (FileInputStream inputStream = new FileInputStream(new File(parent, INFO_FILE))) {
 			return Plists.read(inputStream);
-		} finally {
-			inputStream.close();
 		}
 	}
 	
 	private <T> T read(File parent, String name, DataHandler<T> handler) throws FileNotFoundException, IOException {
-		final FileInputStream inputStream = new FileInputStream(new File(parent, name));
-		try {
+		try (FileInputStream inputStream = new FileInputStream(new File(parent, name))) {
 			return handler.read(inputStream);
-		} finally {
-			inputStream.close();
 		}
 	}
 	
@@ -326,21 +308,18 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	 * @throws IOException En cas d'erreur de lecture.
 	 */
 	private List<Instance> readInstances(File parent, String name, Project project, DataHandler<Instance> handler) throws FileNotFoundException, IOException {
-		final List<Instance> instances = new ArrayList<Instance>();
+		final List<Instance> instances = new ArrayList<>();
 		
 		final File file = new File(parent, name); 
 		
 		if(file.exists()) {
-			final FileInputStream inputStream = new FileInputStream(file);
-			try {
+			try (FileInputStream inputStream = new FileInputStream(file)) {
 				final int size = Streams.readInt(inputStream);
 				for(int index = 0; index < size; index++) {
 					final Instance instance = handler.read(inputStream);
 					instance.setProject(project);
 					instances.add(instance);
 				}
-			} finally {
-				inputStream.close();
 			}
 		}
 		

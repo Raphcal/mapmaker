@@ -6,6 +6,7 @@ import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.internal.InternalFormat;
+import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.Packer;
 import fr.rca.mapmaker.model.map.PackerFactory;
 import fr.rca.mapmaker.model.map.ScrollRate;
@@ -76,8 +77,9 @@ public class ShmupFormat extends AbstractFormat {
         final List<Sprite> allSprites = project.getSprites();
         
         for (int index = 0; index < project.getSize(); index++) {
-            final TileMap map = project.getMaps().get(index);
-            final List<Instance> instances = project.getAllInstances().get(index);
+            final MapAndInstances mapAndInstances = project.getMaps().get(index);
+            final TileMap map = mapAndInstances.getTileMap();
+            final List<Instance> instances = mapAndInstances.getSpriteInstances();
             final HashSet<Sprite> spriteSet = new HashSet<>();
             // Ajout des sprites globaux.
             for (final Sprite sprite : allSprites) {

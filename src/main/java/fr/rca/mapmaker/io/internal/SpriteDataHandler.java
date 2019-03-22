@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Gère l'enregistrement et la lecture des sprites.
  *
  * @author Raphaël Calabro <raph_kun at yahoo.fr>
  */

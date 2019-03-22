@@ -28,6 +28,7 @@ import fr.rca.mapmaker.io.autodeploy.AutoDeployer;
 import fr.rca.mapmaker.io.autodeploy.MeltedIceAutoDeployer;
 import fr.rca.mapmaker.io.autodeploy.PuzzleSuitAutoDeployer;
 import fr.rca.mapmaker.io.internal.InternalFormat;
+import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.SpanningTileLayer;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
@@ -1831,25 +1832,58 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		});
     }//GEN-LAST:event_runButtonActionPerformed
 
+    /**
+     * Modifie le numéro des tuiles de toutes les cartes après l'insertion
+     * de <code>shift</code> nouvelles tuiles à l'index <code>from</code> dans
+     * la palette donnée
+     *
+     * @param palette Palette modifiée.
+     * @param from Indice de début.
+     * @param shift Nombre de tuiles insérées.
+     */
 	private void shiftTiles(Palette palette, int from, int shift) {
-		for(final TileMap map : project.getMaps()) {
+		for(final MapAndInstances mapAndInstances : project.getMaps()) {
+            final TileMap map = mapAndInstances.getTileMap();
 			if(map.getPalette().equals(palette)) {
-				for(final Layer layer : map.getLayers()) {
-					if(layer instanceof TileLayer) {
-						final TileLayer tileLayer = (TileLayer) layer;
-						for(int y = 0; y < tileLayer.getHeight(); y++) {
-							for(int x = 0; x < tileLayer.getWidth(); x++) {
-								final int tile = tileLayer.getTile(x, y);
-								if(tile >= from) {
-									tileLayer.setRawTile(x, y, tile + shift);
-								}
-							}
-						}
-					}
-				}
+                shiftTiles(map, from, shift);
 			}
 		}
 	}
+
+    /**
+     * Modifie le numéro des tuiles de la carte donnée après modification de
+     * sa palette.
+     *
+     * @param map Carte à modifier.
+     * @param from Indice de début.
+     * @param shift Nombre de tuiles insérées.
+     */
+    private void shiftTiles(final TileMap map, int from, int shift) {
+        for(final Layer layer : map.getLayers()) {
+            if(layer instanceof TileLayer) {
+                shiftTiles((TileLayer) layer, from, shift);
+            }
+        }
+    }
+
+    /**
+     * Modifie le numéro des tuiles de la couche donnée après modification de
+     * sa palette.
+     * 
+     * @param tileLayer Couche à modifier.
+     * @param from Indice de début.
+     * @param shift Nombre de tuiles insérées.
+     */
+    private void shiftTiles(final TileLayer tileLayer, int from, int shift) {
+        for(int y = 0; y < tileLayer.getHeight(); y++) {
+            for(int x = 0; x < tileLayer.getWidth(); x++) {
+                final int tile = tileLayer.getTile(x, y);
+                if(tile >= from) {
+                    tileLayer.setRawTile(x, y, tile + shift);
+                }
+            }
+        }
+    }
 	
 	private void select(MouseEvent event, Grid grid) {
 		final Point point = grid.getLayerLocation(event.getX(), event.getY());

@@ -55,21 +55,18 @@ public class Sprite {
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	public Sprite() {
-		this.palette = AlphaColorPalette.getDefaultColorPalette();
 		this.width = 32;
 		this.height = 32;
 		this.animations = new HashSet<Animation>();
 	}
 
 	public Sprite(int size, Set<Animation> animations) {
-		this.palette = AlphaColorPalette.getDefaultColorPalette();
 		this.width = size;
 		this.height = size;
 		this.animations = animations;
 	}
 
 	public Sprite(String name, int width, int height, int type, Distance distance, boolean exportable, boolean global, String loadScript, String scriptFile, Set<Animation> animations) {
-		this.palette = AlphaColorPalette.getDefaultColorPalette();
         this.name = name;
         this.width = width;
         this.height = height;
@@ -101,7 +98,7 @@ public class Sprite {
 		this.animations.addAll(sprite.animations);
 		morphTo(sprite);
 	}
-	
+
 	public boolean contains(Animation animation) {
 		return animations.contains(animation);
 	}
@@ -159,11 +156,17 @@ public class Sprite {
 		
 		return null;
 	}
-	
+    
 	@Nullable
 	public ColorPalette getPalette() {
 		return palette;
 	}
+
+    public void setPalette(ColorPalette palette) {
+        final ColorPalette oldPalette = this.palette;
+        this.palette = palette;
+        propertyChangeSupport.firePropertyChange("palette", oldPalette, palette);
+    }
 
 	public String getName() {
 		return name;
