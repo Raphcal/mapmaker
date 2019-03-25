@@ -22,6 +22,7 @@ import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.FormatFileFilter;
 import fr.rca.mapmaker.io.HasProgress;
+import fr.rca.mapmaker.io.OperatingSystem;
 import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.autodeploy.AutoDeployer;
@@ -48,6 +49,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -67,6 +69,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JViewport;
+import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
@@ -79,8 +82,9 @@ import org.slf4j.LoggerFactory;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class MapEditor extends javax.swing.JFrame {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MapEditor.class);
 	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language"); // NO18N
+    
+    private static final int SYSTEM_MODIFIER = OperatingSystem.IS_MAC_OS ? InputEvent.META_MASK : InputEvent.CTRL_DOWN_MASK;
 
 	private TileMap selectedTileMap;
 	private TileLayer selectedLayer;
@@ -123,9 +127,7 @@ public class MapEditor extends javax.swing.JFrame {
 	}
 	
 	private void setUpMacOSXStyle() {
-		final String osName = System.getProperty("os.name");
-		
-		if(osName != null && osName.startsWith("Mac OS X")) {
+		if(OperatingSystem.IS_MAC_OS) {
 			mapGrid.setBackground(Color.LIGHT_GRAY);
 			paletteGrid.setBackground(Color.DARK_GRAY);
 			spritePaletteGrid.setBackground(Color.DARK_GRAY);
@@ -145,7 +147,7 @@ public class MapEditor extends javax.swing.JFrame {
 			
 			fileMenu.remove(quitSeparator);
 			fileMenu.remove(quitMenuItem);
-		}
+        }
 	}
 	
 	private void repaintMapGrid() {
@@ -174,7 +176,7 @@ public class MapEditor extends javax.swing.JFrame {
 	
 	private void configureFileChooser(SupportedOperation operation) {
 		fileChooser.setMultiSelectionEnabled(false);
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setFileSelectionMode(OperatingSystem.IS_MAC_OS ? JFileChooser.FILES_ONLY: JFileChooser.FILES_AND_DIRECTORIES);
 		
 		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters()) {
 			fileChooser.removeChoosableFileFilter(fileFilter);
@@ -922,7 +924,7 @@ public class MapEditor extends javax.swing.JFrame {
 
         fileMenu.setText(bundle.getString("menu.file")); // NOI18N
 
-        newProjectMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.META_MASK));
+        newProjectMenuItem.setAccelerator(acceleratorWithKey(KeyEvent.VK_N));
         newProjectMenuItem.setText(bundle.getString("menu.file.new")); // NOI18N
         newProjectMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -931,7 +933,7 @@ public class MapEditor extends javax.swing.JFrame {
         });
         fileMenu.add(newProjectMenuItem);
 
-        openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.META_MASK));
+        openMenuItem.setAccelerator(acceleratorWithKey(KeyEvent.VK_O));
         openMenuItem.setText(bundle.getString("menu.file.open")); // NOI18N
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -965,7 +967,7 @@ public class MapEditor extends javax.swing.JFrame {
         fileMenu.add(importMenuItem);
         fileMenu.add(saveSeparator);
 
-        saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.META_MASK));
+        saveMenuItem.setAccelerator(acceleratorWithKey(KeyEvent.VK_S));
         saveMenuItem.setText(bundle.getString("menu.file.save")); // NOI18N
         saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -983,6 +985,7 @@ public class MapEditor extends javax.swing.JFrame {
         fileMenu.add(saveAsMenuItem);
         fileMenu.add(quitSeparator);
 
+        quitMenuItem.setAccelerator(acceleratorWithKey(KeyEvent.VK_Q));
         quitMenuItem.setText(bundle.getString("menu.file.quit")); // NOI18N
         quitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -995,7 +998,7 @@ public class MapEditor extends javax.swing.JFrame {
 
         editMenu.setText(bundle.getString("menu.edit")); // NOI18N
 
-        cancelMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.META_MASK));
+        cancelMenuItem.setAccelerator(acceleratorWithKey(KeyEvent.VK_Z));
         cancelMenuItem.setText(bundle.getString("menu.edit.cancel")); // NOI18N
         cancelMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1006,6 +1009,9 @@ public class MapEditor extends javax.swing.JFrame {
 
         redoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
         redoMenuItem.setText(bundle.getString("menu.edit.redo")); // NOI18N
+        if (!OperatingSystem.IS_MAC_OS) {
+            redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK));
+        }
         redoMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 redoMenuItemActionPerformed(evt);
@@ -1014,7 +1020,7 @@ public class MapEditor extends javax.swing.JFrame {
         editMenu.add(redoMenuItem);
         editMenu.add(undoRedoSeparator);
 
-        copyMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.META_MASK));
+        copyMenuItem.setAccelerator(acceleratorWithKey(KeyEvent.VK_C));
         copyMenuItem.setText(bundle.getString("menu.edit.copy")); // NOI18N
         copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1023,7 +1029,7 @@ public class MapEditor extends javax.swing.JFrame {
         });
         editMenu.add(copyMenuItem);
 
-        pasteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.META_MASK));
+        pasteMenuItem.setAccelerator(acceleratorWithKey(KeyEvent.VK_V));
         pasteMenuItem.setText(bundle.getString("menu.edit.paste")); // NOI18N
         pasteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1933,7 +1939,11 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			mapScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		}
 	}
-	
+    
+    private KeyStroke acceleratorWithKey(int key) {
+        return KeyStroke.getKeyStroke(key, SYSTEM_MODIFIER);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayerButton;
     private javax.swing.JMenuItem addRowAfterMenuItem;

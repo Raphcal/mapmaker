@@ -22,7 +22,7 @@ public class Sprite {
 	
 	private String name;
 	private int type;
-	private ColorPalette palette;
+	private ColorPalette palette = AlphaColorPalette.getDefaultColorPalette();
 	private int width;
 	private int height;
 	private final Set<Animation> animations;

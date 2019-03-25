@@ -3,8 +3,10 @@ package fr.rca.mapmaker.ui;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.Palette;
 import java.awt.Graphics;
+import org.jetbrains.annotations.NotNull;
 
 /**
+ * Affiche une liste d'images composées que d'une seule couche.
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
@@ -12,7 +14,10 @@ public class TileLayerList extends AbstractOrientableList<TileLayer> implements 
 	private final int tileSize = 1;
 	private Palette palette;
 
-	public void setPalette(Palette palette) {
+	public void setPalette(@NotNull Palette palette) {
+        if (palette == null) {
+            throw new NullPointerException("La palette ne doit pas être nulle");
+        }
 		this.palette = palette;
 	}
 	

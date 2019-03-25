@@ -44,7 +44,7 @@ public class Project implements ListModel, HasColorPalette {
     /**
      * Palette de couleur principale du projet.
      */
-    private ColorPalette colorPalette;
+    private ColorPalette colorPalette = AlphaColorPalette.getDefaultColorPalette();
     
     /**
      * Liste de toutes les cartes.
@@ -70,8 +70,6 @@ public class Project implements ListModel, HasColorPalette {
 	public static Project createEmptyProject() {
 		final Project project = new Project();
         
-        project.colorPalette = AlphaColorPalette.getDefaultColorPalette();
-		
 		final EditableImagePalette emptyPalette = new EditableImagePalette(32, 4);
 		emptyPalette.setName("Palette 1");
 		project.addPalette(emptyPalette);
