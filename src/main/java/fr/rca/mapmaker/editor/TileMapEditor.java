@@ -327,16 +327,19 @@ public class TileMapEditor extends javax.swing.JDialog {
         toolButtonGroup.add(selectionToggleButton);
         selectionToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_selection.png"))); // NOI18N
         selectionToggleButton.setToolTipText("Sélection");
+        selectionToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(selectionToggleButton, new SelectionTool(drawGrid));
 
         toolButtonGroup.add(magicWandToggleButton);
         magicWandToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_magic_wand.png"))); // NOI18N
         magicWandToggleButton.setToolTipText("Baguette magique");
+        magicWandToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(magicWandToggleButton, new MagicWandSelectionTool(drawGrid));
 
         toolButtonGroup.add(penToggleButton);
         penToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_pen.png"))); // NOI18N
         penToggleButton.setToolTipText("Stylo");
+        penToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         final PenTool penTool = new PenTool(drawGrid, memento);
         penTool.setPaletteMaps(alphaPaletteMap, colorPaletteMap);
         wireTool(penToggleButton, penTool);
@@ -345,41 +348,49 @@ public class TileMapEditor extends javax.swing.JDialog {
         toolButtonGroup.add(bucketFillToggleButton);
         bucketFillToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_bucket_fill.png"))); // NOI18N
         bucketFillToggleButton.setToolTipText("Pot de peinture");
+        bucketFillToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(bucketFillToggleButton, new BucketFillTool(drawGrid));
 
         toolButtonGroup.add(lineToggleButton);
         lineToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_line.png"))); // NOI18N
         lineToggleButton.setToolTipText("Trait");
+        lineToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(lineToggleButton, new LineTool(drawGrid, drawLayer, drawGrid.getOverlay()));
 
         toolButtonGroup.add(circleToggleButton);
         circleToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_circle.png"))); // NOI18N
         circleToggleButton.setToolTipText("Cercle");
+        circleToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(circleToggleButton, new CircleStrokeTool(drawGrid, drawLayer, drawGrid.getOverlay()));
 
         toolButtonGroup.add(rectangleToggleButton);
         rectangleToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_rectangle.png"))); // NOI18N
         rectangleToggleButton.setToolTipText("Rectangle");
+        rectangleToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(rectangleToggleButton, new RectangleStrokeTool(drawGrid));
 
         toolButtonGroup.add(rectangleFillToggleButton);
         rectangleFillToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_rectangle_fill.png"))); // NOI18N
         rectangleFillToggleButton.setToolTipText("Rectangle plein");
+        rectangleFillToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(rectangleFillToggleButton, new RectangleFillTool(drawGrid));
 
         toolButtonGroup.add(ellipseToggleButton);
         ellipseToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_ellipse.png"))); // NOI18N
         ellipseToggleButton.setToolTipText("Ellipse");
+        ellipseToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(ellipseToggleButton, new EllipseStrokeTool(drawGrid));
 
         toolButtonGroup.add(ellipseFillToggleButton);
         ellipseFillToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_ellipse_fill.png"))); // NOI18N
         ellipseFillToggleButton.setToolTipText("Ellipse pleine");
+        ellipseFillToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(ellipseFillToggleButton, new EllipseFillTool(drawGrid));
 
         toolButtonGroup.add(colorPickerToggleButton);
         colorPickerToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_color_picker.png"))); // NOI18N
         colorPickerToggleButton.setToolTipText("Pipette");
+        colorPickerToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(colorPickerToggleButton, new ColorPickerTool(alphaPaletteMap, colorPaletteMap, drawGrid));
 
         horizontalMirrorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_horizontal_mirror.png"))); // NOI18N
@@ -492,16 +503,18 @@ public class TileMapEditor extends javax.swing.JDialog {
         toolButtonGroup.add(ditherToggleButton);
         ditherToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_dither.png"))); // NOI18N
         ditherToggleButton.setToolTipText("Tramage");
+        ditherToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(ditherToggleButton, new DitherRectangleTool(drawGrid));
 
         toolButtonGroup.add(replaceColorToggleButton);
         replaceColorToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_replace_color.png"))); // NOI18N
         replaceColorToggleButton.setToolTipText("Remplacement de couleur");
+        replaceColorToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(replaceColorToggleButton, new ReplaceColorTool(drawGrid));
 
         toolButtonGroup.add(treeToggleButton);
         treeToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_tree.png"))); // NOI18N
-        treeToggleButton.setSize(new java.awt.Dimension(32, 32));
+        treeToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(treeToggleButton, treeTool);
 
         nextStepTreeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/arrow_right.png"))); // NOI18N
@@ -529,6 +542,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         toolButtonGroup.add(hitboxToggleButton);
         hitboxToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_dither.png"))); // NOI18N
         hitboxToggleButton.setToolTipText("Tramage");
+        hitboxToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(hitboxToggleButton, new HitboxTool(drawGrid));
 
         applyFunctionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_function.png"))); // NOI18N
@@ -549,24 +563,24 @@ public class TileMapEditor extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(selectionToggleButton)
-                            .addComponent(penToggleButton)
-                            .addComponent(lineToggleButton))
+                            .addComponent(selectionToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(penToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lineToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, 0)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(circleToggleButton)
-                            .addComponent(bucketFillToggleButton)
-                            .addComponent(magicWandToggleButton)))
+                            .addComponent(circleToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bucketFillToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(magicWandToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(rectangleToggleButton)
+                        .addComponent(rectangleToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(rectangleFillToggleButton))
+                        .addComponent(rectangleFillToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(ellipseToggleButton)
+                        .addComponent(ellipseToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(ellipseFillToggleButton))
+                        .addComponent(ellipseFillToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(colorPickerToggleButton)
+                        .addComponent(colorPickerToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(rotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -581,35 +595,35 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addComponent(redoButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(pasteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(ditherToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(replaceColorToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(hitboxToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(applyFunctionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(previousLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(zoomTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
                         .addComponent(zoomPercentLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(ditherToggleButton)
-                        .addGap(0, 0, 0)
-                        .addComponent(replaceColorToggleButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(treeToggleButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(previousLayerButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, 0)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nextStepTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(widthTextField)
-                    .addComponent(heightTextField)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(hitboxToggleButton)
+                        .addComponent(treeToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(applyFunctionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nextStepTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(heightTextField))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(alphaPaletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(paletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(previewGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cancelButton))
                 .addContainerGap())
         );
@@ -621,31 +635,31 @@ public class TileMapEditor extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(magicWandToggleButton)
-                            .addComponent(selectionToggleButton))
+                            .addComponent(magicWandToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(selectionToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(penToggleButton)
-                            .addComponent(bucketFillToggleButton))
+                            .addComponent(penToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bucketFillToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, 0)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lineToggleButton)
-                            .addComponent(circleToggleButton))
+                            .addComponent(lineToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(circleToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, 0)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rectangleToggleButton)
-                            .addComponent(rectangleFillToggleButton))
+                            .addComponent(rectangleToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rectangleFillToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, 0)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ellipseFillToggleButton)
-                            .addComponent(ellipseToggleButton))
+                            .addComponent(ellipseFillToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ellipseToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, 0)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ditherToggleButton)
-                            .addComponent(replaceColorToggleButton))
+                            .addComponent(ditherToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(replaceColorToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(colorPickerToggleButton)
+                            .addComponent(colorPickerToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(rotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -668,7 +682,7 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(treeToggleButton)
+                            .addComponent(treeToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(nextStepTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -676,19 +690,20 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(hitboxToggleButton)
+                            .addComponent(hitboxToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(applyFunctionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 87, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(paletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(alphaPaletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(previewGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(okButton)
                         .addGap(0, 0, 0)
-                        .addComponent(cancelButton))))
+                        .addComponent(cancelButton)))
+                .addContainerGap())
         );
 
         bindingGroup.bind();
