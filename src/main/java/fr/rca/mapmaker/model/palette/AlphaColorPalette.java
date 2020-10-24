@@ -2,8 +2,12 @@ package fr.rca.mapmaker.model.palette;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AlphaColorPalette extends ColorPalette {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AlphaColorPalette.class);
 
 	private static final int[] ALPHAS = {255, 224, 192, 160, 128, 96, 64, 32};
 	private static final int MASK = 1000;
@@ -32,7 +36,11 @@ public class AlphaColorPalette extends ColorPalette {
 		final int alpha = tile / MASK;
 
 		if(colorIndex >= 0 && colorIndex < getColors().length && alpha >= 0 && alpha < ALPHAS.length) {
-			final Color baseColor = getColor(colorIndex);
+			Color baseColor = getColor(colorIndex);
+			if (baseColor == null) {
+				LOGGER.error("Base color #" + colorIndex + " is null");
+				baseColor = new Color(0);
+			}
 
 			final Color color = new Color(baseColor.getRed(), baseColor.getGreen(),
 					baseColor.getBlue(), ALPHAS[alpha]);
