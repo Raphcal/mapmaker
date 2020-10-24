@@ -51,4 +51,15 @@
 				<goal>jacoco:report</goal>
             </goals>
         </action>
+		<action>
+            <actionName>CUSTOM-Clean Package SkipTests</actionName>
+            <displayName>Clean Package SkipTests</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>package</goal>
+            </goals>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+        </action>
     </actions>
