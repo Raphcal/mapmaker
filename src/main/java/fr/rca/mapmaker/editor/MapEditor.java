@@ -36,6 +36,7 @@ import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.palette.SpritePalette;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
+import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.motion.TrajectoryPreview;
 import fr.rca.mapmaker.preferences.PreferencesManager;
 import fr.rca.mapmaker.ui.Grid;
@@ -82,6 +83,7 @@ import org.slf4j.LoggerFactory;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class MapEditor extends javax.swing.JFrame {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MapEditor.class);
 	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language"); // NO18N
     
     private static final int SYSTEM_MODIFIER = OperatingSystem.IS_MAC_OS ? InputEvent.META_MASK : InputEvent.CTRL_DOWN_MASK;
@@ -230,6 +232,7 @@ public class MapEditor extends javax.swing.JFrame {
         spriteInspector = new SpriteInspector(this, false);
         spritePopupMenu = new javax.swing.JPopupMenu();
         inspectSpriteMenuItem = new javax.swing.JMenuItem();
+        moveSpriteMenuItem = new javax.swing.JMenuItem();
         gitManager = new fr.rca.mapmaker.team.git.GitManager();
         clipboard = new fr.rca.mapmaker.model.map.TileLayer();
         mapScrollPane = new javax.swing.JScrollPane();
@@ -428,6 +431,14 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         spritePopupMenu.add(inspectSpriteMenuItem);
+
+        moveSpriteMenuItem.setText(bundle.getString("popupmenu.sprite.move")); // NOI18N
+        moveSpriteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moveSpriteMenuItemActionPerformed(evt);
+            }
+        });
+        spritePopupMenu.add(moveSpriteMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(LANGUAGE.getString("app.title")); // NOI18N
@@ -1007,7 +1018,7 @@ public class MapEditor extends javax.swing.JFrame {
         });
         editMenu.add(cancelMenuItem);
 
-        redoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.META_MASK));
+        redoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.META_DOWN_MASK));
         redoMenuItem.setText(bundle.getString("menu.edit.redo")); // NOI18N
         if (!OperatingSystem.IS_MAC_OS) {
             redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK));
@@ -1838,6 +1849,45 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		});
     }//GEN-LAST:event_runButtonActionPerformed
 
+    private void moveSpriteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveSpriteMenuItemActionPerformed
+		final String targetIndexAsString = JOptionPane.showInputDialog(this, LANGUAGE.getString("dialog.sprite.move.where"));
+		if (targetIndexAsString == null) {
+			return;
+		}
+		final int targetIndex;
+		try {
+			targetIndex = Integer.parseInt(targetIndexAsString);
+		} catch (NumberFormatException e) {
+			LOGGER.debug("Impossible de lire la valeur de l'indice donné ", e);
+			JOptionPane.showMessageDialog(this, LANGUAGE.getString("dialog.sprite.move.bading") + ' ' + targetIndexAsString);
+			return;
+		}
+		final SpritePalette spritePalette = (SpritePalette) spritePaletteGrid.getTileMap().getPalette();
+		final int sourceIndex = spritePalette.getSelectedTile();
+
+		final List<Sprite> sprites = project.getSprites();
+		if (targetIndex == sourceIndex || targetIndex >= sprites.size()) {
+			JOptionPane.showMessageDialog(this, LANGUAGE.getString("dialog.sprite.move.bading") + ' ' + targetIndexAsString);
+			return;
+		}
+
+		final Sprite sourceSprite = sprites.get(sourceIndex);
+		final Sprite targetSprite = sprites.get(targetIndex);
+		sprites.set(targetIndex, sourceSprite);
+		sprites.set(sourceIndex, targetSprite);
+
+		
+		for (final List<Instance> instances : project.getAllInstances()) {
+			for (final Instance instance : instances) {
+				if (instance.getIndex() == sourceIndex) {
+					instance.setIndex(targetIndex);
+				} else if (instance.getIndex() == targetIndex) {
+					instance.setIndex(sourceIndex);
+				}
+			}
+		}
+    }//GEN-LAST:event_moveSpriteMenuItemActionPerformed
+
     /**
      * Modifie le numéro des tuiles de toutes les cartes après l'insertion
      * de <code>shift</code> nouvelles tuiles à l'index <code>from</code> dans
@@ -1987,6 +2037,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JScrollPane mapScrollPane;
     private javax.swing.JButton moveMapBottomButton;
     private javax.swing.JButton moveMapUpButton;
+    private javax.swing.JMenuItem moveSpriteMenuItem;
     private javax.swing.JMenuItem multipleEditMenuItem;
     private javax.swing.JMenu openRecentMenu;
     private javax.swing.JPanel paletteBackgroundPanel;
