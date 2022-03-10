@@ -61,17 +61,15 @@ public class Function extends JComponent {
 		final Rectangle bounds = g.getClipBounds();
 		final double w = (double) bounds.width / (double) sourceWidth;
 		final double h = (double) bounds.height / (double) sourceHeight;
-		
+
 		final double zoom = Math.max(w, h); 
-		
-		operation.setZoom(zoom);
-		
+
 		g.setColor(COLOR);
-		
-		for(int x = 0; x < bounds.width; x++) {
+
+		for(int x = 0; x < sourceWidth; x++) {
 			final double y = operation.execute((double)x);
-			
-			g.fillRect((int) Math.round(x) - 1, (int) Math.round(y) - 1, 3, 3);
+
+			g.fillRect((int) Math.floor(x * zoom), (int) Math.floor(y * zoom), (int)zoom, (int)zoom);
 		}
 	}
 	

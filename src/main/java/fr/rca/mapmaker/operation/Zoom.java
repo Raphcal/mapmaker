@@ -6,6 +6,7 @@ import java.util.Deque;
  *
  * @author Raphaël Calabro <raph_kun at yahoo.fr>
  */
+@Deprecated
 public class Zoom implements Function {
 	
 	private double zoom = 1.0;

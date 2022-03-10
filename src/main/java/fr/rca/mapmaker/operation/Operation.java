@@ -27,7 +27,7 @@ public class Operation {
 	public Operation() {
 		this.instructions = Collections.emptyList();
 	}
-	
+
 	/**
 	 * Créé une nouvelle opération à partir d'une liste d'instructions.
 	 * @param instructions Liste d'instructions à exécuter.
@@ -43,11 +43,11 @@ public class Operation {
 	 */
 	public double execute(double x) {
 		final Deque<Double> stack = new ArrayDeque<Double>();
-		
+
 		for(final Instruction instruction : instructions) {
 			instruction.execute(x, stack, null);
 		}
-		
+
 		// Renvoi du résultat
 		if(stack.isEmpty()) {
 			return 0.0;
@@ -78,13 +78,10 @@ public class Operation {
 			instruction.execute(0, stack, instance);
 		}
 	}
-	
+
+	@Deprecated
 	public void setZoom(double zoom) {
-		for(final Instruction instruction : instructions) {
-			if(instruction instanceof Zoom) {
-				((Zoom) instruction).setZoom(zoom);
-			}
-		}
+		// Vide
 	}
 
 	public List<Instruction> getInstructions() {
