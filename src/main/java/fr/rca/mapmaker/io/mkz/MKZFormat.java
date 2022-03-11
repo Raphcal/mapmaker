@@ -31,7 +31,7 @@ public class MKZFormat extends AbstractFormat {
 	
 	public MKZFormat() {
 		super(EXTENSION, SupportedOperation.SAVE);
-		
+
 		addHandler(Project.class, new ProjectDataHandler(this));
 		addHandler(Palette.class, new ImagePaletteDataHandler());
 		addHandler(BufferedImage.class, new BufferedImageDataHandler());
@@ -39,7 +39,7 @@ public class MKZFormat extends AbstractFormat {
 		addHandler(Sprite.class, new SpriteDataHandler(this));
 		addHandler(Instance.class, new InstanceDataHandler());
 		addHandler(Packer.class, new PackMapDataHandler(this));
-		
+
 		// Handlers du format interne.
 		addHandler(Color.class, new fr.rca.mapmaker.io.internal.ColorDataHandler());
 		addHandler(TileLayer.class, new fr.rca.mapmaker.io.internal.LayerDataHandler(this));

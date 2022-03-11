@@ -81,25 +81,25 @@ public abstract class AbstractFormat implements Format {
 		
 		return handler;
 	}
-    
+
 	@Override
 	public <T> DataHandler<T> getHandler(String name) {
 		return (DataHandler<T>) handlers.get(name);
 	}
-	
-    public <T> void write(T t, OutputStream outputStream) throws IOException {
-        final DataHandler<T> dataHandler = getHandler((Class<T>) t.getClass());
-        dataHandler.write(t, outputStream);
-    }
-	
-    public <T> void writeNullable(T t, OutputStream outputStream) throws IOException {
-        Streams.write(t != null, outputStream);
-        if (t != null) {
-            final DataHandler<T> dataHandler = getHandler((Class<T>) t.getClass());
-            dataHandler.write(t, outputStream);
-        }
-    }
-    
+
+	public <T> void write(T t, OutputStream outputStream) throws IOException {
+		final DataHandler<T> dataHandler = getHandler((Class<T>) t.getClass());
+		dataHandler.write(t, outputStream);
+	}
+
+	public <T> void writeNullable(T t, OutputStream outputStream) throws IOException {
+		Streams.write(t != null, outputStream);
+		if (t != null) {
+			final DataHandler<T> dataHandler = getHandler((Class<T>) t.getClass());
+			dataHandler.write(t, outputStream);
+		}
+	}
+
 	/**
 	 * Défini le numéro de version à utiliser pour les instances de {@link 
 	 * DataHandler} qui supportent différentes versions.
