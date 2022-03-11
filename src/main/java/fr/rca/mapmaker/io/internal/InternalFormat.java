@@ -159,7 +159,9 @@ public class InternalFormat extends AbstractFormat {
 					return header.charAt(3) - '0';
 				} else if(header.length() == HEADER_LENGTH && header.startsWith("MM")) {
 					return (header.charAt(2) - '0') * 10 + header.charAt(3) - '0';
-				} 
+				} else {
+					throw new IllegalArgumentException("Bad file header: " + header);
+				}
 			} finally {
 				inputStream.close();
 			}
