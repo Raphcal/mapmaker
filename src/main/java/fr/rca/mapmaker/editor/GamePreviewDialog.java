@@ -18,6 +18,7 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 		new Dimension(320, 240),
 		new Dimension(568, 320),
 		new Dimension(960, 544),
+		new Dimension(400, 240),
 	};
 
 	/**
@@ -73,7 +74,7 @@ public class GamePreviewDialog extends javax.swing.JDialog {
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
 
-        deviceComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "320x240", "iPhone 5 (568x320)", "Playstation Vita (960x544)" }));
+        deviceComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "320x240", "iPhone 5 (568x320)", "Playstation Vita (960x544)", "PlayDate (400x240)" }));
         deviceComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deviceComboBoxActionPerformed(evt);
