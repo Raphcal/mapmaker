@@ -3,14 +3,14 @@ package fr.rca.mapmaker;
 import fr.rca.mapmaker.editor.MapEditor;
 import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.preferences.PreferencesManager;
-
+import java.awt.Desktop;
 import java.awt.EventQueue;
+import java.awt.desktop.OpenFilesEvent;
+import java.awt.desktop.OpenFilesHandler;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
@@ -19,6 +19,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Classe principale du projet.
@@ -28,9 +30,10 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
 public class MapMaker {
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MapMaker.class);
 	private static Object nsApplication;
-	
+
 	/**
 	 * Démarre l'application.
 	 * 
@@ -115,18 +118,8 @@ public class MapMaker {
 			final Class<?> applicationClass = MapMaker.class.getClassLoader().loadClass("com.apple.eawt.Application");
 			final Method getApplicationMethod = applicationClass.getMethod("getApplication");
 			nsApplication = getApplicationMethod.invoke(null);
-		} catch (ClassNotFoundException ex) {
-			// Ignoré.
-		} catch (NoSuchMethodException ex) {
-			// Ignoré.
-		} catch (SecurityException ex) {
-			// Ignoré.
-		} catch (IllegalAccessException ex) {
-			// Ignoré.
-		} catch (IllegalArgumentException ex) {
-			// Ignoré.
-		} catch (InvocationTargetException ex) {
-			// Ignoré.
+		} catch (Exception ex) {
+			LOGGER.debug("Unable to find macOS NSApplication", ex);
 		}
 	}
 	
@@ -139,18 +132,8 @@ public class MapMaker {
 				final Method setDockIconImageMethod = nsApplication.getClass().getMethod("setDockIconImage", java.awt.Image.class);
 				setDockIconImageMethod.invoke(nsApplication, ImageIO.read(MapMaker.class.getResourceAsStream("/resources/icon.png")));
 			}
-		} catch (NoSuchMethodException ex) {
-			// Ignoré.
-		} catch (SecurityException ex) {
-			// Ignoré.
-		} catch (IllegalAccessException ex) {
-			// Ignoré.
-		} catch (IllegalArgumentException ex) {
-			// Ignoré.
-		} catch (InvocationTargetException ex) {
-			// Ignoré.
-		} catch (IOException ex) {
-			// Ignoré.
+		} catch (Exception ex) {
+			LOGGER.debug("Unable to set macOS dock icon", ex);
 		}
 	}
 	
@@ -184,19 +167,20 @@ public class MapMaker {
 				final Method setOpenFileHandlerMethod = nsApplication.getClass().getMethod("setOpenFileHandler", openFileHandlerClass);
 				setOpenFileHandlerMethod.invoke(nsApplication, proxy);
 				
-			} catch (ClassNotFoundException ex) {
-				// Ignoré.
-			} catch (NoSuchMethodException ex) {
-				// Ignoré.
-			} catch (SecurityException ex) {
-				// Ignoré.
-			} catch (IllegalAccessException ex) {
-				// Ignoré.
-			} catch (IllegalArgumentException ex) {
-				// Ignoré.
-			} catch (InvocationTargetException ex) {
-				// Ignoré.
+			} catch (Exception ex) {
+				LOGGER.debug("Unable to set macOS open action", ex);
 			}
+		}
+		else if (Desktop.isDesktopSupported()) {
+			Desktop.getDesktop().setOpenFileHandler(new OpenFilesHandler() {
+				@Override
+				public void openFiles(OpenFilesEvent e) {
+					final List<File> files = e.getFiles();
+					if (files.size() == 1) {
+						editor.openFile(files.get(0));
+					}
+				}
+			});
 		}
 	}
 	

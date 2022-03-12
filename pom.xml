@@ -13,7 +13,7 @@
         <java.version>1.7</java.version>
         <java.source.encoding>UTF-8</java.source.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bundle.java.version>jdk1.8.0_281.jdk</bundle.java.version>
+        <bundle.java.version>jdk1.8.0_251.jdk</bundle.java.version>
         <bundle.signing.certificate>Apple Development: Raphael Calabro</bundle.signing.certificate>
     </properties>
 
@@ -81,6 +81,7 @@
                                     <classpath file="${env.HOME}/.m2/repository/com/jcraft/jsch/0.1.50/jsch-0.1.50.jar" />
                                 </bundleapp>
                                 <copy file="Info.plist" toFile="target/MapMaker.app/Contents/Info.plist" overwrite="true"/>
+                                <copy file="Info2.plist" toFile="target/MapMaker.app/Contents/Resources/Info.plist"/>
                                 <copy file="src/main/app/MmkDocument.icns" toDir="target/MapMaker.app/Contents/Resources"/>
                                 <copy file="src/main/app/MmkbDocument.icns" toDir="target/MapMaker.app/Contents/Resources"/>
                                 
@@ -100,6 +101,26 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.akman</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>0.1.3</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>jpackage</goal>
+                        </goals>
+                        <configuration>
+                            <dest>${project.basedir}/target/</dest>
+                            <mainjar>${project.basedir}/target/MapMaker.app/Contents/Java/${project.build.finalName}.jar</mainjar>
+                            <input>${project.basedir}/target/MapMaker.app/Contents/Java/</input>
+                            <resourcedir>${project.basedir}/target/MapMaker.app/Contents/Resources/</resourcedir>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
