@@ -62,7 +62,7 @@ public class PlayDateFormat extends AbstractFormat {
 					outputStream.putNextEntry(new ZipEntry("palette" + index + ".data"));
 					write(palette, outputStream);
 
-					outputStream.putNextEntry(new ZipEntry("palette" + index + '-' + palette.getTileSize() + '-' + palette.getTileSize() + ".png"));
+					outputStream.putNextEntry(new ZipEntry("palette" + index + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png"));
 					write(renderPalette((EditableImagePalette) palette), outputStream);
 				}
 			}
@@ -79,7 +79,7 @@ public class PlayDateFormat extends AbstractFormat {
 				final Sprite sprite = sprites.get(index);
 				BufferedImage spriteImage = renderSprite(sprite);
 				if (spriteImage != null) {
-					outputStream.putNextEntry(new ZipEntry("sprite" + index + '-' + sprite.getWidth() + '-' + sprite.getHeight() + ".png"));
+					outputStream.putNextEntry(new ZipEntry("sprite" + index + "-table-" + sprite.getWidth() + '-' + sprite.getHeight() + ".png"));
 					write(spriteImage, outputStream);
 				}
 			}
