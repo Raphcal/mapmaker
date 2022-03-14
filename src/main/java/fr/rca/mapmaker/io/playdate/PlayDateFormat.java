@@ -5,7 +5,6 @@ import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.mkz.BufferedImageDataHandler;
 import fr.rca.mapmaker.io.mkz.InstanceDataHandler;
-import fr.rca.mapmaker.io.mkz.TileMapDataHandler;
 import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -42,12 +41,10 @@ public class PlayDateFormat extends AbstractFormat {
 
 		addHandler(EditableImagePalette.class, new EditableImagePaletteHandler());
 		addHandler(BufferedImage.class, new BufferedImageDataHandler());
-		addHandler(TileMap.class, new TileMapDataHandler(this));
+		addHandler(TileMap.class, new TileMapHandler());
 		addHandler(Instance.class, new InstanceDataHandler());
 
 		// Handlers du format interne.
-		addHandler(Color.class, new fr.rca.mapmaker.io.internal.ColorDataHandler());
-		addHandler(TileLayer.class, new fr.rca.mapmaker.io.internal.LayerDataHandler(this));
 		addHandler(ScrollRate.class, new fr.rca.mapmaker.io.internal.ScrollRateDataHandler());
 		addHandler(Rectangle.class, new fr.rca.mapmaker.io.internal.RectangleDataHandler());
 	}
