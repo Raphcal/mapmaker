@@ -5,12 +5,11 @@ import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.preferences.PreferencesManager;
 import java.awt.Desktop;
 import java.awt.EventQueue;
-import java.awt.desktop.OpenFilesEvent;
-import java.awt.desktop.OpenFilesHandler;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
@@ -122,7 +121,7 @@ public class MapMaker {
 			LOGGER.debug("Unable to find macOS NSApplication", ex);
 		}
 	}
-	
+
 	/**
 	 * Défini l'icône de l'application dans le dock sous Mac OS X.
 	 */
@@ -142,46 +141,49 @@ public class MapMaker {
 	 * @param editor Fenêtre principale de l'éditeur.
 	 */
 	private static void setOpenAction(final MapEditor editor) {
-		if (nsApplication != null) {
-			try {
-				final Class<?> openFileHandlerClass = MapMaker.class.getClassLoader().loadClass("com.apple.eawt.OpenFilesHandler");
-				final Object proxy = Proxy.newProxyInstance(MapMaker.class.getClassLoader(), new Class<?>[] {openFileHandlerClass}, new InvocationHandler() {
-					@Override
-					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-						if ("openFiles".equals(method.getName())) {
-							final Object event = args[0];
-							final Method getFilesMethod = event.getClass().getMethod("getFiles");
-							final Object result = getFilesMethod.invoke(event);
-							
-							if (result instanceof List) {
-								final List<File> files = (List<File>) result;
-								if (files.size() == 1) {
-									editor.openFile(files.get(0));
-								}
-							}
-						}
-						return null;
-					}
-				});
-				
-				final Method setOpenFileHandlerMethod = nsApplication.getClass().getMethod("setOpenFileHandler", openFileHandlerClass);
-				setOpenFileHandlerMethod.invoke(nsApplication, proxy);
-				
-			} catch (Exception ex) {
-				LOGGER.debug("Unable to set macOS open action", ex);
-			}
+		final Class<?> openFileHandlerClass;
+		try {
+			openFileHandlerClass = MapMaker.class.getClassLoader().loadClass(nsApplication != null
+				? "com.apple.eawt.OpenFilesHandler"
+				: "java.awt.desktop.OpenFilesHandler");
+		} catch (ClassNotFoundException e) {
+			LOGGER.trace("Unable to load OpenFilesHandler class", e);
+			return;
 		}
-		else if (Desktop.isDesktopSupported()) {
-			Desktop.getDesktop().setOpenFileHandler(new OpenFilesHandler() {
-				@Override
-				public void openFiles(OpenFilesEvent e) {
-					final List<File> files = e.getFiles();
-					if (files.size() == 1) {
-						editor.openFile(files.get(0));
+
+		final Object proxy = Proxy.newProxyInstance(MapMaker.class.getClassLoader(), new Class<?>[] {openFileHandlerClass}, new InvocationHandler() {
+			@Override
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+				if ("openFiles".equals(method.getName())) {
+					final Object event = args[0];
+					final Method getFilesMethod = event.getClass().getMethod("getFiles");
+					final Object result = getFilesMethod.invoke(event);
+
+					if (result instanceof List) {
+						final List<File> files = (List<File>) result;
+						if (files.size() == 1) {
+							editor.openFile(files.get(0));
+						}
 					}
 				}
-			});
+				return null;
+			}
+		});
+
+		final Object parent;
+		if (nsApplication != null) {
+			parent = nsApplication;
+		} else if (Desktop.isDesktopSupported()) {
+			parent = Desktop.getDesktop();
+		} else {
+			return;
+		}
+
+		try {
+			final Method setOpenFileHandlerMethod = parent.getClass().getMethod("setOpenFileHandler", openFileHandlerClass);
+			setOpenFileHandlerMethod.invoke(parent, proxy);
+		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
+			LOGGER.debug("Unable to set macOS open action", ex);
 		}
 	}
-	
 }
