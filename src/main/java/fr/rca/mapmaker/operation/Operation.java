@@ -116,19 +116,17 @@ public class Operation {
 		
 		return outputStream.toByteArray();
 	}
-	
+
 	@Override
 	public String toString() {
-		final StringBuilder stringBuilder = new StringBuilder();
-		
+		return toString(Language.GENERIC);
+	}
+
+	public String toString(Language language) {
+		final ArrayDeque<String> stack = new ArrayDeque<>();
 		for(final Instruction instruction : instructions) {
-			stringBuilder.append(instruction).append(' ');
+			instruction.pushString(stack, language);
 		}
-		
-		if(stringBuilder.length() > 0) {
-			stringBuilder.setLength(stringBuilder.length() - 1);
-		}
-		
-		return stringBuilder.toString();
+		return stack.pop();
 	}
 }

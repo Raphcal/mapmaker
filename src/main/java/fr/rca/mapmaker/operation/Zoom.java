@@ -39,5 +39,9 @@ public class Zoom implements Function {
 	public ByteCode toByteCode() {
 		return ByteCode.ZOOM;
 	}
-	
+
+	@Override
+	public void pushString(Deque<String> stack, Language language) {
+		// Vide.
+	}
 }

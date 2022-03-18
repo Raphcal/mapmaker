@@ -22,4 +22,8 @@ public interface Instruction extends Serializable {
 	void execute(double x, Deque<Double> stack, Instance instance);
 	
 	ByteCode toByteCode();
+
+	default void pushString(Deque<String> stack, Language language) {
+		stack.push(language.translate(this));
+	}
 }

@@ -20,7 +20,7 @@ public class Multiply implements Operator {
 
 	@Override
 	public Priority getPriority() {
-		return Priority.FUNCTION;
+		return Priority.MULTIPLY;
 	}
 
 	@Override

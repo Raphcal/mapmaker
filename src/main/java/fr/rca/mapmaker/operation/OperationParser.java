@@ -197,16 +197,16 @@ public final class OperationParser {
 					itemBuilder.append(MULTIPLY_INSTRUCTION);
 					index--;
 					state = State.OPERATOR;
-					
+
 				} else if((c >= '0' && c <= '9') || c == '.') {
 					itemBuilder.append(c);
-				
+
 				} else {
 					instructions.add(new Constant(Double.valueOf(itemBuilder.toString())));
 					itemBuilder.setLength(0);
-					
+
 					index--;
-					
+
 					if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
 						state = State.RETURN;
 						
@@ -220,10 +220,10 @@ public final class OperationParser {
 			case VARIABLE:
 				if(c >= 'a' && c <= 'z') {
 					itemBuilder.append(c);
-					
+
 				} else {
 					final Instruction instruction = Instructions.getInstruction(itemBuilder.toString());
-					
+
 					if(instruction instanceof Function) {
 						if(c == BLOCK_START) {
 							state = State.FUNCTION_BLOCK;
@@ -234,13 +234,13 @@ public final class OperationParser {
 						} else {
 							state = State.WAITING_FOR_BLOCK;
 						}
-						
+
 					} else if(instruction instanceof Variable || instruction instanceof Constant) {
 						instructions.add(instruction);
 						itemBuilder.setLength(0);
-						
+
 						index--;
-						
+
 						if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
 							state = State.RETURN;
 						} else {

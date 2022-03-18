@@ -28,5 +28,5 @@ public class Variable implements Instruction {
 	public ByteCode toByteCode() {
 		return ByteCode.X;
 	}
-	
+
 }

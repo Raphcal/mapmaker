@@ -1,5 +1,7 @@
 package fr.rca.mapmaker.operation;
 
+import java.util.Deque;
+
 /**
  * Représente une instruction de type "opérateur".<br>
  * <br>
@@ -32,11 +34,15 @@ public interface Operator extends Instruction {
 		 */
 		ADD_SUBSTRACT,
 		/**
-		 * Opérateur de multiplication/division.
+		 * Opérateur de division.
 		 */
-		MULTIPLY_DIVIDE,
+		DIVIDE,
 		/**
-		 * Opérateur avancé (matches, in, etc).
+		 * Opérateur de multiplication.
+		 */
+		MULTIPLY,
+		/**
+		 * Fonction (cosinus, sinus, etc.).
 		 */
 		FUNCTION,
 		/**
@@ -50,4 +56,36 @@ public interface Operator extends Instruction {
 	 * @return La priorité de cet opérateur.
 	 */
 	Priority getPriority();
+
+	@Override
+	default void pushString(Deque<String> stack, Language language) {
+		final String self = language.translate(this);
+		switch (language.priority(this)) {
+			case FUNCTION:
+				StringBuilder stringBuilder = new StringBuilder();
+				int argCount = this instanceof Function ? ((Function)this).getNumberOfArguments() : 1;
+				for (int arg = 0; arg < argCount; arg++) {
+					if (arg > 0) {
+						stringBuilder.insert(0, ", ");
+					}
+					stringBuilder.insert(0, stack.pop());
+				}
+				stringBuilder.insert(0, '(')
+						.insert(0, self)
+						.append(')');
+
+				stack.push(stringBuilder.toString());
+				break;
+			case UNARY:
+				stack.push(self + stack.pop());
+				break;
+			default:
+				final String rhs = stack.pop();
+				final String lhs = stack.pop();
+				stack.push(lhs + ' ' + self + ' ' + rhs);
+				break;
+		}
+	}
+
+	
 }

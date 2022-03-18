@@ -32,5 +32,5 @@ public class Cosinus implements Function {
 	public ByteCode toByteCode() {
 		return ByteCode.COSINUS;
 	}
-	
+
 }

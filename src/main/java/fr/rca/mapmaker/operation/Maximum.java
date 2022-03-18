@@ -11,7 +11,7 @@ class Maximum implements Function {
 
 	@Override
 	public Priority getPriority() {
-		return Priority.COMPARE;
+		return Priority.FUNCTION;
 	}
 
 	@Override

@@ -7,12 +7,17 @@ import java.util.Deque;
  *
  * @author rca
  */
-public class Pow implements Operator {
+public class Pow implements Function {
 
     @Override
     public Priority getPriority() {
-        return Priority.MULTIPLY_DIVIDE;
+        return Priority.MULTIPLY;
     }
+
+	@Override
+	public int getNumberOfArguments() {
+		return 2;
+	}
 
     @Override
     public void execute(double x, Deque<Double> stack, Instance instance) {
@@ -31,5 +36,4 @@ public class Pow implements Operator {
     public ByteCode toByteCode() {
         return ByteCode.POW;
     }
-    
 }

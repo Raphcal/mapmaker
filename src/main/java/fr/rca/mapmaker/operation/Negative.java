@@ -22,5 +22,10 @@ public class Negative implements Instruction {
 	public ByteCode toByteCode() {
 		return ByteCode.NEGATIVE;
 	}
-	
+
+	@Override
+	public void pushString(Deque<String> stack, Language language) {
+		final String self = language.translate(this);
+		stack.push(self + stack.pop());
+	}
 }

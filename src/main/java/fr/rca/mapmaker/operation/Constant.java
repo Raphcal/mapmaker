@@ -10,9 +10,10 @@ import java.util.Deque;
  */
 public class Constant implements Instruction {
 
-	private double value;
+	private final double value;
 
 	public Constant() {
+		this.value = 0;
 	}
 
 	/**
@@ -31,15 +32,27 @@ public class Constant implements Instruction {
 	public double getValue() {
 		return value;
 	}
-	
+
 	@Override
 	public String toString() {
-		return '"' + String.valueOf(value) + '"';
+		if (value == Math.PI) {
+			return "pi";
+		} else if (value == Math.E) {
+			return "e";
+		}
+		return new Long((long)value).doubleValue() == value
+				? Long.toString((long)value)
+				: Double.toString(value);
 	}
 
 	@Override
 	public ByteCode toByteCode() {
+		if (value == Math.PI) {
+			return ByteCode.PI;
+		} else if (value == Math.E) {
+			return ByteCode.E;
+		}
 		return ByteCode.CONSTANT;
 	}
-	
+
 }

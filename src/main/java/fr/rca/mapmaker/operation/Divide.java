@@ -30,7 +30,7 @@ public class Divide implements Operator {
 
 	@Override
 	public Priority getPriority() {
-		return Priority.MULTIPLY_DIVIDE;
+		return Priority.DIVIDE;
 	}
 
 	@Override

@@ -25,17 +25,17 @@ public final class Instructions {
 		map.put("x", new Variable());
 		map.put("pi", new Constant(Math.PI));
 		map.put("e", new Constant(Math.E));
-		
+
 		map.put("+", new Add());
 		map.put("-", new Substract());
 		map.put("*", new Multiply());
 		map.put("/", new Divide());
 		map.put("^", new Pow());
-		
+
 		map.put("min", new Minimum());
 		map.put("max", new Maximum());
 		map.put("zoom", new Zoom());
-		
+
 		map.put("cos", new Cosinus());
 		map.put("sin", new Sinus());
 		map.put("sqrt", new SquareRoot());
