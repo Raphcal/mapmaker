@@ -52,6 +52,9 @@ public class PlayDateFormat extends AbstractFormat {
 	@Override
 	public void saveProject(Project project, File file) {
 		try (ZipOutputStream outputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+			final PaletteAsHeaderHandler paletteAsHeaderHandler = new PaletteAsHeaderHandler();
+			final PaletteAsCodeHandler paletteAsCodeHandler = new PaletteAsCodeHandler();
+
 			final List<Palette> palettes = project.getPalettes();
 			for(int index = 0; index < palettes.size(); index++) {
 				final Palette palette = palettes.get(index);
@@ -61,14 +64,32 @@ public class PlayDateFormat extends AbstractFormat {
 
 					outputStream.putNextEntry(new ZipEntry("palette" + index + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png"));
 					write(renderPalette((EditableImagePalette) palette), outputStream);
+
+					outputStream.putNextEntry(new ZipEntry(paletteAsHeaderHandler.fileNameFor(palette)));
+					paletteAsHeaderHandler.write(palette, outputStream);
+
+					outputStream.putNextEntry(new ZipEntry(paletteAsCodeHandler.fileNameFor(palette)));
+					paletteAsCodeHandler.write(palette, outputStream);
 				}
 			}
+
+			final TileMapAsHeaderHandler tileMapAsHeaderHandler = new TileMapAsHeaderHandler();
+			final TileMapAsCodeHandler tileMapAsCodeHandler = new TileMapAsCodeHandler();
 
 			final List<MapAndInstances> maps = project.getMaps();
 			for(int index = 0; index < maps.size(); index++) {
 				outputStream.putNextEntry(new ZipEntry("map" + index + ".data"));
 				final MapAndInstances mapAndInstances = maps.get(index);
-				write(mapAndInstances.getTileMap(), outputStream);
+				final TileMap tileMap = mapAndInstances.getTileMap();
+				write(tileMap, outputStream);
+
+				if (Names.normalizeName(tileMap, Names::toSnakeCase) != null) {
+					outputStream.putNextEntry(new ZipEntry(tileMapAsHeaderHandler.fileNameFor(tileMap)));
+					tileMapAsHeaderHandler.write(tileMap, outputStream);
+
+					outputStream.putNextEntry(new ZipEntry(tileMapAsCodeHandler.fileNameFor(tileMap)));
+					tileMapAsCodeHandler.write(tileMap, outputStream);
+				}
 			}
 
 			final List<Sprite> sprites = project.getSprites();

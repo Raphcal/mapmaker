@@ -9,7 +9,10 @@ import java.io.OutputStream;
  * @author daeke
  */
 public interface DataHandler<T> {
-	
 	void write(T t, OutputStream outputStream) throws IOException;
 	T read(InputStream inputStream) throws IOException;
+
+	default String fileNameFor(T t) {
+		throw new UnsupportedOperationException("Not supported");
+	}
 }

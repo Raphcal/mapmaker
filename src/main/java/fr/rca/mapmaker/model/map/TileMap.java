@@ -20,6 +20,7 @@ import java.util.List;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Carte composée de couches de tuiles.
@@ -132,7 +133,7 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 		propertyChangeSupport.firePropertyChange("index", oldIndex, index);
 	}
 	
-	public String getName() {
+	public @Nullable String getName() {
 		return name;
 	}
 

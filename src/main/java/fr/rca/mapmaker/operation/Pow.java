@@ -11,7 +11,7 @@ public class Pow implements Function {
 
     @Override
     public Priority getPriority() {
-        return Priority.MULTIPLY;
+        return Priority.MULTIPLY_DIVIDE;
     }
 
 	@Override

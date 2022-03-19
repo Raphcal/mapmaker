@@ -17,8 +17,8 @@ public enum Language {
 			.put(ByteCode.SINUS, "sinf")
 			.put(ByteCode.SQUARE_ROOT, "sqrtf")
 			.put(ByteCode.POW, "powf")
-			.put(ByteCode.PI, "M_PI")
-			.put(ByteCode.E, "M_E")
+			.put(ByteCode.PI, "MEL_PI")
+			.put(ByteCode.E, "MEL_E")
 	), MapBuilder.createMap(priorities -> priorities
 			.put(ByteCode.POW, Operator.Priority.FUNCTION)
 	)) {

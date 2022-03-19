@@ -34,13 +34,9 @@ public interface Operator extends Instruction {
 		 */
 		ADD_SUBSTRACT,
 		/**
-		 * Opérateur de division.
+		 * Opérateur de multiplication/division.
 		 */
-		DIVIDE,
-		/**
-		 * Opérateur de multiplication.
-		 */
-		MULTIPLY,
+		MULTIPLY_DIVIDE,
 		/**
 		 * Fonction (cosinus, sinus, etc.).
 		 */
@@ -60,7 +56,8 @@ public interface Operator extends Instruction {
 	@Override
 	default void pushString(Deque<String> stack, Language language) {
 		final String self = language.translate(this);
-		switch (language.priority(this)) {
+		final Operator.Priority priority = language.priority(this);
+		switch (priority) {
 			case FUNCTION:
 				StringBuilder stringBuilder = new StringBuilder();
 				int argCount = this instanceof Function ? ((Function)this).getNumberOfArguments() : 1;
@@ -77,14 +74,39 @@ public interface Operator extends Instruction {
 				stack.push(stringBuilder.toString());
 				break;
 			case UNARY:
-				stack.push(self + stack.pop());
+				stack.push(self + addBraces(stack.pop()));
 				break;
 			default:
-				final String rhs = stack.pop();
-				final String lhs = stack.pop();
+				String rhs = stack.pop();
+				String lhs = stack.pop();
+				if (priority == Operator.Priority.MULTIPLY_DIVIDE) {
+					rhs = addBraces(rhs);
+					lhs = addBraces(lhs);
+				}
 				stack.push(lhs + ' ' + self + ' ' + rhs);
 				break;
 		}
+	}
+
+	default String addBraces(String value) {
+		int braceCount = 0;
+		boolean mayBeUnary = false;
+		for (char c : value.toCharArray()) {
+			if (c == '(') {
+				braceCount++;
+			} else if (c == ')') {
+				braceCount--;
+			} else if (braceCount == 0 && c == '+') {
+				return '(' + value + ')';
+			} else if (braceCount == 0 && c == '-') {
+				mayBeUnary = true;
+				continue;
+			} else if (mayBeUnary && c == ' ') {
+				return '(' + value + ')';
+			}
+			mayBeUnary = false;
+		}
+		return value;
 	}
 
 	
