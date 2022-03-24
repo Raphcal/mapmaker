@@ -35,7 +35,7 @@ public class PaletteAsCodeHandler implements DataHandler<Palette> {
 			}
 		}
 		outputStream.write(("    default:\n"
-				+ "        return -1;\n"
+				+ "        return " + t.getTileSize() + ";\n"
 				+ "    }\n"
 				+ "}\n").getBytes(StandardCharsets.UTF_8));
 	}

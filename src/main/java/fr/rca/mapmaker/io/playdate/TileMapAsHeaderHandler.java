@@ -23,6 +23,7 @@ public class TileMapAsHeaderHandler implements DataHandler<TileMap> {
 
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		final String name = Names.normalizeName(t, Names::toLowerCase);
+		final String camelCasedName = Names.normalizeName(t, Names::toCamelCase);
 		outputStream.write(("//\n"
 				+ "// map" + name + ".h\n"
 				+ "//\n"
@@ -37,7 +38,7 @@ public class TileMapAsHeaderHandler implements DataHandler<TileMap> {
 				+ "#include \"../lib/melice.h\"\n"
 				+ "#include \"" + paletteAsHeaderHandler.fileNameFor(t.getPalette()) + "\"\n"
 				+ "\n"
-				+ MAP_TYPE + " * _Nonnull createMap" + name + "(void);\n"
+				+ MAP_TYPE + " * _Nonnull createMap" + camelCasedName + "(void);\n"
 				+ "\n"
 				+ "#endif /* map" + name + "_h */\n").getBytes(StandardCharsets.UTF_8));
 	}

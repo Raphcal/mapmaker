@@ -4,7 +4,6 @@ import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
-import fr.rca.mapmaker.model.palette.PaletteReference;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
