@@ -31,7 +31,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,6 +61,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	private static final String INSTANCES = "instances";
 	private static final String SPRITES = "sprites";
 	private static final String NEXT_MAP = "next-map";
+	private static final String ANIMATION_NAMES = "animation-names";
 	
 	private static final int FULL_PROGRESS = 100;
 	private static final int READ_STEPS = 5;
@@ -118,7 +118,8 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		projectMap.put(PALETTES, palettes);
 		projectMap.put(MAPS, maps);
 		projectMap.put(SPRITES, sprites);
-		
+		projectMap.put(ANIMATION_NAMES, project.getAnimationNames());
+
 		try {
 			// Palettes
 			write(project.getPalettes(), file, files, PALETTE_FILE_FORMAT, palettes, getHandler(Palette.class));
@@ -222,7 +223,12 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			// Version
 			final Integer version = (Integer) projectInfo.get(VERSION);
 			setVersion(version != null ? version : InternalFormat.VERSION_4);
-			
+
+			List<String> animationNames = (List<String>) projectInfo.get(ANIMATION_NAMES);
+			if (animationNames != null) {
+				project.setAnimationNames(animationNames);
+			}
+
 			// Palettes
 			final DataHandler<Palette> paletteHandler = getHandler(Palette.class);
 			final List<String> palettes = (List<String>) projectInfo.get(PALETTES);
