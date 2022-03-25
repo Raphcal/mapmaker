@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class Sprite {
-	
+
 	private String name;
 	private int type;
 	private ColorPalette palette = AlphaColorPalette.getDefaultColorPalette();
@@ -112,8 +112,8 @@ public class Sprite {
 		}
 		return animation;
 	}
-	
-	private Animation findByName(String name) {
+
+	public Animation findByName(String name) {
 		if(name == null) {
 			return null;
 		}
@@ -137,13 +137,18 @@ public class Sprite {
 		}
 		return true;
 	}
-	
+
 	@Nullable
 	public TileLayer getDefaultLayer() {
+		return getDefaultLayer(Animation.ANIMATION_NAMES);
+	}
+
+	@Nullable
+	public TileLayer getDefaultLayer(List<String> animationNames) {
 		final double[] favoriteDirections = {0.0, 3.14, 4.71, 1.57};
-		
-		for(final Animation defaultAnimation : Animation.getDefaultAnimations()) {
-			final Animation animation = findByName(defaultAnimation.getName());
+
+		for(final String animationName : animationNames) {
+			final Animation animation = findByName(animationName);
 			if(animation != null) {
 				for(final double direction : favoriteDirections) {
 					final List<TileLayer> layers = animation.getFrames(direction);

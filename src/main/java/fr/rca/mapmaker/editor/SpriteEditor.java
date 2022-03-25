@@ -30,10 +30,10 @@ public class SpriteEditor extends javax.swing.JDialog {
 	private final static List<TileLayer> PASTEBOARD = new ArrayList<TileLayer>();
 	
 	private final List<ActionListener> actionListeners = new ArrayList<ActionListener>();
-	
+
 	private Sprite editedSprite;
 	private Animation currentAnimation;
-	
+
 	/**
 	 * Creates new form SpriteDialog
 	 * @param parent Fenêtre parente
@@ -43,17 +43,22 @@ public class SpriteEditor extends javax.swing.JDialog {
 		initComponents();
 	}
 
-	public void setSprite(Sprite sprite) {
+	public void setSprite(Sprite sprite, List<String> animationNames) {
 		this.editedSprite = sprite;
 		this.sprite.morphTo(sprite);
 		this.tileLayerList.setPalette(sprite.getPalette());
-		
+
 		this.sprite.clear();
 		this.currentAnimation = null;
-		
+
+		animationComboBoxModel.removeAllElements();
+		for (final String animationName : animationNames) {
+			animationComboBoxModel.addElement(new Animation(animationName));
+		}
+
 		animationChanged();
 	}
-	
+
 	private void updateAnimation() {
 		final Animation animation = (Animation) animationComboBoxModel.getSelectedItem();
 		if(animation != null) {

@@ -79,7 +79,7 @@ public class Instance extends JComponent {
 		final TileLayer defaultLayer;
 		if(sprite != null) {
 			updateBounds();
-			defaultLayer = sprite.getDefaultLayer();
+			defaultLayer = sprite.getDefaultLayer(project.getAnimationNames());
 		} else {
 			defaultLayer = null;
 		}

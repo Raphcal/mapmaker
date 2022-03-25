@@ -12,6 +12,7 @@ import fr.rca.mapmaker.model.palette.HasColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.palette.SpritePalette;
+import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
@@ -66,24 +67,26 @@ public class Project implements ListModel, HasColorPalette {
 	private PaletteMap spritePaletteMap;
 
 	private int nextMap;
-	
+
+	private List<String> animationNames = new ArrayList<>(Animation.ANIMATION_NAMES);
+
 	public static Project createEmptyProject() {
 		final Project project = new Project();
-        
+
 		final EditableImagePalette emptyPalette = new EditableImagePalette(32, 4);
 		emptyPalette.setName("Palette 1");
 		project.addPalette(emptyPalette);
-		
+
 		final TileLayer emptyTileLayer = new TileLayer(20, 15);
 		emptyTileLayer.setName("Calque 1");
-		
+
 		final TileMap emptyTileMap = new TileMap();
 		emptyTileMap.setParent(project);
 		emptyTileMap.setPalette(new PaletteReference(project, 0));
 		emptyTileMap.setBackgroundColor(Color.WHITE);
 		emptyTileMap.add(emptyTileLayer);
 		project.addMap(emptyTileMap);
-		
+
 		return project;
 	}
 	
@@ -199,7 +202,7 @@ public class Project implements ListModel, HasColorPalette {
 	
 	public TileMap getCurrentSpritePaletteMap() {
 		if(spritePaletteMap == null) {
-			spritePaletteMap = new PaletteMap(new SpritePalette(sprites), 4);
+			spritePaletteMap = new PaletteMap(new SpritePalette(sprites, animationNames), 4);
 		}
 		return spritePaletteMap;
 	}
@@ -318,7 +321,11 @@ public class Project implements ListModel, HasColorPalette {
 		
 		fireContentsChanged(Math.min(first, second), Math.max(first, second));
 	}
-	
+
+	public List<String> getAnimationNames() {
+		return animationNames;
+	}
+
 	protected void fireIntervalAdded(int from, int to) {
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, from, to);
 		

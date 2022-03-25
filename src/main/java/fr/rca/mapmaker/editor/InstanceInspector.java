@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
@@ -30,13 +31,14 @@ public class InstanceInspector extends javax.swing.JDialog {
 		final Sprite sprite = instance.getSprite();
 		if(sprite != null) {
 			tileIndexLabel.setText("Instance de " + sprite.getName());
-			
-			if(sprite.getDefaultLayer() != null && sprite.getPalette() != null) {
-				tileGrid.setTileMap(new TileMap(sprite.getDefaultLayer(), sprite.getPalette()));
+
+			final TileLayer defaultLayer = sprite.getDefaultLayer(instance.getProject().getAnimationNames());
+			if(defaultLayer != null && sprite.getPalette() != null) {
+				tileGrid.setTileMap(new TileMap(defaultLayer, sprite.getPalette()));
 			} else {
 				tileGrid.setTileMap(new TileMap());
 			}
-			
+
 		} else {
 			tileIndexLabel.setText("Instance");
 			tileGrid.setTileMap(new TileMap());

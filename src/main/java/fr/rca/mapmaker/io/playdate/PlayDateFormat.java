@@ -95,7 +95,7 @@ public class PlayDateFormat extends AbstractFormat {
 			final List<Sprite> sprites = project.getSprites();
 			for(int index = 0; index < sprites.size(); index++) {
 				final Sprite sprite = sprites.get(index);
-				BufferedImage spriteImage = renderSprite(sprite);
+				BufferedImage spriteImage = renderSprite(sprite, project.getAnimationNames());
 				if (spriteImage != null) {
 					outputStream.putNextEntry(new ZipEntry("sprite" + index + "-table-" + sprite.getWidth() + '-' + sprite.getHeight() + ".png"));
 					write(spriteImage, outputStream);
@@ -127,10 +127,14 @@ public class PlayDateFormat extends AbstractFormat {
 		return image;
 	}
 
-	public static BufferedImage renderSprite(Sprite sprite) {
+	public static BufferedImage renderSprite(Sprite sprite, List<String> animationNames) {
 		int imageWidth = 0;
 		int imageHeight = 0;
-		for (final Animation animation : sprite.getAnimations()) {
+		for (final String animationName : animationNames) {
+			final Animation animation = sprite.findByName(animationName);
+			if (animation == null) {
+				continue;
+			}
 			final List<TileLayer> frames = animation.getFrames(0);
 			if (frames == null) {
 				continue;

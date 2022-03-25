@@ -7,6 +7,7 @@ import fr.rca.mapmaker.event.EventBus;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.Paints;
 import java.awt.Dimension;
@@ -15,7 +16,9 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.JFrame;
 
 /**
@@ -43,18 +46,23 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	 * Liste des sprites présents dans la palette.
 	 */
 	private List<Sprite> sprites;
-	
+
+	private List<String> animationNames;
+
 	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
 
 	public SpritePalette() {
 		sprites = new ArrayList<Sprite>();
-		
+		animationNames = Arrays.stream(Animation.getDefaultAnimations())
+				.map(Animation::getName)
+				.collect(Collectors.toList());
+
 		expand(columns - 1);
 	}
 
-	public SpritePalette(List<Sprite> sprites) {
+	public SpritePalette(List<Sprite> sprites, List<String> animationNames) {
 		this.sprites = sprites;
-		
+		this.animationNames = animationNames;
 		expand(columns - 1);
 	}
 	
@@ -69,7 +77,7 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 			g.fillRect(refX, refY, size, size);
 
 			// Sprite
-			final TileLayer defaultLayer = sprite.getDefaultLayer();
+			final TileLayer defaultLayer = sprite.getDefaultLayer(animationNames);
 			
 			if(defaultLayer != null) {
 				final int tileSize = 1;
@@ -141,7 +149,7 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	@Override
 	public void editTile(final int index, JFrame parent) {
 		final SpriteEditor editor = new SpriteEditor(parent);
-		editor.setSprite(sprites.get(index));
+		editor.setSprite(sprites.get(index), animationNames);
 		editor.addActionListener(new ActionListener() {
 
 			@Override
