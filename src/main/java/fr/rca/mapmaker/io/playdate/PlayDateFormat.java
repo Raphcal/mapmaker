@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -35,6 +36,8 @@ import java.util.zip.ZipOutputStream;
 public class PlayDateFormat extends AbstractFormat {
 
 	private static final String EXTENSION = ".playdate.zip";
+
+	private static final boolean WRITE_MAP_AS_CODE = false;
 
 	public PlayDateFormat() {
 		super(EXTENSION, SupportedOperation.SAVE);
@@ -83,7 +86,7 @@ public class PlayDateFormat extends AbstractFormat {
 				final TileMap tileMap = mapAndInstances.getTileMap();
 				write(tileMap, outputStream);
 
-				if (Names.normalizeName(tileMap, Names::toSnakeCase) != null) {
+				if (WRITE_MAP_AS_CODE && Names.normalizeName(tileMap, Names::toSnakeCase) != null) {
 					outputStream.putNextEntry(new ZipEntry(tileMapAsHeaderHandler.fileNameFor(tileMap)));
 					tileMapAsHeaderHandler.write(tileMap, outputStream);
 
@@ -128,52 +131,47 @@ public class PlayDateFormat extends AbstractFormat {
 	}
 
 	public static BufferedImage renderSprite(Sprite sprite, List<String> animationNames) {
-		int imageWidth = 0;
-		int imageHeight = 0;
+		int frameCount = 0;
 		for (final String animationName : animationNames) {
 			final Animation animation = sprite.findByName(animationName);
 			if (animation == null) {
 				continue;
 			}
-			final List<TileLayer> frames = animation.getFrames(0);
-			if (frames == null) {
-				continue;
-			}
-			imageHeight++;
-			if (frames.size() > imageWidth) {
-				imageWidth = frames.size();
+			for (double angle : animation.getAnglesWithValue()) {
+				final List<TileLayer> frames = animation.getFrames(angle);
+				frameCount += frames.size();
 			}
 		}
 
-		if (imageWidth == 0 || imageHeight == 0) {
-			return null;
-		}
+		final int spriteWidth = sprite.getWidth();
+		final int spriteHeight = sprite.getHeight();
 
-		int spriteWidth = sprite.getWidth();
-		int spriteHeight = sprite.getHeight();
+		final int tileCountPerLine = (int) Math.ceil(Math.sqrt(frameCount));
 
-		final BufferedImage image = new BufferedImage(imageWidth * spriteWidth, imageHeight * spriteHeight, BufferedImage.TYPE_INT_ARGB);
+		final BufferedImage image = new BufferedImage(tileCountPerLine * spriteWidth, tileCountPerLine * spriteHeight, BufferedImage.TYPE_INT_ARGB);
 		final Graphics2D graphics = image.createGraphics();
 		graphics.setBackground(new Color(0, 0, 0, 0));
 
 		final ColorPalette palette = sprite.getPalette();
 
-		int originY = 0;
-		for (final Animation animation : Animation.getDefaultAnimations()) {
-			final List<TileLayer> frames = sprite.get(animation.getName()).getFrames(0);
-			if (frames == null) {
+		int frameIndex = 0;
+		for (final String animationName : animationNames) {
+			final Animation animation = sprite.findByName(animationName);
+			if (animation == null) {
 				continue;
 			}
-			int originX = 0;
-			for (TileLayer frame : frames) {
-				for(int y = 0; y < frame.getHeight(); y++) {
-					for(int x = 0; x < frame.getWidth(); x++) {
-						palette.paintTile(graphics, frame.getTile(x, y), originX + x, originY + y, 1);
+			for (double angle : animation.getAnglesWithValue()) {
+				for (TileLayer frame : animation.getFrames(angle)) {
+					int originY = (frameIndex / tileCountPerLine) * spriteHeight;
+					int originX = (frameIndex % tileCountPerLine) * spriteWidth;
+					for (int y = 0; y < frame.getHeight(); y++) {
+						for(int x = 0; x < frame.getWidth(); x++) {
+							palette.paintTile(graphics, frame.getTile(x, y), originX + x, originY + y, 1);
+						}
 					}
+					frameIndex++;
 				}
-				originX += spriteWidth;
 			}
-			originY += spriteHeight;
 		}
 
 		graphics.dispose();
