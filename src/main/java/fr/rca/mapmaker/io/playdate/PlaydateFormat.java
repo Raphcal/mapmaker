@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -33,13 +32,13 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */
-public class PlayDateFormat extends AbstractFormat {
+public class PlaydateFormat extends AbstractFormat {
 
 	private static final String EXTENSION = ".playdate.zip";
 
 	private static final boolean WRITE_MAP_AS_CODE = false;
 
-	public PlayDateFormat() {
+	public PlaydateFormat() {
 		super(EXTENSION, SupportedOperation.SAVE);
 
 		addHandler(EditableImagePalette.class, new EditableImagePaletteHandler());
@@ -95,6 +94,10 @@ public class PlayDateFormat extends AbstractFormat {
 				}
 			}
 
+			final AnimationNameAsHeaderHandler animationNameAsHeaderHandler = new AnimationNameAsHeaderHandler();
+			outputStream.putNextEntry(new ZipEntry(animationNameAsHeaderHandler.fileNameFor(project.getAnimationNames())));
+			animationNameAsHeaderHandler.write(project.getAnimationNames(), outputStream);
+
 			final List<Sprite> sprites = project.getSprites();
 			for(int index = 0; index < sprites.size(); index++) {
 				final Sprite sprite = sprites.get(index);
@@ -141,6 +144,10 @@ public class PlayDateFormat extends AbstractFormat {
 				final List<TileLayer> frames = animation.getFrames(angle);
 				frameCount += frames.size();
 			}
+		}
+
+		if (frameCount == 0) {
+			return null;
 		}
 
 		final int spriteWidth = sprite.getWidth();

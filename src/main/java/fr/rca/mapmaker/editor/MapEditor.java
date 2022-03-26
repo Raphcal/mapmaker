@@ -27,6 +27,7 @@ import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.autodeploy.AutoDeployer;
 import fr.rca.mapmaker.io.autodeploy.MeltedIceAutoDeployer;
+import fr.rca.mapmaker.io.autodeploy.PlaydateAutoDeployer;
 import fr.rca.mapmaker.io.autodeploy.PuzzleSuitAutoDeployer;
 import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.MapAndInstances;
@@ -107,7 +108,7 @@ public class MapEditor extends javax.swing.JFrame {
 		pasteSelectionTool = new PasteSelectionTool(mapGrid);
 		
 		// AutoDeployers
-		for (final AutoDeployer deployer : Arrays.asList(new MeltedIceAutoDeployer(), new PuzzleSuitAutoDeployer())) {
+		for (final AutoDeployer deployer : Arrays.asList(new MeltedIceAutoDeployer(), new PuzzleSuitAutoDeployer(), new PlaydateAutoDeployer())) {
 			final JMenuItem deployerItem = new JMenuItem(deployer.getName());
 			deployerItem.addActionListener(new ActionListener() {
 				@Override

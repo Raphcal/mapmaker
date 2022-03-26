@@ -326,6 +326,10 @@ public class Project implements ListModel, HasColorPalette {
 		return animationNames;
 	}
 
+	public void setAnimationNames(List<String> animationNames) {
+		this.animationNames = animationNames;
+	}
+
 	protected void fireIntervalAdded(int from, int to) {
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, from, to);
 		

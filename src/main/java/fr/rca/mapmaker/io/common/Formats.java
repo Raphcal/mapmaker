@@ -8,7 +8,7 @@ import fr.rca.mapmaker.io.lvl.PuzzleLevelFormat;
 import fr.rca.mapmaker.io.mkz.MKZFormat;
 import fr.rca.mapmaker.io.mml.MMLFormat;
 import fr.rca.mapmaker.io.pixellogic.PixelLogicFormat;
-import fr.rca.mapmaker.io.playdate.PlayDateFormat;
+import fr.rca.mapmaker.io.playdate.PlaydateFormat;
 import fr.rca.mapmaker.io.png.PNGImageFormat;
 import fr.rca.mapmaker.io.shmup.ShmupFormat;
 import java.util.Collection;
@@ -37,7 +37,7 @@ public final class Formats {
 		addFormat(formats, new PixelLogicFormat());
 		addFormat(formats, new PuzzleLevelFormat());
 		addFormat(formats, new ShmupFormat());
-		addFormat(formats, new PlayDateFormat());
+		addFormat(formats, new PlaydateFormat());
 
 		FORMATS = formats;
 	}

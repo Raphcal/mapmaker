@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -151,7 +151,7 @@ public class Animation {
 	}
 
 	public Set<Double> getAnglesWithValue() {
-		final Set<Double> anglesWithValue = new HashSet<Double>();
+		final Set<Double> anglesWithValue = new TreeSet<Double>();
 		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
 			if(entry.getValue() != null && !entry.getValue().isEmpty()) {
 				anglesWithValue.add(entry.getKey());
