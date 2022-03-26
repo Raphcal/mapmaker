@@ -78,14 +78,14 @@ public final class Names {
     }
 
 	/**
-     * Converti la chaîne donnée en camelCase.
+     * Converti la chaîne donnée en PascalCase.
      *
      * @param source Chaîne à convertir.
      * @return La chaîne convertie.
      */
-    public static String toSnakeCase(String source) {
+    public static String toPascalCase(String source) {
         final StringBuilder builder = new StringBuilder();
-        boolean toUppercase = false;
+        boolean toUppercase = true;
         for (char c : source.toCharArray()) {
             if (!Character.isAlphabetic(c) && !Character.isDigit(c)) {
                 toUppercase = true;
@@ -97,6 +97,16 @@ public final class Names {
             }
         }
         return builder.toString();
+    }
+
+	/**
+     * Converti la chaîne donnée en snake_case.
+     *
+     * @param source Chaîne à convertir.
+     * @return La chaîne convertie.
+     */
+    public static String toSnakeCase(String source) {
+        return source.toLowerCase().replaceAll("[^a-z0-9]+", "_");
     }
 
 	public static @NotNull String toLowerCase(@NotNull String source) {

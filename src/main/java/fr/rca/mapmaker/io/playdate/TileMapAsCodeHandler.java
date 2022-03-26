@@ -39,7 +39,33 @@ public class TileMapAsCodeHandler implements DataHandler<TileMap> {
 				+ "//\n"
 				+ "\n"
 				+ "#include \"map" + name + ".h\"\n"
-				+ "\n"
+				+ "\n").getBytes(StandardCharsets.UTF_8));
+
+		for (int layerIndex = 0; layerIndex < layerCount; layerIndex++) {
+			final Layer layer = t.getLayers().get(layerIndex);
+			final int tileCount = layer.getWidth() * layer.getHeight();
+			outputStream.write(("static const uint8_t map" + Names.capitalize(camelCasedName) + "Layer" + layerIndex + '[' + tileCount + "] = {").getBytes(StandardCharsets.UTF_8));
+			int lineLength = 0;
+			for (int index = 0; index < tileCount; index++) {
+				int tile = getUint8Tile(layer, index);
+				if (lineLength == 0) {
+					if (index > 0) {
+						outputStream.write(',');
+					}
+					outputStream.write(("\n    " + tile).getBytes(StandardCharsets.UTF_8));
+					lineLength += getTileLength(tile) + 4;
+				} else {
+					outputStream.write((", " + tile).getBytes(StandardCharsets.UTF_8));
+					lineLength += getTileLength(tile) + 2;
+					if (lineLength >= 80) {
+						lineLength = 0;
+					}
+				}
+			}
+			outputStream.write((tileCount > 0 ? "\n}\n" : "}\n").getBytes(StandardCharsets.UTF_8));
+		}
+
+		outputStream.write(("\n"
 				+ MAP_TYPE + " * _Nonnull createMap" + Names.capitalize(camelCasedName) + "(void) {\n"
 				+ "    " + MAP_TYPE + " *self = playdate->system->realloc(NULL, sizeof(" + MAP_TYPE + "));\n"
 				+ "    *self = (" + MAP_TYPE + ") {\n"
@@ -57,21 +83,8 @@ public class TileMapAsCodeHandler implements DataHandler<TileMap> {
 				+ "        MELIntSizeMake(" + layer.getWidth() + ", " + layer.getHeight() + "),\n"
 				+ "        MELPointMake(" + layer.getScrollRate().getX() + "f, " + layer.getScrollRate().getY() + "f),\n"
 				+ "        " + tileCount + ",\n"
-				+ "        playdate->system->realloc(NULL, sizeof(uint8_t) * " + tileCount + ")\n"
+				+ "        map" + Names.capitalize(camelCasedName) + "Layer" + layerIndex + "\n"
 				+ "    };\n").getBytes(StandardCharsets.UTF_8));
-			if (tileCount == 0) {
-				continue;
-			}
-			outputStream.write(("    {\n"
-					+ "        uint8_t tiles[" + tileCount + "] = {" + getUint8Tile(layer, 0)).getBytes(StandardCharsets.UTF_8));
-
-			for (int tileIndex = 1; tileIndex < tileCount; tileIndex++) {
-				outputStream.write((", " + getUint8Tile(layer, tileIndex)).getBytes(StandardCharsets.UTF_8));
-			}
-
-			outputStream.write(("};\n"
-				+ "        memcpy(self->layers[" + layerIndex + "].tiles, tiles, sizeof(tiles));\n"
-				+ "    }\n").getBytes(StandardCharsets.UTF_8));
 		}
 
 		outputStream.write(("    return self;\n"
@@ -91,6 +104,16 @@ public class TileMapAsCodeHandler implements DataHandler<TileMap> {
 	private static int getUint8Tile(Layer layer, int index) {
 		int tile = layer.getTile(index % layer.getWidth(), index / layer.getWidth());
 		return tile != -1 ? tile : 0xFF;
+	}
+
+	private static int getTileLength(int tile) {
+		if (tile < 10) {
+			return 1;
+		} else if (tile < 100) {
+			return 2;
+		} else {
+			return 3;
+		}
 	}
 
 }
