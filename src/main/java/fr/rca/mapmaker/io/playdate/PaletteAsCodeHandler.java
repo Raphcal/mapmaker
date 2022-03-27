@@ -22,7 +22,7 @@ public class PaletteAsCodeHandler implements DataHandler<Palette> {
 		final String name = Names.normalizeName(t, Names::toLowerCase);
 		outputStream.write(("#include \"palette" + name + ".h\"\n"
 				+ "\n"
-				+ "float palette" + Names.capitalize(Names.normalizeName(t, Names::toCamelCase)) + "Hitbox(uint8_t tile, float x) {\n"
+				+ "float palette" + Names.normalizeName(t, Names::toPascalCase) + "Hitbox(uint8_t tile, float x) {\n"
 				+ "    switch (tile) {\n").getBytes(StandardCharsets.UTF_8));
 		if (t instanceof HasFunctionHitbox) {
 			HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) t;

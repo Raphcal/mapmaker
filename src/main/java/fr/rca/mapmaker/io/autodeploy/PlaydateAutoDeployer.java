@@ -5,6 +5,8 @@ import fr.rca.mapmaker.io.playdate.Names;
 import fr.rca.mapmaker.io.playdate.PaletteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.PaletteAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.PlaydateFormat;
+import fr.rca.mapmaker.io.playdate.SpriteAsCodeHandler;
+import fr.rca.mapmaker.io.playdate.SpriteAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.TileMapHandler;
 import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -85,6 +87,9 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 			animationNameAsHeaderHandler.write(project.getAnimationNames(), outputStream);
 		}
 
+		final SpriteAsHeaderHandler spriteAsHeaderHandler = new SpriteAsHeaderHandler();
+		final SpriteAsCodeHandler spriteAsCodeHandler = new SpriteAsCodeHandler();
+
 		final List<Sprite> sprites = project.getSprites();
 		for(int index = 0; index < sprites.size(); index++) {
 			final Sprite sprite = sprites.get(index);
@@ -94,6 +99,18 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 						new FileOutputStream(
 						new File(resourceDir, "sprite" + index + "-table-" + sprite.getWidth() + '-' + sprite.getHeight() + ".png")))) {
 					ImageIO.write(spriteImage, "png", outputStream);
+				}
+
+				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
+						new FileOutputStream(
+						new File(generatedSourcesDir, spriteAsHeaderHandler.fileNameFor(sprite))))) {
+					spriteAsHeaderHandler.write(sprite, outputStream);
+				}
+
+				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
+						new FileOutputStream(
+						new File(generatedSourcesDir, spriteAsCodeHandler.fileNameFor(sprite))))) {
+					spriteAsCodeHandler.write(sprite, outputStream);
 				}
 			}
 		}

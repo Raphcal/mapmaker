@@ -5,6 +5,7 @@ import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Sprite;
 import java.util.List;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 public final class Names {
 	private static final String PALETTE = "palette";
 	private static final String MAP = "map";
+	private static final String SPRITE = "sprite";
 
 	private Names() {}
 
@@ -50,6 +52,18 @@ public final class Names {
 		}
 		if (name.toLowerCase().startsWith(MAP)) {
 			name = name.substring(MAP.length(), name.length());
+		}
+		name = namingStyle.apply(name.trim());
+		return name;
+	}
+
+	public static @Nullable String normalizeName(@NotNull Sprite sprite, @NotNull Function<String, String> namingStyle) {
+		String name = sprite.getName();
+		if (name == null) {
+			return null;
+		}
+		if (name.toLowerCase().startsWith(SPRITE)) {
+			name = name.substring(SPRITE.length(), name.length());
 		}
 		name = namingStyle.apply(name.trim());
 		return name;

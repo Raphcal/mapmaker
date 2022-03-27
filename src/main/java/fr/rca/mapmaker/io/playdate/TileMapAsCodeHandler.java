@@ -28,8 +28,8 @@ public class TileMapAsCodeHandler implements DataHandler<TileMap> {
 
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		final String name = Names.normalizeName(t, Names::toLowerCase);
-		final String camelCasedName = Names.normalizeName(t, Names::toCamelCase);
-		if (camelCasedName == null) {
+		final String pascalCasedName = Names.normalizeName(t, Names::toPascalCase);
+		if (pascalCasedName == null) {
 			throw new IllegalArgumentException("Le nom de la map ne doit pas être null.");
 		}
 		outputStream.write(("//\n"
@@ -44,7 +44,7 @@ public class TileMapAsCodeHandler implements DataHandler<TileMap> {
 		for (int layerIndex = 0; layerIndex < layerCount; layerIndex++) {
 			final Layer layer = t.getLayers().get(layerIndex);
 			final int tileCount = layer.getWidth() * layer.getHeight();
-			outputStream.write(("static const uint8_t map" + Names.capitalize(camelCasedName) + "Layer" + layerIndex + '[' + tileCount + "] = {").getBytes(StandardCharsets.UTF_8));
+			outputStream.write(("static const uint8_t map" + pascalCasedName + "Layer" + layerIndex + '[' + tileCount + "] = {").getBytes(StandardCharsets.UTF_8));
 			int lineLength = 0;
 			for (int index = 0; index < tileCount; index++) {
 				int tile = getUint8Tile(layer, index);
@@ -66,11 +66,11 @@ public class TileMapAsCodeHandler implements DataHandler<TileMap> {
 		}
 
 		outputStream.write(("\n"
-				+ MAP_TYPE + " * _Nonnull createMap" + Names.capitalize(camelCasedName) + "(void) {\n"
+				+ MAP_TYPE + " * _Nonnull createMap" + pascalCasedName + "(void) {\n"
 				+ "    " + MAP_TYPE + " *self = playdate->system->realloc(NULL, sizeof(" + MAP_TYPE + "));\n"
 				+ "    *self = (" + MAP_TYPE + ") {\n"
 				+ "        MELIntSizeMake(" + t.getPalette().getTileSize() + ", " + t.getPalette().getTileSize() + "),\n"
-				+ "        &palette" + Names.capitalize(Names.normalizeName(palette, Names::toCamelCase)) + "Hitbox,\n"
+				+ "        &palette" + Names.normalizeName(palette, Names::toPascalCase) + "Hitbox,\n"
 				+ "        " + layerCount + ",\n"
 				+ "        playdate->system->realloc(NULL, sizeof(" + LAYER_TYPE + ") * " + layerCount + ")\n"
 				+ "    };\n").getBytes(StandardCharsets.UTF_8));
@@ -83,7 +83,7 @@ public class TileMapAsCodeHandler implements DataHandler<TileMap> {
 				+ "        MELIntSizeMake(" + layer.getWidth() + ", " + layer.getHeight() + "),\n"
 				+ "        MELPointMake(" + layer.getScrollRate().getX() + "f, " + layer.getScrollRate().getY() + "f),\n"
 				+ "        " + tileCount + ",\n"
-				+ "        map" + Names.capitalize(camelCasedName) + "Layer" + layerIndex + "\n"
+				+ "        map" + pascalCasedName + "Layer" + layerIndex + "\n"
 				+ "    };\n").getBytes(StandardCharsets.UTF_8));
 		}
 

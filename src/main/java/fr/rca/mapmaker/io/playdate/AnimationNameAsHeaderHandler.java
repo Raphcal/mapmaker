@@ -31,10 +31,12 @@ public class AnimationNameAsHeaderHandler implements DataHandler<List<String>> {
 				+ "\n"
 				+ "#include \"../lib/melice.h\"\n"
 				+ "\n"
+				+ "#define kAnimationNameCount " + t.size() + "\n"
+				+ "\n"
 				+ "typedef enum {\n").getBytes(StandardCharsets.UTF_8));
 
 		for (String animationName : t) {
-			outputStream.write(("    AnimationName" + Names.toPascalCase(animationName) + ";\n").getBytes(StandardCharsets.UTF_8));
+			outputStream.write(("    AnimationName" + Names.toPascalCase(animationName) + ",\n").getBytes(StandardCharsets.UTF_8));
 		}
 
 		outputStream.write(("} AnimationName;\n"
