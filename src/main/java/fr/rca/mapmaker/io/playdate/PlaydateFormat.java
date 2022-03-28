@@ -103,7 +103,7 @@ public class PlaydateFormat extends AbstractFormat {
 				final Sprite sprite = sprites.get(index);
 				BufferedImage spriteImage = renderSprite(sprite, project.getAnimationNames());
 				if (spriteImage != null) {
-					outputStream.putNextEntry(new ZipEntry("sprite" + index + "-table-" + sprite.getWidth() + '-' + sprite.getHeight() + ".png"));
+					outputStream.putNextEntry(new ZipEntry("sprite-" + Names.normalizeName(sprite, Names::toSnakeCase) + "-table-" + sprite.getWidth() + '-' + sprite.getHeight() + ".png"));
 					write(spriteImage, outputStream);
 				}
 			}

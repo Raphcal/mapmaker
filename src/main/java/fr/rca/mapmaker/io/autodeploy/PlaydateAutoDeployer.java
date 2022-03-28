@@ -88,7 +88,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		}
 
 		final SpriteAsHeaderHandler spriteAsHeaderHandler = new SpriteAsHeaderHandler();
-		final SpriteAsCodeHandler spriteAsCodeHandler = new SpriteAsCodeHandler();
+		final SpriteAsCodeHandler spriteAsCodeHandler = new SpriteAsCodeHandler(project.getAnimationNames());
 
 		final List<Sprite> sprites = project.getSprites();
 		for(int index = 0; index < sprites.size(); index++) {
@@ -97,7 +97,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 			if (spriteImage != null) {
 				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 						new FileOutputStream(
-						new File(resourceDir, "sprite" + index + "-table-" + sprite.getWidth() + '-' + sprite.getHeight() + ".png")))) {
+						new File(resourceDir, "sprite-" + Names.normalizeName(sprite, Names::toSnakeCase) + "-table-" + sprite.getWidth() + '-' + sprite.getHeight() + ".png")))) {
 					ImageIO.write(spriteImage, "png", outputStream);
 				}
 
