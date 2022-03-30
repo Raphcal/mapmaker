@@ -21,13 +21,13 @@ public class TileMapHandler implements DataHandler<TileMap> {
 		Streams.write(layers.size(), outputStream);
 
 		for(final Layer layer : layers) {
-			Streams.write(layer.toString(), outputStream);
 			final int width = layer.getWidth();
 			final int height = layer.getHeight();
 			Streams.write(width, outputStream);
 			Streams.write(height, outputStream);
 			Streams.write((float)layer.getScrollRate().getX(), outputStream);
 			Streams.write((float)layer.getScrollRate().getY(), outputStream);
+			Streams.write(layer.isSolid(), outputStream);
 			int max = width * height;
 			for (int index = 0; index < max; index++) {
 				Streams.write(layer.getTile(index % width, index / width), outputStream);

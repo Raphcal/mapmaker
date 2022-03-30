@@ -29,7 +29,15 @@ public interface Layer {
 	 * @return La vitesse de défilement.
 	 */
 	ScrollRate getScrollRate();
-	
+
+	/**
+	 * Indique si cette couche est solide (= peut être traversée) ou non.
+	 *
+	 * @return <code>true</code> si la couche est solide,
+	 * <code>false</code> sinon (par défaut).
+	 */
+	public boolean isSolid();
+
 	/**
 	 * Récupère la visibilité de la couche.
 	 *

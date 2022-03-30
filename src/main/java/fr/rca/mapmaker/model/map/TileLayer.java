@@ -46,7 +46,12 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * Vitesse de défilement pour le parallaxe. 
 	 */
 	private ScrollRate scrollRate = new ScrollRate();
-	
+
+	/**
+	 * Indique si le contenu de cette couche est solide.
+	 */
+	private boolean solid;
+
 	/**
 	 * Visibilité de la couche.
 	 */
@@ -330,7 +335,28 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	public void setScrollRate(ScrollRate scrollRate) {
 		this.scrollRate = scrollRate;
 	}
-	
+
+	/**
+	 * Indique si cette couche est solide (= peut être traversée) ou non.
+	 *
+	 * @return <code>true</code> si la couche est solide,
+	 * <code>false</code> sinon (par défaut).
+	 */
+	@Override
+	public boolean isSolid() {
+		return solid;
+	}
+
+	/**
+	 * Défini si cette couche est solide ou non.
+	 *
+	 * @param solid <code>true</code> pour rendre la couche est solide,
+	 * <code>false</code> sinon.
+	 */
+	public void setSolid(boolean solid) {
+		this.solid = solid;
+	}
+
 	/**
 	 * Récupère la visibilité de la couche.
 	 * 

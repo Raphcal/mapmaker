@@ -50,7 +50,7 @@ public class InternalFormat extends AbstractFormat {
 	public static final int VERSION_8 = 8;
 	public static final int VERSION_9 = 9;
 	public static final int VERSION_10 = 10;
-    
+
     /**
      * Version 11. Depuis le 18/03/2019.
      * <p/>
@@ -60,8 +60,17 @@ public class InternalFormat extends AbstractFormat {
      * </ul>
      */
 	public static final int VERSION_11 = 11;
-	
-	public static final int LAST_VERSION = VERSION_10;
+
+    /**
+     * Version 12. Depuis le 30/03/2022.
+     * <p/>
+     * Ajoute les fonctionnalités suivantes :<ul>
+     * <li>Propriété "solid" des layers</li>
+     * </ul>
+     */
+	public static final int VERSION_12 = 12;
+
+	public static final int LAST_VERSION = VERSION_12;
 	public static final String HEADER_LAST_VERSION = "MM" + LAST_VERSION;
 			
 

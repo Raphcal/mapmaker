@@ -1272,11 +1272,12 @@ private void editLayerMenuItemActionPerformed(java.awt.event.ActionEvent evt) {/
 	
 	if(dialog.hasBeenConfirmed()) {
 		final LayerProperties properties = dialog.getLayerProperties();
-		
+
 		selectedLayer.setScrollRate(properties.getScrollRate());
 		selectedLayer.resize(properties.getWidth(), properties.getHeight());
 		selectedLayer.setName(properties.getName());
-		
+		selectedLayer.setSolid(properties.isSolid());
+
 		repaintMapGrid();
 		refreshScrollMode();
 	}

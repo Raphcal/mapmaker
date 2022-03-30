@@ -55,6 +55,11 @@ public class PaletteLayer implements Layer, HasSizeChangeListeners {
 	}
 
 	@Override
+	public boolean isSolid() {
+		return false;
+	}
+
+	@Override
 	public boolean isVisible() {
 		return true;
 	}

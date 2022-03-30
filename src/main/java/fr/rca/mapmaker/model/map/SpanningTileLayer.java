@@ -92,12 +92,17 @@ public class SpanningTileLayer implements DataLayer, HasLayerPlugin {
 
 	@Override
 	public ScrollRate getScrollRate() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported.");
+	}
+
+	@Override
+	public boolean isSolid() {
+		throw new UnsupportedOperationException("Not supported.");
 	}
 
 	@Override
 	public boolean isVisible() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported.");
 	}
 
 	@Override
