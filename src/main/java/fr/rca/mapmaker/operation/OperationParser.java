@@ -6,13 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Instancie des objets {@link Operation} à partir de leur représentation
- * sous forme de texte.
- * 
+ * Instancie des objets {@link Operation} à partir de leur représentation sous
+ * forme de texte.
+ *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public final class OperationParser {
-	
+
 	/**
 	 * Début d'un bloc d'opération.
 	 */
@@ -33,11 +33,10 @@ public final class OperationParser {
 	 * Opérateur de multiplication.
 	 */
 	public static final char MULTIPLY_INSTRUCTION = '*';
-	
-	
+
 	/**
 	 * États possibles lors du traitement d'une opération.
-	 * 
+	 *
 	 * @author Raphaël Calabro (rcalabro@ideia.fr)
 	 */
 	private enum State {
@@ -74,31 +73,33 @@ public final class OperationParser {
 		 */
 		RETURN
 	}
-	
+
 	/**
 	 * Cet objet n'est pas instantiable, utilisez directement ses méthodes.
 	 */
-	protected OperationParser() {}
-	
+	protected OperationParser() {
+	}
+
 	/**
 	 * Créé une opération à partir de sa représentation sous forme de texte.
-	 * 
+	 *
 	 * @param operation Opération sous forme de texte.
 	 * @return Un objet {@link Operation}.
 	 */
-	public static @NotNull Operation parse(@Nullable String operation) {
+	public static @NotNull
+	Operation parse(@Nullable String operation) {
 		if (operation == null || operation.trim().isEmpty()) {
 			return new Operation();
 		}
-		
+
 		final List<Instruction> instructions = new ArrayList<Instruction>();
 		parse(operation, 0, null, instructions);
 		return new Operation(instructions);
 	}
-	
+
 	/**
 	 * Fait un décalage de l'opération donnée.
-	 * 
+	 *
 	 * @param operation Opération à décaler.
 	 * @param x Décalage horizontal.
 	 * @param y Décalage vertical.
@@ -108,27 +109,27 @@ public final class OperationParser {
 		if (operation == null || operation.trim().isEmpty()) {
 			return null;
 		}
-		
+
 		String result = operation;
-		
+
 		if (x > 0) {
-			result = result.replace("x", "(x + zoom(" + x + "))");
+			result = result.replace("x", "(x + " + x + ")");
 		} else if (x < 0) {
-			result = result.replace("x", "(x - zoom(" + Math.abs(x) + "))");
+			result = result.replace("x", "(x - " + Math.abs(x) + ")");
 		}
-		
+
 		if (y > 0) {
-			result += " - zoom(" + y + ')';
+			result += " - " + y;
 		} else if (y < 0) {
-			result += " + zoom(" + Math.abs(y) + ')';
+			result += " + " + Math.abs(y);
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Analyse un morceau d'une opération.
-	 * 
+	 *
 	 * @param operation Texte complet de l'opération.
 	 * @param index Indice de début à traiter.
 	 * @param parent L'opérateur qui a conduit à exécuter cette méthode.
@@ -137,217 +138,217 @@ public final class OperationParser {
 	 */
 	static int parse(String operation, int startIndex, Operator parent, List<Instruction> instructions) {
 		int index = startIndex;
-		
+
 		// Etat du parser
 		State state = State.INITIAL;
-		
+
 		// Constructeur de mots
 		final StringBuilder itemBuilder = new StringBuilder();
-		
+
 		boolean waitingForNegative = false;
-		
+
 		// Traitement de l'opération
-		for(; state != State.RETURN && index <= operation.length(); index++) {
-			
+		for (; state != State.RETURN && index <= operation.length(); index++) {
+
 			// Lecture de la lettre courante 
 			char c;
-			if(index == operation.length()) {
+			if (index == operation.length()) {
 				c = '\n';
 			} else {
 				c = operation.charAt(index);
 			}
-			
-			switch(state) {
-			
-			// Début de la lecture
-			case INITIAL:
-				if(c == BLOCK_START) {
-					index = parse(operation, index + 1, null, instructions);
-					state = State.WAITING_FOR_OPERATOR;
-					
-				} else if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
-					index--;
-					state = State.RETURN;
-					// Erreur ?
-					throw new IllegalArgumentException("Parenthèse fermante seule.");
-					
-				} else if(c == MINUS) {
-					// Opérateur unaire
-					waitingForNegative = true;
-					
-				} else if(!isWhitespace(c)) {
-					itemBuilder.append(c);
-					
-					// Début d'une variable
-					if(c >= 'a' && c <= 'z') {
-						state = State.VARIABLE;
-					
-					// Début d'une constante
-					} else {
-						state = State.CONSTANT;
-					}
-				}
-				break;
-				
-			// Lecture d'une constante
-			case CONSTANT:
-				if(c >= 'a' && c <= 'z') {
-					instructions.add(new Constant(Double.valueOf(itemBuilder.toString())));
-					itemBuilder.setLength(0);
-					itemBuilder.append(MULTIPLY_INSTRUCTION);
-					index--;
-					state = State.OPERATOR;
 
-				} else if((c >= '0' && c <= '9') || c == '.') {
-					itemBuilder.append(c);
+			switch (state) {
 
-				} else {
-					instructions.add(new Constant(Double.valueOf(itemBuilder.toString())));
-					itemBuilder.setLength(0);
-
-					index--;
-
-					if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
-						state = State.RETURN;
-						
-					} else {
+				// Début de la lecture
+				case INITIAL:
+					if (c == BLOCK_START) {
+						index = parse(operation, index + 1, null, instructions);
 						state = State.WAITING_FOR_OPERATOR;
-					}
-				}
-				break;
-				
-			// Lecture d'une variable
-			case VARIABLE:
-				if(c >= 'a' && c <= 'z') {
-					itemBuilder.append(c);
 
-				} else {
-					final Instruction instruction = Instructions.getInstruction(itemBuilder.toString());
+					} else if (c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
+						index--;
+						state = State.RETURN;
+						// Erreur ?
+						throw new IllegalArgumentException("Parenthèse fermante seule.");
 
-					if(instruction instanceof Function) {
-						if(c == BLOCK_START) {
-							state = State.FUNCTION_BLOCK;
+					} else if (c == MINUS) {
+						// Opérateur unaire
+						waitingForNegative = true;
 
-						} else if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
-							throw new IllegalArgumentException("Parenthèse invalide à l'emplacement " + index + " : '" + c + "'. Début de bloc attendu.");
-							
+					} else if (!isWhitespace(c)) {
+						itemBuilder.append(c);
+
+						// Début d'une variable
+						if (c >= 'a' && c <= 'z') {
+							state = State.VARIABLE;
+
+							// Début d'une constante
 						} else {
-							state = State.WAITING_FOR_BLOCK;
+							state = State.CONSTANT;
 						}
+					}
+					break;
 
-					} else if(instruction instanceof Variable || instruction instanceof Constant) {
-						instructions.add(instruction);
+				// Lecture d'une constante
+				case CONSTANT:
+					if (c >= 'a' && c <= 'z') {
+						instructions.add(new Constant(Double.valueOf(itemBuilder.toString())));
+						itemBuilder.setLength(0);
+						itemBuilder.append(MULTIPLY_INSTRUCTION);
+						index--;
+						state = State.OPERATOR;
+
+					} else if ((c >= '0' && c <= '9') || c == '.') {
+						itemBuilder.append(c);
+
+					} else {
+						instructions.add(new Constant(Double.valueOf(itemBuilder.toString())));
 						itemBuilder.setLength(0);
 
 						index--;
 
-						if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
+						if (c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
 							state = State.RETURN;
+
 						} else {
 							state = State.WAITING_FOR_OPERATOR;
 						}
 					}
-				}
-				break;
-				
-			// Lecture d'un opérateur
-			case OPERATOR:
-				final Operator operator = (Operator) Instructions.getInstruction(itemBuilder.toString());
+					break;
 
-				if(operator == null) {
-					throw new IllegalArgumentException("À l'index " + index + ", opérateur inconnu (" + itemBuilder + ").");
-				}
+				// Lecture d'une variable
+				case VARIABLE:
+					if (c >= 'a' && c <= 'z') {
+						itemBuilder.append(c);
 
-				final int parentPriority = parent == null ? -1 : parent.getPriority().ordinal();
-				final int thisPriority = operator.getPriority().ordinal() - 1;
+					} else {
+						final Instruction instruction = Instructions.getInstruction(itemBuilder.toString());
 
-				if(parentPriority > thisPriority) {
-					instructions.add(parent);
-					parent = null;
-				}
+						if (instruction instanceof Function) {
+							if (c == BLOCK_START) {
+								state = State.FUNCTION_BLOCK;
 
-				index = parse(operation, index, operator, instructions);
+							} else if (c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
+								throw new IllegalArgumentException("Parenthèse invalide à l'emplacement " + index + " : '" + c + "'. Début de bloc attendu.");
 
-				if(parent != null) {
-					instructions.add(parent);
-					parent = null;
-				}
+							} else {
+								state = State.WAITING_FOR_BLOCK;
+							}
 
-				itemBuilder.setLength(0);
+						} else if (instruction instanceof Variable || instruction instanceof Constant) {
+							instructions.add(instruction);
+							itemBuilder.setLength(0);
 
-				index--;
-				state = State.RETURN;
-				break;
-			
-			// Attente d'un opérateur
-			case WAITING_FOR_OPERATOR:
-				if(waitingForNegative) {
-					instructions.add(new Negative());
-					waitingForNegative = false;
-				}
-				
-				if(c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
+							index--;
+
+							if (c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
+								state = State.RETURN;
+							} else {
+								state = State.WAITING_FOR_OPERATOR;
+							}
+						}
+					}
+					break;
+
+				// Lecture d'un opérateur
+				case OPERATOR:
+					final Operator operator = (Operator) Instructions.getInstruction(itemBuilder.toString());
+
+					if (operator == null) {
+						throw new IllegalArgumentException("À l'index " + index + ", opérateur inconnu (" + itemBuilder + ").");
+					}
+
+					final int parentPriority = parent == null ? -1 : parent.getPriority().ordinal();
+					final int thisPriority = operator.getPriority().ordinal() - 1;
+
+					if (parentPriority > thisPriority) {
+						instructions.add(parent);
+						parent = null;
+					}
+
+					index = parse(operation, index, operator, instructions);
+
+					if (parent != null) {
+						instructions.add(parent);
+						parent = null;
+					}
+
+					itemBuilder.setLength(0);
+
 					index--;
 					state = State.RETURN;
-					
-				} else if(!isWhitespace(c)) {
-					itemBuilder.append(c);
-					state = State.OPERATOR;
-				}
-				break;
-				
-			// Attente d'un bloc
-			case WAITING_FOR_BLOCK:
-				if(c == BLOCK_START) {
-					state = State.FUNCTION_BLOCK;
-				
-				} else if(!isWhitespace(c)) {
-					throw new IllegalArgumentException("Lettre invalide à l'emplacement " + index + " : '" + c + "'. Début de bloc attendu.");
-				}
-				break;
-				
-			// Traitement d'une fonction
-			case FUNCTION_BLOCK:
-				final Function function = (Function) Instructions.getInstruction(itemBuilder.toString());
-				
-				if(function == null) {
-					throw new IllegalArgumentException("À l'index " + index + ", fonction inconnue (" + itemBuilder + ").");
-				}
-				
-				for(int argument = 0; argument < function.getNumberOfArguments(); argument++) {
-					index = parse(operation, index, null, instructions);
-					
-					if(argument + 1 < function.getNumberOfArguments()) {
-						index++;
+					break;
+
+				// Attente d'un opérateur
+				case WAITING_FOR_OPERATOR:
+					if (waitingForNegative) {
+						instructions.add(new Negative());
+						waitingForNegative = false;
 					}
-				}
-				
-				instructions.add(function);
-				itemBuilder.setLength(0);
-				
-				state = State.WAITING_FOR_OPERATOR;
-				break;
-				
-			default:
-				break;
+
+					if (c == BLOCK_END || c == ARGUMENT_SEPARATOR) {
+						index--;
+						state = State.RETURN;
+
+					} else if (!isWhitespace(c)) {
+						itemBuilder.append(c);
+						state = State.OPERATOR;
+					}
+					break;
+
+				// Attente d'un bloc
+				case WAITING_FOR_BLOCK:
+					if (c == BLOCK_START) {
+						state = State.FUNCTION_BLOCK;
+
+					} else if (!isWhitespace(c)) {
+						throw new IllegalArgumentException("Lettre invalide à l'emplacement " + index + " : '" + c + "'. Début de bloc attendu.");
+					}
+					break;
+
+				// Traitement d'une fonction
+				case FUNCTION_BLOCK:
+					final Function function = (Function) Instructions.getInstruction(itemBuilder.toString());
+
+					if (function == null) {
+						throw new IllegalArgumentException("À l'index " + index + ", fonction inconnue (" + itemBuilder + ").");
+					}
+
+					for (int argument = 0; argument < function.getNumberOfArguments(); argument++) {
+						index = parse(operation, index, null, instructions);
+
+						if (argument + 1 < function.getNumberOfArguments()) {
+							index++;
+						}
+					}
+
+					instructions.add(function);
+					itemBuilder.setLength(0);
+
+					state = State.WAITING_FOR_OPERATOR;
+					break;
+
+				default:
+					break;
 			}
 		}
-		
-		if(parent != null) {
+
+		if (parent != null) {
 			instructions.add(parent);
 		}
-		
-		if(waitingForNegative) {
+
+		if (waitingForNegative) {
 			instructions.add(new Negative());
 		}
-		
+
 		return index;
 	}
-	
+
 	private static boolean isWhitespace(char c) {
-		return c == ' ' ||
-				c == '\r' ||
-				c == '\n' ||
-				c == '\t';
+		return c == ' '
+				|| c == '\r'
+				|| c == '\n'
+				|| c == '\t';
 	}
 }
