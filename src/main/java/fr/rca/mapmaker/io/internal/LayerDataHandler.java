@@ -60,7 +60,7 @@ public class LayerDataHandler implements DataHandler<TileLayer>, HasVersion {
 		final ScrollRate scrollRate = scrollRateHandler.read(inputStream);
 		final boolean solid = version >= InternalFormat.VERSION_12
 				? Streams.readBoolean(inputStream)
-				: false;
+				: name.startsWith("Piste");
 		final int[] tiles = Streams.readIntArray(inputStream);
 
 		final TileLayer layer = new TileLayer(width, height, tiles);

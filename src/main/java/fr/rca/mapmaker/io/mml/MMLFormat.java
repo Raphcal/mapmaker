@@ -104,7 +104,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 	public void saveProject(Project project, File file, Listener progressListener) {
 		double progression = 0;
 		
-		setVersion(InternalFormat.LAST_VERSION);
+		setVersion(InternalFormat.VERSION_10);
 		progress(0, progressListener);
 		
 		file.mkdir();
