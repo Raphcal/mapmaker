@@ -109,6 +109,9 @@ public class Project implements ListModel, HasColorPalette {
 		animationNames.clear();
 		scripts.clear();
 
+		// Animations
+		animationNames.addAll(project.getAnimationNames());
+
 		// Palettes
 		palettes.addAll(project.getPalettes());
 
@@ -140,9 +143,6 @@ public class Project implements ListModel, HasColorPalette {
 
 		// Séquences
 		nextMap = project.nextMap;
-
-		// Animations
-		animationNames.addAll(project.getAnimationNames());
 
 		// Scripts
 		scripts.putAll(project.getScripts());
