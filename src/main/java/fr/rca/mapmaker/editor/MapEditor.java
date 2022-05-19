@@ -13,6 +13,7 @@ import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
 import fr.rca.mapmaker.event.Event;
 import fr.rca.mapmaker.event.EventBus;
+import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -1654,9 +1655,18 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			layer.setSize(columns, rows);
 			
 			final PaletteMap paletteMap = (PaletteMap) paletteGrid.getTileMap();
-			final PaletteReference reference = (PaletteReference) paletteMap.getPalette();
-			final EditableImagePalette imagePalette = (EditableImagePalette) project.getPalette(reference.getPaletteIndex());
-			
+			Palette palette = paletteMap.getPalette();
+			if (palette instanceof PaletteReference) {
+				palette = project.getPalette(((PaletteReference) palette).getPaletteIndex());
+			}
+			final EditableImagePalette imagePalette;
+			if (palette instanceof EditableImagePalette) {
+				imagePalette = (EditableImagePalette) palette;
+			} else {
+				JOptionPane.showMessageDialog(this, "La palette n'est pas une instance d'EditableImagePalette : " + palette.getClass().getSimpleName(), "Erreur", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
 			final Point origin = paletteMap.getSelection();
 			
 			for(int row = 0; row < rows; row++) {
