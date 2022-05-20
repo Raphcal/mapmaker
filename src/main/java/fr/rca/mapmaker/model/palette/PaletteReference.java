@@ -4,6 +4,7 @@ import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.project.Project;
 import java.awt.Graphics;
+import java.util.List;
 import javax.swing.JFrame;
 
 /**
@@ -31,15 +32,18 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 		this.project = project;
 	}
 	
-	private Palette getPalette() {
-		final int index;
-		if(paletteIndex < 0 || paletteIndex >= project.getPalettes().size()) {
-			index = 0;
-		} else {
-			index = paletteIndex;
+	public Palette getPalette() {
+		final List<Palette> palettes = project.getPalettes();
+		if (palettes.isEmpty()) {
+			return null;
 		}
-		
-		return project.getPalette(index);
+		if (paletteIndex < 0) {
+			return palettes.get(0);
+		}
+		if (paletteIndex >= palettes.size()) {
+			return palettes.get(palettes.size() - 1);
+		}
+		return palettes.get(paletteIndex);
 	}
 	
 	private EditablePalette getEditablePalette() {

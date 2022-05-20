@@ -24,8 +24,7 @@ public final class Names {
 
 	public static @NotNull String normalizeName(@NotNull Palette palette, @NotNull Function<String, String> namingStyle) {
 		if (palette instanceof PaletteReference) {
-			final PaletteReference reference = ((PaletteReference) palette);
-			palette = reference.getProject().getPalette(reference.getPaletteIndex());
+			palette = ((PaletteReference) palette).getPalette();
 		}
 		String name = palette.toString();
 		if (name.toLowerCase().startsWith(PALETTE)) {

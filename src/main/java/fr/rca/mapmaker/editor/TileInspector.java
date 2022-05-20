@@ -43,8 +43,7 @@ public class TileInspector extends javax.swing.JDialog {
 		tileIndexLabel.setText("Tuile n°" + tile);
 		
 		if(palette instanceof PaletteReference) {
-			final PaletteReference reference = (PaletteReference) palette;
-			palette = reference.getProject().getPalette(reference.getPaletteIndex());
+			palette = ((PaletteReference) palette).getPalette();
 		}
 		
 		this.palette = palette;

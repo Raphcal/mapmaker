@@ -4,6 +4,7 @@ import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.model.HasFunctionHitbox;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.operation.Language;
 import fr.rca.mapmaker.operation.OperationParser;
 import java.io.IOException;
@@ -24,6 +25,9 @@ public class PaletteAsCodeHandler implements DataHandler<Palette> {
 				+ "\n"
 				+ "float palette" + Names.normalizeName(t, Names::toPascalCase) + "Hitbox(uint8_t tile, float x) {\n"
 				+ "    switch (tile) {\n").getBytes(StandardCharsets.UTF_8));
+		if (t instanceof PaletteReference) {
+			t = ((PaletteReference) t).getPalette();
+		}
 		if (t instanceof HasFunctionHitbox) {
 			HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) t;
 			for (int tile = 0; tile < t.size(); tile++) {

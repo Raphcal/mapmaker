@@ -101,7 +101,7 @@ public class ShmupFormat extends AbstractFormat {
 
             Palette palette = map.getPalette();
             if (palette instanceof PaletteReference) {
-                palette = ((PaletteReference)palette).getProject().getPalette(((PaletteReference)palette).getPaletteIndex());
+                palette = ((PaletteReference)palette).getPalette();
             }
             final EditableImagePalette imagePalette = palette instanceof EditableImagePalette ?
                     (EditableImagePalette) palette : null;

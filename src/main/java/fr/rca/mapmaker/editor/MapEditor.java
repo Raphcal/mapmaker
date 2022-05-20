@@ -13,7 +13,6 @@ import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
 import fr.rca.mapmaker.event.Event;
 import fr.rca.mapmaker.event.EventBus;
-import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -1657,7 +1656,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			final PaletteMap paletteMap = (PaletteMap) paletteGrid.getTileMap();
 			Palette palette = paletteMap.getPalette();
 			if (palette instanceof PaletteReference) {
-				palette = project.getPalette(((PaletteReference) palette).getPaletteIndex());
+				palette = ((PaletteReference) palette).getPalette();
 			}
 			final EditableImagePalette imagePalette;
 			if (palette instanceof EditableImagePalette) {

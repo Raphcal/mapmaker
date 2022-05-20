@@ -136,7 +136,7 @@ public class MMLFormat extends AbstractFormat implements HasProgress {
 		
 		Palette palette = map.getPalette();
 		if(palette instanceof PaletteReference) {
-			palette = project.getPalette(((PaletteReference) palette).getPaletteIndex());
+			palette = ((PaletteReference) palette).getPalette();
 		}
 		
 		try {
