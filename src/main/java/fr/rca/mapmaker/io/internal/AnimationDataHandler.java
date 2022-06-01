@@ -5,7 +5,6 @@ import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
-import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import java.awt.Rectangle;

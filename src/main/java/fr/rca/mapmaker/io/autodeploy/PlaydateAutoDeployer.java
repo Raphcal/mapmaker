@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.io.autodeploy;
 
 import fr.rca.mapmaker.io.playdate.AnimationNameAsHeaderHandler;
+import fr.rca.mapmaker.io.playdate.Headers;
 import fr.rca.mapmaker.io.playdate.Names;
 import fr.rca.mapmaker.io.playdate.PaletteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.PaletteAsHeaderHandler;
@@ -39,6 +40,9 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		final File generatedSourcesDir = new File(root, "gen");
 		generatedSourcesDir.mkdir();
 
+		File file;
+		String generatedDate;
+
 		final PaletteAsHeaderHandler paletteAsHeaderHandler = new PaletteAsHeaderHandler();
 		final PaletteAsCodeHandler paletteAsCodeHandler = new PaletteAsCodeHandler();
 
@@ -52,16 +56,22 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 					ImageIO.write(PlaydateFormat.renderPalette((EditableImagePalette) palette), "png", outputStream);
 				}
 
+				file = new File(generatedSourcesDir, paletteAsHeaderHandler.fileNameFor(palette));
+				generatedDate = Headers.getGeneratedDate(file);
 				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(
-						new File(generatedSourcesDir, paletteAsHeaderHandler.fileNameFor(palette))))) {
-					paletteAsHeaderHandler.write(palette, outputStream);
+						new FileOutputStream(file))) {
+					paletteAsHeaderHandler
+							.withGeneratedDate(generatedDate)
+							.write(palette, outputStream);
 				}
 
+				file = new File(generatedSourcesDir, paletteAsCodeHandler.fileNameFor(palette));
+				generatedDate = Headers.getGeneratedDate(file);
 				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(
-						new File(generatedSourcesDir, paletteAsCodeHandler.fileNameFor(palette))))) {
-					paletteAsCodeHandler.write(palette, outputStream);
+						new FileOutputStream(file))) {
+					paletteAsCodeHandler
+							.withGeneratedDate(generatedDate)
+							.write(palette, outputStream);
 				}
 			}
 		}
@@ -81,10 +91,13 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		}
 
 		final AnimationNameAsHeaderHandler animationNameAsHeaderHandler = new AnimationNameAsHeaderHandler();
+		file = new File(generatedSourcesDir, animationNameAsHeaderHandler.fileNameFor(project.getAnimationNames()));
+		generatedDate = Headers.getGeneratedDate(file);
 		try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-				new FileOutputStream(
-				new File(generatedSourcesDir, animationNameAsHeaderHandler.fileNameFor(project.getAnimationNames()))))) {
-			animationNameAsHeaderHandler.write(project.getAnimationNames(), outputStream);
+				new FileOutputStream(file))) {
+			animationNameAsHeaderHandler
+					.withGeneratedDate(generatedDate)
+					.write(project.getAnimationNames(), outputStream);
 		}
 
 		final SpriteAsHeaderHandler spriteAsHeaderHandler = new SpriteAsHeaderHandler();
@@ -101,16 +114,22 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 					ImageIO.write(spriteImage, "png", outputStream);
 				}
 
+				file = new File(generatedSourcesDir, spriteAsHeaderHandler.fileNameFor(sprite));
+				generatedDate = Headers.getGeneratedDate(file);
 				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(
-						new File(generatedSourcesDir, spriteAsHeaderHandler.fileNameFor(sprite))))) {
-					spriteAsHeaderHandler.write(sprite, outputStream);
+						new FileOutputStream(file))) {
+					spriteAsHeaderHandler
+							.withGeneratedDate(generatedDate)
+							.write(sprite, outputStream);
 				}
 
+				file = new File(generatedSourcesDir, spriteAsCodeHandler.fileNameFor(sprite));
+				generatedDate = Headers.getGeneratedDate(file);
 				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(
-						new File(generatedSourcesDir, spriteAsCodeHandler.fileNameFor(sprite))))) {
-					spriteAsCodeHandler.write(sprite, outputStream);
+						new FileOutputStream(file))) {
+					spriteAsCodeHandler
+							.withGeneratedDate(generatedDate)
+							.write(sprite, outputStream);
 				}
 			}
 		}

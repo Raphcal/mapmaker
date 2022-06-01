@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * Gère le formattage des noms.
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */

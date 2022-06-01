@@ -1,6 +1,5 @@
 package fr.rca.mapmaker.io.playdate;
 
-import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.model.HasFunctionHitbox;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
@@ -16,12 +15,13 @@ import java.nio.charset.StandardCharsets;
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */
-public class PaletteAsCodeHandler implements DataHandler<Palette> {
+public class PaletteAsCodeHandler extends CodeDataHandler<Palette> {
 
 	@Override
 	public void write(Palette t, OutputStream outputStream) throws IOException {
 		final String name = Names.normalizeName(t, Names::toLowerCase);
-		outputStream.write(("#include \"palette" + name + ".h\"\n"
+		outputStream.write((generateHeader(t)
+				+ "#include \"palette" + name + ".h\"\n"
 				+ "\n"
 				+ "float palette" + Names.normalizeName(t, Names::toPascalCase) + "Hitbox(uint8_t tile, float x) {\n"
 				+ "    switch (tile) {\n").getBytes(StandardCharsets.UTF_8));
