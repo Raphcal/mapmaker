@@ -26,6 +26,6 @@ public class Negative implements Instruction {
 	@Override
 	public void pushString(Deque<String> stack, Language language) {
 		final String self = language.translate(this);
-		stack.push(self + stack.pop());
+		stack.push(self + Operator.addBraces(stack.pop()));
 	}
 }

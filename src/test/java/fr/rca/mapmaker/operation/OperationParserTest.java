@@ -102,4 +102,10 @@ public class OperationParserTest {
 		Assert.assertEquals(9.0, operation.execute(3));
 	}
 
+	@Test
+	public void testToStringMinusParenthesis() {
+		final Operation operation = OperationParser.parse("-(x + 32)/2");
+		Assert.assertEquals("Doit bien positionner le signe négatif au début du groupe.", "-(x + 32) / 2", operation.toString(Language.C));
+	}
+
 }

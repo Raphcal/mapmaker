@@ -74,21 +74,21 @@ public interface Operator extends Instruction {
 				stack.push(stringBuilder.toString());
 				break;
 			case UNARY:
-				stack.push(self + addBraces(stack.pop()));
+				stack.push(self + Operator.addBraces(stack.pop()));
 				break;
 			default:
 				String rhs = stack.pop();
 				String lhs = stack.pop();
 				if (priority == Operator.Priority.MULTIPLY_DIVIDE) {
-					rhs = addBraces(rhs);
-					lhs = addBraces(lhs);
+					rhs = Operator.addBraces(rhs);
+					lhs = Operator.addBraces(lhs);
 				}
 				stack.push(lhs + ' ' + self + ' ' + rhs);
 				break;
 		}
 	}
 
-	default String addBraces(String value) {
+	static String addBraces(String value) {
 		int braceCount = 0;
 		boolean mayBeUnary = false;
 		for (char c : value.toCharArray()) {
