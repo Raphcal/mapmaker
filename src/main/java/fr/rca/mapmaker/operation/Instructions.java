@@ -23,6 +23,7 @@ public final class Instructions {
 	static {
 		final Map<String, Instruction> map = new HashMap<String, Instruction>();
 		map.put("x", new Variable());
+		map.put("y", new Variable());
 		map.put("pi", new Constant(Math.PI));
 		map.put("e", new Constant(Math.E));
 

@@ -113,9 +113,11 @@ public final class OperationParser {
 		String result = operation;
 
 		if (x > 0) {
-			result = result.replace("x", "(x + " + x + ")");
+			result = result.replace("x", "(x + " + x + ")")
+					.replace("y", "(y + " + x + ")");
 		} else if (x < 0) {
-			result = result.replace("x", "(x - " + Math.abs(x) + ")");
+			result = result.replace("x", "(x - " + Math.abs(x) + ")")
+					.replace("y", "(y - " + Math.abs(x) + ")");
 		}
 
 		if (y > 0) {

@@ -15,28 +15,28 @@ import java.util.List;
 import javax.swing.JFrame;
 
 public class EditableImagePalette extends AbstractEditablePalette<TileLayer> implements HasFunctionHitbox, Duplicatable<EditableImagePalette> {
-	
+
 	private final ColorPalette palette;
-	
+
 	private final ImageRenderer renderer = new ImageRenderer();
-			
+
 	public EditableImagePalette(int tileSize, int columns) {
 		this.tileSize = tileSize;
 		this.columns = columns;
 		this.palette = AlphaColorPalette.getDefaultColorPalette();
-		
-		for(int index = 0; index < columns; index++) {
+
+		for (int index = 0; index < columns; index++) {
 			sources.add(new TileLayer(tileSize, tileSize));
 			renderTile(index);
 		}
 	}
-	
+
 	public EditableImagePalette(int tileSize, int columns, ColorPalette palette, List<TileLayer> tiles) {
 		this.tileSize = tileSize;
 		this.columns = columns;
 		this.palette = palette;
-		
-		for(int index = 0; index < tiles.size(); index++) {
+
+		for (int index = 0; index < tiles.size(); index++) {
 			sources.add(tiles.get(index));
 			renderTile(index);
 		}
@@ -44,7 +44,7 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 
 	@Override
 	public void paintTile(Graphics g, int tile, int x, int y, int size) {
-		if(tile >= 0 && tile < tiles.size()) {
+		if (tile >= 0 && tile < tiles.size()) {
 			g.drawImage(tiles.get(tile), x, y, size, size, null);
 		}
 	}
@@ -53,7 +53,7 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 	protected BufferedImage render(TileLayer layer) {
 		return renderer.renderImage(layer, palette, 1);
 	}
-	
+
 	@Override
 	public String getFunction(int index) {
 		final FunctionLayerPlugin plugin = sources.get(index).getPlugin(FunctionLayerPlugin.class);
@@ -66,11 +66,30 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 
 	@Override
 	public void setFunction(int index, String function) {
-        if (function != null) {
-            sources.get(index).setPlugin(new FunctionLayerPlugin(function));
-        } else {
-            sources.get(index).removePlugin(FunctionLayerPlugin.class);
-        }
+		if (function != null) {
+			sources.get(index).setPlugin(new FunctionLayerPlugin(function));
+		} else {
+			sources.get(index).removePlugin(FunctionLayerPlugin.class);
+		}
+	}
+
+	@Override
+	public String getYFunction(int index) {
+		final FunctionLayerPlugin plugin = sources.get(index).getPlugin(FunctionLayerPlugin.class, FunctionLayerPlugin.Y_FUNCTION_NAME);
+		if (plugin != null) {
+			return plugin.getFunction();
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public void setYFunction(int index, String function) {
+		if (function != null) {
+			sources.get(index).setPlugin(FunctionLayerPlugin.yFunction(function));
+		} else {
+			sources.get(index).removePlugin(FunctionLayerPlugin.Y_FUNCTION_NAME);
+		}
 	}
 
 	public ColorPalette getColorPalette() {
@@ -94,14 +113,14 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 	@Override
 	public EditableImagePalette duplicate() {
 		final List<TileLayer> duplicatedSources = new ArrayList<TileLayer>();
-		
-		for(final TileLayer source : sources) {
+
+		for (final TileLayer source : sources) {
 			duplicatedSources.add(new TileLayer(source));
 		}
-		
+
 		final EditableImagePalette duplicate = new EditableImagePalette(tileSize, columns, AlphaColorPalette.getDefaultColorPalette(), duplicatedSources);
 		duplicate.name = name + " 2";
-		
+
 		return duplicate;
 	}
 
@@ -109,5 +128,5 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 	protected TileLayer createEmptySource() {
 		return new TileLayer(tileSize, tileSize);
 	}
-	
+
 }

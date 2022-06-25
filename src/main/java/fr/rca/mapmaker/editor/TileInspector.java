@@ -16,10 +16,10 @@ import fr.rca.mapmaker.ui.PalettePicker;
 public class TileInspector extends javax.swing.JDialog {
 
 	private Palette palette;
-	
+
 	public TileInspector() {
 	}
-	
+
 	/**
 	 * Creates new form TileInspector
 	 */
@@ -27,49 +27,49 @@ public class TileInspector extends javax.swing.JDialog {
 		super(parent, modal);
 		getRootPane().putClientProperty("Window.style", "small");
 		initComponents();
-		
+
 	}
-	
+
 	public void setTile(PalettePicker palettePicker) {
 		setTile(palettePicker.getSelectedTile(), palettePicker.getPalette());
 	}
-	
+
 	public void setTile(PaletteMap paletteMap) {
 		setTile(paletteMap.getSelectedTile(), paletteMap.getPalette());
 	}
-	
+
 	private void setTile(final int tile, Palette palette) {
 		setTitle("Infos sur la tuile n°" + tile);
 		tileIndexLabel.setText("Tuile n°" + tile);
-		
-		if(palette instanceof PaletteReference) {
+
+		if (palette instanceof PaletteReference) {
 			palette = ((PaletteReference) palette).getPalette();
 		}
-		
+
 		this.palette = palette;
-		
+
 		final TileMap tileMap;
 		final double zoom;
-		
-		if(palette instanceof EditableImagePalette) {
-			final EditableImagePalette imagePalette = (EditableImagePalette)palette;
+
+		if (palette instanceof EditableImagePalette) {
+			final EditableImagePalette imagePalette = (EditableImagePalette) palette;
 			final TileLayer source = imagePalette.getSource(tile);
-			
+
 			tileMap = new TileMap(source, imagePalette.getColorPalette());
-			zoom = 256.0 / (double)source.getWidth();
-			
+			zoom = 256.0 / (double) source.getWidth();
+
 		} else {
 			final TileLayer tileLayer = new TileLayer(1, 1);
 			tileLayer.setTile(0, 0, tile);
-			
+
 			tileMap = new TileMap(tileLayer, palette);
 			zoom = 256.0 / palette.getTileSize();
 		}
-		
+
 		tileGrid.setTileMap(tileMap);
 		tileAndHitboxGrid.setTileMap(tileMap);
 		tileAndHitboxGrid.setZoom(zoom);
-		
+
 		final boolean hasFunctionHitbox = palette instanceof HasFunctionHitbox;
 		hitboxCheckBox.setVisible(hasFunctionHitbox);
 		hitboxLabel.setVisible(hasFunctionHitbox);
@@ -77,43 +77,69 @@ public class TileInspector extends javax.swing.JDialog {
 		functionLabel.setVisible(hasFunctionHitbox);
 		functionTextField.setVisible(hasFunctionHitbox);
 		function.setVisible(hasFunctionHitbox);
-		
-		if(hasFunctionHitbox) {
-			final String hitbox = ((HasFunctionHitbox)palette).getFunction(palette.getSelectedTile());
-			
-			hitboxCheckBox.setSelected(hitbox != null);
-			functionTextField.setEnabled(hitbox != null);
-			
-			firePropertyChange("currentFunctionHitbox", null, hitbox);
+
+		if (hasFunctionHitbox) {
+			final String xFunctionHitbox = ((HasFunctionHitbox) palette).getFunction(palette.getSelectedTile());
+			final String yFunctionHitbox = ((HasFunctionHitbox) palette).getYFunction(palette.getSelectedTile());
+
+			final boolean enabled = xFunctionHitbox != null || yFunctionHitbox != null;
+			hitboxCheckBox.setSelected(enabled);
+			functionTextField.setEnabled(enabled);
+			yFunctionField.setEnabled(enabled);
+
+			firePropertyChange("XFunctionHitbox", null, xFunctionHitbox);
+			firePropertyChange("YFunctionHitbox", null, yFunctionHitbox);
 		}
-		
+
 		previewPanel.repaint();
 	}
 
-	public void setCurrentFunctionHitbox(String functionHitbox) {
-		if(palette instanceof HasFunctionHitbox) {
+	public void setXFunctionHitbox(String functionHitbox) {
+		if (palette instanceof HasFunctionHitbox) {
 			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) palette;
-			
+
 			final String oldHitbox = hasFunctionHitbox.getFunction(palette.getSelectedTile());
 			hasFunctionHitbox.setFunction(palette.getSelectedTile(), functionHitbox);
-			
-			firePropertyChange("currentFunctionHitbox", oldHitbox, functionHitbox);
+
+			firePropertyChange("XFunctionHitbox", oldHitbox, functionHitbox);
 		}
 	}
-	
-	public String getCurrentFunctionHitbox() {
-		if(palette instanceof HasFunctionHitbox) {
-			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) palette; 
+
+	public void setYFunctionHitbox(String functionHitbox) {
+		if (palette instanceof HasFunctionHitbox) {
+			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) palette;
+
+			final String oldHitbox = hasFunctionHitbox.getYFunction(palette.getSelectedTile());
+			hasFunctionHitbox.setYFunction(palette.getSelectedTile(), functionHitbox);
+
+			firePropertyChange("YFunctionHitbox", oldHitbox, functionHitbox);
+		}
+	}
+
+	public String getXFunctionHitbox() {
+		if (palette instanceof HasFunctionHitbox) {
+			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) palette;
 			final String hitbox = hasFunctionHitbox.getFunction(palette.getSelectedTile());
-			
-			if(hitbox != null) {
+
+			if (hitbox != null) {
 				return hitbox;
 			}
 		}
-		
 		return "";
 	}
-	
+
+	public String getYFunctionHitbox() {
+		if (palette instanceof HasFunctionHitbox) {
+			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) palette;
+			final String hitbox = hasFunctionHitbox.getYFunction(palette.getSelectedTile());
+
+			if (hitbox != null) {
+				return hitbox;
+			}
+		}
+		return "";
+	}
+
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -165,7 +191,7 @@ public class TileInspector extends javax.swing.JDialog {
 
         functionTextField.setFont(functionTextField.getFont().deriveFont(functionTextField.getFont().getSize()-1f));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFunctionHitbox}"), functionTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${XFunctionHitbox}"), functionTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"));
         bindingGroup.addBinding(binding);
 
         previewLabel.setFont(previewLabel.getFont().deriveFont(previewLabel.getFont().getSize()-1f));
@@ -178,13 +204,15 @@ public class TileInspector extends javax.swing.JDialog {
         function.setSourceHeight(tileAndHitboxGrid.getTileMapHeight());
         function.setSourceWidth(tileAndHitboxGrid.getTileMapWidth());
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${currentFunctionHitbox}"), function, org.jdesktop.beansbinding.BeanProperty.create("function"));
-        bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${preferredSize}"), function, org.jdesktop.beansbinding.BeanProperty.create("preferredSize"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${tileMapHeight}"), function, org.jdesktop.beansbinding.BeanProperty.create("sourceHeight"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileAndHitboxGrid, org.jdesktop.beansbinding.ELProperty.create("${tileMapWidth}"), function, org.jdesktop.beansbinding.BeanProperty.create("sourceWidth"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${XFunctionHitbox}"), function, org.jdesktop.beansbinding.BeanProperty.create("XFunction"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${YFunctionHitbox}"), function, org.jdesktop.beansbinding.BeanProperty.create("YFunction"));
         bindingGroup.addBinding(binding);
 
         previewPanel.add(function);
@@ -199,6 +227,9 @@ public class TileInspector extends javax.swing.JDialog {
                 hitboxCheckBoxActionPerformed(evt);
             }
         });
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${YFunctionHitbox}"), yFunctionField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
         yFunctionField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -296,14 +327,15 @@ public class TileInspector extends javax.swing.JDialog {
     private void hitboxCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hitboxCheckBoxActionPerformed
 		functionTextField.setEnabled(hitboxCheckBox.isSelected());
 		function.setVisible(hitboxCheckBox.isSelected());
-		
-		if(!hitboxCheckBox.isSelected()) {
-			setCurrentFunctionHitbox(null);
+
+		if (!hitboxCheckBox.isSelected()) {
+			setXFunctionHitbox(null);
+			setYFunctionHitbox(null);
 		}
     }//GEN-LAST:event_hitboxCheckBoxActionPerformed
 
     private void yFunctionFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yFunctionFieldActionPerformed
-        // TODO add your handling code here:
+		// TODO add your handling code here:
     }//GEN-LAST:event_yFunctionFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

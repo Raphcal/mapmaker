@@ -27,66 +27,75 @@ public class EditableImagePaletteDataHandler implements DataHandler<EditableImag
 	public EditableImagePaletteDataHandler(Format format) {
 		this.format = format;
 	}
-	
+
 	@Override
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	
+
 	@Override
 	public void write(EditableImagePalette t, OutputStream outputStream) throws IOException {
-		
+
 		Streams.write(t.toString(), outputStream);
 		Streams.write(t.getTileSize(), outputStream);
 		Streams.write(t.getColumns(), outputStream);
-		
+
 		final DataHandler<ColorPalette> colorPaletteHandler = format.getHandler(ColorPalette.class);
 		colorPaletteHandler.write(t.getColorPalette(), outputStream);
-		
+
 		final int size = t.size();
 		Streams.write(size, outputStream);
-		
+
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
-		for(int index = 0; index < size; index++) {
+		for (int index = 0; index < size; index++) {
 			tileLayerHandler.write(t.getSource(index), outputStream);
-			
-			if(version >= InternalFormat.VERSION_3) {
+
+			if (version >= InternalFormat.VERSION_3) {
 				Streams.writeNullable(t.getFunction(index), outputStream);
+			}
+			if (version >= InternalFormat.VERSION_13) {
+				Streams.writeNullable(t.getYFunction(index), outputStream);
 			}
 		}
 	}
 
 	@Override
 	public EditableImagePalette read(InputStream inputStream) throws IOException {
-		
+
 		final String name = Streams.readString(inputStream);
-		
+
 		final int tileSize = Streams.readInt(inputStream);
 		final int columns = Streams.readInt(inputStream);
-		
+
 		final DataHandler<AlphaColorPalette> colorPaletteHandler = format.getHandler(AlphaColorPalette.class);
 		final AlphaColorPalette palette = colorPaletteHandler.read(inputStream);
-		
+
 		final int size = Streams.readInt(inputStream);
-		final List<TileLayer> tiles = new ArrayList<TileLayer>();
-		
+		final List<TileLayer> tiles = new ArrayList<>();
+
 		final DataHandler<TileLayer> tileLayerHandler = format.getHandler(TileLayer.class);
-		for(int index = 0; index < size; index++) {
+		for (int index = 0; index < size; index++) {
 			final TileLayer layer = tileLayerHandler.read(inputStream);
-			
-			if(version >= InternalFormat.VERSION_3) {
+
+			if (version >= InternalFormat.VERSION_3) {
 				final String function = Streams.readNullableString(inputStream);
 				if (function != null) {
 					layer.setPlugin(new FunctionLayerPlugin(function));
 				}
 			}
-			
+			if (version >= InternalFormat.VERSION_13) {
+				final String function = Streams.readNullableString(inputStream);
+				if (function != null) {
+					layer.setPlugin(FunctionLayerPlugin.yFunction(function));
+				}
+			}
+
 			tiles.add(layer);
 		}
-		
+
 		final EditableImagePalette imagePalette = new EditableImagePalette(tileSize, columns, palette, tiles);
 		imagePalette.setName(name);
-		
+
 		return imagePalette;
 	}
 }

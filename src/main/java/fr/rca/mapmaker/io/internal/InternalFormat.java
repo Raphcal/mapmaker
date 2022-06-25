@@ -36,12 +36,12 @@ import java.util.zip.ZipFile;
  * @author daeke
  */
 public class InternalFormat extends AbstractFormat {
-	
+
 	private static final String EXTENSION = ".mmk";
 	private static final String DATA_ENTRY = "data";
-	
+
 	private static final int HEADER_LENGTH = 4;
-	
+
 	public static final int VERSION_3 = 3;
 	public static final int VERSION_4 = 4;
 	public static final int VERSION_5 = 5;
@@ -51,32 +51,41 @@ public class InternalFormat extends AbstractFormat {
 	public static final int VERSION_9 = 9;
 	public static final int VERSION_10 = 10;
 
-    /**
-     * Version 11. Depuis le 18/03/2019.
-     * <p/>
-     * Ajoute les fonctionnalités suivantes :<ul>
-     * <li>Sprites globaux</li>
-     * <li>Instances liées à une couche</li>
-     * </ul>
-     */
+	/**
+	 * Version 11. Depuis le 18/03/2019.
+	 * <p/>
+	 * Ajoute les fonctionnalités suivantes :<ul>
+	 * <li>Sprites globaux</li>
+	 * <li>Instances liées à une couche</li>
+	 * </ul>
+	 */
 	public static final int VERSION_11 = 11;
 
-    /**
-     * Version 12. Depuis le 30/03/2022.
-     * <p/>
-     * Ajoute les fonctionnalités suivantes :<ul>
-     * <li>Propriété "solid" des layers</li>
-     * </ul>
-     */
+	/**
+	 * Version 12. Depuis le 30/03/2022.
+	 * <p/>
+	 * Ajoute les fonctionnalités suivantes :<ul>
+	 * <li>Propriété "solid" des layers</li>
+	 * </ul>
+	 */
 	public static final int VERSION_12 = 12;
 
-	public static final int LAST_VERSION = VERSION_12;
+	/**
+	 * Version 13. Depuis le 25/06/2022.
+	 * <p/>
+	 * Ajoute les fonctionnalités suivantes :<ul>
+	 * <li>Ajout d'une fonction Y pour les tuiles</li>
+	 * <li>Ajout d'un type de sprite "police d'écriture"</li>
+	 * </ul>
+	 */
+	public static final int VERSION_13 = 13;
+
+	public static final int LAST_VERSION = VERSION_13;
 	public static final String HEADER_LAST_VERSION = "MM" + LAST_VERSION;
-			
 
 	public InternalFormat() {
 		super(EXTENSION, SupportedOperation.LOAD, SupportedOperation.SAVE);
-		
+
 		addHandler(Project.class, new ProjectDataHandler(this));
 		addHandler(Color.class, new ColorDataHandler());
 		addHandler(Palette.class, new PaletteDataHandler(this));
@@ -99,15 +108,15 @@ public class InternalFormat extends AbstractFormat {
 	@Override
 	public void saveProject(Project project, File file) {
 		final DataHandler<Project> handler = getHandler(project.getClass());
-		
+
 		setVersion(LAST_VERSION);
-		
+
 		try {
 			final FileOutputStream outputStream = new FileOutputStream(file);
 			try {
 				writeHeader(HEADER_LAST_VERSION, outputStream);
 				handler.write(project, outputStream);
-				
+
 			} finally {
 				outputStream.close();
 			}
@@ -121,15 +130,15 @@ public class InternalFormat extends AbstractFormat {
 	public Project openProject(File file) {
 		Project project = null;
 		final DataHandler<Project> handler = getHandler(Project.class);
-		
+
 		// Définition du numéro de version.
 		final int version = getVersion(file);
 		setVersion(version);
-		
+
 		try {
 			final InputStream inputStream = openInputStream(file);
 			try {
-				if(version >= VERSION_3) {
+				if (version >= VERSION_3) {
 					readHeader(inputStream);
 				}
 				project = handler.read(inputStream);
@@ -137,36 +146,36 @@ public class InternalFormat extends AbstractFormat {
 			} finally {
 				inputStream.close();
 			}
-			
-		} catch(IOException e) {
+
+		} catch (IOException e) {
 			Exceptions.showStackTrace(e, null);
 		}
-		
+
 		return project;
 	}
-	
+
 	private void writeHeader(String header, OutputStream outputStream) throws IOException {
-		for(final char c : header.toCharArray()) {
+		for (final char c : header.toCharArray()) {
 			Streams.write(c, outputStream);
 		}
 	}
-	
+
 	private String readHeader(InputStream inputStream) throws IOException {
 		final char[] header = new char[HEADER_LENGTH];
-		for(int index = 0; index < HEADER_LENGTH; index++) {
+		for (int index = 0; index < HEADER_LENGTH; index++) {
 			header[index] = Streams.readChar(inputStream);
 		}
 		return new String(header);
 	}
-	
+
 	private int getVersion(File file) {
 		try {
 			final InputStream inputStream = openInputStream(file);
 			try {
 				final String header = readHeader(inputStream);
-				if(header.length() == HEADER_LENGTH && header.startsWith("MMK")) {
+				if (header.length() == HEADER_LENGTH && header.startsWith("MMK")) {
 					return header.charAt(3) - '0';
-				} else if(header.length() == HEADER_LENGTH && header.startsWith("MM")) {
+				} else if (header.length() == HEADER_LENGTH && header.startsWith("MM")) {
 					return (header.charAt(2) - '0') * 10 + header.charAt(3) - '0';
 				} else {
 					throw new IllegalArgumentException("Bad file header: " + header);
@@ -174,19 +183,19 @@ public class InternalFormat extends AbstractFormat {
 			} finally {
 				inputStream.close();
 			}
-			
-		} catch(IOException e) {
+
+		} catch (IOException e) {
 			Exceptions.showStackTrace(e, null);
 		}
 		return 0;
 	}
-	
+
 	private InputStream openInputStream(File file) {
 		try {
 			final ZipFile zipFile = new ZipFile(file);
 			final ZipEntry entry = zipFile.getEntry(DATA_ENTRY);
 			final InputStream inputStream = zipFile.getInputStream(entry);
-			
+
 			return new InputStream() {
 
 				@Override
@@ -208,7 +217,7 @@ public class InternalFormat extends AbstractFormat {
 				public int read(byte[] b, int off, int len) throws IOException {
 					return inputStream.read(b, off, len);
 				}
-				
+
 				@Override
 				public long skip(long n) throws IOException {
 					return inputStream.skip(n); //To change body of generated methods, choose Tools | Templates.
@@ -218,7 +227,7 @@ public class InternalFormat extends AbstractFormat {
 				public synchronized void reset() throws IOException {
 					inputStream.reset();
 				}
-				
+
 				@Override
 				public void close() throws IOException {
 					inputStream.close();
@@ -226,18 +235,18 @@ public class InternalFormat extends AbstractFormat {
 				}
 
 			};
-			
-		} catch(IOException e) {
+
+		} catch (IOException e) {
 			// Ignoré.
 		}
-		
+
 		try {
 			return new FileInputStream(file);
-			
-		} catch(IOException e) {
+
+		} catch (IOException e) {
 			// Ignoré.
 		}
-		
+
 		return null;
 	}
 }

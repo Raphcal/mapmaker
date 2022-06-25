@@ -186,7 +186,7 @@
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="Form" sourcePath="${currentFunctionHitbox}" target="functionTextField" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="Form" sourcePath="${XFunctionHitbox}" target="functionTextField" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_ACTION_OR_FOCUS_LOST"/>
         </BindingProperty>
       </BindingProperties>
@@ -235,10 +235,11 @@
             </Property>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="function" source="Form" sourcePath="${currentFunctionHitbox}" target="function" targetPath="function" updateStrategy="0" immediately="false"/>
             <BindingProperty name="preferredSize" source="tileAndHitboxGrid" sourcePath="${preferredSize}" target="function" targetPath="preferredSize" updateStrategy="0" immediately="false"/>
             <BindingProperty name="sourceHeight" source="tileAndHitboxGrid" sourcePath="${tileMapHeight}" target="function" targetPath="sourceHeight" updateStrategy="0" immediately="false"/>
             <BindingProperty name="sourceWidth" source="tileAndHitboxGrid" sourcePath="${tileMapWidth}" target="function" targetPath="sourceWidth" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="XFunction" source="Form" sourcePath="${XFunctionHitbox}" target="function" targetPath="XFunction" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="YFunction" source="Form" sourcePath="${YFunctionHitbox}" target="function" targetPath="YFunction" updateStrategy="0" immediately="false"/>
           </BindingProperties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -273,6 +274,11 @@
       </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="yFunctionField">
+      <BindingProperties>
+        <BindingProperty name="text" source="Form" sourcePath="${YFunctionHitbox}" target="yFunctionField" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="yFunctionFieldActionPerformed"/>
       </Events>
