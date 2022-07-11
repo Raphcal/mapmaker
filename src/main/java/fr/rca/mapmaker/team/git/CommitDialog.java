@@ -1,6 +1,5 @@
 package fr.rca.mapmaker.team.git;
 
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -12,19 +11,33 @@ import javax.swing.table.TableModel;
 public class CommitDialog extends javax.swing.JDialog {
 
 	public static interface Callback {
-		void onOK(String message, boolean push);
+		void onOK(String message, boolean push, boolean forcePush, boolean amendLastCommit);
 		void onCancel();
 	}
 	
 	private final Callback callback;
-	
+	private final String branchName;
+	private final String lastCommitMessage;
+
+	public CommitDialog() {
+		this.callback = null;
+		this.branchName = "main";
+		this.lastCommitMessage = null;
+	}
+
 	/**
 	 * Creates new form CommitDialog
 	 */
-	public CommitDialog(java.awt.Frame parent, boolean modal, Callback callback) {
+	public CommitDialog(java.awt.Frame parent, boolean modal, String branchName, String lastCommitMessage, Callback callback) {
 		super(parent, modal);
 		this.callback = callback;
+		this.lastCommitMessage = lastCommitMessage;
+		this.branchName = branchName;
 		initComponents();
+	}
+
+	public String getBranchName() {
+		return branchName;
 	}
 
 	/**
@@ -45,6 +58,9 @@ public class CommitDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
         commitButton = new javax.swing.JButton();
         pushCheckBox = new javax.swing.JCheckBox();
+        amendCheckbox = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
+        forcePushCheckBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -96,6 +112,17 @@ public class CommitDialog extends javax.swing.JDialog {
         pushCheckBox.setSelected(true);
         pushCheckBox.setText("Push");
 
+        amendCheckbox.setText("Amend last commit");
+        amendCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                amendCheckboxActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("resources/language").getString("team.git.branch.name"), new Object[] {getBranchName()})); // NOI18N
+
+        forcePushCheckBox.setText("Force");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -105,17 +132,23 @@ public class CommitDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(commitMessageLabel)
-                            .addComponent(modificationLabel))
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(pushCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(forcePushCheckBox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cancelButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(commitButton)))
+                        .addComponent(commitButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(commitMessageLabel)
+                            .addComponent(amendCheckbox))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(modificationLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -124,16 +157,21 @@ public class CommitDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(commitMessageLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(modificationLabel)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                .addComponent(amendCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(modificationLabel)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(commitButton)
-                    .addComponent(pushCheckBox))
+                    .addComponent(pushCheckBox)
+                    .addComponent(forcePushCheckBox))
                 .addContainerGap())
         );
 
@@ -147,8 +185,15 @@ public class CommitDialog extends javax.swing.JDialog {
 
     private void commitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitButtonActionPerformed
 		setVisible(false);
-		callback.onOK(commitMessageTextPane.getText(), pushCheckBox.isSelected());
+		callback.onOK(commitMessageTextPane.getText(), pushCheckBox.isSelected(), forcePushCheckBox.isSelected(), amendCheckbox.isSelected());
     }//GEN-LAST:event_commitButtonActionPerformed
+
+    private void amendCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amendCheckboxActionPerformed
+        // TODO add your handling code here:
+		if (amendCheckbox.isSelected() && lastCommitMessage != null) {
+			commitMessageTextPane.setText(lastCommitMessage);
+		}
+    }//GEN-LAST:event_amendCheckboxActionPerformed
 
 	public void setEntries(final List<CommitEntry> entries) {
 		modificationTable.setModel(new TableModel() {
@@ -219,10 +264,13 @@ public class CommitDialog extends javax.swing.JDialog {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox amendCheckbox;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton commitButton;
     private javax.swing.JLabel commitMessageLabel;
     private javax.swing.JTextPane commitMessageTextPane;
+    private javax.swing.JCheckBox forcePushCheckBox;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel modificationLabel;

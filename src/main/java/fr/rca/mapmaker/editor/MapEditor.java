@@ -516,7 +516,6 @@ public class MapEditor extends javax.swing.JFrame {
         });
         mapListScrollPane.setViewportView(mapList);
 
-        mapToolBar.setFloatable(false);
         mapToolBar.setRollover(true);
 
         addMapButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
@@ -566,7 +565,6 @@ public class MapEditor extends javax.swing.JFrame {
         });
         mapToolBar.add(moveMapBottomButton);
 
-        gridToolBar.setFloatable(false);
         gridToolBar.setRollover(true);
 
         copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/copy.png"))); // NOI18N
@@ -712,7 +710,6 @@ public class MapEditor extends javax.swing.JFrame {
 
         paletteScrollPane.setViewportView(paletteBackgroundPanel);
 
-        layerToolBar.setFloatable(false);
         layerToolBar.setRollover(true);
 
         addLayerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
@@ -811,7 +808,6 @@ public class MapEditor extends javax.swing.JFrame {
         });
         layerListScrollPane.setViewportView(layerList);
 
-        paletteToolBar.setFloatable(false);
         paletteToolBar.setRollover(true);
 
         toolGroup.add(penToggleButton);
@@ -904,7 +900,6 @@ public class MapEditor extends javax.swing.JFrame {
 
         spritePaletteScrollPane.setViewportView(spriteBackgroundPanel);
 
-        spritePaletteToolBar.setFloatable(false);
         spritePaletteToolBar.setRollover(true);
 
         toolGroup.add(spriteToggleButton);
@@ -922,7 +917,7 @@ public class MapEditor extends javax.swing.JFrame {
             .addComponent(spritePaletteScrollPane)
             .addGroup(spritePanelLayout.createSequentialGroup()
                 .addComponent(spritePaletteToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 50, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         spritePanelLayout.setVerticalGroup(
             spritePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1097,7 +1092,7 @@ public class MapEditor extends javax.swing.JFrame {
         gitMenu.add(initMenuItem);
         gitMenu.add(initSeparator);
 
-        commitMenuItem.setText("Commit");
+        commitMenuItem.setText("Commit...");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, gitManager, org.jdesktop.beansbinding.ELProperty.create("${available}"), commitMenuItem, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
@@ -1719,7 +1714,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }//GEN-LAST:event_commitMenuItemActionPerformed
 
     private void pushMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pushMenuItemActionPerformed
-		gitManager.push();
+		gitManager.push(false);
     }//GEN-LAST:event_pushMenuItemActionPerformed
 
     private void inspectSpriteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inspectSpriteMenuItemActionPerformed
