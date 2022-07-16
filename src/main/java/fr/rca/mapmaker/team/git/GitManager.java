@@ -13,6 +13,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import javax.swing.JFrame;
@@ -234,10 +235,10 @@ public class GitManager {
 
 			String lastCommitMessage = null;
 			final LogCommand log = git.log();
-			log.setMaxCount(2);
-			Iterable<RevCommit> commits = log.call();
-			if (commits.iterator().hasNext()) {
-				RevCommit commit = commits.iterator().next();
+			log.setMaxCount(1);
+			Iterator<RevCommit> commits = log.call().iterator();
+			if (commits.hasNext()) {
+				RevCommit commit = commits.next();
 				if (commit != null) {
 					lastCommitMessage = commit.getFullMessage();
 				}
