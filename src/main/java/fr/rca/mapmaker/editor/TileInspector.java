@@ -326,6 +326,7 @@ public class TileInspector extends javax.swing.JDialog {
 
     private void hitboxCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hitboxCheckBoxActionPerformed
 		functionTextField.setEnabled(hitboxCheckBox.isSelected());
+		yFunctionField.setEnabled(hitboxCheckBox.isSelected());
 		function.setVisible(hitboxCheckBox.isSelected());
 
 		if (!hitboxCheckBox.isSelected()) {
