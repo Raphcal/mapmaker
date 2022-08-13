@@ -1639,15 +1639,21 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
     private void multipleEditMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_multipleEditMenuItemActionPerformed
 		final String size = JOptionPane.showInputDialog("Taille de la surface à éditer (exemple : 2x3) ?");
-		
+		if (size == null) {
+			return;
+		}
+
 		final int xIndex = size.indexOf('x');
-		if(xIndex > 0) {
+		if (xIndex <= 0) {
+			return;
+		}
+		try {
 			final int columns = Integer.parseInt(size.substring(0, xIndex));
 			final int rows = Integer.parseInt(size.substring(xIndex + 1));
-			
+
 			final SpanningTileLayer layer = new SpanningTileLayer();
 			layer.setSize(columns, rows);
-			
+
 			final PaletteMap paletteMap = (PaletteMap) paletteGrid.getTileMap();
 			Palette palette = paletteMap.getPalette();
 			if (palette instanceof PaletteReference) {
@@ -1686,6 +1692,8 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 			});
 			editor.setVisible(true);
 			mapBackgroundPanel.repaint(mapScrollPane.getViewport().getViewRect());
+		} catch (NumberFormatException e) {
+			LOGGER.warn("Bad size: " + size, e);
 		}
     }//GEN-LAST:event_multipleEditMenuItemActionPerformed
 

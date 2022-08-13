@@ -23,7 +23,8 @@ public class PaletteAsHeaderHandler extends CodeDataHandler<Palette> {
 				+ "\n"
 				+ "#include \"../lib/melice.h\"\n"
 				+ "\n"
-				+ "float palette" + Names.normalizeName(t, Names::toPascalCase) + "Hitbox(uint8_t tile, float x);\n"
+				+ "float palette" + Names.normalizeName(t, Names::toPascalCase) + "XHitbox(uint16_t tile, float x);\n"
+				+ "float palette" + Names.normalizeName(t, Names::toPascalCase) + "YHitbox(uint16_t tile, float y);\n"
 				+ "\n"
 				+ "#endif /* palette" + name + "_h */\n").getBytes(StandardCharsets.UTF_8));
 	}
