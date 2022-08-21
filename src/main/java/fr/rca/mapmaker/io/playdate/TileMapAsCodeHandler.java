@@ -4,7 +4,6 @@ import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -80,11 +79,6 @@ public class TileMapAsCodeHandler extends CodeDataHandler<TileMap> {
 
 		outputStream.write(("    return self;\n"
 				+ "}\n").getBytes(StandardCharsets.UTF_8));
-	}
-
-	@Override
-	public TileMap read(InputStream inputStream) throws IOException {
-		throw new UnsupportedOperationException("Not supported.");
 	}
 
 	@Override

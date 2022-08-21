@@ -1,14 +1,12 @@
 package fr.rca.mapmaker.io.playdate;
 
 import fr.rca.mapmaker.model.HasFunctionHitbox;
-import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.operation.ByteCode;
 import fr.rca.mapmaker.operation.Language;
 import fr.rca.mapmaker.operation.OperationParser;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -65,11 +63,6 @@ public class PaletteAsCodeHandler extends CodeDataHandler<Palette> {
 				+ "        return " + t.getTileSize() + ";\n"
 				+ "    }\n"
 				+ "}\n").getBytes(StandardCharsets.UTF_8));
-	}
-
-	@Override
-	public EditableImagePalette read(InputStream inputStream) throws IOException {
-		throw new UnsupportedOperationException("Not supported.");
 	}
 
 	@Override

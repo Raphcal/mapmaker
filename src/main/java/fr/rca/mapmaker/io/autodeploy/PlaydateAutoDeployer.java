@@ -1,10 +1,13 @@
 package fr.rca.mapmaker.io.autodeploy;
 
 import fr.rca.mapmaker.io.playdate.AnimationNameAsHeaderHandler;
+import fr.rca.mapmaker.io.playdate.CodeDataHandler;
 import fr.rca.mapmaker.io.playdate.Headers;
 import fr.rca.mapmaker.io.playdate.Names;
 import fr.rca.mapmaker.io.playdate.PaletteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.PaletteAsHeaderHandler;
+import fr.rca.mapmaker.io.playdate.PaletteNameAsCodeHandler;
+import fr.rca.mapmaker.io.playdate.PaletteNameAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.PlaydateFormat;
 import fr.rca.mapmaker.io.playdate.SpriteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.SpriteAsHeaderHandler;
@@ -21,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
 /**
@@ -40,41 +44,22 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		final File generatedSourcesDir = new File(root, "gen");
 		generatedSourcesDir.mkdir();
 
-		File file;
-		String generatedDate;
+		final List<Palette> palettes = project.getPalettes().stream()
+					.filter(palette -> palette instanceof EditableImagePalette)
+					.collect(Collectors.toList());
 
-		final PaletteAsHeaderHandler paletteAsHeaderHandler = new PaletteAsHeaderHandler();
-		final PaletteAsCodeHandler paletteAsCodeHandler = new PaletteAsCodeHandler();
-
-		final List<Palette> palettes = project.getPalettes();
-		for(int index = 0; index < palettes.size(); index++) {
-			final Palette palette = palettes.get(index);
-			if (palette instanceof EditableImagePalette) {
-				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(
-						new File(resourceDir, "palette" + Names.normalizeName(palette, Names::toLowerCase) + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
-					ImageIO.write(PlaydateFormat.renderPalette((EditableImagePalette) palette), "png", outputStream);
-				}
-
-				file = new File(generatedSourcesDir, paletteAsHeaderHandler.fileNameFor(palette));
-				generatedDate = Headers.getGeneratedDate(file);
-				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(file))) {
-					paletteAsHeaderHandler
-							.withGeneratedDate(generatedDate)
-							.write(palette, outputStream);
-				}
-
-				file = new File(generatedSourcesDir, paletteAsCodeHandler.fileNameFor(palette));
-				generatedDate = Headers.getGeneratedDate(file);
-				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(file))) {
-					paletteAsCodeHandler
-							.withGeneratedDate(generatedDate)
-							.write(palette, outputStream);
-				}
+		for(final Palette palette : palettes) {
+			try (final BufferedOutputStream outputStream = new BufferedOutputStream(
+					new FileOutputStream(
+					new File(resourceDir, "palette" + Names.normalizeName(palette, Names::toLowerCase) + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
+				ImageIO.write(PlaydateFormat.renderPalette((EditableImagePalette) palette), "png", outputStream);
 			}
+
+			generateFile(generatedSourcesDir, new PaletteAsHeaderHandler(), palette);
+			generateFile(generatedSourcesDir, new PaletteAsCodeHandler(), palette);
 		}
+		generateFile(generatedSourcesDir, new PaletteNameAsHeaderHandler(), palettes);
+		generateFile(generatedSourcesDir, new PaletteNameAsCodeHandler(), palettes);
 
 		final TileMapHandler tileMapHandler = new TileMapHandler();
 
@@ -90,17 +75,8 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 			}
 		}
 
-		final AnimationNameAsHeaderHandler animationNameAsHeaderHandler = new AnimationNameAsHeaderHandler();
-		file = new File(generatedSourcesDir, animationNameAsHeaderHandler.fileNameFor(project.getAnimationNames()));
-		generatedDate = Headers.getGeneratedDate(file);
-		try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-				new FileOutputStream(file))) {
-			animationNameAsHeaderHandler
-					.withGeneratedDate(generatedDate)
-					.write(project.getAnimationNames(), outputStream);
-		}
+		generateFile(generatedSourcesDir, new AnimationNameAsHeaderHandler(), project.getAnimationNames());
 
-		final SpriteAsHeaderHandler spriteAsHeaderHandler = new SpriteAsHeaderHandler();
 		final SpriteAsCodeHandler spriteAsCodeHandler = new SpriteAsCodeHandler(project.getAnimationNames());
 
 		final List<Sprite> sprites = project.getSprites();
@@ -114,24 +90,19 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 					ImageIO.write(spriteImage, "png", outputStream);
 				}
 
-				file = new File(generatedSourcesDir, spriteAsHeaderHandler.fileNameFor(sprite));
-				generatedDate = Headers.getGeneratedDate(file);
-				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(file))) {
-					spriteAsHeaderHandler
-							.withGeneratedDate(generatedDate)
-							.write(sprite, outputStream);
-				}
-
-				file = new File(generatedSourcesDir, spriteAsCodeHandler.fileNameFor(sprite));
-				generatedDate = Headers.getGeneratedDate(file);
-				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-						new FileOutputStream(file))) {
-					spriteAsCodeHandler
-							.withGeneratedDate(generatedDate)
-							.write(sprite, outputStream);
-				}
+				generateFile(generatedSourcesDir, new SpriteAsHeaderHandler(), sprite);
+				generateFile(generatedSourcesDir, spriteAsCodeHandler, sprite);
 			}
+		}
+	}
+
+	private <T> void generateFile(final File generatedSourcesDir, CodeDataHandler<T> handler, final T data) throws IOException {
+		File file = new File(generatedSourcesDir, handler.fileNameFor(data));
+		String generatedDate = Headers.getGeneratedDate(file);
+		try (final BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+			handler
+					.withGeneratedDate(generatedDate)
+					.write(data, outputStream);
 		}
 	}
 

@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -57,23 +58,25 @@ public class PlaydateFormat extends AbstractFormat {
 			final PaletteAsHeaderHandler paletteAsHeaderHandler = new PaletteAsHeaderHandler();
 			final PaletteAsCodeHandler paletteAsCodeHandler = new PaletteAsCodeHandler();
 
-			final List<Palette> palettes = project.getPalettes();
+			final List<Palette> palettes = project.getPalettes().stream()
+					.filter(palette -> palette instanceof EditableImagePalette)
+					.collect(Collectors.toList());
+			
 			for(int index = 0; index < palettes.size(); index++) {
 				final Palette palette = palettes.get(index);
-				if (palette instanceof EditableImagePalette) {
-					outputStream.putNextEntry(new ZipEntry("palette" + index + ".data"));
-					write(palette, outputStream);
+				outputStream.putNextEntry(new ZipEntry("palette" + index + ".data"));
+				write(palette, outputStream);
 
-					outputStream.putNextEntry(new ZipEntry("palette" + index + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png"));
-					write(renderPalette((EditableImagePalette) palette), outputStream);
+				outputStream.putNextEntry(new ZipEntry("palette" + index + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png"));
+				write(renderPalette((EditableImagePalette) palette), outputStream);
 
-					outputStream.putNextEntry(new ZipEntry(paletteAsHeaderHandler.fileNameFor(palette)));
-					paletteAsHeaderHandler.write(palette, outputStream);
+				outputStream.putNextEntry(new ZipEntry(paletteAsHeaderHandler.fileNameFor(palette)));
+				paletteAsHeaderHandler.write(palette, outputStream);
 
-					outputStream.putNextEntry(new ZipEntry(paletteAsCodeHandler.fileNameFor(palette)));
-					paletteAsCodeHandler.write(palette, outputStream);
-				}
+				outputStream.putNextEntry(new ZipEntry(paletteAsCodeHandler.fileNameFor(palette)));
+				paletteAsCodeHandler.write(palette, outputStream);
 			}
+			// TODO: Ajouter le fichier avec les noms des palettes
 
 			final TileMapAsHeaderHandler tileMapAsHeaderHandler = new TileMapAsHeaderHandler();
 			final TileMapAsCodeHandler tileMapAsCodeHandler = new TileMapAsCodeHandler();

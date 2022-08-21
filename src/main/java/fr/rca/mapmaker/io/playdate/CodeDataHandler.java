@@ -1,6 +1,8 @@
 package fr.rca.mapmaker.io.playdate;
 
 import fr.rca.mapmaker.io.DataHandler;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Classe de base permettant de générer l'en-tête d'un fichier.
@@ -10,6 +12,11 @@ import fr.rca.mapmaker.io.DataHandler;
  */
 public abstract class CodeDataHandler<T> implements DataHandler<T> {
 	private String generatedDate = Headers.getGeneratedDate();
+
+	@Override
+	public T read(InputStream inputStream) throws IOException {
+		throw new UnsupportedOperationException("Not supported.");
+	}
 
 	public CodeDataHandler<T> withGeneratedDate(String generatedDate) {
 		this.generatedDate = generatedDate;

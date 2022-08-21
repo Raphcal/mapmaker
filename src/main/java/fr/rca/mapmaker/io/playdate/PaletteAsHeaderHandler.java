@@ -2,7 +2,6 @@ package fr.rca.mapmaker.io.playdate;
 
 import fr.rca.mapmaker.model.palette.Palette;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -27,11 +26,6 @@ public class PaletteAsHeaderHandler extends CodeDataHandler<Palette> {
 				+ "float palette" + Names.normalizeName(t, Names::toPascalCase) + "YHitbox(uint16_t tile, float y);\n"
 				+ "\n"
 				+ "#endif /* palette" + name + "_h */\n").getBytes(StandardCharsets.UTF_8));
-	}
-
-	@Override
-	public Palette read(InputStream inputStream) throws IOException {
-		throw new UnsupportedOperationException("Not supported.");
 	}
 
 	@Override

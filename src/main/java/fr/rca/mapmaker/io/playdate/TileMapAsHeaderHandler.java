@@ -2,7 +2,6 @@ package fr.rca.mapmaker.io.playdate;
 
 import fr.rca.mapmaker.model.map.TileMap;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -32,11 +31,6 @@ public class TileMapAsHeaderHandler extends CodeDataHandler<TileMap> {
 				+ MAP_TYPE + " * _Nonnull createMap" + camelCasedName + "(void);\n"
 				+ "\n"
 				+ "#endif /* map" + name + "_h */\n").getBytes(StandardCharsets.UTF_8));
-	}
-
-	@Override
-	public TileMap read(InputStream inputStream) throws IOException {
-		throw new UnsupportedOperationException("Not supported.");
 	}
 
 	@Override

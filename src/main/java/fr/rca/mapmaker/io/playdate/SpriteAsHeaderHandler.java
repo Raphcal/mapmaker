@@ -2,7 +2,6 @@ package fr.rca.mapmaker.io.playdate;
 
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -31,11 +30,6 @@ public class SpriteAsHeaderHandler extends CodeDataHandler<Sprite> {
 				+ "void loadSprite" + pascalCasedName + "Palette(void);\n"
 				+ "\n"
 				+ "#endif /* sprite" + name + "_h */\n").getBytes(StandardCharsets.UTF_8));
-	}
-
-	@Override
-	public Sprite read(InputStream inputStream) throws IOException {
-		throw new UnsupportedOperationException("Not supported.");
 	}
 
 	@Override
