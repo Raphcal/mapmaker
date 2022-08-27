@@ -60,7 +60,9 @@ public final class Streams {
 	public static void write(int i, OutputStream outputStream) throws IOException {
 		outputStream.write(asArray(i, INTEGER_SIZE));
 	}
-	
+	public static void writeUnsignedShort(int i, OutputStream outputStream) throws IOException {
+		outputStream.write(asArray(i, SHORT_SIZE));
+	}
 	public static void write(long l, OutputStream outputStream) throws IOException {
 		outputStream.write(asArray(l, LONG_SIZE));
 	}

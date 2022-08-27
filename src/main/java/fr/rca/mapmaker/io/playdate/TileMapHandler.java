@@ -15,6 +15,11 @@ import java.util.List;
  */
 public class TileMapHandler implements DataHandler<TileMap> {
 
+	public void write(TileMap t, short paletteIndex, OutputStream outputStream) throws IOException {
+		Streams.write(paletteIndex, outputStream);
+		write(t, outputStream);
+	}
+
 	@Override
 	public void write(TileMap t, OutputStream outputStream) throws IOException {
 		final List<Layer> layers = t.getLayers();
@@ -30,7 +35,7 @@ public class TileMapHandler implements DataHandler<TileMap> {
 			Streams.write(layer.isSolid(), outputStream);
 			int max = width * height;
 			for (int index = 0; index < max; index++) {
-				Streams.write(layer.getTile(index % width, index / width), outputStream);
+				Streams.writeUnsignedShort(layer.getTile(index % width, index / width), outputStream);
 			}
 		}
 	}

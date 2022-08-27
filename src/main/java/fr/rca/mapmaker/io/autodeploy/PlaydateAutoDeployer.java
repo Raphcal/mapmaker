@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
 /**
@@ -44,9 +43,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		final File generatedSourcesDir = new File(root, "gen");
 		generatedSourcesDir.mkdir();
 
-		final List<Palette> palettes = project.getPalettes().stream()
-					.filter(palette -> palette instanceof EditableImagePalette)
-					.collect(Collectors.toList());
+		final List<Palette> palettes = PlaydateFormat.palettesForProject(project);
 
 		for(final Palette palette : palettes) {
 			try (final BufferedOutputStream outputStream = new BufferedOutputStream(
@@ -71,7 +68,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 			try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 					new FileOutputStream(
 					new File(resourceDir, "map" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data")))) {
-				tileMapHandler.write(tileMap, outputStream);
+				tileMapHandler.write(tileMap, (short) palettes.indexOf(tileMap.getPalette()), outputStream);
 			}
 		}
 

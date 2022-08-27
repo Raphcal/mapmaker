@@ -187,4 +187,10 @@ public class PlaydateFormat extends AbstractFormat {
 		graphics.dispose();
 		return image;
 	}
+
+	public static List<Palette> palettesForProject(Project project) {
+		return project.getPalettes().stream()
+				.filter(palette -> palette instanceof EditableImagePalette)
+				.collect(Collectors.toList());
+	}
 }
