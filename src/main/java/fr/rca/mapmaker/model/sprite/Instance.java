@@ -11,7 +11,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JComponent;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +46,7 @@ public class Instance extends JComponent {
 	
 	private Direction direction = Direction.RIGHT;
     
-	private final Map<String, Double> variables = new HashMap<String, Double>();
+	private final Map<String, Double> variables = new LinkedHashMap<String, Double>();
 	
 	/**
 	 * Script d'initialisation de l'instance. 

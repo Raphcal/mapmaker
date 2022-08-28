@@ -4,6 +4,9 @@ import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.model.palette.PaletteReference;
+import fr.rca.mapmaker.model.project.Project;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,13 +18,16 @@ import java.util.List;
  */
 public class TileMapHandler implements DataHandler<TileMap> {
 
-	public void write(TileMap t, short paletteIndex, OutputStream outputStream) throws IOException {
-		Streams.write(paletteIndex, outputStream);
-		write(t, outputStream);
-	}
-
 	@Override
 	public void write(TileMap t, OutputStream outputStream) throws IOException {
+		Palette palette = t.getPalette();
+		if (!(palette instanceof PaletteReference)) {
+			throw new UnsupportedOperationException("TileMap palette should be a reference to allow palette index export");
+		}
+		Project project = ((PaletteReference) palette).getProject();
+		final List<Palette> palettes = PlaydateFormat.palettesForProject(project);
+		Streams.write((short) palettes.indexOf(palette), outputStream);
+
 		final List<Layer> layers = t.getLayers();
 		Streams.write(layers.size(), outputStream);
 
@@ -42,7 +48,7 @@ public class TileMapHandler implements DataHandler<TileMap> {
 
 	@Override
 	public TileMap read(InputStream inputStream) throws IOException {
-		throw new UnsupportedOperationException("Not supported yet.");
+		throw new UnsupportedOperationException("Not supported.");
 	}
 	
 }

@@ -3,6 +3,7 @@ package fr.rca.mapmaker.io.autodeploy;
 import fr.rca.mapmaker.io.playdate.AnimationNameAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.CodeDataHandler;
 import fr.rca.mapmaker.io.playdate.Headers;
+import fr.rca.mapmaker.io.playdate.InstancesHandler;
 import fr.rca.mapmaker.io.playdate.Names;
 import fr.rca.mapmaker.io.playdate.PaletteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.PaletteAsHeaderHandler;
@@ -59,6 +60,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		generateFile(generatedSourcesDir, new PaletteNameAsCodeHandler(), palettes);
 
 		final TileMapHandler tileMapHandler = new TileMapHandler();
+		final InstancesHandler instancesHandler = new InstancesHandler();
 
 		final List<MapAndInstances> maps = project.getMaps();
 		for(int index = 0; index < maps.size(); index++) {
@@ -68,7 +70,8 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 			try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 					new FileOutputStream(
 					new File(resourceDir, "map" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data")))) {
-				tileMapHandler.write(tileMap, (short) palettes.indexOf(tileMap.getPalette()), outputStream);
+				tileMapHandler.write(tileMap, outputStream);
+				instancesHandler.write(mapAndInstances.getSpriteInstances(), outputStream);
 			}
 		}
 
