@@ -18,10 +18,6 @@ public class AnimationNameAsHeaderHandler extends CodeDataHandler<List<String>> 
 				+ "#ifndef animationnames_h\n"
 				+ "#define animationnames_h\n"
 				+ "\n"
-				+ "#include <stdio.h>\n"
-				+ "\n"
-				+ "#include \"../lib/melice.h\"\n"
-				+ "\n"
 				+ "#define kAnimationNameCount " + t.size() + "\n"
 				+ "\n"
 				+ "typedef enum {\n").getBytes(StandardCharsets.UTF_8));
