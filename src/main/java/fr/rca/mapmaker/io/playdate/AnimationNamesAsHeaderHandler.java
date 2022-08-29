@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */
-public class AnimationNameAsHeaderHandler extends CodeDataHandler<List<String>> {
+public class AnimationNamesAsHeaderHandler extends CodeDataHandler<List<String>> {
 
 	@Override
 	public void write(List<String> t, OutputStream outputStream) throws IOException {

@@ -1,17 +1,19 @@
 package fr.rca.mapmaker.io.autodeploy;
 
-import fr.rca.mapmaker.io.playdate.AnimationNameAsHeaderHandler;
+import fr.rca.mapmaker.io.playdate.AnimationNamesAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.CodeDataHandler;
 import fr.rca.mapmaker.io.playdate.Headers;
 import fr.rca.mapmaker.io.playdate.InstancesHandler;
 import fr.rca.mapmaker.io.playdate.Names;
 import fr.rca.mapmaker.io.playdate.PaletteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.PaletteAsHeaderHandler;
-import fr.rca.mapmaker.io.playdate.PaletteNameAsCodeHandler;
-import fr.rca.mapmaker.io.playdate.PaletteNameAsHeaderHandler;
+import fr.rca.mapmaker.io.playdate.PaletteNamesAsCodeHandler;
+import fr.rca.mapmaker.io.playdate.PaletteNamesAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.PlaydateFormat;
 import fr.rca.mapmaker.io.playdate.SpriteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.SpriteAsHeaderHandler;
+import fr.rca.mapmaker.io.playdate.SpriteDefinitionsAsCodeHandler;
+import fr.rca.mapmaker.io.playdate.SpriteDefinitionsAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.TileMapHandler;
 import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -49,15 +51,15 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		for(final Palette palette : palettes) {
 			try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 					new FileOutputStream(
-					new File(resourceDir, "palette" + Names.normalizeName(palette, Names::toLowerCase) + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
+					new File(resourceDir, "palette-" + Names.normalizeName(palette, Names::toLowerCase) + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
 				ImageIO.write(PlaydateFormat.renderPalette((EditableImagePalette) palette), "png", outputStream);
 			}
 
 			generateFile(generatedSourcesDir, new PaletteAsHeaderHandler(), palette);
 			generateFile(generatedSourcesDir, new PaletteAsCodeHandler(), palette);
 		}
-		generateFile(generatedSourcesDir, new PaletteNameAsHeaderHandler(), palettes);
-		generateFile(generatedSourcesDir, new PaletteNameAsCodeHandler(), palettes);
+		generateFile(generatedSourcesDir, new PaletteNamesAsHeaderHandler(), palettes);
+		generateFile(generatedSourcesDir, new PaletteNamesAsCodeHandler(), palettes);
 
 		final TileMapHandler tileMapHandler = new TileMapHandler();
 		final InstancesHandler instancesHandler = new InstancesHandler();
@@ -69,17 +71,17 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 
 			try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 					new FileOutputStream(
-					new File(resourceDir, "map" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data")))) {
+					new File(resourceDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data")))) {
 				tileMapHandler.write(tileMap, outputStream);
 				instancesHandler.write(mapAndInstances.getSpriteInstances(), outputStream);
 			}
 		}
 
-		generateFile(generatedSourcesDir, new AnimationNameAsHeaderHandler(), project.getAnimationNames());
+		generateFile(generatedSourcesDir, new AnimationNamesAsHeaderHandler(), project.getAnimationNames());
 
 		final SpriteAsCodeHandler spriteAsCodeHandler = new SpriteAsCodeHandler(project.getAnimationNames());
 
-		final List<Sprite> sprites = project.getSprites();
+		final List<Sprite> sprites = PlaydateFormat.spritesForProject(project);
 		for(int index = 0; index < sprites.size(); index++) {
 			final Sprite sprite = sprites.get(index);
 			BufferedImage spriteImage = PlaydateFormat.renderSprite(sprite, project.getAnimationNames());
@@ -94,6 +96,9 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 				generateFile(generatedSourcesDir, spriteAsCodeHandler, sprite);
 			}
 		}
+
+		generateFile(generatedSourcesDir, new SpriteDefinitionsAsHeaderHandler(), sprites);
+		generateFile(generatedSourcesDir, new SpriteDefinitionsAsCodeHandler(), sprites);
 	}
 
 	private <T> void generateFile(final File generatedSourcesDir, CodeDataHandler<T> handler, final T data) throws IOException {

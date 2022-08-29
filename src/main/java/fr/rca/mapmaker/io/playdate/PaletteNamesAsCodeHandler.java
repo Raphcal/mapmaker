@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */
-public class PaletteNameAsCodeHandler extends CodeDataHandler<List<Palette>> {
+public class PaletteNamesAsCodeHandler extends CodeDataHandler<List<Palette>> {
 
 	@Override
 	public void write(List<Palette> t, OutputStream outputStream) throws IOException {
@@ -35,7 +35,7 @@ public class PaletteNameAsCodeHandler extends CodeDataHandler<List<Palette>> {
 										"        break;\n")
 						.collect(Collectors.joining())
 				+ "    default:\n"
-				+ "        playdate->system->error(\"Unsupported palette name: %d\\n\", self);\n"
+				+ "        playdate->system->error(\"Unsupported palette name: %d\", self);\n"
 				+ "        break;\n"
 				+ "    }\n"
 				+ "}\n"
@@ -46,15 +46,15 @@ public class PaletteNameAsCodeHandler extends CodeDataHandler<List<Palette>> {
 				+ "    switch (self) {\n"
 				+ t.stream()
 						.map(palette -> "    case PaletteName" + Names.normalizeName(palette, Names::toPascalCase) + ":\n" +
-										"        table = playdate->graphics->loadBitmapTable(\"palette" + Names.normalizeName(palette, Names::toLowerCase) + "\", &error);\n" +
+										"        table = playdate->graphics->loadBitmapTable(\"palette-" + Names.normalizeName(palette, Names::toLowerCase) + "\", &error);\n" +
 										"        break;\n")
 						.collect(Collectors.joining())
 				+ "    default:\n"
-				+ "        playdate->system->error(\"Unsupported palette name: %d\\n\", self);\n"
+				+ "        playdate->system->error(\"Unsupported palette name: %d\", self);\n"
 				+ "        return NULL;\n"
 				+ "    }\n"
 				+ "    if (error) {\n"
-				+ "        playdate->system->error(\"Unable to load palette: %s\\n\", error);\n"
+				+ "        playdate->system->error(\"Unable to load palette: %s\", error);\n"
 				+ "        return NULL;\n"
 				+ "    }\n"
 				+ "    return table;\n"

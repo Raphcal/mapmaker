@@ -97,7 +97,7 @@ public class PlaydateFormat extends AbstractFormat {
 				}
 			}
 
-			final AnimationNameAsHeaderHandler animationNameAsHeaderHandler = new AnimationNameAsHeaderHandler();
+			final AnimationNamesAsHeaderHandler animationNameAsHeaderHandler = new AnimationNamesAsHeaderHandler();
 			outputStream.putNextEntry(new ZipEntry(animationNameAsHeaderHandler.fileNameFor(project.getAnimationNames())));
 			animationNameAsHeaderHandler.write(project.getAnimationNames(), outputStream);
 
@@ -191,6 +191,12 @@ public class PlaydateFormat extends AbstractFormat {
 	public static List<Palette> palettesForProject(Project project) {
 		return project.getPalettes().stream()
 				.filter(palette -> palette instanceof EditableImagePalette)
+				.collect(Collectors.toList());
+	}
+
+	public static List<Sprite> spritesForProject(Project project) {
+		return project.getSprites().stream()
+				.filter(sprite -> !sprite.isEmpty())
 				.collect(Collectors.toList());
 	}
 }

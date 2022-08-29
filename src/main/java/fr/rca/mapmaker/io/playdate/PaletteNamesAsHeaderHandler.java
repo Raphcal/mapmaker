@@ -11,15 +11,13 @@ import java.util.stream.Collectors;
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */
-public class PaletteNameAsHeaderHandler extends CodeDataHandler<List<Palette>> {
+public class PaletteNamesAsHeaderHandler extends CodeDataHandler<List<Palette>> {
 
 	@Override
 	public void write(List<Palette> t, OutputStream outputStream) throws IOException {
 		outputStream.write((generateHeader(t)
 				+ "#ifndef palettenames_h\n"
 				+ "#define palettenames_h\n"
-				+ "\n"
-				+ "#include <stdio.h>\n"
 				+ "\n"
 				+ "#include \"pd_api.h\"\n"
 				+ "#include \"../lib/melice.h\"\n"
