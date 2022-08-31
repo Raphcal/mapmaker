@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -32,6 +30,7 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 			Streams.write((byte) (instance.getDirection().ordinal()), outputStream);
 			Streams.write(x, outputStream);
 			Streams.write(y, outputStream);
+			Streams.write(instance.isUnique(), outputStream);
 
 			// TODO: Écrire les variables : instance.getVariables().entrySet()
 		}
