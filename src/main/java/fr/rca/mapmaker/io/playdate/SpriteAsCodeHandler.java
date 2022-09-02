@@ -1,8 +1,10 @@
 package fr.rca.mapmaker.io.playdate;
 
+import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +34,7 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ "\n"
 				+ SpriteAsHeaderHandler.SPRITE_TYPE + " sprite" + pascalCasedName + " = {\n"
 				+ "    // Type\n"
-				+ "    " + t.getType() + ",\n"
+				+ "    " + spriteType(t.getType()) + ",\n"
 				+ "    // Palette\n"
 				+ "    NULL,\n"
 				+ "    // Animations\n"
@@ -50,7 +52,7 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 							+ "            // Frame count\n"
 							+ "            " + frameCount + ",\n"
 							+ "            // Frames\n"
-							+ "            (unsigned int[" + frameCount + "]) {" + range(frameIndex, frameCount) + "},\n"
+							+ "            (MELAnimationFrame[" + frameCount + "]) {" + framesToString(frames, frameIndex) + "},\n"
 							+ "            // Frequency\n"
 							+ "            " + animation.getFrequency() + ",\n"
 							+ "            // Type\n"
@@ -108,6 +110,53 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 		} else {
 			return "MELAnimationTypeNone";
 		}
+	}
+
+	private static String spriteType(int type) {
+		switch (type) {
+		case 0:
+			return "MELSpriteTypeDecor";
+		case 1:
+			return "MELSpriteTypePlayer";
+		case 2:
+			return "MELSpriteTypePlatform";
+		case 3:
+			return "MELSpriteTypeBonus";
+		case 4:
+			return "MELSpriteTypeDestructible";
+		case 5:
+			return "MELSpriteTypeEnemy";
+		case 6:
+			return "MELSpriteTypeCollidable";
+		case 7:
+			return "MELSpriteTypeFont";
+		default:
+				throw new UnsupportedOperationException("Unsupported sprite type: " + type);
+		}
+	}
+
+	private static String framesToString(List<TileLayer> frames, int frameIndex) {
+		StringBuilder stringBuilder = new StringBuilder();
+		for (final TileLayer frame : frames) {
+			stringBuilder.append("{")
+					.append(frameIndex++)
+					.append(", (PDRect) {");
+			HitboxLayerPlugin hitboxPlugin = frame.getPlugin(HitboxLayerPlugin.class);
+			if (hitboxPlugin != null && !isNullOrEmpty(hitboxPlugin.getHitbox())) {
+				final Rectangle hitbox = hitboxPlugin.getHitbox();
+				stringBuilder
+						.append((int) hitbox.getX()).append(", ")
+						.append((int) hitbox.getY()).append(", ")
+						.append((int) hitbox.getWidth()).append(", ")
+						.append((int) hitbox.getHeight());
+			}
+			stringBuilder.append("}},");
+		}
+		return stringBuilder.toString();
+	}
+
+	private static boolean isNullOrEmpty(Rectangle rectangle) {
+		return rectangle == null || (rectangle.getWidth() == 0 || rectangle.getHeight() == 0);
 	}
 
 }
