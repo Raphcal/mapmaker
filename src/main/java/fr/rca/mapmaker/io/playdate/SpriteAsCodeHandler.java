@@ -140,15 +140,17 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 		for (final TileLayer frame : frames) {
 			stringBuilder.append("{")
 					.append(frameIndex++)
-					.append(", (PDRect) {");
+					.append(", (MELRectangle) {");
 			HitboxLayerPlugin hitboxPlugin = frame.getPlugin(HitboxLayerPlugin.class);
 			if (hitboxPlugin != null && !isNullOrEmpty(hitboxPlugin.getHitbox())) {
 				final Rectangle hitbox = hitboxPlugin.getHitbox();
 				stringBuilder
+						.append('{')
 						.append((int) hitbox.getX()).append(", ")
-						.append((int) hitbox.getY()).append(", ")
+						.append((int) hitbox.getY()).append("}, {")
 						.append((int) hitbox.getWidth()).append(", ")
-						.append((int) hitbox.getHeight());
+						.append((int) hitbox.getHeight())
+						.append('}');
 			}
 			stringBuilder.append("}},");
 		}
