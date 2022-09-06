@@ -35,6 +35,8 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ SpriteAsHeaderHandler.SPRITE_TYPE + " sprite" + pascalCasedName + " = {\n"
 				+ "    // Type\n"
 				+ "    " + spriteType(t.getType()) + ",\n"
+				+ "    // Size\n"
+				+ "    (MELSize) {" + t.getWidth() + ", " + t.getHeight() + "},\n"
 				+ "    // Palette\n"
 				+ "    NULL,\n"
 				+ "    // Animations\n"
@@ -146,8 +148,8 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				final Rectangle hitbox = hitboxPlugin.getHitbox();
 				stringBuilder
 						.append('{')
-						.append((int) hitbox.getX()).append(", ")
-						.append((int) hitbox.getY()).append("}, {")
+						.append((int) hitbox.getX() - frame.getWidth() / 2 + hitbox.getWidth() / 2).append(", ")
+						.append((int) hitbox.getY() - frame.getHeight() / 2 + hitbox.getHeight() / 2).append("}, {")
 						.append((int) hitbox.getWidth()).append(", ")
 						.append((int) hitbox.getHeight())
 						.append('}');
