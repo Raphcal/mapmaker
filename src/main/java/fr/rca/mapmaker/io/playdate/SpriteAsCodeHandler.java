@@ -35,6 +35,8 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ SpriteAsHeaderHandler.SPRITE_TYPE + " sprite" + pascalCasedName + " = {\n"
 				+ "    // Type\n"
 				+ "    " + spriteType(t.getType()) + ",\n"
+				+ "    // Constructor\n"
+				+ "    NULL,\n"
 				+ "    // Size\n"
 				+ "    (MELSize) {" + t.getWidth() + ", " + t.getHeight() + "},\n"
 				+ "    // Palette\n"
