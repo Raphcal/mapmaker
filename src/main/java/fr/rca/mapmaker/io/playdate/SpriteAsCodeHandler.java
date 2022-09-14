@@ -142,9 +142,9 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 	private static String framesToString(List<TileLayer> frames, int frameIndex) {
 		StringBuilder stringBuilder = new StringBuilder();
 		for (final TileLayer frame : frames) {
-			stringBuilder.append("{")
+			stringBuilder.append("{ .atlasIndex = ")
 					.append(frameIndex++)
-					.append(", (MELRectangle) {");
+					.append(", .hitbox = {");
 			HitboxLayerPlugin hitboxPlugin = frame.getPlugin(HitboxLayerPlugin.class);
 			if (hitboxPlugin != null && !isNullOrEmpty(hitboxPlugin.getHitbox())) {
 				final Rectangle hitbox = hitboxPlugin.getHitbox();
