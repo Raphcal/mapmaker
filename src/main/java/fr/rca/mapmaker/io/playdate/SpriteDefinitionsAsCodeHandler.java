@@ -44,7 +44,7 @@ public class SpriteDefinitionsAsCodeHandler extends CodeDataHandler<List<Sprite>
 				+ "    switch (self) {\n"
 				+ t.stream()
 						.map(sprite -> "    case SpriteName" + Names.normalizeName(sprite, Names::toPascalCase) + ":\n" +
-										"        table = playdate->graphics->loadBitmapTable(\"sprite-" + Names.normalizeName(sprite, Names::toLowerCase) + "\", &error);\n" +
+										"        table = playdate->graphics->loadBitmapTable(\"sprite-" + Names.normalizeName(sprite, Names::toSnakeCase) + "\", &error);\n" +
 										"        break;\n")
 						.collect(Collectors.joining())
 				+ "    default:\n"
