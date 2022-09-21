@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +21,9 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 	public void write(List<Instance> t, OutputStream outputStream) throws IOException {
 		Streams.write(t.size(), outputStream);
 
-		for (Instance instance : t) {
+		ArrayList<Instance> instances = new ArrayList<>(t);
+		instances.sort((lhs, rhs) -> Integer.compare(lhs.getX(), rhs.getX()));
+		for (Instance instance : instances) {
 			final Point point = instance.getPoint();
 			final Sprite sprite = instance.getSprite();
 			final int x = point.x + sprite.getWidth() / 2;
