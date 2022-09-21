@@ -24,7 +24,9 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -137,17 +139,14 @@ public class PlaydateFormat extends AbstractFormat {
 	}
 
 	public static BufferedImage renderSprite(Sprite sprite, List<String> animationNames) {
-		int frameCount = 0;
-		for (final String animationName : animationNames) {
-			final Animation animation = sprite.findByName(animationName);
-			if (animation == null) {
-				continue;
-			}
-			for (double angle : animation.getAnglesWithValue()) {
-				final List<TileLayer> frames = animation.getFrames(angle);
-				frameCount += frames.size();
-			}
-		}
+		final int frameCount = (int) animationNames.stream()
+				.map(sprite::findByName)
+				.filter(Objects::nonNull)
+				.flatMap(animation -> animation.getAnglesWithValue().stream()
+					.map(animation::getFrames))
+				.flatMap(List::stream)
+				.distinct()
+				.count();
 
 		if (frameCount == 0) {
 			return null;
@@ -164,7 +163,7 @@ public class PlaydateFormat extends AbstractFormat {
 
 		final ColorPalette palette = sprite.getPalette();
 
-		int frameIndex = 0;
+		final HashMap<TileLayer, Integer> indexForTile = new HashMap<>(frameCount);
 		for (final String animationName : animationNames) {
 			final Animation animation = sprite.findByName(animationName);
 			if (animation == null) {
@@ -172,6 +171,11 @@ public class PlaydateFormat extends AbstractFormat {
 			}
 			for (double angle : animation.getAnglesWithValue()) {
 				for (TileLayer frame : animation.getFrames(angle)) {
+					Integer frameIndex = indexForTile.get(frame);
+					if (frameIndex == null) {
+						frameIndex = indexForTile.size();
+						indexForTile.put(frame, frameIndex);
+					}
 					int originY = (frameIndex / tileCountPerLine) * spriteHeight;
 					int originX = (frameIndex % tileCountPerLine) * spriteWidth;
 					for (int y = 0; y < frame.getHeight(); y++) {
@@ -179,7 +183,6 @@ public class PlaydateFormat extends AbstractFormat {
 							palette.paintTile(graphics, frame.getTile(x, y), originX + x, originY + y, 1);
 						}
 					}
-					frameIndex++;
 				}
 			}
 		}

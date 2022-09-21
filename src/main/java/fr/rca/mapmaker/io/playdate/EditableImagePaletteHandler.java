@@ -10,9 +10,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Écrit les hitbox de toutes les entrées d'une palette.
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */
+@Deprecated
 public class EditableImagePaletteHandler implements DataHandler<EditableImagePalette> {
 	@Override
 	public void write(EditableImagePalette t, OutputStream outputStream) throws IOException {

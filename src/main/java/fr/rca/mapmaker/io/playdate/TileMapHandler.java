@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 /**
+ * Écrit une carte dans un fichier binaire avec toutes ses couches de tuiles.
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */

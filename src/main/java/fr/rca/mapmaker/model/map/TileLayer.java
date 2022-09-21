@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class TileLayer implements DataLayer, HasSizeChangeListeners, HasPropertyChangeListeners, HasLayerPlugin {
 
@@ -151,6 +152,50 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		this.height = height;
 		this.tiles = data;
 	}
+
+	@Override
+	public int hashCode() {
+		int hash = 3;
+		hash = 59 * hash + this.width;
+		hash = 59 * hash + this.height;
+		hash = 59 * hash + Arrays.hashCode(this.tiles);
+		hash = 59 * hash + Objects.hashCode(this.scrollRate);
+		hash = 59 * hash + (this.solid ? 1 : 0);
+		hash = 59 * hash + Objects.hashCode(this.plugins);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final TileLayer other = (TileLayer) obj;
+		if (this.width != other.width) {
+			return false;
+		}
+		if (this.height != other.height) {
+			return false;
+		}
+		if (this.solid != other.solid) {
+			return false;
+		}
+		if (!Arrays.equals(this.tiles, other.tiles)) {
+			return false;
+		}
+		if (!Objects.equals(this.scrollRate, other.scrollRate)) {
+			return false;
+		}
+		return Objects.equals(this.plugins, other.plugins);
+	}
+
+	
 
 	private void copyTileLayerFields(TileLayer other) {
 		this.name = other.name;

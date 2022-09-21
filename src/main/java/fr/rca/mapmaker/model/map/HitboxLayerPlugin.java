@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.model.map;
 
 import java.awt.Rectangle;
+import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -13,6 +14,28 @@ public class HitboxLayerPlugin implements LayerPlugin {
     public static final String NAME = "hitbox";
 	
 	private Rectangle hitbox;
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 79 * hash + Objects.hashCode(this.hitbox);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final HitboxLayerPlugin other = (HitboxLayerPlugin) obj;
+		return Objects.equals(this.hitbox, other.hitbox);
+	}
 
 	@Override
 	public LayerPlugin copy() {

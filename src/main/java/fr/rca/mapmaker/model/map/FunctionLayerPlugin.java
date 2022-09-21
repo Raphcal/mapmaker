@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.model.map;
 
+import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -28,6 +29,32 @@ public class FunctionLayerPlugin implements LayerPlugin {
 		final FunctionLayerPlugin plugin = new FunctionLayerPlugin(function);
 		plugin.setName(Y_FUNCTION_NAME);
 		return plugin;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 53 * hash + Objects.hashCode(this.name);
+		hash = 53 * hash + Objects.hashCode(this.function);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final FunctionLayerPlugin other = (FunctionLayerPlugin) obj;
+		if (!Objects.equals(this.name, other.name)) {
+			return false;
+		}
+		return Objects.equals(this.function, other.function);
 	}
 
 	@Override

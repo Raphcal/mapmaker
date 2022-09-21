@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -31,12 +32,13 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ "#include \"sprite" + Names.normalizeName(t, Names::toLowerCase) + ".h\"\n"
 				+ "\n"
 				+ "#include \"../lib/melice.h\"\n"
+				+ (t.getScriptFile() != null ? ("#include \"../src/" + Names.toSnakeCase(t.getScriptFile()) + ".h\"\n") : "")
 				+ "\n"
 				+ SpriteAsHeaderHandler.SPRITE_TYPE + " sprite" + pascalCasedName + " = {\n"
 				+ "    // Type\n"
 				+ "    " + spriteType(t.getType()) + ",\n"
 				+ "    // Constructor\n"
-				+ "    NULL,\n"
+				+ "    " + (t.getScriptFile() != null ? (Names.toSnakeCase(t.getScriptFile()) + "_constructor") : "NULL") + ",\n"
 				+ "    // Size\n"
 				+ "    (MELSize) {" + t.getWidth() + ", " + t.getHeight() + "},\n"
 				+ "    // Palette\n"
@@ -44,7 +46,7 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ "    // Animations\n"
 				+ "    (MELAnimationDefinition * _Nullable [" + (animationNames.size() * ANGLES.length) + "]) {\n").getBytes(StandardCharsets.UTF_8));
 
-		int frameIndex = 0;
+		final HashMap<TileLayer, Integer> indexForTile = new HashMap<>();
 		for (final String animationName : animationNames) {
 			final Animation animation = t.findByName(animationName);
 			outputStream.write(("        // " + Names.toPascalCase(animationName) + "\n").getBytes(StandardCharsets.UTF_8));
@@ -56,13 +58,12 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 							+ "            // Frame count\n"
 							+ "            " + frameCount + ",\n"
 							+ "            // Frames\n"
-							+ "            (MELAnimationFrame[" + frameCount + "]) {" + framesToString(frames, frameIndex) + "},\n"
+							+ "            (MELAnimationFrame[" + frameCount + "]) {" + framesToString(frames, indexForTile) + "},\n"
 							+ "            // Frequency\n"
 							+ "            " + animation.getFrequency() + ",\n"
 							+ "            // Type\n"
 							+ "            " + animationType(frameCount, animation.isLooping()) + "\n"
 							+ "        }),\n").getBytes(StandardCharsets.UTF_8));
-					frameIndex += frameCount;
 				} else {
 					outputStream.write("        NULL,\n".getBytes(StandardCharsets.UTF_8));
 				}
@@ -139,14 +140,23 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 		}
 	}
 
-	private static String framesToString(List<TileLayer> frames, int frameIndex) {
+	private static String framesToString(List<TileLayer> frames, HashMap<TileLayer, Integer> indexForTile) {
 		StringBuilder stringBuilder = new StringBuilder();
+		Integer frameIndex = null;
 		for (final TileLayer frame : frames) {
+			if (frameIndex != null) {
+				stringBuilder.append(", ");
+			}
+			frameIndex = indexForTile.get(frame);
+			if (frameIndex == null) {
+				frameIndex = indexForTile.size();
+				indexForTile.put(frame, frameIndex);
+			}
 			stringBuilder.append("{ .atlasIndex = ")
-					.append(frameIndex++)
-					.append(", .hitbox = {");
+					.append(frameIndex);
 			HitboxLayerPlugin hitboxPlugin = frame.getPlugin(HitboxLayerPlugin.class);
 			if (hitboxPlugin != null && !isNullOrEmpty(hitboxPlugin.getHitbox())) {
+				stringBuilder.append(", .hitbox = {");
 				final Rectangle hitbox = hitboxPlugin.getHitbox();
 				stringBuilder
 						.append('{')
@@ -154,9 +164,9 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 						.append((int) hitbox.getY() - frame.getHeight() / 2 + hitbox.getHeight() / 2).append("}, {")
 						.append((int) hitbox.getWidth()).append(", ")
 						.append((int) hitbox.getHeight())
-						.append('}');
+						.append("}}");
 			}
-			stringBuilder.append("}},");
+			stringBuilder.append(" }");
 		}
 		return stringBuilder.toString();
 	}
