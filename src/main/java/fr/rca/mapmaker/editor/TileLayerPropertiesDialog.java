@@ -78,6 +78,7 @@ public class TileLayerPropertiesDialog extends javax.swing.JDialog {
         scrollRateTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
 
         jLabel1.setText(language.getString("dialog.layer.scrollrate")); // NOI18N
 

@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JComponent;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = false)
 public class Instance extends JComponent {
 
 	private static final int TILE_SIZE = 1;
@@ -47,7 +49,7 @@ public class Instance extends JComponent {
 	/**
 	 * Numéro de la couche où est affiché l'instance du sprite.
 	 */
-	private int layer;
+	private int zIndex;
 	private boolean unique;
 
 	private double zoom = 1.0;
@@ -75,12 +77,13 @@ public class Instance extends JComponent {
 		updateSprite();
 	}
 
-	public Instance(int index, int x, int y, boolean unique, String script) {
+	public Instance(int index, int x, int y, boolean unique, String script, int zIndex) {
 		this.id = Random.nextLong();
 		this.index = index;
 		this.point = new Point(x, y);
 		this.unique = unique;
 		this.script = script;
+		this.zIndex = zIndex;
 		updateSprite();
 	}
 

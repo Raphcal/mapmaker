@@ -21,27 +21,32 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.border.LineBorder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
+@Getter @Setter
 public class SpriteTool extends MouseAdapter implements Tool {
+
 	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language"); // NO18N
-	
+
 	private Project project;
 	private JComponent spriteLayer;
 	private Grid spritePaletteGrid;
 	private List<Instance> instances;
+	private int zIndex;
 	private Map<Instance, MouseAdapter> mouseAdapters;
 	private double zoom;
-	
+
 	private final InstanceInspector inspector = new InstanceInspector(null, false);
 
 	public SpriteTool() {
 		this(null, null, null);
 	}
-	
+
 	public SpriteTool(JComponent spriteLayer, Grid spritePaletteGrid, Project project) {
 		this.spriteLayer = spriteLayer;
 		this.spritePaletteGrid = spritePaletteGrid;
@@ -59,25 +64,25 @@ public class SpriteTool extends MouseAdapter implements Tool {
 
 	public void setProject(Project project) {
 		this.project = project;
-		
-		if(project != null) {
+
+		if (project != null) {
 			setInstances(project.getInstances());
 		} else {
 			setInstances(new ArrayList<Instance>());
 		}
 	}
-	
+
 	public void setInstances(List<Instance> instances) {
-		if(this.instances != null) {
-			for(final Instance instance : this.instances) {
+		if (this.instances != null) {
+			for (final Instance instance : this.instances) {
 				unregisterInsance(instance);
 			}
 		}
-		
+
 		this.instances = instances;
-		
-		if(instances != null) {
-			for(final Instance instance : instances) {
+
+		if (instances != null) {
+			for (final Instance instance : instances) {
 				registerInstance(instance);
 			}
 		}
@@ -87,29 +92,25 @@ public class SpriteTool extends MouseAdapter implements Tool {
 		this.zoom = zoom;
 	}
 
-	public double getZoom() {
-		return zoom;
-	}
-	
 	public SpritePalette getPalette() {
-		if(spritePaletteGrid != null) {
+		if (spritePaletteGrid != null) {
 			return (SpritePalette) spritePaletteGrid.getTileMap().getPalette();
 		} else {
 			return null;
 		}
 	}
-	
+
 	private void registerInstance(final Instance instance) {
 		final MouseAdapter adapter = createMouseAdapter(instance);
 		instance.addMouseListener(adapter);
 		instance.addMouseMotionListener(adapter);
 		instance.setZoom(zoom);
 		instance.setComponentPopupMenu(createPopupMenu(instance));
-		
+
 		spriteLayer.add(instance);
 		mouseAdapters.put(instance, adapter);
 	}
-	
+
 	private void unregisterInsance(final Instance instance) {
 		instance.removeMouseListener(mouseAdapters.get(instance));
 		instance.removeMouseMotionListener(mouseAdapters.remove(instance));
@@ -119,10 +120,10 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		final Sprite sprite = getPalette().getSelectedSprite();
-		if(sprite != null) {
+		if (sprite != null) {
 			final int mouseX = (int) ((double) e.getX() / zoom);
 			final int mouseY = (int) ((double) e.getY() / zoom);
-			
+
 			final int width = sprite.getWidth();
 			final int height = sprite.getHeight();
 
@@ -130,24 +131,25 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			final int y = (mouseY / height) * height;
 
 			final Instance instance = new Instance(getPalette().getSelectedTile(), project, new Point(x, y));
+			instance.setZIndex(zIndex);
 			instances.add(instance);
-			
+
 			registerInstance(instance);
 
 			spriteLayer.repaint(instance.getBounds());
 		}
 	}
-	
+
 	@Override
 	public void setup() {
 		// Pas d'action.
 	}
-	
+
 	@Override
 	public void reset() {
 		// Pas d'action.
 	}
-	
+
 	private MouseAdapter createMouseAdapter(final Instance instance) {
 		return new MouseAdapter() {
 			private Point startPoint;
@@ -162,17 +164,17 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			public void mouseExited(MouseEvent e) {
 				instance.setBorder(null);
 			}
-			
+
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				if(startPoint == null) {
+				if (startPoint == null) {
 					startPoint = e.getLocationOnScreen();
 					originalPoint = instance.getPoint();
 				}
-				
+
 				final int translationX = (int) ((double) (e.getXOnScreen() - startPoint.getX()) / zoom);
 				final int translationY = (int) ((double) (e.getYOnScreen() - startPoint.getY()) / zoom);
-				
+
 				instance.setPoint(new Point(originalPoint.x + translationX, originalPoint.y + translationY));
 				instance.redraw();
 			}
@@ -182,7 +184,7 @@ public class SpriteTool extends MouseAdapter implements Tool {
 				inspector.setInstance(instance);
 				maybeShowPopupMenu(instance, e);
 			}
-			
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				maybeShowPopupMenu(instance, e);
@@ -196,13 +198,13 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			}
 		};
 	}
-	
+
 	private void maybeShowPopupMenu(Instance instance, MouseEvent e) {
-        if (e.isPopupTrigger()) {
-            instance.getComponentPopupMenu().show(instance, e.getX(), e.getY());
-        }
-    }
-	
+		if (e.isPopupTrigger()) {
+			instance.getComponentPopupMenu().show(instance, e.getX(), e.getY());
+		}
+	}
+
 	private JPopupMenu createPopupMenu(final Instance instance) {
 		final JMenuItem inspectMenuItem = new JMenuItem(LANGUAGE.getString("inspector.inspect"));
 		inspectMenuItem.addActionListener(new ActionListener() {
@@ -213,7 +215,7 @@ public class SpriteTool extends MouseAdapter implements Tool {
 				inspector.setVisible(true);
 			}
 		});
-		
+
 		final JMenuItem removeMenuItem = new JMenuItem(LANGUAGE.getString("popupmenu.instance.remove"));
 		removeMenuItem.addActionListener(new ActionListener() {
 
@@ -225,7 +227,7 @@ public class SpriteTool extends MouseAdapter implements Tool {
 				spriteLayer.repaint(instance.getBounds());
 			}
 		});
-		
+
 		final JPopupMenu popupMenu = new JPopupMenu();
 		popupMenu.add(inspectMenuItem);
 		popupMenu.add(removeMenuItem);

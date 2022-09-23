@@ -15,21 +15,24 @@ import java.io.OutputStream;
 public class InstanceDataHandler implements DataHandler<Instance>, HasVersion {
 
 	private int version;
-	
+
 	@Override
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	
+
 	@Override
 	public void write(Instance t, OutputStream outputStream) throws IOException {
 		Streams.write(t.getPoint().x, outputStream);
 		Streams.write(t.getPoint().y, outputStream);
 		Streams.write(t.getIndex(), outputStream);
-		
-		if(version >= InternalFormat.VERSION_4) {
+
+		if (version >= InternalFormat.VERSION_4) {
 			Streams.write(t.isUnique(), outputStream);
 			Streams.writeNullable(t.getScript(), outputStream);
+		}
+		if (version >= InternalFormat.VERSION_14) {
+			Streams.write(t.getZIndex(), outputStream);
 		}
 	}
 
@@ -40,16 +43,21 @@ public class InstanceDataHandler implements DataHandler<Instance>, HasVersion {
 		final int index = Streams.readInt(inputStream);
 		final boolean unique;
 		final String script;
-		
-		if(version >= InternalFormat.VERSION_4) {
+		final int zIndex;
+
+		if (version >= InternalFormat.VERSION_4) {
 			unique = Streams.readBoolean(inputStream);
 			script = Streams.readNullableString(inputStream);
 		} else {
 			unique = false;
 			script = null;
 		}
-		
-		return new Instance(index, x, y, unique, script);
+
+		zIndex = version >= InternalFormat.VERSION_14
+				? Streams.readInt(inputStream)
+				: 0;
+
+		return new Instance(index, x, y, unique, script, zIndex);
 	}
-	
+
 }

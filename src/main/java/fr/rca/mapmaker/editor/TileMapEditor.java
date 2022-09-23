@@ -44,38 +44,38 @@ import javax.swing.JToggleButton;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class TileMapEditor extends javax.swing.JDialog {
-	
+
 	private static final int PALETTE_WIDTH = 8;
-	
+
 	private static TileLayer clipboardData;
 	private static LayerPlugin pluginClipboardData;
 
 	private final PasteSelectionTool pasteSelectionTool;
-	
+
 	private final List<ActionListener> listeners;
 	private final List<DataLayer> layers;
 	private TileLayer[] tiles;
 	private int layerIndex;
-	
+
 	private DataLayer editedLayer;
-	
+
 	/**
 	 * Créé un nouvel éditeur de dessin.
-	 * 
+	 *
 	 * @param parent Fenêtre parente.
 	 */
 	public TileMapEditor(java.awt.Frame parent) {
 		super(parent, true);
 		initComponents();
-		
+
 		treeToggleButton.setVisible(false);
 		nextStepTreeButton.setVisible(false);
-		
+
 		listeners = new ArrayList<ActionListener>();
 		layers = new ArrayList<DataLayer>();
-		
+
 		paletteGrid.setTileMap(colorPaletteMap);
-		
+
 		pasteSelectionTool = new PasteSelectionTool(drawGrid);
 	}
 
@@ -84,74 +84,74 @@ public class TileMapEditor extends javax.swing.JDialog {
 		drawLayer.restoreData(layer);
 		memento.clear();
 		layers.clear();
-		
+
 		setPalette(palette);
 		widthTextField.setText(Integer.toString(layer.getWidth()));
 		heightTextField.setText(Integer.toString(layer.getHeight()));
-		
+
 		previousLayerButton.setVisible(false);
 		nextLayerButton.setVisible(false);
 		hitboxToggleButton.setVisible(isHitboxAvailable());
-		
-        final FunctionLayerPlugin plugin = drawLayer.getPlugin(FunctionLayerPlugin.class);
+
+		final FunctionLayerPlugin plugin = drawLayer.getPlugin(FunctionLayerPlugin.class);
 		if (plugin != null) {
 			final String function = plugin.getFunction();
 			if (function != null) {
 				drawMap.add(Function.asTileLayer(function, drawLayer.getWidth(), drawLayer.getHeight()));
 			}
 		}
-		
+
 		pack();
 	}
-	
+
 	public void setLayers(List<TileLayer> layers, int index, ColorPalette palette) {
 		this.layers.clear();
 		this.layers.addAll(layers);
 		this.editedLayer = null;
-		
+
 		tiles = new TileLayer[layers.size()];
-		
+
 		setPalette(palette);
 		setLayerIndex(index);
-		
+
 		previousLayerButton.setVisible(true);
 		nextLayerButton.setVisible(true);
-		
+
 		pack();
 	}
-	
+
 	public void setPalette(ColorPalette palette) {
 		drawMap.setPalette(palette);
 		previewMap.setPalette(palette);
 		colorPaletteMap.setPalette(palette);
-		
+
 		alphaPaletteGrid.setVisible(palette instanceof AlphaColorPalette);
 	}
 
 	public void setLayerIndex(int layerIndex) {
 		copyDrawLayerDataToCurrentTile();
-		
+
 		this.layerIndex = layerIndex;
-		
-		if(tiles[layerIndex] == null) {
+
+		if (tiles[layerIndex] == null) {
 			final DataLayer source = layers.get(layerIndex);
 			tiles[layerIndex] = new TileLayer(source);
 		}
-		
+
 		final DataLayer layer = tiles[layerIndex];
-		
+
 		drawLayer.restoreData(layer);
 		memento.clear();
-		
+
 		widthTextField.setText(Integer.toString(layer.getWidth()));
 		heightTextField.setText(Integer.toString(layer.getHeight()));
-		
+
 		hitboxToggleButton.setVisible(isHitboxAvailable());
-		
+
 		firePropertyChange("previousAvailable", null, isPreviousAvailable());
 		firePropertyChange("nextAvailable", null, isNextAvailable());
 	}
-	
+
 	public boolean isList() {
 		return editedLayer == null;
 	}
@@ -159,11 +159,11 @@ public class TileMapEditor extends javax.swing.JDialog {
 	public boolean isPreviousAvailable() {
 		return layers != null && layerIndex > 0;
 	}
-	
+
 	public boolean isNextAvailable() {
 		return layers != null && layerIndex < layers.size() - 1;
 	}
-	
+
 	public boolean isClipboardFull() {
 		if (!isEditingPlugin()) {
 			return clipboardData != null;
@@ -171,19 +171,19 @@ public class TileMapEditor extends javax.swing.JDialog {
 			return pluginClipboardData != null;
 		}
 	}
-	
+
 	public boolean isHitboxAvailable() {
 		return drawLayer.getPlugin(HitboxLayerPlugin.class) != null;
 	}
-	
+
 	public boolean isEditingPlugin() {
 		return hitboxToggleButton.isSelected();
 	}
-	
+
 	public void addActionListener(ActionListener listener) {
 		listeners.add(listener);
 	}
-	
+
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -702,15 +702,15 @@ public class TileMapEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_paletteGridMouseClicked
 
     private void paletteGridMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_paletteGridMouseDragged
-        selectColor(evt);
+		selectColor(evt);
     }//GEN-LAST:event_paletteGridMouseDragged
 
     private void alphaPaletteGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_alphaPaletteGridMouseClicked
-        selectAlpha(evt);
+		selectAlpha(evt);
     }//GEN-LAST:event_alphaPaletteGridMouseClicked
 
     private void alphaPaletteGridMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_alphaPaletteGridMouseDragged
-        selectAlpha(evt);
+		selectAlpha(evt);
     }//GEN-LAST:event_alphaPaletteGridMouseDragged
 
     private void drawGridComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_drawGridComponentResized
@@ -730,21 +730,21 @@ public class TileMapEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-		if(editedLayer != null) {
+		if (editedLayer != null) {
 			editedLayer.restoreData(drawLayer);
 		}
-		if(!layers.isEmpty()) {
+		if (!layers.isEmpty()) {
 			copyDrawLayerDataToCurrentTile();
-			
-			for(int index = 0; index < layers.size(); index++) {
-				if(tiles[index] != null) {
+
+			for (int index = 0; index < layers.size(); index++) {
+				if (tiles[index] != null) {
 					final TileLayer layer = tiles[index];
 					layers.get(index).restoreData(layer);
 				}
 			}
 		}
 		setVisible(false);
-		for(final ActionListener listener : listeners) {
+		for (final ActionListener listener : listeners) {
 			listener.actionPerformed(evt);
 		}
     }//GEN-LAST:event_okButtonActionPerformed
@@ -754,25 +754,25 @@ public class TileMapEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_previousLayerButtonActionPerformed
 
     private void nextLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextLayerButtonActionPerformed
-        setLayerIndex(layerIndex + 1);
+		setLayerIndex(layerIndex + 1);
     }//GEN-LAST:event_nextLayerButtonActionPerformed
 
     private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
 		final boolean oldClipboardFull = isClipboardFull();
-		
+
 		if (!isEditingPlugin()) {
 			final TileLayer source;
-			if(drawGrid.getOverlay().isEmpty()) {
+			if (drawGrid.getOverlay().isEmpty()) {
 				source = drawLayer;
 			} else {
 				source = drawGrid.getOverlay();
 			}
 			clipboardData = new TileLayer(source);
-			
+
 		} else {
 			pluginClipboardData = LayerPlugins.copyOf(drawLayer.getPlugin(HitboxLayerPlugin.class));
 		}
-		
+
 		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());
     }//GEN-LAST:event_copyButtonActionPerformed
 
@@ -798,19 +798,19 @@ public class TileMapEditor extends javax.swing.JDialog {
 
     private void rotateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateButtonActionPerformed
 		final String value = JOptionPane.showInputDialog("Angle de la rotation (0 à 360) :");
-		if(value != null) {
+		if (value != null) {
 			try {
 				final int degree = Integer.parseInt(value);
-				
-				if(degree % 90 == 0) {
+
+				if (degree % 90 == 0) {
 					drawLayer.rotate90(degree / 90);
-					
+
 				} else {
 					// Rotation de l'angle converti en radian.
 					drawLayer.rotate(degree * Math.PI / 180.0);
 				}
-				
-			} catch(NumberFormatException e) {
+
+			} catch (NumberFormatException e) {
 				// Ignoré.
 			}
 		}
@@ -834,45 +834,45 @@ public class TileMapEditor extends javax.swing.JDialog {
 		final Point point = paletteGrid.getLayerLocation(event.getX(), event.getY());
 		colorPaletteMap.setSelection(point);
 	}
-	
+
 	private void selectAlpha(MouseEvent event) {
 		final Point point = alphaPaletteGrid.getLayerLocation(event.getX(), event.getY());
 		alphaPaletteMap.setSelection(point);
-		
+
 		final Palette palette = colorPaletteMap.getPalette();
-		if(palette instanceof AlphaColorPalette) {
-			((AlphaColorPalette)palette).setSelectedAlpha(alphaPalette.getSelectedTile());
+		if (palette instanceof AlphaColorPalette) {
+			((AlphaColorPalette) palette).setSelectedAlpha(alphaPalette.getSelectedTile());
 		}
 	}
-	
+
 	private void wireTool(JToggleButton button, final Tool tool) {
 		button.addItemListener(new ItemListener() {
-			
+
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				if(e.getStateChange() == ItemEvent.SELECTED) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
 					drawGrid.addMouseListener(tool);
 					drawGrid.addMouseMotionListener(tool);
-					
+
 					tool.setup();
 					firePropertyChange("clipboardFull", null, isClipboardFull());
-					
+
 				} else {
 					drawGrid.removeMouseListener(tool);
 					drawGrid.removeMouseMotionListener(tool);
-					
+
 					tool.reset();
 				}
 			}
 		});
 	}
-	
+
 	private void copyDrawLayerDataToCurrentTile() {
-		if(layerIndex >= 0 && layerIndex < tiles.length && tiles[layerIndex] != null) {
+		if (layerIndex >= 0 && layerIndex < tiles.length && tiles[layerIndex] != null) {
 			tiles[layerIndex].restoreData(drawLayer);
 		}
 	}
-	
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.rca.mapmaker.model.palette.ColorPalette alphaPalette;
     private fr.rca.mapmaker.ui.Grid alphaPaletteGrid;

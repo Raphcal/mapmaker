@@ -80,7 +80,16 @@ public class InternalFormat extends AbstractFormat {
 	 */
 	public static final int VERSION_13 = 13;
 
-	public static final int LAST_VERSION = VERSION_13;
+	/**
+	 * Version 14. Depuis le 23/09/2022.
+	 * <p/>
+	 * Ajoute les fonctionnalités suivantes :<ul>
+	 * <li>Ajout d'un zIndex pour les instances</li>
+	 * </ul>
+	 */
+	public static final int VERSION_14 = 14;
+
+	public static final int LAST_VERSION = VERSION_14;
 	public static final String HEADER_LAST_VERSION = "MM" + LAST_VERSION;
 
 	public InternalFormat() {

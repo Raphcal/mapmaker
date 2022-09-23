@@ -13,10 +13,10 @@ import java.util.Map;
 public class InstanceInspector extends javax.swing.JDialog {
 
 	private Instance instance;
-	
+
 	public InstanceInspector() {
 	}
-	
+
 	/**
 	 * Creates new form TileInspector
 	 */
@@ -24,16 +24,16 @@ public class InstanceInspector extends javax.swing.JDialog {
 		super(parent, modal);
 		getRootPane().putClientProperty("Window.style", "small");
 		initComponents();
-		
+
 	}
-	
+
 	public void setInstance(Instance instance) {
 		final Sprite sprite = instance.getSprite();
-		if(sprite != null) {
+		if (sprite != null) {
 			tileIndexLabel.setText("Instance de " + sprite.getName());
 
 			final TileLayer defaultLayer = sprite.getDefaultLayer(instance.getProject().getAnimationNames());
-			if(defaultLayer != null && sprite.getPalette() != null) {
+			if (defaultLayer != null && sprite.getPalette() != null) {
 				tileGrid.setTileMap(new TileMap(defaultLayer, sprite.getPalette()));
 			} else {
 				tileGrid.setTileMap(new TileMap());
@@ -43,9 +43,9 @@ public class InstanceInspector extends javax.swing.JDialog {
 			tileIndexLabel.setText("Instance");
 			tileGrid.setTileMap(new TileMap());
 		}
-		
+
 		detailLabel.setText(instance.getX() + " x " + instance.getY());
-		
+
 		final Instance oldInstance = this.instance;
 		this.instance = instance;
 		firePropertyChange("instance", oldInstance, instance);
@@ -54,12 +54,12 @@ public class InstanceInspector extends javax.swing.JDialog {
 	public Instance getInstance() {
 		return instance;
 	}
-	
+
 	public Map<String, String> getVariables() {
 		// TODO: Parser simplement le textarea pour déterminer les variables.
 		return null;
 	}
-	
+
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -82,8 +82,11 @@ public class InstanceInspector extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         uniqueCheckBox = new javax.swing.JCheckBox();
         uniqueCheckBox.putClientProperty("JComponent.sizeVariant", "small");
+        nameTextField = new javax.swing.JTextField();
+        nameLabel = new javax.swing.JLabel();
 
         setTitle("Infos sur une instance");
+        setAlwaysOnTop(true);
         setBackground(new java.awt.Color(236, 236, 236));
         setMinimumSize(new java.awt.Dimension(240, 0));
         setName("tileInspector"); // NOI18N
@@ -128,6 +131,14 @@ public class InstanceInspector extends javax.swing.JDialog {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${instance.unique}"), uniqueCheckBox, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${instance.ZIndex}"), nameTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        nameLabel.setFont(nameLabel.getFont().deriveFont(nameLabel.getFont().getSize()-1f));
+        nameLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        nameLabel.setText("zIndex :");
+        nameLabel.setToolTipText("");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -135,8 +146,8 @@ public class InstanceInspector extends javax.swing.JDialog {
             .addComponent(hitboxSeparator)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(tileGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -152,7 +163,11 @@ public class InstanceInspector extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(detailLabel)
                             .addComponent(detailLabel1)))
-                    .addComponent(hitboxLabel))
+                    .addComponent(hitboxLabel)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nameTextField)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -177,10 +192,14 @@ public class InstanceInspector extends javax.swing.JDialog {
                 .addComponent(hitboxSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(uniqueCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameLabel)
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hitboxLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -198,6 +217,8 @@ public class InstanceInspector extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JTextField nameTextField;
     private fr.rca.mapmaker.ui.Grid tileGrid;
     private javax.swing.JLabel tileIndexLabel;
     private javax.swing.JCheckBox uniqueCheckBox;

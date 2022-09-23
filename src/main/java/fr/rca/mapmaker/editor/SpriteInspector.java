@@ -123,6 +123,7 @@ public class SpriteInspector extends javax.swing.JDialog {
         globalCheckBox.putClientProperty("JComponent.sizeVariant", "small");
 
         setTitle("Infos sur la tuile n°12");
+        setAlwaysOnTop(true);
         setBackground(new java.awt.Color(236, 236, 236));
         setMinimumSize(new java.awt.Dimension(240, 0));
         setName("tileInspector"); // NOI18N
