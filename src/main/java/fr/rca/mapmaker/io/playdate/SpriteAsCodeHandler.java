@@ -77,7 +77,7 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ "    const char *error = NULL;\n"
 				+ "    sprite" + pascalCasedName + ".palette = playdate->graphics->loadBitmapTable(\"sprite-" + Names.normalizeName(t, Names::toSnakeCase) + "\", &error);\n"
 				+ "    if (error) {\n"
-				+ "        playdate->system->logToConsole(\"Unable to load bitmap table of sprite " + pascalCasedName + ": %s\", error);\n"
+				+ "        playdate->system->error(\"Unable to load bitmap table of sprite " + pascalCasedName + ": %s\", error);\n"
 				+ "    }\n"
 				+ "}\n"
 				+ "\n").getBytes(StandardCharsets.UTF_8));

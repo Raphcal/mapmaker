@@ -33,6 +33,7 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 			Streams.write((byte) (instance.getDirection().ordinal()), outputStream);
 			Streams.write(x, outputStream);
 			Streams.write(y, outputStream);
+			Streams.write((byte)instance.getZIndex(), outputStream);
 			Streams.write(instance.isUnique(), outputStream);
 
 			// TODO: Écrire les variables : instance.getVariables().entrySet()
