@@ -28,17 +28,18 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 	@Override
 	public void write(Sprite t, OutputStream outputStream) throws IOException {
 		final String pascalCasedName = Names.normalizeName(t, Names::toPascalCase);
+		final boolean hasScriptFile = t.getScriptFile() != null && !t.getScriptFile().trim().isEmpty();
 		outputStream.write((generateHeader(t)
 				+ "#include \"sprite" + Names.normalizeName(t, Names::toLowerCase) + ".h\"\n"
 				+ "\n"
 				+ "#include \"../lib/melice.h\"\n"
-				+ (t.getScriptFile() != null ? ("#include \"../src/" + Names.toSnakeCase(t.getScriptFile()) + ".h\"\n") : "")
+				+ (hasScriptFile ? ("#include \"../src/" + Names.toSnakeCase(t.getScriptFile()) + ".h\"\n") : "")
 				+ "\n"
 				+ SpriteAsHeaderHandler.SPRITE_TYPE + " sprite" + pascalCasedName + " = {\n"
 				+ "    // Type\n"
 				+ "    " + spriteType(t.getType()) + ",\n"
 				+ "    // Constructor\n"
-				+ "    " + (t.getScriptFile() != null ? (Names.toSnakeCase(t.getScriptFile()) + "_constructor") : "NULL") + ",\n"
+				+ "    " + (hasScriptFile ? (Names.toSnakeCase(t.getScriptFile()) + "_constructor") : "NULL") + ",\n"
 				+ "    // Size\n"
 				+ "    (MELSize) {" + t.getWidth() + ", " + t.getHeight() + "},\n"
 				+ "    // Palette\n"
