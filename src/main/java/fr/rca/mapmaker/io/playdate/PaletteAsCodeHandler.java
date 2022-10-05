@@ -47,7 +47,7 @@ public class PaletteAsCodeHandler extends CodeDataHandler<Palette> {
 				+ "float palette" + Names.normalizeName(t, Names::toPascalCase) + "YHitbox(uint16_t tile, float y) {\n"
 				+ "    switch (tile) {\n").getBytes(StandardCharsets.UTF_8));
 		if (t instanceof HasFunctionHitbox) {
-			final Map<ByteCode, String> replaceXByY = new HashMap<ByteCode, String>();
+			final Map<ByteCode, String> replaceXByY = new HashMap<>();
 			replaceXByY.put(ByteCode.X, "y");
 
 			final HasFunctionHitbox hasFunctionHitbox = (HasFunctionHitbox) t;

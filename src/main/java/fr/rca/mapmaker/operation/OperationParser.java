@@ -86,8 +86,7 @@ public final class OperationParser {
 	 * @param operation Opération sous forme de texte.
 	 * @return Un objet {@link Operation}.
 	 */
-	public static @NotNull
-	Operation parse(@Nullable String operation) {
+	public static @NotNull Operation parse(@Nullable String operation) {
 		if (operation == null || operation.trim().isEmpty()) {
 			return new Operation();
 		}

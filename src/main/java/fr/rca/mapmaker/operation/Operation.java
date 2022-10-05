@@ -9,6 +9,7 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -129,4 +130,17 @@ public class Operation {
 		}
 		return stack.pop();
 	}
+
+	public String toString(Language language, Map<ByteCode, String> replacements) {
+		final ArrayDeque<String> stack = new ArrayDeque<>();
+		for(final Instruction instruction : instructions) {
+			String replacement = replacements.get(instruction.toByteCode());
+			if (replacement == null) {
+				instruction.pushString(stack, language);
+			} else {
+				stack.push(replacement);
+			}
+		}
+		return stack.pop();
+	} 
 }
