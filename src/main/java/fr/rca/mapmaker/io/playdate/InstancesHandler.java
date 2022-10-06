@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -21,6 +23,14 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 	public void write(List<Instance> t, OutputStream outputStream) throws IOException {
 		Streams.write(t.size(), outputStream);
 
+		final List<Sprite> sprites;
+		if (!t.isEmpty()) {
+			sprites = PlaydateFormat.spritesForProject(t.get(0).getProject());
+		} else {
+			sprites = Collections.emptyList();
+		}
+		final HashMap<Sprite, Integer> indexBySprite = new HashMap<>();
+
 		ArrayList<Instance> instances = new ArrayList<>(t);
 		instances.sort((lhs, rhs) -> Integer.compare(lhs.getX(), rhs.getX()));
 		for (Instance instance : instances) {
@@ -29,7 +39,7 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 			final int x = point.x + sprite.getWidth() / 2;
 			final int y = point.y + sprite.getHeight() / 2;
 
-			Streams.writeUnsignedShort(instance.getIndex(), outputStream);
+			Streams.writeUnsignedShort(indexBySprite.computeIfAbsent(sprite, aSprite -> sprites.indexOf(aSprite)), outputStream);
 			Streams.write((byte) (instance.getDirection().ordinal()), outputStream);
 			Streams.write(x, outputStream);
 			Streams.write(y, outputStream);
