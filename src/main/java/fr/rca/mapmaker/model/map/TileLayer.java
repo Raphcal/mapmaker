@@ -19,8 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import lombok.Data;
 
+@Data
 public class TileLayer implements DataLayer, HasSizeChangeListeners, HasPropertyChangeListeners, HasLayerPlugin {
+	public static final int EMPTY_TILE = -1;
 
 	/**
 	 * Nom de la couche.
@@ -60,13 +63,13 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	/**
 	 * Décorateur de TileLayer.
 	 */
-	private final Map<String, LayerPlugin> plugins = new HashMap<String, LayerPlugin>();
+	private final Map<String, LayerPlugin> plugins = new HashMap<>();
 
 	/**
 	 * Liste de listeners.
 	 */
-	private final List<LayerChangeListener> listeners = new ArrayList<LayerChangeListener>();
-	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+	private final List<LayerChangeListener> listeners = new ArrayList<>();
+	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<>();
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -84,7 +87,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		this.width = width;
 		this.height = height;
 		this.tiles = new int[width * height];
-		Arrays.fill(this.tiles, -1);
+		Arrays.fill(this.tiles, EMPTY_TILE);
 	}
 
 	public TileLayer(int width, int height, LayerPlugin plugin) {
@@ -341,87 +344,6 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 				Math.abs(p1.x - p2.x) + 1, Math.abs(p1.y - p2.y) + 1));
 	}
 
-	/**
-	 * Récupère la largeur de la couche.
-	 *
-	 * @return La largeur.
-	 */
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	/**
-	 * Récupère la hauteur de la couche.
-	 *
-	 * @return La hauteur.
-	 */
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	/**
-	 * Récupère la vitesse de défilement associée à la couche.
-	 *
-	 * @return La vitesse de défilement.
-	 */
-	@Override
-	public ScrollRate getScrollRate() {
-		return scrollRate;
-	}
-
-	/**
-	 * Défini la vitesse de défilement associée à la couche.
-	 *
-	 * @param scrollRate La vitesse de défilement.
-	 */
-	public void setScrollRate(ScrollRate scrollRate) {
-		this.scrollRate = scrollRate;
-	}
-
-	/**
-	 * Indique si cette couche est solide (= peut être traversée) ou non.
-	 *
-	 * @return <code>true</code> si la couche est solide, <code>false</code>
-	 * sinon (par défaut).
-	 */
-	@Override
-	public boolean isSolid() {
-		return solid;
-	}
-
-	/**
-	 * Défini si cette couche est solide ou non.
-	 *
-	 * @param solid <code>true</code> pour rendre la couche est solide,
-	 * <code>false</code> sinon.
-	 */
-	public void setSolid(boolean solid) {
-		this.solid = solid;
-	}
-
-	/**
-	 * Récupère la visibilité de la couche.
-	 *
-	 * @return <code>true</code> si la couche est visible, <code>false</code>
-	 * sinon.
-	 */
-	@Override
-	public boolean isVisible() {
-		return visible;
-	}
-
-	/**
-	 * Permet d'afficher ou de masquer la couche.
-	 *
-	 * @param visible <code>true</code> pour afficher la couche,
-	 * <code>false</code> pour la masquer.
-	 */
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
 	@Override
 	public <L extends LayerPlugin> L getPlugin(Class<L> clazz) {
 		return getPlugin(clazz, LayerPlugins.nameOf(clazz));
@@ -433,10 +355,10 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 
 	@Override
 	public void setPlugin(LayerPlugin plugin) {
-		final String name = plugin.name();
-		final LayerPlugin oldPlugin = plugins.get(name);
-		plugins.put(name, plugin);
-		propertyChangeSupport.firePropertyChange("plugin-" + name, oldPlugin, plugin);
+		final String pluginName = plugin.name();
+		final LayerPlugin oldPlugin = plugins.get(pluginName);
+		plugins.put(pluginName, plugin);
+		propertyChangeSupport.firePropertyChange("plugin-" + pluginName, oldPlugin, plugin);
 	}
 
 	@Override
@@ -461,7 +383,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 */
 	public boolean isEmpty() {
 		for (final int tile : tiles) {
-			if (tile != -1) {
+			if (tile != EMPTY_TILE) {
 				return false;
 			}
 		}
@@ -476,7 +398,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 */
 	public void resize(int width, int height) {
 		final int[] resizedTiles = new int[width * height];
-		Arrays.fill(resizedTiles, -1);
+		Arrays.fill(resizedTiles, EMPTY_TILE);
 
 		final int minHeight = Math.min(height, this.height);
 		final int minWidth = Math.min(width, this.width);
@@ -512,7 +434,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 
 	private void translate(int[] source, int width, int height, int offsetX, int offsetY) {
 		final int[] translatedTiles = new int[this.width * this.height];
-		Arrays.fill(translatedTiles, -1);
+		Arrays.fill(translatedTiles, EMPTY_TILE);
 
 		final int sourceX = Math.max(0, -offsetX);
 		final int sourceY = Math.max(0, -offsetY);
@@ -535,7 +457,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * Vide le contenu de la couche.
 	 */
 	public void clear() {
-		Arrays.fill(this.tiles, -1);
+		Arrays.fill(this.tiles, EMPTY_TILE);
 		fireLayerChanged(new Rectangle(0, 0, width, height));
 	}
 
@@ -545,7 +467,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * @param shape Forme à vider.
 	 */
 	public void clear(Shape shape) {
-		setTiles(shape, -1);
+		setTiles(shape, EMPTY_TILE);
 	}
 
 	/**
@@ -555,7 +477,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * @param y Ordonnée de la tuile.
 	 */
 	public void clear(int x, int y) {
-		setTile(x, y, -1);
+		setTile(x, y, EMPTY_TILE);
 	}
 
 	/**
@@ -577,9 +499,9 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 			for (int x = 0; x < minWidth; x++) {
 				int tile = layer.tiles[y * layer.width + x];
 
-				if (tile != -1) {
+				if (tile != EMPTY_TILE) {
 					if (tile == -2) {
-						tile = -1;
+						tile = EMPTY_TILE;
 					}
 
 					final int index = y * this.width + x;
@@ -638,11 +560,11 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 			for (int x = 0; x < minWidth; x++) {
 				final int tile = layer.tiles[y * layer.width + x];
 
-				if (tile != -1) {
+				if (tile != EMPTY_TILE) {
 					final int index = y * this.width + x;
 
-					if (this.tiles[index] != -1) {
-						this.tiles[index] = -1;
+					if (this.tiles[index] != EMPTY_TILE) {
+						this.tiles[index] = EMPTY_TILE;
 
 						// Calcul du rectangle modifié
 						minDirtyX = Math.min(minDirtyX, x);

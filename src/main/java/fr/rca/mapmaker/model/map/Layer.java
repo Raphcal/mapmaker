@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.model.map;
 
 import java.awt.Point;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Couche d'une carte.
@@ -8,7 +9,15 @@ import java.awt.Point;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public interface Layer {
-	
+	/**
+	 * Récupère le nom de la couche ou <code>null</code> si elle n'a pas de
+	 * nom.
+	 *
+	 * @return Le nom de la couche ou <code>null</code>.
+	 */
+	default @Nullable String getName() {
+		return null;
+	}
 	/**
 	 * Récupère la largeur de la couche.
 	 *
