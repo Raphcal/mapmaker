@@ -10,10 +10,10 @@ import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class TileMapHandler implements DataHandler<TileMap> {
 		final List<Palette> palettes = PlaydateFormat.palettesForProject(project);
 		Streams.write((short) palettes.indexOf(palette), outputStream);
 
-		final List<Layer> layers = t.getLayers();
+		final List<Layer> layers = new ArrayList<>(t.getLayers());
 		final Rectangle waterArea = getWaterArea(layers);
 		// Origine en haut à gauche pour simplifier le code.
 		Streams.write(waterArea.x, outputStream);

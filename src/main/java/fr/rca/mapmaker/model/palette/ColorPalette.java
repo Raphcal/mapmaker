@@ -12,63 +12,63 @@ public class ColorPalette implements Palette {
 	public ColorPalette() {
 		this(getDefaultColors());
 	}
-	
+
 	public ColorPalette(int length) {
 		this.colors = new Color[length];
 		this.inverses = new Color[length];
 	}
-	
+
 	public ColorPalette(Color... colors) {
 		setColorsAndInverses(colors);
 	}
-	
+
 	@Override
 	public boolean isEditable() {
 		return false;
 	}
-	
+
 	private void inverse(int index) {
-		if(colors[index] != null) {
+		if (colors[index] != null) {
 			inverses[index] = new Color(~colors[index].getRGB(), false);
 		} else {
 			inverses[index] = null;
 		}
 	}
-	
+
 	public Color getColor(int index) {
 		return colors[index];
 	}
-	
+
 	public void setColor(int index, Color color) {
 		colors[index] = color;
 		inverse(index);
 	}
-	
+
 	public void setColors(int index, Color... colors) {
 		System.arraycopy(colors, 0, this.colors, index, colors.length);
-		
+
 		final int length = index + colors.length;
-		for(int i = index; i < length; i++) {
+		for (int i = index; i < length; i++) {
 			inverse(i);
 		}
 	}
-	
+
 	public void setColors(Color... colors) {
 		setColorsAndInverses(colors);
 	}
-	
+
 	private void setColorsAndInverses(Color[] colors) {
 		this.colors = colors;
 		this.inverses = new Color[colors.length];
-		
-		for(int index = 0; index < colors.length; index++) {
+
+		for (int index = 0; index < colors.length; index++) {
 			inverse(index);
 		}
 	}
-	
+
 	@Override
 	public void paintTile(Graphics g, int tile, int x, int y, int size) {
-		if(tile >= 0 && tile < colors.length && colors[tile] != null) {
+		if (tile >= 0 && tile < colors.length && colors[tile] != null) {
 			g.setColor(colors[tile]);
 			g.fillRect(x, y, size, size);
 		}
@@ -83,12 +83,12 @@ public class ColorPalette implements Palette {
 	public int getTileSize(int tile) {
 		return getTileSize();
 	}
-	
+
 	@Override
 	public int size() {
 		return colors.length;
 	}
-	
+
 	@Override
 	public void setSelectedTile(int tile) {
 		selectedTile = tile;
@@ -98,9 +98,9 @@ public class ColorPalette implements Palette {
 	public int getSelectedTile() {
 		return selectedTile;
 	}
-	
+
 	public Color getInverseColor() {
-		if(selectedTile >= 0 && selectedTile < colors.length) {
+		if (selectedTile >= 0 && selectedTile < colors.length) {
 			return inverses[selectedTile];
 		} else {
 			return Color.WHITE;
@@ -114,10 +114,10 @@ public class ColorPalette implements Palette {
 	@Override
 	public void refresh() {
 	}
-	
+
 	protected static Color[] getDefaultColors() {
-		return new Color[] {
-			new Color(0, 0, 6),
+		return new Color[]{
+			new Color(0, 0, 0),
 			new Color(232, 250, 255),
 			new Color(235, 233, 248),
 			new Color(255, 238, 238),
@@ -375,7 +375,7 @@ public class ColorPalette implements Palette {
 			new Color(255, 255, 255)
 		};
 	}
-	
+
 	public static ColorPalette getDefaultColorPalette() {
 		return new ColorPalette(getDefaultColors());
 	}

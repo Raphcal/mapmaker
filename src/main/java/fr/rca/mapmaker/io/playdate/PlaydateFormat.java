@@ -18,6 +18,7 @@ import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
@@ -131,7 +132,9 @@ public class PlaydateFormat extends AbstractFormat {
 		for(int index = 0; index < p.size(); index++) {
 			int x = (index % tileCountPerLine) * tileSize;
 			int y = (index / tileCountPerLine) * tileSize;
-			p.paintTile(graphics, index, x, y, tileSize);
+			if (!hasTranslucentColor(p.getSource(index), p.getColorPalette())) {
+				p.paintTile(graphics, index, x, y, tileSize);
+			}
 		}
 
 		graphics.dispose();
@@ -202,4 +205,18 @@ public class PlaydateFormat extends AbstractFormat {
 				.filter(sprite -> !sprite.isEmpty())
 				.collect(Collectors.toList());
 	}
+
+	private static boolean hasTranslucentColor(TileLayer tile, ColorPalette palette) {
+		final int count = tile.getWidth() * tile.getHeight();
+		for (int index = 0; index < count; index++) {
+			final Point point = new Point(index % tile.getWidth(), index / tile.getWidth());
+			final int colorIndex = tile.getTile(point);
+			final Color color = palette.getColor(colorIndex);
+			if (color != null && color.getAlpha() > 0 && color.getAlpha() < 255) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
