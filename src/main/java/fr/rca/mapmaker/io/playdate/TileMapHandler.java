@@ -49,16 +49,17 @@ public class TileMapHandler implements DataHandler<TileMap> {
 		Streams.write(layers.size(), outputStream);
 
 		for(final Layer layer : layers) {
-			final int width = layer.getWidth();
-			final int height = layer.getHeight();
-			Streams.write(width, outputStream);
-			Streams.write(height, outputStream);
+			final Rectangle frame = getLayerSize(layer);
+			Streams.write(frame.x, outputStream);
+			Streams.write(frame.y, outputStream);
+			Streams.write(frame.width, outputStream);
+			Streams.write(frame.height, outputStream);
 			Streams.write((float)layer.getScrollRate().getX(), outputStream);
 			Streams.write((float)layer.getScrollRate().getY(), outputStream);
 			Streams.write(layer.isSolid(), outputStream);
-			int max = width * height;
+			int max = frame.width * frame.height;
 			for (int index = 0; index < max; index++) {
-				Streams.writeUnsignedShort(layer.getTile(index % width, index / width), outputStream);
+				Streams.writeUnsignedShort(layer.getTile(frame.x + (index % frame.width), frame.y + (index / frame.width)), outputStream);
 			}
 		}
 	}
@@ -66,6 +67,23 @@ public class TileMapHandler implements DataHandler<TileMap> {
 	@Override
 	public TileMap read(InputStream inputStream) throws IOException {
 		throw new UnsupportedOperationException("Not supported.");
+	}
+
+	private Rectangle getLayerSize(Layer layer) {
+		Point topLeft = new Point(layer.getWidth(), layer.getHeight());
+		Point bottomRight = new Point();
+		final int count = layer.getWidth() * layer.getHeight();
+		for (int index = 0; index < count; index++) {
+			final int x = index % layer.getWidth();
+			final int y = index / layer.getWidth();
+			if (layer.getTile(x, y) != TileLayer.EMPTY_TILE) {
+				topLeft.x = Math.min(topLeft.x, x);
+				topLeft.y = Math.min(topLeft.y, y);
+				bottomRight.x = Math.max(bottomRight.x, x);
+				bottomRight.y = Math.max(bottomRight.y, y);
+			}
+		}
+		return new Rectangle(topLeft.x, topLeft.y, Math.max(bottomRight.x - topLeft.x + 1, 0), Math.max(bottomRight.y - topLeft.y + 1, 0));
 	}
 
 	private Rectangle getWaterArea(final List<Layer> layers) {
