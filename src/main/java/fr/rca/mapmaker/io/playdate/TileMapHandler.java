@@ -34,6 +34,10 @@ public class TileMapHandler implements DataHandler<TileMap> {
 		if (!(palette instanceof PaletteReference)) {
 			throw new UnsupportedOperationException("TileMap palette should be a reference to allow palette index export");
 		}
+
+		Streams.write(t.getWidth() * palette.getTileSize(), outputStream);
+		Streams.write(t.getHeight() * palette.getTileSize(), outputStream);
+
 		Project project = ((PaletteReference) palette).getProject();
 		final List<Palette> palettes = PlaydateFormat.palettesForProject(project);
 		Streams.write((short) palettes.indexOf(palette), outputStream);

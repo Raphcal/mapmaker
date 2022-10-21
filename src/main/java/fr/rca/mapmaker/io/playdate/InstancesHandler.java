@@ -47,6 +47,7 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 			Streams.write(instance.isUnique(), outputStream);
 
 			// TODO: Écrire les variables : instance.getVariables().entrySet()
+			// Exporter sous forme de HashMap Melice avec le bon hashcode ?
 		}
 	}
 
