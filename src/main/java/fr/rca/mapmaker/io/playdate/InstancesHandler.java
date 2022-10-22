@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -24,10 +26,13 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 		Streams.write(t.size(), outputStream);
 
 		final List<Sprite> sprites;
+		final Map<Sprite, Set<String>> variablesForSprites;
 		if (!t.isEmpty()) {
 			sprites = PlaydateFormat.spritesForProject(t.get(0).getProject());
+			variablesForSprites = PlaydateFormat.variablesForSprites(t.get(0).getProject());
 		} else {
 			sprites = Collections.emptyList();
+			variablesForSprites = Collections.emptyMap();
 		}
 		final HashMap<Sprite, Integer> indexBySprite = new HashMap<>();
 
@@ -46,8 +51,10 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 			Streams.write((byte)instance.getZIndex(), outputStream);
 			Streams.write(instance.isUnique(), outputStream);
 
-			// TODO: Écrire les variables : instance.getVariables().entrySet()
-			// Exporter sous forme de HashMap Melice avec le bon hashcode ?
+			final Set<String> variables = variablesForSprites.getOrDefault(instance.getSprite(), Collections.emptySet());
+			Streams.write(variables.stream()
+					.mapToInt(variable -> instance.getVariables().getOrDefault(variable, -1.0).intValue())
+					.toArray(), outputStream);
 		}
 	}
 

@@ -14,6 +14,7 @@ import fr.rca.mapmaker.io.playdate.SpriteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.SpriteAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.SpriteDefinitionsAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.SpriteDefinitionsAsHeaderHandler;
+import fr.rca.mapmaker.io.playdate.SpriteVariablesAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.TileMapHandler;
 import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -99,6 +100,8 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 
 		generateFile(generatedSourcesDir, new SpriteDefinitionsAsHeaderHandler(), sprites);
 		generateFile(generatedSourcesDir, new SpriteDefinitionsAsCodeHandler(), sprites);
+
+		generateFile(generatedSourcesDir, new SpriteVariablesAsHeaderHandler(), PlaydateFormat.variablesForSprites(project));
 	}
 
 	private <T> void generateFile(final File generatedSourcesDir, CodeDataHandler<T> handler, final T data) throws IOException {

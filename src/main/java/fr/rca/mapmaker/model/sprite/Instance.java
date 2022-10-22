@@ -230,6 +230,10 @@ public class Instance extends JComponent {
 		return variables;
 	}
 
+	public boolean hasVariable() {
+		return !variables.isEmpty();
+	}
+
 	@NotNull
 	public Direction getDirection() {
 		return direction;

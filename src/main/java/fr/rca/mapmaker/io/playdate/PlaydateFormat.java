@@ -27,7 +27,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -204,6 +207,17 @@ public class PlaydateFormat extends AbstractFormat {
 		return project.getSprites().stream()
 				.filter(sprite -> !sprite.isEmpty())
 				.collect(Collectors.toList());
+	}
+
+	public static Map<Sprite, Set<String>> variablesForSprites(Project project) {
+		final HashMap<Sprite, Set<String>> result = new HashMap<>();
+		project.getAllInstances().stream()
+				.flatMap(List::stream)
+				.filter(Instance::hasVariable)
+				.forEach(instance -> result
+						.computeIfAbsent(instance.getSprite(), key -> new TreeSet<>())
+						.addAll(instance.getVariables().keySet()));
+		return result;
 	}
 
 	private static boolean hasTranslucentColor(TileLayer tile, ColorPalette palette) {
