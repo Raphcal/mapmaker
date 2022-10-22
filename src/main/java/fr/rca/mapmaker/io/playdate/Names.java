@@ -77,14 +77,15 @@ public final class Names {
      */
     public static String toCamelCase(String source) {
         final StringBuilder builder = new StringBuilder();
-        boolean toUppercase = false;
+        Boolean toUppercase = Boolean.FALSE;
         for (char c : source.toCharArray()) {
             if (!Character.isAlphabetic(c) && !Character.isDigit(c)) {
-                toUppercase = true;
-            } else if (toUppercase) {
-                toUppercase = false;
+                toUppercase = Boolean.TRUE;
+            } else if (toUppercase == Boolean.TRUE || (toUppercase == null && Character.isUpperCase(c))) {
+                toUppercase = Boolean.FALSE;
                 builder.append(Character.toUpperCase(c));
             } else {
+                toUppercase = null;
                 builder.append(Character.toLowerCase(c));
             }
         }
@@ -99,14 +100,15 @@ public final class Names {
      */
     public static String toPascalCase(String source) {
         final StringBuilder builder = new StringBuilder();
-        boolean toUppercase = true;
+        Boolean toUppercase = Boolean.TRUE;
         for (char c : source.toCharArray()) {
             if (!Character.isAlphabetic(c) && !Character.isDigit(c)) {
-                toUppercase = true;
-            } else if (toUppercase) {
-                toUppercase = false;
+                toUppercase = Boolean.TRUE;
+            } else if (toUppercase == Boolean.TRUE || (toUppercase == null && Character.isUpperCase(c))) {
+                toUppercase = Boolean.FALSE;
                 builder.append(Character.toUpperCase(c));
             } else {
+                toUppercase = null;
                 builder.append(Character.toLowerCase(c));
             }
         }

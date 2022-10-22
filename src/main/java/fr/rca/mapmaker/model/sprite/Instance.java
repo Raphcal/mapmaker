@@ -246,6 +246,7 @@ public class Instance extends JComponent {
 			return new Dimension(32, 32);
 		}
 
+		variables.clear();
 		VariableDeclarationParser.parse(script).execute(this);
 
 		final Double variableWidth = variables.get("width");
