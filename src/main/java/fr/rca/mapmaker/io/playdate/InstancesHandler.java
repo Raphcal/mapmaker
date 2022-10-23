@@ -53,7 +53,7 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 
 			final Set<String> variables = variablesForSprites.getOrDefault(instance.getSprite(), Collections.emptySet());
 			Streams.write(variables.stream()
-					.mapToInt(variable -> instance.getVariables().getOrDefault(variable, -1.0).intValue())
+					.mapToInt(variable -> instance.getVariables().getOrDefault(variable, (double) SpriteVariablesAsHeaderHandler.NO_VALUE).intValue())
 					.toArray(), outputStream);
 		}
 	}

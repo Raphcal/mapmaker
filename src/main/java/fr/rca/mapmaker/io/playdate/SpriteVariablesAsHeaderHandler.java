@@ -14,11 +14,15 @@ import java.util.stream.Collectors;
  */
 public class SpriteVariablesAsHeaderHandler extends CodeDataHandler<Map<Sprite, Set<String>>> {
 
+	public static int NO_VALUE = -1;
+
 	@Override
 	public void write(Map<Sprite, Set<String>> t, OutputStream outputStream) throws IOException {
 		outputStream.write((generateHeader(t)
 				+ "#ifndef spritevariables_h\n"
 				+ "#define spritevariables_h\n"
+				+ "\n"
+				+ "#define kSpriteVariableNoValue " + NO_VALUE + "\n"
 				+ "\n"
 				+ t.entrySet().stream()
 						.map(spriteAndVariables -> "typedef enum {\n"
