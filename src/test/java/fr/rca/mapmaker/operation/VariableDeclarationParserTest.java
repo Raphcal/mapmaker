@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.operation;
 
+import fr.rca.mapmaker.model.project.Project;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class VariableDeclarationParserTest {
 			+ "  sprite.Variables[\"Angle\"] = -3.0 * PI / 4.0\n"
 			+ "  test=meuh\n"
 			+ "  sprite.Hitbox.Top = Zoom(3.0)\n"
-			+ "end");
+			+ "end", new Project());
 		Assert.assertNotNull(operation);
 		
 		System.out.println(operation);

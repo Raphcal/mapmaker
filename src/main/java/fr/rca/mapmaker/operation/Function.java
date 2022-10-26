@@ -6,4 +6,9 @@ package fr.rca.mapmaker.operation;
  */
 public interface Function extends Operator {
 	int getNumberOfArguments();
+
+	@Override
+	default Priority getPriority() {
+		return Priority.FUNCTION;
+	}
 }

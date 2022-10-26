@@ -1,6 +1,8 @@
 package fr.rca.mapmaker.operation;
 
+import static fr.rca.mapmaker.operation.Instructions.INSTRUCTIONS;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,10 +76,13 @@ public final class OperationParser {
 		RETURN
 	}
 
+	private HashMap<String, Instruction> instructions;
+
 	/**
 	 * Cet objet n'est pas instantiable, utilisez directement ses méthodes.
 	 */
-	protected OperationParser() {
+	public OperationParser() {
+		this.instructions = new HashMap<>(Instructions.INSTRUCTIONS);
 	}
 
 	/**
@@ -91,9 +96,29 @@ public final class OperationParser {
 			return new Operation();
 		}
 
-		final List<Instruction> instructions = new ArrayList<Instruction>();
+		final List<Instruction> instructions = new ArrayList<>();
 		parse(operation, 0, null, instructions);
 		return new Operation(instructions);
+	}
+
+	/**
+	 * Créé une opération à partir de sa représentation sous forme de texte.
+	 *
+	 * @param operation Opération sous forme de texte.
+	 * @return Un objet {@link Operation}.
+	 */
+	public @NotNull Operation parseOperation(@Nullable String operation) {
+		if (operation == null || operation.trim().isEmpty()) {
+			return new Operation();
+		}
+
+		final List<Instruction> result = new ArrayList<>();
+		parseOperation(operation, 0, null, result);
+		return new Operation(result);
+	}
+
+	public void putInstruction(String name, Instruction instruction) {
+		instructions.put(name, instruction);
 	}
 
 	/**
@@ -132,12 +157,26 @@ public final class OperationParser {
 	 * Analyse un morceau d'une opération.
 	 *
 	 * @param operation Texte complet de l'opération.
-	 * @param index Indice de début à traiter.
+	 * @param startIndex Indice de début à traiter.
 	 * @param parent L'opérateur qui a conduit à exécuter cette méthode.
 	 * @param instructions Liste d'instructions de l'opération à retourner.
 	 * @return Dernier indice traité par cette méthode.
 	 */
-	static int parse(String operation, int startIndex, Operator parent, List<Instruction> instructions) {
+	public static int parse(String operation, int startIndex, Operator parent, List<Instruction> instructions) {
+		OperationParser operationParser = new OperationParser();
+		return operationParser.parseOperation(operation, startIndex, parent, instructions);
+	}
+
+	/**
+	 * Analyse un morceau d'une opération.
+	 *
+	 * @param operation Texte complet de l'opération.
+	 * @param startIndex Indice de début à traiter.
+	 * @param parent L'opérateur qui a conduit à exécuter cette méthode.
+	 * @param instructions Liste d'instructions de l'opération à retourner.
+	 * @return Dernier indice traité par cette méthode.
+	 */
+	private int parseOperation(String operation, int startIndex, Operator parent, List<Instruction> instructions) {
 		int index = startIndex;
 
 		// Etat du parser
@@ -220,11 +259,11 @@ public final class OperationParser {
 
 				// Lecture d'une variable
 				case VARIABLE:
-					if (c >= 'a' && c <= 'z') {
+					if (Character.isAlphabetic(c) || Character.isDigit(c) || c == '.' || c == '_') {
 						itemBuilder.append(c);
 
 					} else {
-						final Instruction instruction = Instructions.getInstruction(itemBuilder.toString());
+						final Instruction instruction = getInstruction(itemBuilder.toString());
 
 						if (instruction instanceof Function) {
 							if (c == BLOCK_START) {
@@ -351,5 +390,9 @@ public final class OperationParser {
 				|| c == '\r'
 				|| c == '\n'
 				|| c == '\t';
+	}
+
+	private Instruction getInstruction(String name) {
+		return instructions.get(name.toLowerCase());
 	}
 }

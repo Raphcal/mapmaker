@@ -247,7 +247,7 @@ public class Instance extends JComponent {
 		}
 
 		variables.clear();
-		VariableDeclarationParser.parse(script).execute(this);
+		VariableDeclarationParser.parse(script, project).execute(this);
 
 		final Double variableWidth = variables.get("width");
 		final Double variableHeight = variables.get("height");

@@ -24,7 +24,7 @@ public class InstanceDataHandler implements DataHandler<Instance> {
 		Streams.write(t.getScript() != null, outputStream);
 		
 		if(t.getScript() != null) {
-			final Operation operation = VariableDeclarationParser.parse(t.getScript());
+			final Operation operation = VariableDeclarationParser.parse(t.getScript(), t.getProject());
 			Streams.write(operation.toByteArray(), outputStream);
 		}
 	}

@@ -1,10 +1,12 @@
 package fr.rca.mapmaker.operation;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Liste de toutes les instructions utilisables dans les opérations.
+ *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public final class Instructions {
@@ -13,13 +15,15 @@ public final class Instructions {
 	 * Table de correspondance entre le nom d'une instruction et son
 	 * implémentation.
 	 */
-	private static final Map<String, Instruction> INSTRUCTIONS;
-	
+	public static final Map<String, Instruction> INSTRUCTIONS;
+
 	/**
 	 * Classe utilitaire, toutes les méthodes sont statiques.
 	 */
-	private Instructions() {}
-	
+	private Instructions() {
+		// Vide.
+	}
+
 	static {
 		final Map<String, Instruction> map = new HashMap<String, Instruction>();
 		map.put("x", new Variable());
@@ -40,12 +44,13 @@ public final class Instructions {
 		map.put("cos", new Cosinus());
 		map.put("sin", new Sinus());
 		map.put("sqrt", new SquareRoot());
-				
-		INSTRUCTIONS = map;
+
+		INSTRUCTIONS = Collections.unmodifiableMap(map);
 	}
-	
+
 	/**
 	 * Récupère l'instruction nommée <code>name</code>.
+	 *
 	 * @param name Nom de l'instruction à récupérer.
 	 * @return L'instruction ou <code>null</code> si <code>name</code> ne
 	 * correspond à aucune instruction.
@@ -53,5 +58,5 @@ public final class Instructions {
 	public static Instruction getInstruction(String name) {
 		return INSTRUCTIONS.get(name.toLowerCase());
 	}
-	
+
 }

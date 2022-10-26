@@ -80,11 +80,6 @@ public class Operation {
 		}
 	}
 
-	@Deprecated
-	public void setZoom(double zoom) {
-		// Vide
-	}
-
 	public List<Instruction> getInstructions() {
 		return instructions;
 	}

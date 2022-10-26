@@ -1,5 +1,8 @@
 package fr.rca.mapmaker.operation;
 
+import fr.rca.mapmaker.model.map.MapAndInstances;
+import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.project.Project;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,9 +40,20 @@ public class VariableDeclarationParser {
 	 * @param script
 	 * @return
 	 */
-	public static Operation parse(String script) {
+	public static Operation parse(String script, Project project) {
 		if (script == null || script.trim().isEmpty()) {
 			return new Operation();
+		}
+
+		final OperationParser parser = new OperationParser();
+		final List<MapAndInstances> maps = project.getMaps();
+		for (int index = 0; index < maps.size(); index++) {
+			// Création d'une constante contenant l'indice de la carte pour chaque carte.
+			final TileMap tileMap = maps.get(index).getTileMap();
+			final String name = tileMap.getName().toLowerCase();
+			parser.putInstruction("maps." + name, new Constant(index));
+			parser.putInstruction("maps." + name + ".width", new Constant(tileMap.getWidth() * tileMap.getPalette().getTileSize()));
+			parser.putInstruction("maps." + name + ".height", new Constant(tileMap.getHeight()* tileMap.getPalette().getTileSize()));
 		}
 
 		final List<Instruction> instructions = new ArrayList<Instruction>();
@@ -66,11 +80,13 @@ public class VariableDeclarationParser {
 					final int rightQuoteIndex = left.lastIndexOf('"');
 
 					final String variableName = left.substring(leftQuoteIndex + 1, rightQuoteIndex);
-					OperationParser.parse(right.toLowerCase(), 0, null, instructions);
+					Operation rightOperation = parser.parseOperation(right.toLowerCase());
+					instructions.addAll(rightOperation.getInstructions());
 					instructions.add(new SpriteVariable(variableName));
 
 				} else if ("sprite.hitbox.top".equals(left)) {
-					OperationParser.parse(right.toLowerCase(), 0, null, instructions);
+					Operation rightOperation = parser.parseOperation(right.toLowerCase());
+					instructions.addAll(rightOperation.getInstructions());
 					instructions.add(new SpriteHitboxTop());
 
 				} else {
