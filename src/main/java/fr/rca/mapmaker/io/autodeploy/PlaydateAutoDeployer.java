@@ -16,6 +16,8 @@ import fr.rca.mapmaker.io.playdate.SpriteDefinitionsAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.SpriteDefinitionsAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.SpriteVariablesAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.TileMapHandler;
+import fr.rca.mapmaker.io.playdate.TileMapsAsCodeHandler;
+import fr.rca.mapmaker.io.playdate.TileMapsAsHeaderHandler;
 import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
@@ -77,6 +79,8 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 				instancesHandler.write(mapAndInstances.getSpriteInstances(), outputStream);
 			}
 		}
+		generateFile(generatedSourcesDir, new TileMapsAsHeaderHandler(), maps);
+		generateFile(generatedSourcesDir, new TileMapsAsCodeHandler(), maps);
 
 		generateFile(generatedSourcesDir, new AnimationNamesAsHeaderHandler(), project.getAnimationNames());
 
