@@ -22,7 +22,7 @@ import javax.swing.Timer;
 public class AnimatedGrid<L extends Layer> extends JComponent {
 	
 	private static final double ONE_SECOND = 1000.0;
-    private static final double MAX_SIZE = 256.0;
+    private static final double MAX_SIZE = 400.0;
 	
 	private int index;
 	private List<L> frames = Collections.<L>emptyList();
@@ -149,10 +149,12 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 	}
 	
 	private void updateSize() {
-        while (zoom > 1.0 && frameWidth * zoom > MAX_SIZE || frameHeight * zoom > MAX_SIZE) {
-            zoom = Math.max(zoom - 1, 1);
-        }
-        
+		if (frameWidth * zoom > MAX_SIZE || frameHeight * zoom > MAX_SIZE) {
+			final int oldZoom = getZoomAsInteger();
+			zoom = ((int) (((double)MAX_SIZE / Math.max(frameWidth, frameHeight)) * 100)) / 100.0;
+			firePropertyChange("zoomAsInteger", oldZoom, getZoomAsInteger());
+		}
+
 		final Dimension dimension = new Dimension((int) (frameWidth * zoom), (int) (frameHeight * zoom));
 		setPreferredSize(dimension);
 		setSize(dimension);
