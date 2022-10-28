@@ -18,9 +18,9 @@ public class TileMapsAsCodeHandler extends CodeDataHandler<List<MapAndInstances>
 		outputStream.write((generateHeader(t)
 				+ "#include \"maps.h\"\n"
 				+ "\n"
-				+ "const int MapNameCount = " + t.size() + ";\n"
+				+ "const int kMapNameCount = " + t.size() + ";\n"
 				+ "\n"
-				+ "const char * _Nonnull MapNameFileNames[" + t.size() + "] = {\n"
+				+ "const char * _Nonnull kMapNameFileNames[" + t.size() + "] = {\n"
 				+ t.stream()
 						.map(MapAndInstances::getTileMap)
 						.map(tileMap -> "    \"map-" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data\",\n")

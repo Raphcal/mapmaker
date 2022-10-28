@@ -26,8 +26,8 @@ public class TileMapsAsHeaderHandler extends CodeDataHandler<List<MapAndInstance
 						.collect(Collectors.joining())
 				+ "} MapName;\n"
 				+ "\n"
-				+ "extern const int MapNameCount;\n"
-				+ "extern const char * _Nonnull MapNameFileNames[" + t.size() + "];\n"
+				+ "extern const int kMapNameCount;\n"
+				+ "extern const char * _Nonnull kMapNameFileNames[" + t.size() + "];\n"
 				+ "\n"
 				+ "#endif /* maps_h */\n").getBytes(StandardCharsets.UTF_8));
 	}
