@@ -10,11 +10,15 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 
 	private final static double[] ANGLES = {0, 0.78, 1.57, 2.35, 3.14, 3.92, 4.71, 5.49};
@@ -35,17 +39,11 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ "#include \"../lib/melice.h\"\n"
 				+ (hasScriptFile ? ("#include \"../src/" + Names.toSnakeCase(t.getScriptFile()) + ".h\"\n") : "")
 				+ "\n"
-				+ SpriteAsHeaderHandler.SPRITE_TYPE + " sprite" + pascalCasedName + " = {\n"
-				+ "    // Type\n"
-				+ "    " + spriteType(t.getType()) + ",\n"
-				+ "    // Constructor\n"
-				+ "    " + (hasScriptFile ? (Names.toSnakeCase(t.getScriptFile()) + "_constructor") : "NULL") + ",\n"
-				+ "    // Size\n"
-				+ "    (MELSize) {" + t.getWidth() + ", " + t.getHeight() + "},\n"
-				+ "    // Palette\n"
-				+ "    NULL,\n"
-				+ "    // Animations\n"
-				+ "    (MELAnimationDefinition * _Nullable [" + (animationNames.size() * ANGLES.length) + "]) {\n").getBytes(StandardCharsets.UTF_8));
+				+ SpriteAsHeaderHandler.SPRITE_TYPE + " sprite" + pascalCasedName + " = (" + SpriteAsHeaderHandler.SPRITE_TYPE + ") {\n"
+				+ "    .type = " + spriteType(t.getType()) + ",\n"
+				+ "    .constructor = " + (hasScriptFile ? (Names.toSnakeCase(t.getScriptFile()) + "_constructor") : "NULL") + ",\n"
+				+ "    .size = {" + t.getWidth() + ", " + t.getHeight() + "},\n"
+				+ "    .animations = (MELAnimationDefinition * _Nullable [" + (animationNames.size() * ANGLES.length) + "]) {\n").getBytes(StandardCharsets.UTF_8));
 
 		final HashMap<TileLayer, Integer> indexForTile = new HashMap<>();
 		for (final String animationName : animationNames) {
@@ -56,14 +54,10 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				if (frames != null && !frames.isEmpty()) {
 					final int frameCount = frames.size();
 					outputStream.write(("        &((MELAnimationDefinition) {\n"
-							+ "            // Frame count\n"
-							+ "            " + frameCount + ",\n"
-							+ "            // Frames\n"
-							+ "            (MELAnimationFrame[" + frameCount + "]) {" + framesToString(frames, indexForTile) + "},\n"
-							+ "            // Frequency\n"
-							+ "            " + animation.getFrequency() + ",\n"
-							+ "            // Type\n"
-							+ "            " + animationType(frameCount, animation.isLooping()) + "\n"
+							+ "            .frameCount = " + frameCount + ",\n"
+							+ "            .frames =(MELAnimationFrame[" + frameCount + "]) {" + framesToString(frames, indexForTile) + "},\n"
+							+ "            .frequency = " + animation.getFrequency() + ",\n"
+							+ "            .type = " + animationType(frameCount, animation.isLooping()) + "\n"
 							+ "        }),\n").getBytes(StandardCharsets.UTF_8));
 				} else {
 					outputStream.write("        NULL,\n".getBytes(StandardCharsets.UTF_8));
@@ -87,23 +81,6 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 	@Override
 	public String fileNameFor(Sprite t) {
 		return "sprite" + Names.normalizeName(t, Names::toLowerCase) + ".c";
-	}
-
-	public void setAnimationNames(List<String> animationNames) {
-		this.animationNames = animationNames;
-	}
-
-	private static String range(int from, int length) {
-		StringBuilder stringBuilder = new StringBuilder();
-		final int max = from + length;
-		for (int index = from; index < max; index++) {
-			stringBuilder.append(index).append(", ");
-		}
-		final int resultLength = stringBuilder.length();
-		if (resultLength > 2) {
-			stringBuilder.setLength(resultLength - 2);
-		}
-		return stringBuilder.toString();
 	}
 
 	private static String animationType(int frameCount, boolean looping) {
