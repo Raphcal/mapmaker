@@ -37,11 +37,18 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ "#include \"sprite" + Names.normalizeName(t, Names::toLowerCase) + ".h\"\n"
 				+ "\n"
 				+ "#include \"../lib/melice.h\"\n"
+				+ "#include \"../gen/spritenames.h\"\n"
 				+ (hasScriptFile ? ("#include \"../src/" + Names.toSnakeCase(t.getScriptFile()) + ".h\"\n") : "")
 				+ "\n"
 				+ SpriteAsHeaderHandler.SPRITE_TYPE + " sprite" + pascalCasedName + " = (" + SpriteAsHeaderHandler.SPRITE_TYPE + ") {\n"
+				+ "    .name = SpriteName" + pascalCasedName + ",\n"
 				+ "    .type = " + spriteType(t.getType()) + ",\n"
-				+ "    .constructor = " + (hasScriptFile ? (Names.toSnakeCase(t.getScriptFile()) + "_constructor") : "NULL") + ",\n"
+				+ (
+					hasScriptFile
+						? "    .constructor = " + Names.toPascalCase(t.getScriptFile()) + "Constructor,\n"
+								+ "    .loader = " + Names.toPascalCase(t.getScriptFile()) + "Loader,\n"
+						: ""
+				)
 				+ "    .size = {" + t.getWidth() + ", " + t.getHeight() + "},\n"
 				+ "    .animations = (MELAnimationDefinition * _Nullable [" + (animationNames.size() * ANGLES.length) + "]) {\n").getBytes(StandardCharsets.UTF_8));
 
