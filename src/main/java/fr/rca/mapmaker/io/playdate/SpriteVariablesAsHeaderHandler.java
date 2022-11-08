@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +26,7 @@ public class SpriteVariablesAsHeaderHandler extends CodeDataHandler<Map<Sprite, 
 				+ "#define kSpriteVariableNoValue " + NO_VALUE + "\n"
 				+ "\n"
 				+ t.entrySet().stream()
+						.sorted((lhs, rhs) -> String.valueOf(lhs.getKey().getName()).compareToIgnoreCase(rhs.getKey().getName()))
 						.map(spriteAndVariables -> "typedef enum {\n"
 								+ spriteAndVariables.getValue().stream()
 										.map(variable -> "    Sprite"
