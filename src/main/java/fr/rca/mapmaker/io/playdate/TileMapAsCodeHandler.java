@@ -13,8 +13,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class TileMapAsCodeHandler extends CodeDataHandler<TileMap> {
 
-	private static final String MAP_TYPE = "MELConstMap";
-	private static final String LAYER_TYPE = "MELConstLayer";
+	private static final String MAP_TYPE = "MELMap";
+	private static final String LAYER_TYPE = "MELLayer";
 
 	@Override
 	public void write(TileMap t, OutputStream outputStream) throws IOException {

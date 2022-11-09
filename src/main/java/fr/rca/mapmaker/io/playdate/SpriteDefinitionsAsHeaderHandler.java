@@ -21,7 +21,7 @@ public class SpriteDefinitionsAsHeaderHandler extends CodeDataHandler<List<Sprit
 				+ "\n"
 				+ "#include \"pd_api.h\"\n"
 				+ "\n"
-				+ "typedef struct melconstspritedefinition MELConstSpriteDefinition;\n"
+				+ "typedef struct melspritedefinition MELSpriteDefinition;\n"
 				+ "\n"
 				+ "typedef enum {\n"
 				+ t.stream()
@@ -29,7 +29,7 @@ public class SpriteDefinitionsAsHeaderHandler extends CodeDataHandler<List<Sprit
 						.collect(Collectors.joining())
 				+ "} SpriteName;\n"
 				+ "\n"
-				+ "MELConstSpriteDefinition SpriteNameGetDefinition(SpriteName self);\n"
+				+ "MELSpriteDefinition SpriteNameGetDefinition(SpriteName self);\n"
 				+ "LCDBitmapTable * _Nullable SpriteNameLoadBitmapTable(SpriteName self);\n"
 				+ "\n"
 				+ "#endif /* spritenames_h */\n").getBytes(StandardCharsets.UTF_8));

@@ -26,7 +26,7 @@ public class SpriteDefinitionsAsCodeHandler extends CodeDataHandler<List<Sprite>
 						.map(sprite -> "#include \""+ spriteAsHeaderHandler.fileNameFor(sprite) + "\"\n")
 						.collect(Collectors.joining())
 				+ "\n"
-				+ "MELConstSpriteDefinition SpriteNameGetDefinition(SpriteName self) {\n"
+				+ "MELSpriteDefinition SpriteNameGetDefinition(SpriteName self) {\n"
 				+ "    switch (self) {\n"
 				+ t.stream()
 						.map(sprite -> "    case SpriteName" + Names.normalizeName(sprite, Names::toPascalCase) + ":\n" +
@@ -34,7 +34,7 @@ public class SpriteDefinitionsAsCodeHandler extends CodeDataHandler<List<Sprite>
 						.collect(Collectors.joining())
 				+ "    default:\n"
 				+ "        playdate->system->error(\"Unsupported sprite name: %d\", self);\n"
-				+ "        return (MELConstSpriteDefinition) {};\n"
+				+ "        return (MELSpriteDefinition) {};\n"
 				+ "    }\n"
 				+ "}\n"
 				+ "\n"

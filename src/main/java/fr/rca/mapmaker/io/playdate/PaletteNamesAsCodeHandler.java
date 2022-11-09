@@ -26,7 +26,7 @@ public class PaletteNamesAsCodeHandler extends CodeDataHandler<List<Palette>> {
 						.map(palette -> "#include \""+ paletteAsHeaderHandler.fileNameFor(palette) + "\"\n")
 						.collect(Collectors.joining())
 				+ "\n"
-				+ "void PaletteNameSetMapHitboxes(PaletteName self, MELConstMap * _Nonnull map) {\n"
+				+ "void PaletteNameSetMapHitboxes(PaletteName self, MELMap * _Nonnull map) {\n"
 				+ "    switch (self) {\n"
 				+ t.stream()
 						.map(palette -> "    case PaletteName" + Names.normalizeName(palette, Names::toPascalCase) + ":\n" +

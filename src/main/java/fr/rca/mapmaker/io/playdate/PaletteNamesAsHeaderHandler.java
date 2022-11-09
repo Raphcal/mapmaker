@@ -28,7 +28,7 @@ public class PaletteNamesAsHeaderHandler extends CodeDataHandler<List<Palette>> 
 						.collect(Collectors.joining())
 				+ "} PaletteName;\n"
 				+ "\n"
-				+ "void PaletteNameSetMapHitboxes(PaletteName self, MELConstMap * _Nonnull map);\n"
+				+ "void PaletteNameSetMapHitboxes(PaletteName self, MELMap * _Nonnull map);\n"
 				+ "LCDBitmapTable * _Nullable PaletteNameLoadBitmapTable(PaletteName self);\n"
 				+ "\n"
 				+ "#endif /* palettenames_h */\n").getBytes(StandardCharsets.UTF_8));

@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class TileMapAsHeaderHandler extends CodeDataHandler<TileMap> {
 
-	private static final String MAP_TYPE = "MELConstMap";
+	private static final String MAP_TYPE = "MELMap";
 
 	@Override
 	public void write(TileMap t, OutputStream outputStream) throws IOException {

@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class SpriteAsHeaderHandler extends CodeDataHandler<Sprite> {
 
-	public static final String SPRITE_TYPE = "MELConstSpriteDefinition";
+	public static final String SPRITE_TYPE = "MELSpriteDefinition";
 
 	@Override
 	public void write(Sprite t, OutputStream outputStream) throws IOException {
