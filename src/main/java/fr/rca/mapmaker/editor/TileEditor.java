@@ -60,32 +60,37 @@ import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.filechooser.FileFilter;
 
+/**
+ * Tentative de réécriture de TileMapEditor sans l'éditeur de Netbeans.
+ * @author Raphaël Calabro (ddaeke-github@yahoo.fr)
+ * @deprecated 
+ */
 @Deprecated
 public class TileEditor {
-    
+
 	private static final int PALETTE_WIDTH = 8;
 	private static final int BUTTON_WIDTH = 28;
-	
+
 	private static int[] clipboardData;
 	private static Rectangle clipboardSurface;
-	
+
 	public static JDialog createEditorDialog(final TileLayer sourceLayer, final ColorPalette palette,
 			JFrame owner, ActionListener callback) {
-		
+
 		// Copie de la source
 		final TileLayer drawingLayer = new TileLayer(sourceLayer.getWidth(), sourceLayer.getHeight());
 		drawingLayer.restoreData(sourceLayer.copyData(), new Rectangle(sourceLayer.getWidth(), sourceLayer.getHeight()));
-		
+
 		final JDialog dialog = new JDialog(owner, true);
 		dialog.setTitle("Éditeur");
 		dialog.setSize(720, 440);
-		
+
 		// Côté droit
 		final JPanel rightPanel = new JPanel(null);
 		final BoxLayout boxLayout = new BoxLayout(rightPanel, BoxLayout.Y_AXIS);
 		rightPanel.setLayout(boxLayout);
 		rightPanel.setPreferredSize(new Dimension(64, 0));
-		
+
 		// Palette
 		final Grid paletteGrid = new Grid();
 		final PaletteMap paletteMap = new PaletteMap(palette, PALETTE_WIDTH);
@@ -93,7 +98,7 @@ public class TileEditor {
 		paletteGrid.setCustomTileSize(8);
 		paletteGrid.setSelectionStyle(new SmallSelectionStyle());
 		paletteMap.setSelection(new Point());
-		
+
 		// Sélection des couleurs
 		paletteGrid.addMouseListener(new MouseAdapter() {
 			@Override
@@ -110,13 +115,13 @@ public class TileEditor {
 				paletteMap.setSelection(point);
 			}
 		});
-		
+
 		// Palette de transparence
 		final Grid alphaPaletteGrid;
-		if(palette instanceof AlphaColorPalette) {
-			final AlphaColorPalette alphaColorPalette = (AlphaColorPalette)palette;
+		if (palette instanceof AlphaColorPalette) {
+			final AlphaColorPalette alphaColorPalette = (AlphaColorPalette) palette;
 			alphaColorPalette.setSelectedAlpha(0);
-			
+
 			final ColorPalette alphaPalette = AlphaColorPalette.getAlphaPalette();
 			alphaPaletteGrid = new Grid();
 			final PaletteMap alphaPaletteMap = new PaletteMap(alphaPalette, PALETTE_WIDTH);
@@ -151,10 +156,10 @@ public class TileEditor {
 		final TileMap previewMap = new TileMap();
 		previewMap.add(drawingLayer);
 		previewMap.setPalette(palette);
-		
+
 		final Grid previewGrid = new Grid();
 		previewGrid.setTileMap(previewMap);
-		
+
 		// Bouton OK
 		final JButton okButton = new JButton("OK");
 		okButton.setPreferredSize(new Dimension(72, 24));
@@ -166,7 +171,7 @@ public class TileEditor {
 				sourceLayer.restoreData(drawingLayer.copyData(), new Rectangle(sourceLayer.getWidth(), sourceLayer.getHeight()));
 			}
 		});
-		
+
 		// Bouton Annuler
 		final JButton cancelButton = new JButton("Annu.");
 		cancelButton.setPreferredSize(new Dimension(72, 24));
@@ -177,96 +182,96 @@ public class TileEditor {
 				dialog.setVisible(false);
 			}
 		});
-		
+
 		rightPanel.add(paletteGrid);
-		if(alphaPaletteGrid != null) {
+		if (alphaPaletteGrid != null) {
 			rightPanel.add(alphaPaletteGrid);
 		}
 		rightPanel.add(previewGrid);
 		rightPanel.add(okButton);
 		rightPanel.add(cancelButton);
-		
+
 		// Zone de dessin
 		final JPanel panel = new JPanel(new GridBagLayout());
-		
+
 		final TileMap drawingMap = new TileMap();
 		drawingMap.setBackgroundColor(new Color(0, 128, 128));
 		drawingMap.add(drawingLayer);
 		drawingMap.setPalette(palette);
-		
+
 		final Grid drawingGrid = new Grid();
 		drawingGrid.setTileMap(drawingMap);
 		drawingGrid.setCustomTileSize(12);
 		drawingGrid.setActiveLayer(drawingLayer);
 //		drawingGrid.setBackground(new Color(0, 128, 128));
-		
+
 		panel.add(drawingGrid, null);
-                
+
 		final JScrollPane scrollPane = new JScrollPane(panel);
-		
+
 		// Palette d'outils
 		final JComponent toolPalette = createToolPalette(paletteMap, drawingGrid,
 				drawingLayer, drawingGrid.getOverlay(), scrollPane);
-		
+
 		// Ajout des morceaux à la fenêtre
 		dialog.getContentPane().add(toolPalette, BorderLayout.WEST);
 		dialog.getContentPane().add(rightPanel, BorderLayout.EAST);
 		dialog.getContentPane().add(scrollPane, BorderLayout.CENTER);
-		
+
 		return dialog;
 	}
-	
+
 	private static Component createMargin(int width, int height) {
 		return Box.createRigidArea(new Dimension(width, height));
 	}
-	
+
 	/**
 	 * Créé la palette d'outils.
-	 * 
+	 *
 	 * @param drawingGrid La surface de dessin.
 	 * @param drawingLayer La couche de dessin.
 	 * @param previewLayer La couche d'aperçu.
 	 * @return Un composant Swing contenant la palette d'outils.
 	 */
-	private static JComponent createToolPalette(final PaletteMap paletteMap, 
-			final Grid drawingGrid,	final TileLayer drawingLayer, final TileLayer previewLayer,
+	private static JComponent createToolPalette(final PaletteMap paletteMap,
+			final Grid drawingGrid, final TileLayer drawingLayer, final TileLayer previewLayer,
 			final JScrollPane scrollPane) {
-		
+
 		final FlowLayout layout = new FlowLayout(FlowLayout.LEADING, 0, 0);
 		final JPanel toolPalette = new JPanel(layout);
-		toolPalette.setPreferredSize(new Dimension(BUTTON_WIDTH + BUTTON_WIDTH, 100));
+		toolPalette.setPreferredSize(new Dimension(BUTTON_WIDTH + BUTTON_WIDTH + 8 + 8, 100));
 
 		final ButtonGroup group = new ButtonGroup();
-		
+
 		final JToggleButton selectionButton = createToggleButton("tool_selection.png", "Sélection", group, new SelectionTool(drawingGrid), drawingGrid);
 		toolPalette.add(selectionButton);
 		final JToggleButton magicWandButton = createToggleButton("tool_magic_wand.png", "Baguette magique", group, new MagicWandSelectionTool(drawingGrid), drawingGrid);
 		toolPalette.add(magicWandButton);
-		
+
 		toolPalette.add(createMargin(BUTTON_WIDTH + BUTTON_WIDTH, 8));
-		
+
 		final JToggleButton penButton = createToggleButton("tool_pen.png", "Stylo", group, new PenTool(drawingGrid), drawingGrid);
 		toolPalette.add(penButton);
 		final JToggleButton bucketFillButton = createToggleButton("tool_bucket_fill.png", "Pot de peinture", group, new BucketFillTool(drawingGrid), drawingGrid);
 		toolPalette.add(bucketFillButton);
-		
+
 		final JToggleButton lineButton = createToggleButton("tool_line.png", "Trait", group, new LineTool(drawingGrid, drawingLayer, previewLayer), drawingGrid);
 		toolPalette.add(lineButton);
 		final JToggleButton circleButton = createToggleButton("tool_circle.png", "Cercle", group, new CircleStrokeTool(drawingGrid, drawingLayer, previewLayer), drawingGrid);
 		toolPalette.add(circleButton);
-		
+
 		final JToggleButton rectangleStrokeButton = createToggleButton("tool_rectangle.png", "Rectangle", group, new RectangleStrokeTool(drawingGrid), drawingGrid);
 		toolPalette.add(rectangleStrokeButton);
 		final JToggleButton rectangleFillButton = createToggleButton("tool_rectangle_fill.png", "Rectangle plein", group, new RectangleFillTool(drawingGrid), drawingGrid);
 		toolPalette.add(rectangleFillButton);
-		
+
 		final JToggleButton ellipseStrokeButton = createToggleButton("tool_ellipse.png", "Ellipse", group, new EllipseStrokeTool(drawingGrid), drawingGrid);
 		toolPalette.add(ellipseStrokeButton);
 		final JToggleButton ellipseFillButton = createToggleButton("tool_ellipse_fill.png", "Ellipse pleine", group, new EllipseFillTool(drawingGrid), drawingGrid);
 		toolPalette.add(ellipseFillButton);
-		
+
 		toolPalette.add(createMargin(BUTTON_WIDTH + BUTTON_WIDTH, 8));
-		
+
 		final JToggleButton colorPickerButton = createToggleButton("tool_color_picker.png", "Pipette", group, new ColorPickerTool(paletteMap, drawingGrid), drawingGrid);
 		toolPalette.add(colorPickerButton);
 		final JToggleButton zoomButton = createToggleButton("tool_magnifier.png", "Loupe", group, new MagnifierTool(drawingGrid, scrollPane), drawingGrid);
@@ -277,30 +282,30 @@ public class TileEditor {
 		toolPalette.add(horizontalMirrorButton);
 		final JButton verticalMirrorButton = createButton("tool_vertical_mirror.png", "Inverser verticalement");
 		toolPalette.add(verticalMirrorButton);
-		
+
 		horizontalMirrorButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				drawingLayer.flipHorizontally();
 			}
 		});
-		
+
 		verticalMirrorButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				drawingLayer.flipVertically();
 			}
 		});
-		
+
 		toolPalette.add(createMargin(BUTTON_WIDTH + BUTTON_WIDTH, 8));
-		
+
 		// Copier / coller
 		final JButton copyButton = createButton("copy.png", "Copier");
 		toolPalette.add(copyButton);
 		final JButton pasteButton = createButton("paste.png", "Coller");
 		toolPalette.add(pasteButton);
 		final PasteSelectionTool pasteSelectionTool = new PasteSelectionTool(drawingGrid);
-		
+
 		copyButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -308,22 +313,21 @@ public class TileEditor {
 				clipboardSurface = new Rectangle(drawingLayer.getWidth(), drawingLayer.getHeight());
 			}
 		});
-		
+
 		pasteButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				group.clearSelection();
 				pasteSelectionTool.setSelection(clipboardData, clipboardSurface);
-				
+
 				drawingGrid.addMouseListener(pasteSelectionTool);
 				drawingGrid.addMouseMotionListener(pasteSelectionTool);
 			}
 		});
-		
-		
+
 		// Annuler / refaire
 		final LayerMemento memento = new LayerMemento(drawingLayer);
-		
+
 		final JButton undoButton = createButton("tool_undo.png", "Annuler");
 		undoButton.addActionListener(new ActionListener() {
 			@Override
@@ -332,7 +336,7 @@ public class TileEditor {
 			}
 		});
 		toolPalette.add(undoButton);
-		
+
 		final JButton redoButton = createButton("tool_redo.png", "Refaire");
 		redoButton.addActionListener(new ActionListener() {
 			@Override
@@ -341,22 +345,22 @@ public class TileEditor {
 			}
 		});
 		toolPalette.add(redoButton);
-		
+
 		toolPalette.add(createMargin(BUTTON_WIDTH + BUTTON_WIDTH, 8));
-		
+
 		final JButton saveButton = new JButton("Enr.");
 		saveButton.setPreferredSize(new Dimension(BUTTON_WIDTH * 2, BUTTON_WIDTH));
-		
+
 		final JFileChooser fileChooser = new JFileChooser();
 		configureFileChooser(fileChooser);
 		saveButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				final int action = fileChooser.showSaveDialog(null);
-				
-				if(action == JFileChooser.APPROVE_OPTION) {
-					final Format format = ((FormatFileFilter)fileChooser.getFileFilter()).getFormat();
+
+				if (action == JFileChooser.APPROVE_OPTION) {
+					final Format format = ((FormatFileFilter) fileChooser.getFileFilter()).getFormat();
 					final File destination = format.normalizeFile(fileChooser.getSelectedFile());
 
 					final ImageRenderer renderer = new ImageRenderer();
@@ -371,11 +375,11 @@ public class TileEditor {
 			}
 		});
 		toolPalette.add(saveButton);
-		
+
 		final JButton clearButton = new JButton("Eff.");
 		clearButton.setPreferredSize(new Dimension(BUTTON_WIDTH * 2, BUTTON_WIDTH));
 		clearButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				final int[] tiles = new int[drawingLayer.getWidth() * drawingLayer.getHeight()];
@@ -384,62 +388,73 @@ public class TileEditor {
 			}
 		});
 		toolPalette.add(clearButton);
-		
+
 		penButton.setSelected(true);
-		
+
 		return toolPalette;
 	}
-	
+
 	private static ImageIcon createImageIcon(String name) {
 		return new ImageIcon(TileEditor.class.getResource("/resources/" + name));
 	}
-	
+
 	private static JToggleButton createToggleButton(final String imageName, final String toolTip,
 			final ButtonGroup group, final Tool tool, final Grid drawingGrid) {
-		
+
 		final JToggleButton button = new JToggleButton(createImageIcon(imageName));
 		button.setToolTipText(toolTip);
 		button.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_WIDTH));
-		
+
 		button.addItemListener(new ItemListener() {
-			
+
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				
-				if(e.getStateChange() == ItemEvent.SELECTED) {
+
+				if (e.getStateChange() == ItemEvent.SELECTED) {
 					drawingGrid.addMouseListener(tool);
 					drawingGrid.addMouseMotionListener(tool);
-					
+
 				} else {
 					drawingGrid.removeMouseListener(tool);
 					drawingGrid.removeMouseMotionListener(tool);
-					
+
 					tool.reset();
 				}
 			}
 		});
-			
+
 		group.add(button);
-		
+
 		return button;
 	}
-	
+
 	private static void configureFileChooser(JFileChooser fileChooser) {
-		for(final FileFilter fileFilter : fileChooser.getChoosableFileFilters()) {
+		for (final FileFilter fileFilter : fileChooser.getChoosableFileFilters()) {
 			fileChooser.removeChoosableFileFilter(fileFilter);
 		}
-			
+
 		final Format format = Formats.getFormat(".png");
 		fileChooser.addChoosableFileFilter(format.getFileFilter());
 		fileChooser.setFileFilter(format.getFileFilter());
 	}
-	
+
 	private static JButton createButton(final String imageName, final String toolTip) {
-		
+
 		final JButton button = new JButton(createImageIcon(imageName));
 		button.setToolTipText(toolTip);
 		button.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_WIDTH));
-		
+
 		return button;
+	}
+
+	public static void main(String[] args) {
+		final JFrame owner = new JFrame();
+		owner.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		owner.setPreferredSize(new Dimension(320, 240));
+		owner.setVisible(true);
+
+		TileLayer sourceLayer = new TileLayer(32, 32);
+		JDialog dialog = createEditorDialog(sourceLayer, AlphaColorPalette.getDefaultColorPalette(), owner, null);
+		dialog.setVisible(true);
 	}
 }

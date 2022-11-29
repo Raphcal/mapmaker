@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class VariableDeclarationParser {
 		for (int index = 0; index < maps.size(); index++) {
 			// Création d'une constante contenant l'indice de la carte pour chaque carte.
 			final TileMap tileMap = maps.get(index).getTileMap();
-			final String name = tileMap.getName().toLowerCase();
+			final String name = Optional.ofNullable(tileMap.getName()).map(String::toLowerCase).orElse("map" + index);
 			parser.putInstruction("maps." + name, new Constant(index));
 			parser.putInstruction("maps." + name + ".width", new Constant(tileMap.getWidth() * tileMap.getPalette().getTileSize()));
 			parser.putInstruction("maps." + name + ".height", new Constant(tileMap.getHeight()* tileMap.getPalette().getTileSize()));

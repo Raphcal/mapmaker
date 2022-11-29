@@ -5,6 +5,7 @@ import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.LayerChangeListener;
 import fr.rca.mapmaker.model.MMath;
 import fr.rca.mapmaker.model.SizeChangeListener;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -419,6 +420,53 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	}
 
 	/**
+	 * Etire l'image à la taille donnée.
+	 *
+	 * @param width Nouvelle largeur.
+	 * @param height Nouvelle hauteur.
+	 */
+	public void scale(int width, int height) {
+		final int[] scaledTiles = new int[width * height];
+		Arrays.fill(scaledTiles, EMPTY_TILE);
+
+		final double ratioX = (double)this.width / width;
+		final double ratioY = (double)this.height / height;
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				final int xInOld = (int) Math.min(Math.round(x * ratioX), this.width - 1);
+				final int yInOld = (int) Math.min(Math.round(y * ratioY), this.height - 1);
+				scaledTiles[y * width + x] = tiles[yInOld * this.width + xInOld];
+			}
+		}
+
+		final Dimension oldDimension = new Dimension(this.width, this.height);
+
+		this.tiles = scaledTiles;
+		this.width = width;
+		this.height = height;
+
+		fireSizeChanged(oldDimension, new Dimension(width, height));
+	}
+
+	private int ditherColor(double x, double y) {
+		if (Math.floor(x) == x && Math.floor(y) == y) {
+			return tiles[(int)y * this.width + (int)x];
+		} else {
+			final int top = (int)y;
+			final int bottom = top < this.height - 1 ? top + 1 : this.height - 1;
+			final int left = (int)x;
+			final int right = left < this.width - 1 ? left + 1 : this.width - 1;
+			int[] tileSquare = new int[] {
+				tiles[top * this.width + left], tiles[top * this.width + right],
+				tiles[bottom * this.width + left], tiles[bottom * this.width + right]
+			};
+			// TODO: Mélanger les couleurs en fonction de la partie décimale de x et y.
+		}
+		return EMPTY_TILE;
+	}
+
+	/**
 	 * Déplace le contenu de la couche.
 	 *
 	 * @param offsetX Décalage horizontal.
@@ -693,6 +741,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 */
 	@Override
 	public void restoreData(int[] tiles, Rectangle source) {
+		// TODO: Restaurer correctement les changements en cas de redimensionnement. Sauvegarder les changements de taille ?
 		this.tiles = tiles.clone();
 
 		if (source == null) {
