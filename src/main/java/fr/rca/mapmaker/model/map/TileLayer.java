@@ -457,6 +457,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 			final int bottom = top < this.height - 1 ? top + 1 : this.height - 1;
 			final int left = (int)x;
 			final int right = left < this.width - 1 ? left + 1 : this.width - 1;
+			// TODO: Faire varier la taille de la palette en fonction de la taille de destination.
 			int[] tileSquare = new int[] {
 				tiles[top * this.width + left], tiles[top * this.width + right],
 				tiles[bottom * this.width + left], tiles[bottom * this.width + right]

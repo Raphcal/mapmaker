@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
@@ -561,8 +562,15 @@ public class SpriteEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_copyButtonActionPerformed
 
     private void pasteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteButtonActionPerformed
-		for(final TileLayer layer : PASTEBOARD) {
-			tileLayerList.add(new TileLayer(layer));
+		final int[] selectedIndexes = tileLayerList.getSelectedIndexes();
+		if (selectedIndexes.length == 1 && selectedIndexes[0] < tileLayerList.getElementCount() - 1) {
+			tileLayerList.insertAll(selectedIndexes[0] + 1, PASTEBOARD.stream()
+					.map(TileLayer::new)
+					.collect(Collectors.toList()));
+		} else {
+			tileLayerList.addAll(PASTEBOARD.stream()
+					.map(TileLayer::new)
+					.collect(Collectors.toList()));
 		}
     }//GEN-LAST:event_pasteButtonActionPerformed
 
