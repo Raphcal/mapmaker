@@ -89,7 +89,16 @@ public class InternalFormat extends AbstractFormat {
 	 */
 	public static final int VERSION_14 = 14;
 
-	public static final int LAST_VERSION = VERSION_14;
+	/**
+	 * Version 15. Depuis le 21/12/2022.
+	 * <p/>
+	 * Ajoute les fonctionnalités suivantes :<ul>
+	 * <li>Ajout d'une deuxième hitbox pour gérer les zones d'attaque</li>
+	 * </ul>
+	 */
+	public static final int VERSION_15 = 15;
+
+	public static final int LAST_VERSION = VERSION_15;
 	public static final String HEADER_LAST_VERSION = "MM" + LAST_VERSION;
 
 	public InternalFormat() {

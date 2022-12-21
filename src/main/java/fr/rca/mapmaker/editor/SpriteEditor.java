@@ -3,6 +3,7 @@ package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.LayerPlugins;
+import fr.rca.mapmaker.model.map.SecondaryHitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
@@ -13,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -461,7 +463,10 @@ public class SpriteEditor extends javax.swing.JDialog {
 		final List<TileLayer> layers = new ArrayList<TileLayer>(tileLayerList.getElements());
 		
 		if(GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
-			layers.add(new TileLayer(sprite.getWidth(), sprite.getHeight(), new HitboxLayerPlugin()));
+			layers.add(new TileLayer(sprite.getWidth(), sprite.getHeight(), Arrays.asList(
+					new HitboxLayerPlugin(),
+					new SecondaryHitboxLayerPlugin()
+			)));
 		}
 		final int index = evt.getID();
 		
