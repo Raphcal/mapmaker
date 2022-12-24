@@ -19,6 +19,11 @@ public class TileMapsAsHeaderHandler extends CodeDataHandler<List<MapAndInstance
 				+ "#ifndef maps_h\n"
 				+ "#define maps_h\n"
 				+ "\n"
+				+ "#ifndef __clang__\n"
+				+ "#define _Nonnull\n"
+				+ "#define _Nullable\n"
+				+ "#endif\n"
+				+ "\n"
 				+ "typedef enum {\n"
 				+ t.stream()
 						.map(MapAndInstances::getTileMap)
