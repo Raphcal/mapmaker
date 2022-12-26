@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.io.playdate;
 
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
+import fr.rca.mapmaker.model.map.SecondaryHitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
@@ -62,7 +63,7 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 					final int frameCount = frames.size();
 					outputStream.write(("        &((MELAnimationDefinition) {\n"
 							+ "            .frameCount = " + frameCount + ",\n"
-							+ "            .frames =(MELAnimationFrame[" + frameCount + "]) {" + framesToString(frames, indexForTile) + "},\n"
+							+ "            .frames = (MELAnimationFrame[" + frameCount + "]) {" + framesToString(frames, indexForTile) + "},\n"
 							+ "            .frequency = " + animation.getFrequency() + ",\n"
 							+ "            .type = " + animationType(frameCount, animation.isLooping()) + "\n"
 							+ "        }),\n").getBytes(StandardCharsets.UTF_8));
@@ -142,21 +143,26 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 			}
 			stringBuilder.append("{ .atlasIndex = ")
 					.append(frameIndex);
-			HitboxLayerPlugin hitboxPlugin = frame.getPlugin(HitboxLayerPlugin.class);
-			if (hitboxPlugin != null && !isNullOrEmpty(hitboxPlugin.getHitbox())) {
-				stringBuilder.append(", .hitbox = {");
-				final Rectangle hitbox = hitboxPlugin.getHitbox();
-				stringBuilder
-						.append('{')
-						.append((int) hitbox.getX() - frame.getWidth() / 2 + hitbox.getWidth() / 2).append(", ")
-						.append((int) hitbox.getY() - frame.getHeight() / 2 + hitbox.getHeight() / 2).append("}, {")
-						.append((int) hitbox.getWidth()).append(", ")
-						.append((int) hitbox.getHeight())
-						.append("}}");
-			}
+			appendHitbox(stringBuilder, frame, "hitbox", HitboxLayerPlugin.class);
+			appendHitbox(stringBuilder, frame, "attackHitbox", SecondaryHitboxLayerPlugin.class);
 			stringBuilder.append(" }");
 		}
 		return stringBuilder.toString();
+	}
+
+	private static <T extends HitboxLayerPlugin> void appendHitbox(StringBuilder stringBuilder, TileLayer frame, String name, Class<T> hitboxClass) {
+		T hitboxPlugin = frame.getPlugin(hitboxClass);
+		if (hitboxPlugin != null && !isNullOrEmpty(hitboxPlugin.getHitbox())) {
+			stringBuilder.append(", .").append(name).append(" = {");
+			final Rectangle hitbox = hitboxPlugin.getHitbox();
+			stringBuilder
+					.append('{')
+					.append((int) hitbox.getX() - frame.getWidth() / 2 + hitbox.getWidth() / 2).append(", ")
+					.append((int) hitbox.getY() - frame.getHeight() / 2 + hitbox.getHeight() / 2).append("}, {")
+					.append((int) hitbox.getWidth()).append(", ")
+					.append((int) hitbox.getHeight())
+					.append("}}");
+		}
 	}
 
 	private static boolean isNullOrEmpty(Rectangle rectangle) {
