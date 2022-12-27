@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -43,7 +44,7 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ "\n"
 				+ SpriteAsHeaderHandler.SPRITE_TYPE + " sprite" + pascalCasedName + " = (" + SpriteAsHeaderHandler.SPRITE_TYPE + ") {\n"
 				+ "    .name = SpriteName" + pascalCasedName + ",\n"
-				+ "    .type = " + spriteType(t.getType()) + ",\n"
+				+ "    .type = " + spriteType(t) + ",\n"
 				+ (
 					hasScriptFile
 						? "    .constructor = " + Names.toPascalCase(t.getScriptFile()) + "Constructor,\n"
@@ -106,8 +107,15 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 		}
 	}
 
-	private static String spriteType(int type) {
-		switch (type) {
+	private static boolean hasAttackHitbox(Sprite sprite) {
+		return sprite.getAnimations().stream()
+				.flatMap(animation -> animation.getFrames().values().stream())
+				.flatMap(frames -> frames != null ? frames.stream() : Stream.empty())
+				.anyMatch(frame -> frame.getPlugin(SecondaryHitboxLayerPlugin.class).getHitbox() != null);
+	}
+
+	private static String spriteType(Sprite sprite) {
+		switch (sprite.getType()) {
 		case 0:
 			return "MELSpriteTypeDecor";
 		case 1:
@@ -119,13 +127,15 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 		case 4:
 			return "MELSpriteTypeDestructible";
 		case 5:
-			return "MELSpriteTypeEnemy";
+			return hasAttackHitbox(sprite)
+					? "MELSpriteTypeEnemyWithAttackHitbox"
+					: "MELSpriteTypeEnemy";
 		case 6:
 			return "MELSpriteTypeCollidable";
 		case 7:
 			return "MELSpriteTypeFont";
 		default:
-				throw new UnsupportedOperationException("Unsupported sprite type: " + type);
+				throw new UnsupportedOperationException("Unsupported sprite type: " + sprite.getType());
 		}
 	}
 

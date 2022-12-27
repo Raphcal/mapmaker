@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.editor.tool.AbstractHitboxTool;
 import fr.rca.mapmaker.editor.tool.ApplyFunctionTool;
 import fr.rca.mapmaker.editor.tool.BucketFillTool;
 import fr.rca.mapmaker.editor.tool.CircleStrokeTool;
@@ -64,6 +65,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 
 	private HitboxTool hitboxTool;
 	private SecondaryHitboxTool secondaryHitboxTool;
+	private HitboxLayerPlugin currentPlugin;
 
 	/**
 	 * Créé un nouvel éditeur de dessin.
@@ -544,6 +546,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         hitboxToggleButton.setToolTipText("Hitbox");
         hitboxTool = new HitboxTool(drawGrid);
         wireTool(hitboxToggleButton, hitboxTool);
+        listenToPluginChanges(hitboxToggleButton, hitboxTool);
 
         applyFunctionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_function.png"))); // NOI18N
         applyFunctionButton.setToolTipText("Appliquer une fonction");
@@ -573,6 +576,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         attackHitboxToggleButton.setToolTipText("Hitbox d'attaque");
         secondaryHitboxTool = new SecondaryHitboxTool(drawGrid);
         wireTool(attackHitboxToggleButton, secondaryHitboxTool);
+        listenToPluginChanges(attackHitboxToggleButton, secondaryHitboxTool);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -737,9 +741,7 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addComponent(attackHitboxToggleButton))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(resizeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, 0)
-                                .addComponent(applyFunctionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(applyFunctionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(8, 8, 8))
         );
@@ -818,9 +820,8 @@ public class TileMapEditor extends javax.swing.JDialog {
 				source = drawGrid.getOverlay();
 			}
 			clipboardData = new TileLayer(source);
-
 		} else {
-			pluginClipboardData = LayerPlugins.copyOf(drawLayer.getPlugin(HitboxLayerPlugin.class));
+			pluginClipboardData = LayerPlugins.copyOf(drawLayer.getPlugin(currentPlugin.getClass()));
 		}
 
 		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());
@@ -937,6 +938,17 @@ public class TileMapEditor extends javax.swing.JDialog {
 					drawGrid.removeMouseMotionListener(tool);
 
 					tool.reset();
+				}
+			}
+		});
+	}
+
+	private <T extends HitboxLayerPlugin> void listenToPluginChanges(JToggleButton button, AbstractHitboxTool<T> tool) {
+		button.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					currentPlugin = tool.getHitboxPlugin();
 				}
 			}
 		});

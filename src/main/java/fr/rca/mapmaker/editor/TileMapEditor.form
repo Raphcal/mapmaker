@@ -293,10 +293,7 @@
                       </Group>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="resizeButton" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                              <Component id="applyFunctionButton" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="applyFunctionButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -815,7 +812,7 @@
         <Property name="toolTipText" type="java.lang.String" value="Hitbox"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="hitboxTool = new HitboxTool(drawGrid);&#xa;wireTool(hitboxToggleButton, hitboxTool);"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="hitboxTool = new HitboxTool(drawGrid);&#xa;wireTool(hitboxToggleButton, hitboxTool);&#xa;listenToPluginChanges(hitboxToggleButton, hitboxTool);"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JButton" name="applyFunctionButton">
@@ -871,7 +868,7 @@
         <Property name="toolTipText" type="java.lang.String" value="Hitbox d&apos;attaque"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="secondaryHitboxTool = new SecondaryHitboxTool(drawGrid);&#xa;wireTool(attackHitboxToggleButton, secondaryHitboxTool);"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="secondaryHitboxTool = new SecondaryHitboxTool(drawGrid);&#xa;wireTool(attackHitboxToggleButton, secondaryHitboxTool);&#xa;listenToPluginChanges(attackHitboxToggleButton, secondaryHitboxTool);"/>
       </AuxValues>
     </Component>
   </SubComponents>
