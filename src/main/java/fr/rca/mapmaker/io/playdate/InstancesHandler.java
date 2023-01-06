@@ -26,7 +26,7 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 		Streams.write(t.size(), outputStream);
 
 		final List<Sprite> sprites;
-		final Map<Sprite, Set<String>> variablesForSprites;
+		final Map<String, Set<String>> variablesForSprites;
 		if (!t.isEmpty()) {
 			sprites = PlaydateFormat.spritesForProject(t.get(0).getProject());
 			variablesForSprites = PlaydateFormat.variablesForSprites(t.get(0).getProject());
@@ -51,7 +51,7 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 			Streams.write((byte)instance.getZIndex(), outputStream);
 			Streams.write(instance.isUnique(), outputStream);
 
-			final Set<String> variables = variablesForSprites.getOrDefault(instance.getSprite(), Collections.emptySet());
+			final Set<String> variables = variablesForSprites.getOrDefault(instance.getSprite().getScriptFile(), Collections.emptySet());
 			Streams.write(variables.stream()
 					.mapToInt(variable -> instance.getVariables().getOrDefault(variable, (double) SpriteVariablesAsHeaderHandler.NO_VALUE).intValue())
 					.toArray(), outputStream);

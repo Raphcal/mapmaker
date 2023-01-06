@@ -209,13 +209,19 @@ public class PlaydateFormat extends AbstractFormat {
 				.collect(Collectors.toList());
 	}
 
-	public static Map<Sprite, Set<String>> variablesForSprites(Project project) {
-		final HashMap<Sprite, Set<String>> result = new HashMap<>();
+	/**
+	 * Renvoi une table associant un nom de script vers les variables possibles.
+	 *
+	 * @param project Projet.
+	 * @return Une table associant un nom de script aux variables déclarées.
+	 */
+	public static Map<String, Set<String>> variablesForSprites(Project project) {
+		final HashMap<String, Set<String>> result = new HashMap<>();
 		project.getAllInstances().stream()
 				.flatMap(List::stream)
-				.filter(Instance::hasVariable)
+				.filter(instance -> instance.getSprite().getScriptFile() != null && instance.hasVariable())
 				.forEach(instance -> result
-						.computeIfAbsent(instance.getSprite(), key -> new TreeSet<>())
+						.computeIfAbsent(instance.getSprite().getScriptFile(), key -> new TreeSet<>())
 						.addAll(instance.getVariables().keySet()));
 		return result;
 	}
