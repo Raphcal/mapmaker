@@ -111,7 +111,7 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 		return sprite.getAnimations().stream()
 				.flatMap(animation -> animation.getFrames().values().stream())
 				.flatMap(frames -> frames != null ? frames.stream() : Stream.empty())
-				.anyMatch(frame -> frame.getPlugin(SecondaryHitboxLayerPlugin.class).getHitbox() != null);
+				.anyMatch(frame -> !isNullOrEmpty(frame.getPlugin(SecondaryHitboxLayerPlugin.class).getHitbox()));
 	}
 
 	private static String spriteType(Sprite sprite) {
