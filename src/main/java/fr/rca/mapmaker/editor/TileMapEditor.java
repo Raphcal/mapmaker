@@ -31,6 +31,7 @@ import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.ui.Function;
+import fr.rca.mapmaker.util.CleanEdge;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -853,9 +854,15 @@ public class TileMapEditor extends javax.swing.JDialog {
 			try {
 				final int degree = Integer.parseInt(value);
 
-				if (degree % 90 == 0) {
+				if (drawLayer.getWidth() == drawLayer.getHeight() && degree % 90 == 0) {
 					drawLayer.rotate90(degree / 90);
-
+				} else if (drawMap.getPalette() instanceof ColorPalette) {
+					CleanEdge.builder()
+							.palette((ColorPalette) drawMap.getPalette())
+							.rotation(Math.toRadians(degree))
+							.slope(true)
+							.build()
+							.shade(drawLayer);
 				} else {
 					// Rotation de l'angle converti en radian.
 					drawLayer.rotate(degree * Math.PI / 180.0);
@@ -894,7 +901,13 @@ public class TileMapEditor extends javax.swing.JDialog {
 			JOptionPane.showMessageDialog(this, "Mauvais format, attendu 'largeur x hauteur' mais reçu : " + newSize);
 			return;
 		}
-		drawLayer.scale(parts[0], parts[1]);
+		CleanEdge.builder()
+				.palette((ColorPalette) drawMap.getPalette())
+				.slope(true)
+				.cleanUpSmallDetails(true)
+				.scale(new CleanEdge.Point((double)parts[0] / drawLayer.getWidth(), (double)parts[1] / drawLayer.getHeight()))
+				.build()
+				.shade(drawLayer);
 		drawGrid.getOverlay().resize(parts[0], parts[1]);
     }//GEN-LAST:event_resizeButtonActionPerformed
 

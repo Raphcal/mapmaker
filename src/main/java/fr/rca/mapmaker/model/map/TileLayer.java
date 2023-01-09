@@ -3,8 +3,8 @@ package fr.rca.mapmaker.model.map;
 import fr.rca.mapmaker.model.HasPropertyChangeListeners;
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.LayerChangeListener;
-import fr.rca.mapmaker.model.MMath;
 import fr.rca.mapmaker.model.SizeChangeListener;
+import fr.rca.mapmaker.model.palette.ColorPalette;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -120,7 +120,9 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * @param other Couche à copier.
 	 */
 	public TileLayer(DataLayer other) {
-		this(other.copyData(), new Dimension(other.getWidth(), other.getHeight()), null);
+		this.width = other.getWidth();
+		this.height = other.getHeight();
+		this.tiles = other.copyData();
 		if (other instanceof TileLayer) {
 			copyTileLayerFields((TileLayer) other);
 		}
@@ -133,11 +135,17 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 
 		this.width = copySurface.width;
 		this.height = copySurface.height;
-		this.tiles = new int[width * height];
 
-		final int lastY = Math.min(height, dimension.height - copySurface.y);
-		for (int y = 0; y < lastY; y++) {
-			System.arraycopy(data, (y + copySurface.y) * dimension.width + copySurface.x, tiles, y * width, Math.min(width, dimension.width - copySurface.x));
+		if (copySurface.width == dimension.width && copySurface.height == dimension.height
+				&& copySurface.x == 0 && copySurface.y == 0) {
+			this.tiles = data.clone();
+		} else {
+			this.tiles = new int[width * height];
+
+			final int lastY = Math.min(height, dimension.height - copySurface.y);
+			for (int y = 0; y < lastY; y++) {
+				System.arraycopy(data, (y + copySurface.y) * dimension.width + copySurface.x, tiles, y * width, Math.min(width, dimension.width - copySurface.x));
+			}
 		}
 	}
 
@@ -232,7 +240,10 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 */
 	@Override
 	public int getTile(int x, int y) {
-		return tiles[MMath.mod(y, height) * width + MMath.mod(x, width)];
+		final int index = y * width + x;
+		return (x >= 0 && x < width) && (y >= 0 && y < height) && index < tiles.length
+				? tiles[index]
+				: -1;
 	}
 
 	/**
@@ -345,6 +356,11 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 				Math.abs(p1.x - p2.x) + 1, Math.abs(p1.y - p2.y) + 1));
 	}
 
+	public Color getRGB(int x, int y, ColorPalette colorPalette) {
+		int tile = getTile(x, y);
+		return colorPalette.getColor(tile);
+	}
+
 	@Override
 	public <L extends LayerPlugin> L getPlugin(Class<L> clazz) {
 		return getPlugin(clazz, LayerPlugins.nameOf(clazz));
@@ -417,6 +433,10 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		this.height = height;
 
 		fireSizeChanged(oldDimension, new Dimension(width, height));
+	}
+
+	public void scale(double rate) {
+		scale((int) (width * rate), (int) (height * rate));
 	}
 
 	/**
@@ -774,13 +794,20 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 
 	@Override
 	public void restoreData(DataLayer source) {
-		restoreData(source.copyData(), source.getWidth(), source.getHeight());
+		final Dimension oldDimension = new Dimension(this.width, this.height);
+
+		this.tiles = source.copyData();
+		this.width = source.getWidth();
+		this.height = source.getHeight();
+
 		if (source instanceof HasLayerPlugin) {
 			plugins.clear();
 			for (final LayerPlugin plugin : ((HasLayerPlugin) source).getPlugins()) {
 				setPlugin(plugin);
 			}
 		}
+		fireSizeChanged(oldDimension, new Dimension(width, height));
+		fireLayerChanged(new Rectangle(0, 0, width, height));
 	}
 
 	/**

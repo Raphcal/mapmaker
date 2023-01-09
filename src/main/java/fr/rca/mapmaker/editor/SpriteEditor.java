@@ -2,12 +2,12 @@
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
-import fr.rca.mapmaker.model.map.LayerPlugins;
 import fr.rca.mapmaker.model.map.SecondaryHitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.GridList;
+import fr.rca.mapmaker.util.CleanEdge;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -540,15 +540,19 @@ public class SpriteEditor extends javax.swing.JDialog {
 			
 			for(double angle = step; angle < 360; angle += step) {
 				for(final TileLayer frame : frames) {
-					final TileLayer rotatedFrame = new TileLayer(frame.getWidth(), frame.getHeight(), LayerPlugins.copyOf(frame.getPlugins()));
-					rotatedFrame.restoreData(frame.copyData(), null);
-					
-					if(((int)angle) % 90 == 0) {
+					final TileLayer rotatedFrame = new TileLayer(frame);
+
+					if(rotatedFrame.getWidth() == rotatedFrame.getHeight() && ((int)angle) % 90 == 0) {
 						rotatedFrame.rotate90(((int)angle) / 90);
 					} else {
-						rotatedFrame.rotate(angle * Math.PI / 180.0);
+						CleanEdge.builder()
+								.palette(sprite.getPalette())
+								.rotation(Math.toRadians(angle))
+								.slope(true)
+								.build()
+								.shade(rotatedFrame);
 					}
-					
+
 					tileLayerList.add(rotatedFrame);
 				}
 			}
