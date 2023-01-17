@@ -1,19 +1,26 @@
-
 package fr.rca.mapmaker.editor;
 
+import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.model.palette.PaletteReference;
+import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.preferences.PreferencesManager;
+import fr.rca.mapmaker.ui.LayerLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 import javax.swing.JViewport;
+import org.jetbrains.annotations.Nullable;
 
 /**
  *
  * @author Raphaël Calabro <raph_kun at yahoo.fr>
  */
 public class GamePreviewDialog extends javax.swing.JDialog {
-	
+
 	private final static Dimension[] DIMENSIONS = {
 		new Dimension(320, 240),
 		new Dimension(568, 320),
@@ -23,17 +30,18 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 
 	/**
 	 * Créé une nouvelle boîte de dialogue.
+	 *
 	 * @param parent Frame parente.
 	 * @param modal <code>true</code> pour rendre cette fenêtre obligatoire.
 	 */
 	public GamePreviewDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
-		
+
 		deviceComboBox.setSelectedIndex(PreferencesManager.getInt(PreferencesManager.LAST_GAME_PREVIEW_DIMENSION));
 		setDimension(PreferencesManager.getInt(PreferencesManager.LAST_GAME_PREVIEW_DIMENSION));
 		zoomTextField.setText(PreferencesManager.get(PreferencesManager.LAST_GAME_PREVIEW_ZOOM, "100"));
-		
+
 		addWindowListener(new WindowAdapter() {
 
 			@Override
@@ -41,12 +49,53 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 				PreferencesManager.set(PreferencesManager.LAST_GAME_PREVIEW_DIMENSION, deviceComboBox.getSelectedIndex());
 				PreferencesManager.set(PreferencesManager.LAST_GAME_PREVIEW_ZOOM, zoomTextField.getText());
 			}
-			
+
 		});
 	}
-	
+
 	public void setTileMap(TileMap tileMap) {
 		previewGrid.setTileMap(tileMap);
+		addSprites();
+	}
+
+	private void addSprites() {
+		spritePane.removeAll();
+		final Project project = getProject();
+		if (project == null) {
+			return;
+		}
+		final List<Instance> instances = project.getMaps().stream()
+				.filter(mapAndInstances -> mapAndInstances.getTileMap() == previewGrid.getTileMap())
+				.findAny()
+				.map(MapAndInstances::getSpriteInstances)
+				.orElse(null);
+		if (instances == null) {
+			return;
+		}
+		final int mapWidth = previewGrid.getTileMapWidth() * previewGrid.getTileSize();
+		final int mapHeight = previewGrid.getTileMapHeight() * previewGrid.getTileSize();
+
+		for (final Instance instance : instances) {
+			final Instance copy = new Instance(instance);
+			if (copy.getX() > mapWidth || copy.getY() > mapHeight) {
+				copy.setBounds(Math.min(mapWidth - copy.getWidth(), copy.getX()),
+						Math.min(mapHeight - copy.getHeight(), copy.getY()),
+						copy.getWidth(), copy.getHeight());
+			}
+			copy.setZoom(1);
+			spritePane.add(copy);
+		}
+		spritePane.repaint();
+	}
+
+	private @Nullable Project getProject() {
+		final TileMap map = previewGrid.getTileMap();
+		Palette palette = map.getPalette();
+		if (palette instanceof PaletteReference) {
+			return ((PaletteReference) palette).getProject();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -66,12 +115,13 @@ public class GamePreviewDialog extends javax.swing.JDialog {
         zoomTextField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         gridScrollPane = new javax.swing.JScrollPane();
+        gridParentPanel = new javax.swing.JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
+        spritePane = new javax.swing.JPanel();
         previewGrid = new fr.rca.mapmaker.ui.Grid();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        toolBar.setFloatable(false);
         toolBar.setRollover(true);
 
         deviceComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "320x240", "iPhone 5 (568x320)", "Playstation Vita (960x544)", "PlayDate (400x240)" }));
@@ -96,8 +146,28 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 
         gridScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 
+        spritePane.setOpaque(false);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, previewGrid, org.jdesktop.beansbinding.ELProperty.create("${preferredSize}"), spritePane, org.jdesktop.beansbinding.BeanProperty.create("preferredSize"));
+        bindingGroup.addBinding(binding);
+
+        javax.swing.GroupLayout spritePaneLayout = new javax.swing.GroupLayout(spritePane);
+        spritePane.setLayout(spritePaneLayout);
+        spritePaneLayout.setHorizontalGroup(
+            spritePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 32, Short.MAX_VALUE)
+        );
+        spritePaneLayout.setVerticalGroup(
+            spritePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 32, Short.MAX_VALUE)
+        );
+
+        gridParentPanel.add(spritePane);
+
         previewGrid.setViewport(gridScrollPane.getViewport());
-        gridScrollPane.setViewportView(previewGrid);
+        gridParentPanel.add(previewGrid);
+
+        gridScrollPane.setViewportView(gridParentPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -105,9 +175,9 @@ public class GamePreviewDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gridScrollPane))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(gridScrollPane)
+                    .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -126,25 +196,30 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 
     private void deviceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deviceComboBoxActionPerformed
 		final int selection = deviceComboBox.getSelectedIndex();
-		if(selection >= 0) {
+		if (selection >= 0) {
 			setDimension(selection);
 		}
     }//GEN-LAST:event_deviceComboBoxActionPerformed
 
 	private void setDimension(int entry) {
 		final Dimension dimension = DIMENSIONS[entry];
-		gridScrollPane.setPreferredSize(dimension);
-		gridScrollPane.setSize(dimension);
+		final Dimension realDimension = new Dimension(
+				dimension.width + gridScrollPane.getVerticalScrollBar().getSize().width,
+				dimension.height + gridScrollPane.getHorizontalScrollBar().getSize().height);
+		gridScrollPane.setPreferredSize(realDimension);
+		gridScrollPane.setSize(realDimension);
 		pack();
 	}
-	
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox deviceComboBox;
+    private javax.swing.JPanel gridParentPanel;
     private javax.swing.JScrollPane gridScrollPane;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JToolBar.Separator jSeparator1;
     private fr.rca.mapmaker.ui.Grid previewGrid;
+    private javax.swing.JPanel spritePane;
     private javax.swing.JToolBar toolBar;
     private javax.swing.JTextField zoomTextField;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;

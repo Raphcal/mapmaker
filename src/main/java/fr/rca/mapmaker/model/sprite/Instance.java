@@ -87,6 +87,17 @@ public class Instance extends JComponent {
 		updateSprite();
 	}
 
+	public Instance(Instance other) {
+		this.id = other.id;
+		this.index = other.index;
+		this.project = other.project;
+		this.point = new Point(other.point.x, other.point.y);
+		this.unique = other.unique;
+		this.script = other.script;
+		this.zIndex = other.zIndex;
+		updateSprite();
+	}
+
 	private void updateSprite() {
 		final Sprite sprite = getSprite();
 
