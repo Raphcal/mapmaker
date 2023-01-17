@@ -420,9 +420,13 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		final int minHeight = Math.min(height, this.height);
 		final int minWidth = Math.min(width, this.width);
 
-		for (int y = 0; y < minHeight; y++) {
-			for (int x = 0; x < minWidth; x++) {
-				resizedTiles[y * width + x] = tiles[y * this.width + x];
+		final int max = minHeight * minWidth;
+		for (int index = 0; index < max; index++) {
+			final int x = index % minWidth;
+			final int y = index / minWidth;
+			final int indexInOldArray = y * this.width + x;
+			if (indexInOldArray < tiles.length) {
+				resizedTiles[y * width + x] = tiles[indexInOldArray];
 			}
 		}
 
