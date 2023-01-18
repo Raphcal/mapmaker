@@ -1,13 +1,16 @@
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.ScrollRate;
+import fr.rca.mapmaker.model.map.TileLayer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import lombok.Getter;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
+@Getter
 public class LayerProperties {
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -18,8 +21,19 @@ public class LayerProperties {
 	private int height;
 	private boolean solid;
 
-	public String getName() {
-		return name;
+	public TileLayer newTileLayer() {
+		final TileLayer tileLayer = new TileLayer(width, height);
+		tileLayer.setScrollRate(scrollRate);
+		tileLayer.setName(name);
+		tileLayer.setSolid(solid);
+		return tileLayer;
+	}
+
+	public void affect(TileLayer tileLayer) {
+		tileLayer.resize(width, height);
+		tileLayer.setScrollRate(scrollRate);
+		tileLayer.setName(name);
+		tileLayer.setSolid(solid);
 	}
 
 	public void setName(String name) {
@@ -29,18 +43,10 @@ public class LayerProperties {
 		propertyChangeSupport.firePropertyChange("name", oldName, name);
 	}
 
-	public int getWidth() {
-		return width;
-	}
-
 	public void setWidth(int width) {
 		final String oldSize = getSize();
 		this.width = width;
 		propertyChangeSupport.firePropertyChange("size", oldSize, getSize());
-	}
-
-	public int getHeight() {
-		return height;
 	}
 
 	public void setHeight(int height) {
@@ -79,10 +85,6 @@ public class LayerProperties {
 		propertyChangeSupport.firePropertyChange("size", oldSize, getSize());
 	}
 
-	public ScrollRate getScrollRate() {
-		return scrollRate;
-	}
-
 	public void setScrollRate(ScrollRate scrollRate) {
 		final String oldScrollRates = getScrollRates();
 		this.scrollRate = new ScrollRate(scrollRate);
@@ -119,10 +121,6 @@ public class LayerProperties {
 		}
 
 		propertyChangeSupport.firePropertyChange("scrollRates", oldScrollRates, getScrollRates());
-	}
-
-	public boolean isSolid() {
-		return solid;
 	}
 
 	public void setSolid(boolean solid) {

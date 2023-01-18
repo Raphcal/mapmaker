@@ -1243,11 +1243,7 @@ private void addLayerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
 
 	if (dialog.hasBeenConfirmed()) {
 		final LayerProperties properties = dialog.getLayerProperties();
-
-		final TileLayer tileLayer = new TileLayer(properties.getWidth(), properties.getHeight());
-		tileLayer.setScrollRate(properties.getScrollRate());
-		tileLayer.setName(properties.getName());
-		tileMap.add(tileLayer);
+		tileMap.add(properties.newTileLayer());
 	}
 }//GEN-LAST:event_addLayerButtonActionPerformed
 
@@ -1270,11 +1266,7 @@ private void editLayerMenuItemActionPerformed(java.awt.event.ActionEvent evt) {/
 
 	if (dialog.hasBeenConfirmed()) {
 		final LayerProperties properties = dialog.getLayerProperties();
-
-		selectedLayer.setScrollRate(properties.getScrollRate());
-		selectedLayer.resize(properties.getWidth(), properties.getHeight());
-		selectedLayer.setName(properties.getName());
-		selectedLayer.setSolid(properties.isSolid());
+		properties.affect(selectedLayer);
 
 		repaintMapGrid();
 		refreshScrollMode();
