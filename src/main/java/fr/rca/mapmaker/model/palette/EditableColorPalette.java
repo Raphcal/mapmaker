@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javax.swing.JColorChooser;
-import javax.swing.JFrame;
 
 /**
  *
@@ -55,7 +54,7 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 	}
 
 	@Override
-	public void editTile(int index, JFrame parent) {
+	public void editTile(int index, java.awt.Frame parent) {
 		final Color newColor = JColorChooser.showDialog(parent, language.getString("palette.color.edit"), getColor(index));
 	
 		if(newColor != null) {

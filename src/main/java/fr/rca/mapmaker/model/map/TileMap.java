@@ -28,10 +28,10 @@ import org.jetbrains.annotations.Nullable;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListeners, ListModel, HasColorPalette {
-	
-    /**
-     * Gestion des événements de changement des propriétés.
-     */
+
+	/**
+	 * Gestion des événements de changement des propriétés.
+	 */
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
 	/**
@@ -45,8 +45,7 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	private String name;
 
 	/**
-	 * Nom de la carte après export.
-	 * REM: Inutilisé.
+	 * Nom de la carte après export. REM: Inutilisé.
 	 */
 	private String fileName;
 
@@ -60,10 +59,10 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	 */
 	private int height;
 
-    /**
-     * Palette de couleur utilisée pour afficher la palette de la grille.
-     */
-    private ColorPalette colorPalette;
+	/**
+	 * Palette de couleur utilisée pour afficher la palette de la grille.
+	 */
+	private ColorPalette colorPalette;
 
 	/**
 	 * Palette utilisée pour afficher la grille.
@@ -84,7 +83,7 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	 * Couleur de fond.
 	 */
 	private Color backgroundColor;
-    
+
 	private final SizeChangeListener sizeChangeListener;
 	private final List<LayerChangeListener> layerChangeListeners = new ArrayList<LayerChangeListener>();
 	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
@@ -105,7 +104,7 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 		this.height = height;
 		this.backgroundColor = backgroundColor;
 	}
-	
+
 	public TileMap(Layer layer, Palette palette) {
 		this();
 		this.width = layer.getWidth();
@@ -115,10 +114,10 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	}
 
 	public void setParent(Project parent) {
-		if(palette instanceof PaletteReference) {
-			((PaletteReference)palette).setProject(parent);
+		if (palette instanceof PaletteReference) {
+			((PaletteReference) palette).setProject(parent);
 		}
-		
+
 		this.parent = parent;
 	}
 
@@ -129,21 +128,22 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	public void setIndex(Integer index) {
 		final Integer oldIndex = this.index;
 		this.index = index;
-		
+
 		propertyChangeSupport.firePropertyChange("index", oldIndex, index);
 	}
-	
-	public @Nullable String getName() {
+
+	public @Nullable
+	String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		final String oldName = this.name;
 		this.name = name;
-		
+
 		propertyChangeSupport.firePropertyChange("name", oldName, name);
 	}
-	
+
 	public String getFileName() {
 		return fileName;
 	}
@@ -151,10 +151,10 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	public void setFileName(String fileName) {
 		final String oldFileName = this.fileName;
 		this.fileName = fileName;
-		
+
 		propertyChangeSupport.firePropertyChange("fileName", oldFileName, fileName);
 	}
-	
+
 	public int getWidth() {
 		return width;
 	}
@@ -162,7 +162,7 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	public void setWidth(int width) {
 		final int oldWidth = this.width;
 		this.width = width;
-		
+
 		propertyChangeSupport.firePropertyChange("width", oldWidth, width);
 	}
 
@@ -173,50 +173,50 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	public void setHeight(int height) {
 		final int oldHeight = this.height;
 		this.height = height;
-		
+
 		propertyChangeSupport.firePropertyChange("height", oldHeight, height);
 	}
 
-    @Override
-    public ColorPalette getColorPalette() {
-        return colorPalette != null ? colorPalette : parent.getColorPalette();
-    }
+	@Override
+	public ColorPalette getColorPalette() {
+		return colorPalette != null ? colorPalette : parent.getColorPalette();
+	}
 
-    public void setColorPalette(ColorPalette colorPalette) {
-        this.colorPalette = colorPalette;
-    }
-	
+	public void setColorPalette(ColorPalette colorPalette) {
+		this.colorPalette = colorPalette;
+	}
+
 	public Palette getPalette() {
 		return palette;
 	}
 
 	public void setPalette(Palette palette) {
-		if(parent != null && palette instanceof PaletteReference) {
-			((PaletteReference)palette).setProject(parent);
+		if (parent != null && palette instanceof PaletteReference) {
+			((PaletteReference) palette).setProject(parent);
 		}
-		
+
 		final Integer oldTileSize;
-		if(this.palette != null) {
+		if (this.palette != null) {
 			oldTileSize = this.palette.getTileSize();
 		} else {
 			oldTileSize = null;
 		}
-		
+
 		this.palette = palette;
-		
-		if(oldTileSize != null && oldTileSize != palette.getTileSize()) {
+
+		if (oldTileSize != null && oldTileSize != palette.getTileSize()) {
 			final Dimension dimension = new Dimension(width, height);
 			fireSizeChanged(dimension, dimension);
 		}
 	}
-	
+
 	public void refresh() {
 	}
 
 	public List<Layer> getLayers() {
 		return layers;
 	}
-	
+
 	public int getLayerIndex(Layer layer) {
 		return layers.indexOf(layer);
 	}
@@ -228,7 +228,7 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	public void setBackgroundColor(Color backgroundColor) {
 		final Color oldBackgroundColor = this.backgroundColor;
 		this.backgroundColor = backgroundColor;
-		
+
 		propertyChangeSupport.firePropertyChange("backgroundColor", oldBackgroundColor, backgroundColor);
 	}
 
@@ -236,188 +236,215 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 		final int layerWidth = (int) (layer.getWidth() / Math.max(layer.getScrollRate().getX(), 1.0f));
 		final int layerHeight = (int) (layer.getHeight() / Math.max(layer.getScrollRate().getY(), 1.0f));
 
-		if(layerWidth > width) {
+		if (layerWidth > width) {
 			setWidth(layerWidth);
 		}
 
-		if(layerHeight > height) {
+		if (layerHeight > height) {
 			setHeight(layerHeight);
 		}
 	}
-	
+
 	private void updateSize() {
-		if(layers.size() > 0) {
+		if (layers.size() > 0) {
 			final Dimension oldDimension = new Dimension(width, height);
 
 			width = 0;
 			height = 0;
 
-			for(final Layer layer : layers) {
+			for (final Layer layer : layers) {
 				updateSizeForLayer(layer);
 			}
 
 			final Dimension newDimension = new Dimension(width, height);
 
-			if(!oldDimension.equals(newDimension)) {
+			if (!oldDimension.equals(newDimension)) {
 				fireSizeChanged(oldDimension, newDimension);
 			}
 		}
 	}
-	
+
 	public void add(Layer layer) {
 		final int index = layers.size();
-		
+
 		layers.add(layer);
-		
+
 		updateSizeForLayer(layer);
 
-		if(layer instanceof TileLayer) {
-//			((TileLayer)layer).setParent(this);
-			
-			for(final LayerChangeListener listener : layerChangeListeners) {
-				((TileLayer)layer).addLayerChangeListener(listener);
+		if (layer instanceof TileLayer) {
+			final TileLayer tileLayer = (TileLayer)layer;
+			tileLayer.setParent(this);
+
+			for (final LayerChangeListener listener : layerChangeListeners) {
+				tileLayer.addLayerChangeListener(listener);
 			}
 		}
-		
-		if(layer instanceof HasSizeChangeListeners) {
-			((HasSizeChangeListeners)layer).addSizeChangeListener(sizeChangeListener);
+
+		if (layer instanceof HasSizeChangeListeners) {
+			((HasSizeChangeListeners) layer).addSizeChangeListener(sizeChangeListener);
 		}
-		
+
 		fireIntervalAdded(index);
 	}
-	
+
 	public Layer remove(Layer layer) {
 		return remove(layers.indexOf(layer));
 	}
-	
+
 	public Layer remove(int index) {
 		final Layer layer;
-		
-		if(index >= 0 && index < layers.size()) {
-			layer = layers.remove(index);
-			
-			if(layer instanceof TileLayer) {
-//				((TileLayer)layer).setParent(null);
 
-				for(final LayerChangeListener listener : layerChangeListeners) {
-					((TileLayer)layer).removeLayerChangeListener(listener);
+		if (index >= 0 && index < layers.size()) {
+			layer = layers.remove(index);
+
+			if (layer instanceof TileLayer) {
+				final TileLayer tileLayer = (TileLayer)layer;
+				tileLayer.setParent(null);
+
+				for (final LayerChangeListener listener : layerChangeListeners) {
+					tileLayer.removeLayerChangeListener(listener);
 				}
 			}
 
-			if(layer instanceof HasSizeChangeListeners) {
-				((HasSizeChangeListeners)layer).removeSizeChangeListener(sizeChangeListener);
+			if (layer instanceof HasSizeChangeListeners) {
+				((HasSizeChangeListeners) layer).removeSizeChangeListener(sizeChangeListener);
 			}
-			
+
 			updateSize();
 			fireIntervalRemoved(index);
-			
+
 		} else {
 			layer = null;
 		}
-		
+
 		return layer;
 	}
-	
+
 	public void addAll(Collection<Layer> layers) {
 		final Iterator<Layer> iterator = layers.iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			add(iterator.next());
 		}
 	}
-	
+
+	public void setLayerAtIndex(int index, Layer layer) {
+		if (index >= 0 && index < layers.size()) {
+			final Layer oldLayer = layers.get(index);
+			layers.set(index, layer);
+			if (oldLayer instanceof TileLayer) {
+				final TileLayer tileLayer = (TileLayer)oldLayer;
+				tileLayer.setParent(null);
+
+				for (final LayerChangeListener listener : layerChangeListeners) {
+					tileLayer.removeLayerChangeListener(listener);
+				}
+			}
+			if (layer instanceof TileLayer) {
+				final TileLayer tileLayer = (TileLayer)layer;
+				tileLayer.setParent(this);
+
+				for (final LayerChangeListener listener : layerChangeListeners) {
+					tileLayer.addLayerChangeListener(listener);
+				}
+			}
+			updateSizeForLayer(layer);
+			fireContentChanged(index, index);
+		}
+	}
+
 	public void swapLayers(int first, int second) {
 		final Layer firstLayer = layers.get(first);
 		final Layer secondLayer = layers.get(second);
-		
+
 		layers.set(second, firstLayer);
 		layers.set(first, secondLayer);
-		
+
 		fireContentChanged(Math.min(first, second), Math.max(first, second));
 	}
-	
+
 	public void addLayerChangeListener(LayerChangeListener listener) {
-		for(Layer layer : layers) {
-			if(layer instanceof TileLayer) {
-				((TileLayer)layer).addLayerChangeListener(listener);
+		for (Layer layer : layers) {
+			if (layer instanceof TileLayer) {
+				((TileLayer) layer).addLayerChangeListener(listener);
 			}
 		}
-			
+
 		layerChangeListeners.add(listener);
 	}
-	
+
 	public void removeLayerChangeListener(LayerChangeListener listener) {
 		layerChangeListeners.remove(listener);
-		
-		for(Layer layer : layers) {
-			if(layer instanceof TileLayer) {
-				((TileLayer)layer).removeLayerChangeListener(listener);
+
+		for (Layer layer : layers) {
+			if (layer instanceof TileLayer) {
+				((TileLayer) layer).removeLayerChangeListener(listener);
 			}
 		}
 	}
-	
+
 	@Override
 	public void addSizeChangeListener(SizeChangeListener listener) {
 		sizeChangeListeners.add(listener);
 	}
-	
+
 	@Override
 	public void removeSizeChangeListener(SizeChangeListener listener) {
 		sizeChangeListeners.remove(listener);
 	}
-	
+
 	public void clear() {
 		final Iterator<Layer> iterator = layers.iterator();
-		
-		while(iterator.hasNext()) {
+
+		while (iterator.hasNext()) {
 			final Layer layer = iterator.next();
-			
-			if(layer instanceof TileLayer) {
-				for(final LayerChangeListener listener : layerChangeListeners) {
-					((TileLayer)layer).removeLayerChangeListener(listener);
+
+			if (layer instanceof TileLayer) {
+				for (final LayerChangeListener listener : layerChangeListeners) {
+					((TileLayer) layer).removeLayerChangeListener(listener);
 				}
 			}
-			
-			if(layer instanceof HasSizeChangeListeners) {
-				((HasSizeChangeListeners)layer).removeSizeChangeListener(sizeChangeListener);
+
+			if (layer instanceof HasSizeChangeListeners) {
+				((HasSizeChangeListeners) layer).removeSizeChangeListener(sizeChangeListener);
 			}
-			
+
 			iterator.remove();
 		}
 	}
-	
+
 	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
-		for(final SizeChangeListener listener : sizeChangeListeners) {
+		for (final SizeChangeListener listener : sizeChangeListeners) {
 			listener.sizeChanged(this, oldSize, newSize);
 		}
 	}
 
 	protected void fireIntervalAdded(int index) {
-		
+
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, index, index);
-		
-		for(final ListDataListener listener : listDataListeners) {
+
+		for (final ListDataListener listener : listDataListeners) {
 			listener.intervalAdded(event);
 		}
 	}
-	
+
 	protected void fireIntervalRemoved(int index) {
-		
+
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index, index);
-		
-		for(final ListDataListener listener : listDataListeners) {
+
+		for (final ListDataListener listener : listDataListeners) {
 			listener.intervalRemoved(event);
 		}
 	}
-	
+
 	protected void fireContentChanged(int from, int to) {
-		
+
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, from, to);
-		
-		for(final ListDataListener listener : listDataListeners) {
+
+		for (final ListDataListener listener : listDataListeners) {
 			listener.contentsChanged(event);
 		}
 	}
-	
+
 	@Override
 	public int getSize() {
 		return layers.size();
@@ -437,7 +464,7 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	public void removeListDataListener(ListDataListener l) {
 		listDataListeners.remove(l);
 	}
-	
+
 	@Override
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(listener);
@@ -457,5 +484,5 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
-	
+
 }

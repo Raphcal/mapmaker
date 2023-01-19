@@ -3,7 +3,6 @@ package fr.rca.mapmaker.model.palette;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import javax.swing.JFrame;
 
 /**
  * Palette de lettres.
@@ -24,7 +23,7 @@ public class FontPalette extends AbstractEditablePalette<Character> {
 	}
 
 	@Override
-	public void editTile(int index, JFrame parent) {
+	public void editTile(int index, java.awt.Frame parent) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

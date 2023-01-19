@@ -3,6 +3,7 @@ package fr.rca.mapmaker.model.palette;
 import fr.rca.mapmaker.editor.TileMapEditor;
 import fr.rca.mapmaker.model.Duplicatable;
 import fr.rca.mapmaker.model.HasFunctionHitbox;
+import fr.rca.mapmaker.model.map.DataLayer;
 import fr.rca.mapmaker.model.map.FunctionLayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.ui.ImageRenderer;
@@ -12,7 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
+import java.util.stream.Collectors;
 
 public class EditableImagePalette extends AbstractEditablePalette<TileLayer> implements HasFunctionHitbox, Duplicatable<EditableImagePalette> {
 
@@ -97,7 +98,7 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 	}
 
 	@Override
-	public void editTile(final int index, JFrame parent) {
+	public void editTile(final int index, java.awt.Frame parent) {
 		final TileMapEditor editor = new TileMapEditor(parent);
 		editor.setLayerAndPalette(sources.get(index), palette);
 		editor.addActionListener(new ActionListener() {
@@ -125,8 +126,13 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 	}
 
 	@Override
-	protected TileLayer createEmptySource() {
+	public TileLayer createEmptySource() {
 		return new TileLayer(tileSize, tileSize);
 	}
 
+	public void addDataLayers(List<DataLayer> sources) {
+		addSources(sources.stream()
+				.map(TileLayer::new)
+				.collect(Collectors.toList()));
+	}
 }

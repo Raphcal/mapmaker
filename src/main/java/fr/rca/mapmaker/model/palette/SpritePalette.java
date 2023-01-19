@@ -147,7 +147,7 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	}
 
 	@Override
-	public void editTile(final int index, JFrame parent) {
+	public void editTile(final int index, java.awt.Frame parent) {
 		final SpriteEditor editor = new SpriteEditor(parent);
 		editor.setSprite(sprites.get(index), animationNames);
 		editor.addActionListener(new ActionListener() {

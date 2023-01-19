@@ -297,31 +297,32 @@ public class MapEditor extends javax.swing.JFrame {
         openRecentMenu = new javax.swing.JMenu();
         clearRecentMenuItem = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator importSeparator = new javax.swing.JPopupMenu.Separator();
-        importMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem importMenuItem = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator saveSeparator = new javax.swing.JPopupMenu.Separator();
         javax.swing.JMenuItem saveMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem saveAsMenuItem = new javax.swing.JMenuItem();
         quitSeparator = new javax.swing.JPopupMenu.Separator();
         quitMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu editMenu = new javax.swing.JMenu();
-        cancelMenuItem = new javax.swing.JMenuItem();
-        redoMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem cancelMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem redoMenuItem = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator undoRedoSeparator = new javax.swing.JPopupMenu.Separator();
-        copyMenuItem = new javax.swing.JMenuItem();
-        pasteMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem copyMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem pasteMenuItem = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator copyPasteSeparator = new javax.swing.JPopupMenu.Separator();
         javax.swing.JMenuItem managePalettesMenuItem = new javax.swing.JMenuItem();
-        multipleEditMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem multipleEditMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem generateTilesMenuItem = new javax.swing.JMenuItem();
         toolMenu = new javax.swing.JMenu();
-        trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
         autoDeployMenu = new javax.swing.JMenu();
-        gitMenu = new javax.swing.JMenu();
-        initMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenu gitMenu = new javax.swing.JMenu();
+        javax.swing.JMenuItem initMenuItem = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator initSeparator = new javax.swing.JPopupMenu.Separator();
-        commitMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem commitMenuItem = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator gitSeparator = new javax.swing.JPopupMenu.Separator();
-        pullMenuItem = new javax.swing.JMenuItem();
-        pushMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem pullMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem pushMenuItem = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout tileMapListRendererLayout = new javax.swing.GroupLayout(tileMapListRenderer);
         tileMapListRenderer.setLayout(tileMapListRendererLayout);
@@ -1064,6 +1065,14 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         editMenu.add(multipleEditMenuItem);
+
+        generateTilesMenuItem.setText(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("resources/language").getString("menu.edit.generatetile"), new Object[] {})); // NOI18N
+        generateTilesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateTilesMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(generateTilesMenuItem);
 
         menuBar.add(editMenu);
 
@@ -1897,6 +1906,11 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		}
     }//GEN-LAST:event_moveSpriteMenuItemActionPerformed
 
+    private void generateTilesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateTilesMenuItemActionPerformed
+		GenerateTileDialog generateTileDialog = new GenerateTileDialog(this, project);
+		generateTileDialog.setVisible(true);
+    }//GEN-LAST:event_generateTilesMenuItemActionPerformed
+
 	/**
 	 * Modifie le numéro des tuiles de toutes les cartes après l'insertion de
 	 * <code>shift</code> nouvelles tuiles à l'index <code>from</code> dans la
@@ -2009,22 +2023,16 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JMenuItem addRowBeforeMenuItem;
     private javax.swing.JMenu autoDeployMenu;
     private javax.swing.JToggleButton bucketFillToggleButton;
-    private javax.swing.JMenuItem cancelMenuItem;
     private javax.swing.JMenuItem clearRecentMenuItem;
     private fr.rca.mapmaker.model.map.TileLayer clipboard;
-    private javax.swing.JMenuItem commitMenuItem;
     private javax.swing.JButton copyButton;
-    private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JButton devicePreviewButton;
     private javax.swing.JMenuItem editLayerMenuItem;
     private javax.swing.JMenuItem editMapMenuItem;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JMenu fileMenu;
     private fr.rca.mapmaker.team.git.GitManager gitManager;
-    private javax.swing.JMenu gitMenu;
     private javax.swing.JToolBar gridToolBar;
-    private javax.swing.JMenuItem importMenuItem;
-    private javax.swing.JMenuItem initMenuItem;
     private javax.swing.JMenuItem inspectSpriteMenuItem;
     private javax.swing.JMenuItem inspectTileMenuItem;
     private javax.swing.JToolBar.Separator jSeparator1;
@@ -2047,25 +2055,20 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton moveMapBottomButton;
     private javax.swing.JButton moveMapUpButton;
     private javax.swing.JMenuItem moveSpriteMenuItem;
-    private javax.swing.JMenuItem multipleEditMenuItem;
     private javax.swing.JMenu openRecentMenu;
     private javax.swing.JPanel paletteBackgroundPanel;
     private fr.rca.mapmaker.ui.Grid paletteGrid;
     private javax.swing.JScrollPane paletteScrollPane;
     private javax.swing.JTabbedPane paletteTabbedPane;
     private javax.swing.JButton pasteButton;
-    private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JToggleButton penToggleButton;
     private fr.rca.mapmaker.editor.tool.PenTool penTool;
     private javax.swing.JCheckBox previewCheckBox;
     private fr.rca.mapmaker.model.project.Project project;
-    private javax.swing.JMenuItem pullMenuItem;
-    private javax.swing.JMenuItem pushMenuItem;
     private javax.swing.JMenuItem quitMenuItem;
     private javax.swing.JPopupMenu.Separator quitSeparator;
     private javax.swing.JToggleButton rectangleToggleButton;
     private javax.swing.JButton redoButton;
-    private javax.swing.JMenuItem redoMenuItem;
     private javax.swing.JButton removeLayerButton;
     private javax.swing.JMenuItem removeRowMenuItem;
     private javax.swing.JButton runButton;
@@ -2085,7 +2088,6 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JPopupMenu tilePopupMenu;
     private javax.swing.ButtonGroup toolGroup;
     private javax.swing.JMenu toolMenu;
-    private javax.swing.JMenuItem trajectoryPreviewMenuItem;
     private javax.swing.JButton undoButton;
     private javax.swing.JLabel zoomLabel;
     private javax.swing.JLabel zoomPercentLabel;

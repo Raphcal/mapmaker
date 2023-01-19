@@ -125,7 +125,7 @@ public class PaletteReference implements Palette, EditablePalette, HasSizeChange
 	}
 
 	@Override
-	public void editTile(int index, JFrame parent) {
+	public void editTile(int index, java.awt.Frame parent) {
 		getEditablePalette().editTile(index, parent);
 	}
 

@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import javax.swing.JComponent;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -25,6 +27,9 @@ public class Function extends JComponent {
 
 	private int sourceWidth = 1;
 	private int sourceHeight = 1;
+
+	@Setter @Getter
+	private int minimumPixelSize = 1;
 
 	public Function() {
 	}
@@ -78,19 +83,20 @@ public class Function extends JComponent {
 		final double h = (double) bounds.height / (double) sourceHeight;
 
 		final double zoom = Math.max(w, h);
+		final int pixelSize = Math.max((int)zoom, minimumPixelSize);
 
 		if (hasXFunction) {
 			g.setColor(X_COLOR);
 			for (int x = 0; x < sourceWidth; x++) {
 				final double y = xOperation.execute((double) x);
-				g.fillRect((int) Math.floor(x * zoom), (int) Math.floor(y * zoom), (int) zoom, (int) zoom);
+				g.fillRect((int) Math.floor(x * zoom), (int) Math.floor(y * zoom), pixelSize, pixelSize);
 			}
 		}
 		if (hasYFunction) {
 			g.setColor(Y_COLOR);
 			for (int y = 0; y < sourceHeight; y++) {
 				final double x = yOperation.execute((double) y);
-				g.fillRect((int) Math.floor(x * zoom), (int) Math.floor(y * zoom), (int) zoom, (int) zoom);
+				g.fillRect((int) Math.floor(x * zoom), (int) Math.floor(y * zoom), pixelSize, pixelSize);
 			}
 		}
 	}

@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
 public class ApplyFunctionTool {
-	private static final char SEPARATOR = ';';
+	public static final char SEPARATOR = ';';
 
 	public static void execute(DataLayer layer) {
 		final String function = JOptionPane.showInputDialog("Fonction à appliquer (exemple : \"x * 2 + zoom(12)" + SEPARATOR + "+32\") ?");

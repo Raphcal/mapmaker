@@ -27,6 +27,12 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	public static final int EMPTY_TILE = -1;
 
 	/**
+	 * Carte parente.
+	 * NOTE: Pas sûr de l'intérêt.
+	 */
+	private TileMap parent;
+
+	/**
 	 * Nom de la couche.
 	 */
 	private String name;
@@ -366,6 +372,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		return getPlugin(clazz, LayerPlugins.nameOf(clazz));
 	}
 
+	@Override
 	public <L extends LayerPlugin> L getPlugin(Class<L> clazz, String name) {
 		return (L) plugins.get(name);
 	}

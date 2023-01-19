@@ -1,7 +1,9 @@
 package fr.rca.mapmaker.util;
 
-import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.map.DataLayer;
 import fr.rca.mapmaker.model.palette.ColorPalette;
+import fr.rca.mapmaker.operation.Operation;
+import fr.rca.mapmaker.operation.OperationParser;
 import java.awt.geom.Point2D;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,9 +58,16 @@ public class CleanEdge {
 	@Builder.Default
 	private double rotation = 0.0;
 
+	private String function;
+
+	private Operation operation;
+
 	private ColorPalette palette;
 
-	public void shade(TileLayer layer) {
+	public void shade(DataLayer layer) {
+		if (function != null && operation == null) {
+			operation = OperationParser.parse(function);
+		}
 		final int width = (int) Math.ceil(layer.getWidth() * scale.x);
 		final int height = (int) Math.ceil(layer.getHeight() * scale.y);
 		final int max = width * height;
@@ -67,6 +76,9 @@ public class CleanEdge {
 		for (int index = 0; index < max; index++) {
 			Point point = new Point(index % width, index / width);
 
+			if (operation != null) {
+				point.y = point.y - operation.execute(point.x);
+			}
 			if (rotation != 0) {
 				final double middleX = width / 2.0;
 				final double middleY = height / 2.0;
@@ -331,7 +343,7 @@ public class CleanEdge {
 		return null;
 	}
 
-	private int texture(TileLayer layer, Point point) {
+	private int texture(DataLayer layer, Point point) {
 		return layer.getTile((int) point.x, (int) point.y);
 	}
 
@@ -342,7 +354,7 @@ public class CleanEdge {
 				: TRANSPARENT;
 	}
 
-	private int fragment(Point px, TileLayer layer) {
+	private int fragment(Point px, DataLayer layer) {
 		px = px.add(0.0001);
 		Point local = px.fractional();
 		if (rotation != 0) {

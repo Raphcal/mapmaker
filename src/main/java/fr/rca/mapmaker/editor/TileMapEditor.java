@@ -910,7 +910,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 		drawGrid.getOverlay().resize(parts[0], parts[1]);
     }//GEN-LAST:event_resizeButtonActionPerformed
 
-	private static int toInt(String value) {
+	public static int toInt(String value) {
 		try {
 			return Integer.valueOf(value);
 		} catch (Exception e) {
