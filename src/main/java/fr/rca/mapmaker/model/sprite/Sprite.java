@@ -163,7 +163,11 @@ public class Sprite {
 				for (final double direction : favoriteDirections) {
 					final List<TileLayer> layers = animation.getFrames(direction);
 					if (layers != null && !layers.isEmpty()) {
-						return layers.get(0);
+						for (TileLayer layer : layers) {
+							if (!layer.isEmpty()) {
+								return layer;
+							}
+						}
 					}
 				}
 			}

@@ -1,4 +1,3 @@
-
 package fr.rca.mapmaker.model.palette;
 
 import fr.rca.mapmaker.editor.SpriteEditor;
@@ -10,6 +9,7 @@ import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.Paints;
+import fr.rca.mapmaker.util.CleanEdge;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -26,17 +26,17 @@ import javax.swing.JFrame;
  * @author Raphaël Calabro <raph_kun at yahoo.fr>
  */
 public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
-	
+
 	/**
 	 * Sprite actuellement sélectionné.
 	 */
 	private int selectedTile;
-	
+
 	/**
 	 * Nom de la palette.
 	 */
 	private String name;
-	
+
 	/**
 	 * Nombre de sprites alloués quand la palette est vide ou presque pleine.
 	 */
@@ -65,31 +65,46 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 		this.animationNames = animationNames;
 		expand(columns - 1);
 	}
-	
+
 	@Override
 	public void paintTile(Graphics g, int tile, int refX, int refY, int size) {
-		if(tile >= 0 && tile < sprites.size()) {
+		if (tile >= 0 && tile < sprites.size()) {
 			final Sprite sprite = sprites.get(tile);
 			final ColorPalette palette = sprite.getPalette();
-			
+
 			// Fond
-			((Graphics2D)g).setPaint(Paints.TRANSPARENT_PAINT);
+			((Graphics2D) g).setPaint(Paints.TRANSPARENT_PAINT);
 			g.fillRect(refX, refY, size, size);
 
 			// Sprite
 			final TileLayer defaultLayer = sprite.getDefaultLayer(animationNames);
-			
-			if(defaultLayer != null) {
+
+			if (defaultLayer != null) {
+				TileLayer layerToPaint;
+				if (defaultLayer.getWidth() != size && defaultLayer.getHeight() != size) {
+					layerToPaint = new TileLayer(defaultLayer);
+					double scale = Math.max((double)size / defaultLayer.getWidth(), (double)size / defaultLayer.getHeight());
+					CleanEdge.builder()
+							.palette(palette)
+							.scale(new CleanEdge.Point(scale, scale))
+							.slope(true)
+							.cleanUpSmallDetails(true)
+							.build()
+							.shade(layerToPaint);
+				} else {
+					layerToPaint = defaultLayer;
+				}
+
 				final int tileSize = 1;
-				final int layerWidth = Math.min(defaultLayer.getWidth(), size);
-				final int layerHeight = Math.min(defaultLayer.getHeight(), size);
-				
+				final int layerWidth = Math.min(layerToPaint.getWidth(), size);
+				final int layerHeight = Math.min(layerToPaint.getHeight(), size);
+
 				final int left = layerWidth < size ? refX + (size - layerWidth) / 2 : refX;
-				final int top = layerWidth < size ? refY + (size - layerHeight) / 2 / 2 : refY;
-				
-				for(int y = 0; y < layerHeight; y++) {
-					for(int x = 0; x < layerWidth; x++) {
-						palette.paintTile(g, defaultLayer.getTile(x, y), x * tileSize + left, y * tileSize + top, tileSize);
+				final int top = layerHeight < size ? refY + (size - layerHeight) / 2 / 2: refY;
+
+				for (int y = 0; y < layerHeight; y++) {
+					for (int x = 0; x < layerWidth; x++) {
+						palette.paintTile(g, layerToPaint.getTile(x, y), x * tileSize + left, y * tileSize + top, tileSize);
 					}
 				}
 			}
@@ -127,9 +142,9 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	public int getSelectedTile() {
 		return selectedTile;
 	}
-	
+
 	public Sprite getSelectedSprite() {
-		if(selectedTile >= 0 && selectedTile < sprites.size()) {
+		if (selectedTile >= 0 && selectedTile < sprites.size()) {
 			return sprites.get(selectedTile);
 		} else {
 			return null;
@@ -163,11 +178,11 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 
 	@Override
 	public void removeTile(int index) {
-		if(index >= 0 && index < sprites.size()) {
+		if (index >= 0 && index < sprites.size()) {
 			sprites.set(index, new Sprite());
 		}
 	}
-	
+
 	@Override
 	public void removeRow() {
 		throw new UnsupportedOperationException("Not supported yet.");
@@ -182,38 +197,38 @@ public class SpritePalette implements EditablePalette, HasSizeChangeListeners {
 	public void insertRowAfter() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
-	
+
 	@Override
 	public void refresh() {
 		expand(columns - 1);
 	}
-	
+
 	private void expand(int index) {
-		if(index >= sprites.size() - columns) {
+		if (index >= sprites.size() - columns) {
 			final Dimension oldSize = new Dimension(columns, sprites.size() / columns);
-			
-			for(int i = 0; i < columns; i++) {
+
+			for (int i = 0; i < columns; i++) {
 				sprites.add(new Sprite());
 			}
-			
+
 			final Dimension newSize = new Dimension(columns, sprites.size() / columns);
-			
+
 			fireSizeChanged(oldSize, newSize);
 		}
 	}
-	
+
 	@Override
 	public void addSizeChangeListener(SizeChangeListener listener) {
 		sizeChangeListeners.add(listener);
 	}
-	
+
 	@Override
 	public void removeSizeChangeListener(SizeChangeListener listener) {
 		sizeChangeListeners.remove(listener);
 	}
-	
+
 	protected void fireSizeChanged(Dimension oldSize, Dimension newSize) {
-		for(final SizeChangeListener listener : sizeChangeListeners) {
+		for (final SizeChangeListener listener : sizeChangeListeners) {
 			listener.sizeChanged(this, oldSize, newSize);
 		}
 	}
