@@ -56,6 +56,9 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	private static final String MAP_FILE_FORMAT = "map%d.map";
 	private static final String INSTANCES_FILE_FORMAT = "map%d.ins";
 	private static final String SPRITE_FILE_FORMAT = "sprite%d.spr";
+	private static final String SCRIPT_FILE_FORMAT = "script%d.txt";
+
+	private static final String[] OWN_FILE_EXTENSIONS = {".plist", ".pal", ".map", ".ins", ".spr", ".txt"};
 
 	private static final String VERSION = "version";
 	private static final String PALETTES = "palettes";
@@ -101,7 +104,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		setVersion(InternalFormat.LAST_VERSION);
 
 		file.mkdir();
-		final HashSet<File> files = new HashSet<File>(Arrays.asList(file.listFiles()));
+		final HashSet<File> files = new HashSet<File>(Arrays.asList(file.listFiles(BundleFormat::isOwnFile)));
 
 		progressTracker.stepDidEnd("mkdir");
 
@@ -156,7 +159,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			for (int index = 0; index < scriptNames.size(); index++) {
 				final String script = project.getScripts().get(scriptNames.get(index));
 				if (script != null && !script.isEmpty()) {
-					write(script, file, "script" + index + ".txt", files);
+					write(script, file, String.format(SCRIPT_FILE_FORMAT, index), files);
 				}
 				progressTracker.subStepDidEnd();
 			}
@@ -293,7 +296,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			if (scriptNames != null) {
 				progressTracker.stepHaveSubsteps(scriptNames.size());
 				for (int index = 0; index < scriptNames.size(); index++) {
-					project.getScripts().put(scriptNames.get(index), read(file, "script" + index + ".txt"));
+					project.getScripts().put(scriptNames.get(index), read(file, String.format(SCRIPT_FILE_FORMAT, index)));
 					progressTracker.subStepDidEnd();
 				}
 			}
@@ -379,5 +382,17 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			}
 		}
 		return outputStream.toString("UTF-8");
+	}
+
+	private static boolean isOwnFile(File dir, String fileName) {
+		if (fileName == null) {
+			return false;
+		}
+		for (String extension : OWN_FILE_EXTENSIONS) {
+			if (fileName.endsWith(extension)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
