@@ -212,7 +212,7 @@ public class GitManager {
 			final File workTree = git.getRepository().getWorkTree();
 
 			final String relativePath = Files.getRelativePath(workTree, project);
-			addCommand.addFilepattern(relativePath);
+			addCommand.addFilepattern(!relativePath.isEmpty() ? relativePath : ".");
 			addCommand.call();
 
 			final Status status = git.status().call();
