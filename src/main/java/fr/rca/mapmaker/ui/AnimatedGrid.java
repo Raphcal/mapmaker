@@ -188,7 +188,7 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 
 				for(int y = 0; y < layer.getHeight(); y++) {
 					for(int x = 0; x < layer.getWidth(); x++) {
-						palette.paintTile(g, layer.getTile(x, y), (int) (x * zoom), (int) (y * zoom), (int) zoom);
+						palette.paintTile(g, layer.getTile(x, y), (int) (x * zoom), (int) (y * zoom), (int) Math.max(zoom, 1));
 					}
 				}
 			} else {
@@ -197,7 +197,7 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 				for(int y = 0; y < frameHeight; y++) {
 					final int frameY = frames.get(0).getHeight() - frameHeight - index + y;
 					for(int x = 0; x < layer.getWidth(); x++) {
-						palette.paintTile(g, layer.getTile(x, frameY), (int) (x * zoom), (int) (y * zoom), (int) zoom);
+						palette.paintTile(g, layer.getTile(x, frameY), (int) (x * zoom), (int) (y * zoom), (int) Math.max(zoom, 1));
 					}
 				}
 			}
