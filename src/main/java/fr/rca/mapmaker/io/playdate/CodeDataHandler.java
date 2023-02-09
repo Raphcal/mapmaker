@@ -12,10 +12,16 @@ import java.io.InputStream;
  */
 public abstract class CodeDataHandler<T> implements DataHandler<T> {
 	private String generatedDate = Headers.getGeneratedDate();
+	protected PlaydateExportConfiguration configuration;
 
 	@Override
 	public T read(InputStream inputStream) throws IOException {
 		throw new UnsupportedOperationException("Not supported.");
+	}
+
+	public CodeDataHandler<T> withConfiguration(PlaydateExportConfiguration configuration) {
+		this.configuration = configuration;
+		return this;
 	}
 
 	public CodeDataHandler<T> withGeneratedDate(String generatedDate) {

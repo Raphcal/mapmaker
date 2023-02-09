@@ -29,7 +29,7 @@ public class SpriteDefinitionsAsHeaderHandler extends CodeDataHandler<List<Sprit
 						.collect(Collectors.joining())
 				+ "} SpriteName;\n"
 				+ "\n"
-				+ "MELSpriteDefinition SpriteNameGetDefinition(SpriteName self);\n"
+				+ "MELSpriteDefinition " + (configuration.getSpriteNames().getGetDefinitionType() == PlaydateExportConfiguration.SpriteNamesGetDefinitionType.pointer ? "* _Nullable " : "") + "SpriteNameGetDefinition(SpriteName self);\n"
 				+ "LCDBitmapTable * _Nullable SpriteNameLoadBitmapTable(SpriteName self);\n"
 				+ "\n"
 				+ "#endif /* spritenames_h */\n").getBytes(StandardCharsets.UTF_8));

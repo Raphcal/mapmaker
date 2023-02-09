@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.io.autodeploy;
 
+import com.google.gson.Gson;
 import fr.rca.mapmaker.io.playdate.AnimationNamesAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.CodeDataHandler;
 import fr.rca.mapmaker.io.playdate.Headers;
@@ -9,6 +10,7 @@ import fr.rca.mapmaker.io.playdate.PaletteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.PaletteAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.PaletteNamesAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.PaletteNamesAsHeaderHandler;
+import fr.rca.mapmaker.io.playdate.PlaydateExportConfiguration;
 import fr.rca.mapmaker.io.playdate.PlaydateFormat;
 import fr.rca.mapmaker.io.playdate.SpriteAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.SpriteAsHeaderHandler;
@@ -27,8 +29,11 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.imageio.ImageIO;
 
@@ -49,6 +54,14 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		final File generatedSourcesDir = new File(root, "gen");
 		generatedSourcesDir.mkdir();
 
+		PlaydateExportConfiguration configuration = new PlaydateExportConfiguration();
+		final File configFile = new File(root, "mmkconfig.json");
+		if (configFile.canRead()) {
+			try (InputStreamReader reader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8)) {
+ 				configuration = new Gson().fromJson(reader, PlaydateExportConfiguration.class);
+			}
+		}
+
 		final List<Palette> palettes = PlaydateFormat.palettesForProject(project);
 
 		for(final Palette palette : palettes) {
@@ -58,11 +71,11 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 				ImageIO.write(PlaydateFormat.renderPalette((EditableImagePalette) palette), "png", outputStream);
 			}
 
-			generateFile(generatedSourcesDir, new PaletteAsHeaderHandler(), palette);
-			generateFile(generatedSourcesDir, new PaletteAsCodeHandler(), palette);
+			generateFile(generatedSourcesDir, new PaletteAsHeaderHandler(), palette, configuration);
+			generateFile(generatedSourcesDir, new PaletteAsCodeHandler(), palette, configuration);
 		}
-		generateFile(generatedSourcesDir, new PaletteNamesAsHeaderHandler(), palettes);
-		generateFile(generatedSourcesDir, new PaletteNamesAsCodeHandler(), palettes);
+		generateFile(generatedSourcesDir, new PaletteNamesAsHeaderHandler(), palettes, configuration);
+		generateFile(generatedSourcesDir, new PaletteNamesAsCodeHandler(), palettes, configuration);
 
 		final TileMapHandler tileMapHandler = new TileMapHandler();
 		final InstancesHandler instancesHandler = new InstancesHandler();
@@ -79,10 +92,10 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 				instancesHandler.write(mapAndInstances.getSpriteInstances(), outputStream);
 			}
 		}
-		generateFile(generatedSourcesDir, new TileMapsAsHeaderHandler(), maps);
-		generateFile(generatedSourcesDir, new TileMapsAsCodeHandler(), maps);
+		generateFile(generatedSourcesDir, new TileMapsAsHeaderHandler(), maps, configuration);
+		generateFile(generatedSourcesDir, new TileMapsAsCodeHandler(), maps, configuration);
 
-		generateFile(generatedSourcesDir, new AnimationNamesAsHeaderHandler(), project.getAnimationNames());
+		generateFile(generatedSourcesDir, new AnimationNamesAsHeaderHandler(), project.getAnimationNames(), configuration);
 
 		final SpriteAsCodeHandler spriteAsCodeHandler = new SpriteAsCodeHandler(project.getAnimationNames());
 
@@ -97,22 +110,23 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 					ImageIO.write(spriteImage, "png", outputStream);
 				}
 
-				generateFile(generatedSourcesDir, new SpriteAsHeaderHandler(), sprite);
-				generateFile(generatedSourcesDir, spriteAsCodeHandler, sprite);
+				generateFile(generatedSourcesDir, new SpriteAsHeaderHandler(), sprite, configuration);
+				generateFile(generatedSourcesDir, spriteAsCodeHandler, sprite, configuration);
 			}
 		}
 
-		generateFile(generatedSourcesDir, new SpriteDefinitionsAsHeaderHandler(), sprites);
-		generateFile(generatedSourcesDir, new SpriteDefinitionsAsCodeHandler(), sprites);
+		generateFile(generatedSourcesDir, new SpriteDefinitionsAsHeaderHandler(), sprites, configuration);
+		generateFile(generatedSourcesDir, new SpriteDefinitionsAsCodeHandler(), sprites, configuration);
 
-		generateFile(generatedSourcesDir, new SpriteVariablesAsHeaderHandler(), PlaydateFormat.variablesForSprites(project));
+		generateFile(generatedSourcesDir, new SpriteVariablesAsHeaderHandler(), PlaydateFormat.variablesForSprites(project), configuration);
 	}
 
-	private <T> void generateFile(final File generatedSourcesDir, CodeDataHandler<T> handler, final T data) throws IOException {
+	private <T> void generateFile(final File generatedSourcesDir, CodeDataHandler<T> handler, final T data, PlaydateExportConfiguration configuration) throws IOException {
 		File file = new File(generatedSourcesDir, handler.fileNameFor(data));
 		String generatedDate = Headers.getGeneratedDate(file);
 		try (final BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
 			handler
+					.withConfiguration(configuration)
 					.withGeneratedDate(generatedDate)
 					.write(data, outputStream);
 		}

@@ -26,15 +26,15 @@ public class SpriteDefinitionsAsCodeHandler extends CodeDataHandler<List<Sprite>
 						.map(sprite -> "#include \""+ spriteAsHeaderHandler.fileNameFor(sprite) + "\"\n")
 						.collect(Collectors.joining())
 				+ "\n"
-				+ "MELSpriteDefinition SpriteNameGetDefinition(SpriteName self) {\n"
+				+ "MELSpriteDefinition " + (configuration.getSpriteNames().getGetDefinitionType() == PlaydateExportConfiguration.SpriteNamesGetDefinitionType.pointer ? "* _Nullable " : "") + "SpriteNameGetDefinition(SpriteName self) {\n"
 				+ "    switch (self) {\n"
 				+ t.stream()
 						.map(sprite -> "    case SpriteName" + Names.normalizeName(sprite, Names::toPascalCase) + ":\n" +
-										"        return sprite" + Names.normalizeName(sprite, Names::toPascalCase) + ";\n")
+										"        return " + (configuration.getSpriteNames().getGetDefinitionType() == PlaydateExportConfiguration.SpriteNamesGetDefinitionType.pointer ? "&" : "") + "sprite" + Names.normalizeName(sprite, Names::toPascalCase) + ";\n")
 						.collect(Collectors.joining())
 				+ "    default:\n"
 				+ "        playdate->system->error(\"Unsupported sprite name: %d\", self);\n"
-				+ "        return (MELSpriteDefinition) {};\n"
+				+ "        return " + (configuration.getSpriteNames().getGetDefinitionType() == PlaydateExportConfiguration.SpriteNamesGetDefinitionType.pointer ? "NULL" : "(MELSpriteDefinition) {}") + ";\n"
 				+ "    }\n"
 				+ "}\n"
 				+ "\n"

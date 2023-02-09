@@ -81,6 +81,7 @@
                                     <classpath file="${env.HOME}/.m2/repository/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13.jar" />
                                     <classpath file="${env.HOME}/.m2/repository/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" />
                                     <classpath file="${env.HOME}/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" />
+                                    <classpath file="${env.HOME}/.m2/repository/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar" />
                                 </bundleapp>
                                 <copy file="Info.plist" toFile="target/MapMaker.app/Contents/Info.plist" overwrite="true"/>
                                 <copy file="Info2.plist" toFile="target/MapMaker.app/Contents/Resources/Info.plist"/>
@@ -177,6 +178,11 @@
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit.ssh.jsch</artifactId>
             <version>6.2.0.202206071550-r</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
         </dependency>
         <dependency>
             <groupId>com.intellij</groupId>
