@@ -137,7 +137,7 @@ public class SpriteInspector extends javax.swing.JDialog {
         typeLabel.setText("Type :");
         typeLabel.setToolTipText("");
 
-        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Décoration", "Joueur", "Plateforme", "Bonus", "Destructible", "Méchant", "Avec collision", "Police" }));
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Décoration", "Joueur", "Plateforme", "Bonus", "Destructible", "Méchant", "Avec collision", "Tir", "Police" }));
         typeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeComboBoxActionPerformed(evt);

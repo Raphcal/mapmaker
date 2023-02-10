@@ -133,6 +133,8 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 		case 6:
 			return "MELSpriteTypeCollidable";
 		case 7:
+			return "MELSpriteTypeBullet";
+		case 8:
 			return "MELSpriteTypeFont";
 		default:
 				throw new UnsupportedOperationException("Unsupported sprite type: " + sprite.getType());
