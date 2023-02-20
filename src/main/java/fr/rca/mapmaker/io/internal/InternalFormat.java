@@ -178,7 +178,7 @@ public class InternalFormat extends AbstractFormat {
 		}
 	}
 
-	private String readHeader(InputStream inputStream) throws IOException {
+	public String readHeader(InputStream inputStream) throws IOException {
 		final char[] header = new char[HEADER_LENGTH];
 		for (int index = 0; index < HEADER_LENGTH; index++) {
 			header[index] = Streams.readChar(inputStream);

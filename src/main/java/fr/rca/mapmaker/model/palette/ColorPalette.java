@@ -2,6 +2,7 @@ package fr.rca.mapmaker.model.palette;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.stream.IntStream;
 
 public class ColorPalette implements Palette {
 
@@ -64,6 +65,13 @@ public class ColorPalette implements Palette {
 		for (int index = 0; index < colors.length; index++) {
 			inverse(index);
 		}
+	}
+
+	public int indexOf(Color color) {
+		return IntStream.range(0, size())
+				.filter(index -> getColor(index).equals(color))
+				.findAny()
+				.orElse(-1);
 	}
 
 	@Override
