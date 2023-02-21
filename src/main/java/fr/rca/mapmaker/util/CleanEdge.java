@@ -1,10 +1,22 @@
 package fr.rca.mapmaker.util;
 
+import fr.rca.mapmaker.io.internal.InternalFormat;
 import fr.rca.mapmaker.model.map.DataLayer;
+import fr.rca.mapmaker.model.map.TileLayer;
+import fr.rca.mapmaker.model.map.TileMap;
+import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
+import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.operation.Operation;
 import fr.rca.mapmaker.operation.OperationParser;
+import fr.rca.mapmaker.ui.Grid;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
+import java.io.InputStream;
+import javax.swing.JFrame;
+import javax.swing.Timer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -74,7 +86,7 @@ public class CleanEdge {
 
 		final int[] tiles = new int[max];
 		for (int index = 0; index < max; index++) {
-			Point point = new Point(index % width, index / width);
+			Point point = new Point(index % width + scale.x / 2, index / width + scale.y / 2);
 
 			if (operation != null) {
 				point.y = point.y - operation.execute(point.x);
@@ -357,11 +369,7 @@ public class CleanEdge {
 	private int fragment(Point px, DataLayer layer) {
 		px = px.add(0.0001);
 		Point local = px.fractional();
-		if (rotation != 0) {
-			px = px.ceil().substract(0, 1);
-		} else {
-			px = px.floor();
-		}
+		px = px.floor();
 
 		Point pointDir = local.round().multiply(2).substract(1);
 
@@ -544,5 +552,51 @@ public class CleanEdge {
 		public Color(double red, double green, double blue) {
 			this(red, green, blue, 1);
 		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		InternalFormat format = new InternalFormat();
+		format.setVersion(InternalFormat.VERSION_15);
+		InputStream inputStream = CleanEdge.class.getResourceAsStream("/test-rotate.mmk");
+		format.readHeader(inputStream);
+		Project project = format.getHandler(Project.class).read(inputStream);
+
+		TileLayer source = project.getSprites().get(0).get(Animation.ANIMATION_NAMES.get(0)).getFrames(0.0).get(0);
+		TileLayer base = new TileLayer(source);
+		TileLayer rotated = new TileLayer(source);
+
+		Timer timer = new Timer(500, new ActionListener() {
+			private int rotation = 0;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				rotation = (rotation + 10) % 360;
+				rotated.restoreData(source);
+				if (rotation % 90 == 0) {
+					rotated.rotate90(rotation / 90);
+				} else {
+					CleanEdge.builder()
+						.palette(AlphaColorPalette.getDefaultColorPalette())
+						.rotation(Math.toRadians(rotation))
+						.slope(true)
+						.cleanUpSmallDetails(true)
+						.build()
+						.shade(rotated);
+				}
+			}
+		});
+		timer.start();
+
+		Grid grid = new Grid();
+		grid.setZoom(8);
+		TileMap tileMap = new TileMap(base, AlphaColorPalette.getDefaultColorPalette());
+		tileMap.add(rotated);
+		grid.setTileMap(tileMap);
+
+		JFrame frame = new JFrame();
+		frame.getContentPane().add(grid);
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
 	}
 }
