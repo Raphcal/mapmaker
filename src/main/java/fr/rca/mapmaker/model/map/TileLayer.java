@@ -875,7 +875,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * @param angle Angle à appliquer.
 	 */
 	public void rotate(double angle) {
-		rotate(angle, width / 2, height / 2);
+		rotate(angle, width / 2.0, height / 2.0);
 	}
 
 	/**
@@ -885,7 +885,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * @param pivotX Abscisse du centre de la rotation.
 	 * @param pivotY Ordonnée du centre de la rotation.
 	 */
-	public void rotate(double angle, int pivotX, int pivotY) {
+	public void rotate(double angle, double pivotX, double pivotY) {
 		final int[] rotated = new int[this.tiles.length];
 
 		int index = 0;
@@ -894,8 +894,8 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 				final double originalAngle = Math.atan2(y - pivotY, x - pivotX);
 				final double length = Point.distance(x, y, pivotX, pivotY);
 
-				final int refX = (int) (Math.cos(originalAngle - angle) * length) + pivotX;
-				final int refY = (int) (Math.sin(originalAngle - angle) * length) + pivotY;
+				final int refX = (int) (Math.cos(originalAngle - angle) * length + pivotX);
+				final int refY = (int) (Math.sin(originalAngle - angle) * length + pivotY);
 
 				rotated[index] = getTile(refX, refY);
 
