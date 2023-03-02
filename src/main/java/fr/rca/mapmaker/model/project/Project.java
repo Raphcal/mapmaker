@@ -5,6 +5,7 @@ import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.map.MapAndInstances;
+import fr.rca.mapmaker.model.palette.AbstractEditablePalette;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
@@ -198,7 +199,14 @@ public class Project implements ListModel, HasColorPalette {
 		if (currentMap == null || currentMap.getPalette() == null) {
 			return null;
 		} else {
-			return new PaletteMap(currentMap.getPalette(), 4);
+			Palette palette = currentMap.getPalette();
+			if (palette instanceof PaletteReference) {
+				palette = ((PaletteReference) palette).getPalette();
+			}
+			final int columns = palette instanceof AbstractEditablePalette
+					? ((AbstractEditablePalette) palette).getColumns()
+					: 4;
+			return new PaletteMap(currentMap.getPalette(), columns);
 		}
 	}
 

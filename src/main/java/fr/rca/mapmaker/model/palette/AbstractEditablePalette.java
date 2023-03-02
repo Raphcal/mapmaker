@@ -105,6 +105,10 @@ public abstract class AbstractEditablePalette<T> implements EditablePalette, Has
 		return columns;
 	}
 
+	public void setColumns(int columns) {
+		this.columns = columns;
+	}
+
 	@Override
 	public int size() {
 		return tiles.size();

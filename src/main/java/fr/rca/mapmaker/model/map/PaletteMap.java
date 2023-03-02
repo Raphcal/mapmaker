@@ -22,35 +22,35 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 		this.width = 1;
 		this.listeners = null;
 	}
-	
+
 	public PaletteMap(Palette palette, int width) {
 		this.width = width;
 		this.selectedPoint = new Point();
 		setPalette(palette);
-		
+
 		this.listeners = new ArrayList<SelectionListener>();
 	}
 
 	public void setPaletteWidth(int width) {
 		this.width = width;
-		
-		if(!getLayers().isEmpty()) {
+
+		if (!getLayers().isEmpty()) {
 			final PaletteLayer paletteLayer = (PaletteLayer) getLayers().get(0);
 			paletteLayer.setWidth(width);
 		}
 	}
-	
+
 	@Override
 	public final void setPalette(Palette palette) {
 		clear();
 		add(new PaletteLayer(palette, width));
-		
+
 		super.setPalette(palette);
-		
+
 		// TODO: Vérifier que la tuile existe dans la palette
 		palette.setSelectedTile(getSelectedTile());
 	}
-	
+
 	@Override
 	public void refresh() {
 		getPalette().refresh();
@@ -71,65 +71,65 @@ public class PaletteMap extends TileMap implements HasSelectionListeners {
 	public Point getSelection() {
 		return selectedPoint;
 	}
-	
+
 	public int getSelectedTile() {
 		return getTileFromPoint(selectedPoint);
 	}
-	
+
 	public void setSelection(Point selectedPoint) {
-		if(selectedPoint != null) {
+		if (selectedPoint != null) {
 			normalizePoint(selectedPoint);
 
 			final int tile = getTileFromPoint(selectedPoint);
 			final int lastTile = getPalette().size() - 1;
 
-			if(tile > lastTile) {
+			if (tile > lastTile) {
 				selectedPoint = getPointFromTile(lastTile);
 			}
 		}
-		
-		if((this.selectedPoint == null && selectedPoint != null) || (this.selectedPoint != null && !this.selectedPoint.equals(selectedPoint))) {
+
+		if ((this.selectedPoint == null && selectedPoint != null) || (this.selectedPoint != null && !this.selectedPoint.equals(selectedPoint))) {
 			final Point oldSelection = this.selectedPoint;
 			this.selectedPoint = selectedPoint;
-			
+
 			getPalette().setSelectedTile(getSelectedTile());
 			fireSelectionChanged(oldSelection, selectedPoint);
 		}
 	}
-	
+
 	public void removeSelectedTile() {
-		if(getPalette().isEditable()) {
-			((EditablePalette)getPalette()).removeTile(getSelectedTile());
+		if (getPalette().isEditable()) {
+			((EditablePalette) getPalette()).removeTile(getSelectedTile());
 		}
 	}
 
 	public int getTileFromPoint(Point point) {
-		if(point != null) {
+		if (point != null) {
 			return point.y * width + point.x;
 		} else {
 			return -1;
 		}
 	}
-	
+
 	public Point getPointFromTile(int tile) {
 		return new Point(tile % width, tile / width);
 	}
 
 	private void normalizePoint(Point p) {
-		if(p.x < 0) {
+		if (p.x < 0) {
 			p.x = 0;
-		
+
 		} else if (p.x >= width) {
 			p.x = width - 1;
 		}
-		
-		if(p.y < 0) {
+
+		if (p.y < 0) {
 			p.y = 0;
 		}
 	}
-	
+
 	protected void fireSelectionChanged(Point oldSelection, Point newSelection) {
-		for(final SelectionListener listener : listeners) {
+		for (final SelectionListener listener : listeners) {
 			listener.selectionChanged(oldSelection, newSelection);
 		}
 	}
