@@ -16,6 +16,7 @@ import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import fr.rca.mapmaker.util.Dithering;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -145,6 +146,10 @@ public class PlaydateFormat extends AbstractFormat {
 	}
 
 	public static BufferedImage renderSprite(Sprite sprite, List<String> animationNames) {
+		return renderSprite(sprite, animationNames, false);
+	}
+
+	public static BufferedImage renderSprite(Sprite sprite, List<String> animationNames, boolean dither) {
 		final int frameCount = (int) animationNames.stream()
 				.map(sprite::findByName)
 				.filter(Objects::nonNull)
@@ -181,6 +186,9 @@ public class PlaydateFormat extends AbstractFormat {
 					if (frameIndex == null) {
 						frameIndex = indexForTile.size();
 						indexForTile.put(frame, frameIndex);
+					}
+					if (dither) {
+						frame = Dithering.dither(frame, palette);
 					}
 					int originY = (frameIndex / tileCountPerLine) * spriteHeight;
 					int originX = (frameIndex % tileCountPerLine) * spriteWidth;

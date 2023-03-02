@@ -102,7 +102,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		final List<Sprite> sprites = PlaydateFormat.spritesForProject(project);
 		for(int index = 0; index < sprites.size(); index++) {
 			final Sprite sprite = sprites.get(index);
-			BufferedImage spriteImage = PlaydateFormat.renderSprite(sprite, project.getAnimationNames());
+			BufferedImage spriteImage = PlaydateFormat.renderSprite(sprite, project.getAnimationNames(), configuration.getEnableDithering() != null && configuration.getEnableDithering());
 			if (spriteImage != null) {
 				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 						new FileOutputStream(

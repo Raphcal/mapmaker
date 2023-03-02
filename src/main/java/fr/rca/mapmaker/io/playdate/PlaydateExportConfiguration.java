@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class PlaydateExportConfiguration {
 	private SpriteNames spriteNames = new SpriteNames();
+	private Boolean enableDithering;
 
 	@Data
 	public static class SpriteNames {

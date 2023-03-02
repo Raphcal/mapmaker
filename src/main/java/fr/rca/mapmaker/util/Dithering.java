@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import javax.swing.JFrame;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -21,7 +23,9 @@ import javax.swing.JFrame;
  */
 
 public class Dithering {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Dithering.class);
 	public static boolean usePerceivedLightness = false;
+
 
 	public static TileLayer dither(DataLayer layer, ColorPalette palette) {
 		final int blackColor = palette.indexOf(Color.BLACK);
@@ -45,15 +49,19 @@ public class Dithering {
 				if (pixel < 0) {
 					continue;
 				}
+				if (pixel == blackColor || pixel == whiteColor) {
+					bwPixels[offset + x] = pixel;
+					continue;
+				}
 				final double lightness = lightnessMap.computeIfAbsent(pixel,
 						usePerceivedLightness
 							? key -> perceivedLightnessOf(palette.getColor(key))
 							: key -> luminanceOf(palette.getColor(key)) * 100.0);
 				// Faire x traits noirs sur 16 en fonction de la brillance
 				// noir si position dans la grille < 16 * (100 - brillance) /100
-				final int gridSize = 5;
-				int blackLine = (int) (gridSize - Math.round(lightness / (100.0 / gridSize)));
-				bwPixels[offset + x] = blackLine > 0 && blackLine >= ((y + x) % gridSize)
+				final int gridSize = 4;
+				int blackLine = (int) (gridSize - Math.floor(gridSize * lightness / 100.0));
+				bwPixels[offset + x] = blackLine > 0 && blackLine > ((y + x) % gridSize)
 						? blackColor
 						: whiteColor;
 			}
@@ -96,14 +104,17 @@ public class Dithering {
 				// The CIE standard states 903.3, but 24389/27 is the intent, making 903.296296296296296
 				? luminance * (24389.0 / 27.0)
 				: Math.pow(luminance, 1.0 / 3.0) * 116.0 - 16.0;
-		System.out.println("Color: " + color + ", luminance: " + luminance + ", lightness: " + lightness);
+		LOGGER.trace("Color: " + color + ", luminance: " + luminance + ", lightness: " + lightness);
 		return lightness;
 	}
 
 	private static double luminanceOf(Color color) {
-		return 0.2126 * vRGBToLinear(color.getRed())
+		double luminance =  0.2126 * vRGBToLinear(color.getRed())
 				+ 0.7152 * vRGBToLinear(color.getGreen())
 				+ 0.0722 * vRGBToLinear(color.getBlue());
+		int grid = (int) (5 - Math.floor(5 * luminance));
+		LOGGER.trace("Color: " + color + ", luminance: " + luminance + ", grid: " + grid);
+		return luminance;
 	}
 
 	private static double vRGBToLinear(int colorChannel) {
