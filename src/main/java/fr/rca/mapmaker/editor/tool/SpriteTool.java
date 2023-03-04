@@ -176,7 +176,8 @@ public class SpriteTool extends MouseAdapter implements Tool {
 				final int translationY = (int) ((double) (e.getYOnScreen() - startPoint.getY()) / zoom);
 
 				instance.setPoint(new Point(originalPoint.x + translationX, originalPoint.y + translationY));
-				instance.redraw();
+				instance.updateBounds();
+				instance.repaint();
 			}
 
 			@Override

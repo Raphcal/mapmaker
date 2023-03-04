@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.model.map;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +32,15 @@ public interface Layer {
 	 * @return La hauteur.
 	 */
 	int getHeight();
+
+	/**
+	 * Récupère les dimensions de cette couche.
+	 *
+	 * @return Dimension de la couche.
+	 */
+	default Dimension getDimension() {
+		return new Dimension(getWidth(), getHeight());
+	}
 
 	/**
 	 * Récupère la vitesse de défilement associée à la couche.

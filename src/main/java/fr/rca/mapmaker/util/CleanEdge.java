@@ -11,6 +11,7 @@ import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.operation.Operation;
 import fr.rca.mapmaker.operation.OperationParser;
 import fr.rca.mapmaker.ui.Grid;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
@@ -64,8 +65,11 @@ public class CleanEdge {
 	@Builder.Default
 	private double lineWidth = 1.0;
 
-	@Builder.Default
-	private Point scale = new Point(1.0, 1.0);
+	private Point scale;
+
+	private Double scaleRate;
+
+	private Dimension dimension;
 
 	@Builder.Default
 	private double rotation = 0.0;
@@ -76,9 +80,22 @@ public class CleanEdge {
 
 	private ColorPalette palette;
 
+	public TileLayer shaded(DataLayer source) {
+		final TileLayer layer = new TileLayer(source);
+		shade(layer);
+		return layer;
+	}
+
 	public void shade(DataLayer layer) {
 		if (function != null && operation == null) {
 			operation = OperationParser.parse(function);
+		}
+		if (scale == null && scaleRate != null) {
+			scale = new Point(scaleRate, scaleRate);
+		} else if (scale == null && dimension != null) {
+			scale = new Point((double) dimension.width / layer.getWidth(), (double) dimension.height / layer.getHeight());
+		} else if (scale == null) {
+			scale = new Point(1.0, 1.0);
 		}
 		final int width = (int) Math.ceil(layer.getWidth() * scale.x);
 		final int height = (int) Math.ceil(layer.getHeight() * scale.y);

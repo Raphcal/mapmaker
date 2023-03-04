@@ -7,14 +7,17 @@ import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.operation.VariableDeclarationParser;
 import fr.rca.mapmaker.ui.ImageRenderer;
+import fr.rca.mapmaker.util.CleanEdge;
 import fr.rca.mapmaker.util.Random;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JComponent;
+import javax.swing.SwingWorker;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -66,6 +69,8 @@ public class Instance extends JComponent {
 	 */
 	private String script;
 
+	private SwingWorker<Void, Void> worker;
+
 	public Instance() {
 	}
 
@@ -109,6 +114,33 @@ public class Instance extends JComponent {
 			defaultLayer = null;
 		}
 
+		if (worker != null) {
+			worker.cancel(true);
+		}
+		SwingWorker<Void, Void> aWorker = new SwingWorker() {
+			BufferedImage result;
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				result = drawLayer(sprite, defaultLayer);
+				return null;
+			}
+
+			@Override
+			protected void done() {
+				if (isCancelled()) {
+					return;
+				}
+				worker = null;
+				image = result;
+				repaint();
+			}
+		};
+		aWorker.execute();
+		worker = aWorker;
+	}
+
+	private BufferedImage drawLayer(final Sprite sprite, final TileLayer defaultLayer) {
 		final ImageRenderer renderer = new ImageRenderer();
 		if (sprite != null && defaultLayer != null) {
 			ColorPalette palette = sprite.getPalette();
@@ -116,11 +148,24 @@ public class Instance extends JComponent {
 				final TileMap map = getMap();
 				palette = map != null ? map.getColorPalette() : project.getColorPalette();
 			}
-			image = renderer.renderImage(defaultLayer, palette, TILE_SIZE);
+			final TileLayer layerToDraw;
+			Dimension dimension = getDimension();
+			if (!dimension.equals(defaultLayer.getDimension())) {
+				layerToDraw = CleanEdge.builder()
+						.palette(palette)
+						.dimension(dimension)
+						.slope(true)
+						.cleanUpSmallDetails(true)
+						.build()
+						.shaded(defaultLayer);
+			} else {
+				layerToDraw = defaultLayer;
+			}
+			return renderer.renderImage(layerToDraw, palette, TILE_SIZE);
 		} else {
 			final int width = sprite != null ? sprite.getWidth() : 32;
 			final int height = sprite != null ? sprite.getHeight() : 32;
-			image = renderer.renderImage(width, height, TILE_SIZE);
+			return renderer.renderImage(width, height, TILE_SIZE);
 		}
 	}
 
