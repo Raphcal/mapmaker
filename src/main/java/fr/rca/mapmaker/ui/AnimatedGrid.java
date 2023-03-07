@@ -1,5 +1,6 @@
 package fr.rca.mapmaker.ui;
 
+import fr.rca.mapmaker.model.map.DataLayer;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
@@ -19,10 +20,10 @@ import javax.swing.Timer;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  * @param <L> Type des étapes d'animation.
  */
-public class AnimatedGrid<L extends Layer> extends JComponent {
+public class AnimatedGrid<L extends DataLayer> extends JComponent {
 	
 	private static final double ONE_SECOND = 1000.0;
-    private static final double MAX_SIZE = 400.0;
+    private static final double MAX_SIZE = 200.0;
 	
 	private int index;
 	private List<L> frames = Collections.<L>emptyList();
@@ -184,11 +185,12 @@ public class AnimatedGrid<L extends Layer> extends JComponent {
 		// Étape d'animation
 		if(index >= 0 && index < frameCount()) {
 			if (!scroll) {
-				final Layer layer = frames.get(index);
-
-				for(int y = 0; y < layer.getHeight(); y++) {
-					for(int x = 0; x < layer.getWidth(); x++) {
-						palette.paintTile(g, layer.getTile(x, y), (int) (x * zoom), (int) (y * zoom), (int) Math.max(zoom, 1));
+				// TODO: Calculer le zoom à partir de la taille de la frame
+				DataLayer layer = frames.get(index);
+				Dimension dimension = getPreferredSize();
+				for(int y = 0; y < dimension.height; y++) {
+					for(int x = 0; x < dimension.width; x++) {
+						palette.paintTile(g, layer.getTile((int)(x / zoom), (int) (y / zoom)), x, y, 1);
 					}
 				}
 			} else {

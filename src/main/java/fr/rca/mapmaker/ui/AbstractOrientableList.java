@@ -35,6 +35,8 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	public static final String ADD_COMMAND = "add";
 	public static final String EDIT_COMMAND = "edit";
 
+	private static final int MAXIMUM_SIZE = 200;
+
 	protected Orientation orientation = Orientation.VERTICAL;
 	private int width = 72;
 	private int height = 72;
@@ -216,7 +218,16 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 
 	@Override
 	public int getElementWidth() {
-		return width;
+		if (width <= MAXIMUM_SIZE && height <= MAXIMUM_SIZE) {
+			return width;
+		}
+		
+		final double ratio = (double)width / height;
+		if (ratio > 1.0) {
+			return MAXIMUM_SIZE;
+		} else {
+			return (int) Math.round(MAXIMUM_SIZE * ratio);
+		}
 	}
 
 	public void setElementWidth(int width) {
@@ -226,9 +237,19 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 
 	@Override
 	public int getElementHeight() {
-		return this.height;
+		if (width <= MAXIMUM_SIZE && height <= MAXIMUM_SIZE) {
+			return height;
+		}
+		
+		final double ratio = (double)height / width;
+		if (ratio > 1.0) {
+			return MAXIMUM_SIZE;
+		} else {
+			return (int) Math.round(MAXIMUM_SIZE * ratio);
+		}
 	}
 
+	// Appelé quand la taille d'un sprite change.
 	public void setElementHeight(int height) {
 		this.height = height;
 		updateSize();
@@ -354,6 +375,9 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 				firstMap + orientation.getLength(clipBounds) / (orientation.getSize(this) + padding),
 				elements.size() - 1);
 
+		final int width = getElementWidth();
+		final int height = getElementHeight();
+
 		for (int index = firstMap; index <= lastMap; index++) {
 			// Selection
 			if (selection.contains(index)) {
@@ -381,6 +405,8 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 	protected abstract void paintElement(int index, Graphics g);
 
 	private void repaintElement(int index) {
+		final int width = getElementWidth();
+		final int height = getElementHeight();
 		repaint(new Rectangle(
 				// X
 				orientation.getX(this, index) - padding,
