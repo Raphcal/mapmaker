@@ -13,6 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import javax.swing.JViewport;
+import javax.swing.SwingWorker;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -210,6 +211,28 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 		gridScrollPane.setSize(realDimension);
 		pack();
 	}
+
+	@Override
+	public void setVisible(boolean b) {
+		if (b) {
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+				@Override
+				protected Void doInBackground() throws Exception {
+					Thread.sleep(50);
+					return null;
+				}
+
+				@Override
+				protected void done() {
+					setDimension(PreferencesManager.getInt(PreferencesManager.LAST_GAME_PREVIEW_DIMENSION));
+				}
+			};
+			worker.execute();
+		}
+		super.setVisible(b);
+	}
+
+	
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox deviceComboBox;
