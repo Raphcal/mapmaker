@@ -100,6 +100,8 @@ public class TileMapEditor extends javax.swing.JDialog {
 		setPalette(palette);
 		widthTextField.setText(Integer.toString(layer.getWidth()));
 		heightTextField.setText(Integer.toString(layer.getHeight()));
+		nameTextField.setText(layer.getName());
+		nameTextField.setVisible(false);
 
 		previousLayerButton.setVisible(false);
 		nextLayerButton.setVisible(false);
@@ -158,6 +160,8 @@ public class TileMapEditor extends javax.swing.JDialog {
 
 		widthTextField.setText(Integer.toString(layer.getWidth()));
 		heightTextField.setText(Integer.toString(layer.getHeight()));
+		nameTextField.setText(layer.getName());
+		nameTextField.setVisible(true);
 
 		hitboxToggleButton.setVisible(isHitboxAvailable());
 		attackHitboxToggleButton.setVisible(isHitboxAvailable());
@@ -264,6 +268,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         coatToggleButton = new javax.swing.JToggleButton();
         resizeButton = new javax.swing.JButton();
         attackHitboxToggleButton = new javax.swing.JToggleButton();
+        nameTextField = new javax.swing.JTextField();
 
         drawMap.setBackgroundColor(new java.awt.Color(0, 153, 153));
         drawMap.setHeight(32);
@@ -579,6 +584,11 @@ public class TileMapEditor extends javax.swing.JDialog {
         wireTool(attackHitboxToggleButton, secondaryHitboxTool);
         listenToPluginChanges(attackHitboxToggleButton, secondaryHitboxTool);
 
+        nameTextField.setToolTipText(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("resources/language").getString("tilemap.editor.name"), new Object[] {})); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, drawLayer, org.jdesktop.beansbinding.ELProperty.create("${name}"), nameTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -626,10 +636,6 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addGap(0, 0, 0)
                         .addComponent(replaceColorToggleButton))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(hitboxToggleButton)
-                        .addGap(0, 0, 0)
-                        .addComponent(attackHitboxToggleButton))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(previousLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -637,18 +643,23 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addComponent(zoomTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
                         .addComponent(zoomPercentLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(applyFunctionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(resizeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(widthTextField)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(treeToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(nextStepTreeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(heightTextField))
+                    .addComponent(heightTextField)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(hitboxToggleButton)
+                        .addGap(0, 0, 0)
+                        .addComponent(attackHitboxToggleButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(applyFunctionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(resizeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nameTextField))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
+                .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(alphaPaletteGrid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -709,6 +720,14 @@ public class TileMapEditor extends javax.swing.JDialog {
                                 .addComponent(coatToggleButton))
                             .addComponent(rotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(hitboxToggleButton)
+                            .addComponent(attackHitboxToggleButton))
+                        .addGap(0, 0, 0)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(applyFunctionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(resizeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(horizontalMirrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(verticalMirrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -735,13 +754,8 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(hitboxToggleButton)
-                            .addComponent(attackHitboxToggleButton))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(resizeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(applyFunctionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(8, 8, 8))
         );
@@ -1000,6 +1014,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private javax.swing.JToggleButton lineToggleButton;
     private javax.swing.JToggleButton magicWandToggleButton;
     private fr.rca.mapmaker.editor.undo.LayerMemento memento;
+    private javax.swing.JTextField nameTextField;
     private javax.swing.JButton nextLayerButton;
     private javax.swing.JButton nextStepTreeButton;
     private javax.swing.JButton okButton;

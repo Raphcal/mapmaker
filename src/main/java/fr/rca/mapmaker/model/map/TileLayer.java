@@ -129,6 +129,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		this.width = other.getWidth();
 		this.height = other.getHeight();
 		this.tiles = other.copyData();
+		this.name = other.getName();
 		if (other instanceof TileLayer) {
 			copyTileLayerFields((TileLayer) other);
 		}
@@ -807,6 +808,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	public void restoreData(DataLayer source) {
 		final Dimension oldDimension = new Dimension(this.width, this.height);
 
+		this.name = source.getName();
 		this.tiles = source.copyData();
 		this.width = source.getWidth();
 		this.height = source.getHeight();

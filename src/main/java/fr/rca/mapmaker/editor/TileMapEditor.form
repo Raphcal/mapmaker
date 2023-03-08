@@ -153,11 +153,6 @@
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="replaceColorToggleButton" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" attributes="0">
-                      <Component id="hitboxToggleButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="attackHitboxToggleButton" min="-2" max="-2" attributes="0"/>
-                  </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="previousLayerButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
@@ -168,11 +163,6 @@
                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                       <Component id="zoomPercentLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="applyFunctionButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="resizeButton" min="-2" max="-2" attributes="0"/>
-                  </Group>
                   <Component id="widthTextField" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="treeToggleButton" min="-2" pref="32" max="-2" attributes="0"/>
@@ -180,9 +170,20 @@
                       <Component id="nextStepTreeButton" min="-2" pref="32" max="-2" attributes="0"/>
                   </Group>
                   <Component id="heightTextField" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="hitboxToggleButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Component id="attackHitboxToggleButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="applyFunctionButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="resizeButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="nameTextField" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="gridScrollPane" pref="498" max="32767" attributes="0"/>
+              <Component id="gridScrollPane" pref="492" max="32767" attributes="0"/>
               <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="2" attributes="0">
                   <Component id="alphaPaletteGrid" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -252,6 +253,16 @@
                           <Component id="rotateButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="hitboxToggleButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="attackHitboxToggleButton" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="applyFunctionButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="resizeButton" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="horizontalMirrorButton" min="-2" max="-2" attributes="0"/>
                           <Component id="verticalMirrorButton" min="-2" max="-2" attributes="0"/>
@@ -284,15 +295,8 @@
                       <Component id="widthTextField" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="heightTextField" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="hitboxToggleButton" min="-2" max="-2" attributes="0"/>
-                          <Component id="attackHitboxToggleButton" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="resizeButton" min="-2" max="-2" attributes="0"/>
-                          <Component id="applyFunctionButton" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="nameTextField" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -868,6 +872,18 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="secondaryHitboxTool = new SecondaryHitboxTool(drawGrid);&#xa;wireTool(attackHitboxToggleButton, secondaryHitboxTool);&#xa;listenToPluginChanges(attackHitboxToggleButton, secondaryHitboxTool);"/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JTextField" name="nameTextField">
+      <Properties>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="resources/language.properties" key="tilemap.editor.name" replaceFormat="java.text.MessageFormat.format(java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;), {arguments})"/>
+        </Property>
+      </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="drawLayer" sourcePath="${name}" target="nameTextField" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+        </BindingProperty>
+      </BindingProperties>
     </Component>
   </SubComponents>
 </Form>

@@ -223,6 +223,10 @@ public class Sprite {
 		}
 	}
 
+	public void setType(int type) {
+		this.type = type;
+	}
+
 	public void addPropertyChangeListener(PropertyChangeListener pl) {
 		propertyChangeSupport.addPropertyChangeListener(pl);
 	}

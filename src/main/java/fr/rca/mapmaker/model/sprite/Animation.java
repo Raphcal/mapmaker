@@ -11,14 +11,17 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import lombok.Data;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
+@Data
 public class Animation {
+
 	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
-	
+
 	public static final String STAND = "stand";
 	public static final String WALK = "walk";
 	public static final String RUN = "run";
@@ -34,12 +37,14 @@ public class Animation {
 	public static final String DIE = "die";
 	public static final String SKID = "skid";
 	public static final String SHAKY = "shaky";
-	
+
 	private String name;
 	private int frequency;
 	private Map<Double, List<TileLayer>> frames;
 	private boolean looping;
 	private boolean scrolling;
+
+	private boolean shouldOverrideFrameNames;
 
 	public Animation() {
 		this(null);
@@ -55,22 +60,22 @@ public class Animation {
 	public String toString() {
 		return getDisplayName();
 	}
-	
+
 	public Animation copy() {
 		final Animation copy = new Animation();
 		copy.name = name;
 		copy.frequency = frequency;
 		copy.looping = looping;
 		copy.scrolling = scrolling;
-		
-		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
+
+		for (final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
 			final List<TileLayer> layersCopy = new ArrayList<TileLayer>();
-			for(final TileLayer layer : entry.getValue()) {
+			for (final TileLayer layer : entry.getValue()) {
 				layersCopy.add(new TileLayer(layer));
 			}
 			copy.frames.put(entry.getKey(), layersCopy);
 		}
-		
+
 		return copy;
 	}
 
@@ -100,7 +105,7 @@ public class Animation {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getDisplayName() {
 		return LANGUAGE.getString("animation." + name);
 	}
@@ -123,7 +128,7 @@ public class Animation {
 
 	public List<TileLayer> getOrCreateFrames(double direction) {
 		List<TileLayer> layers = frames.get(direction);
-		if(layers == null) {
+		if (layers == null) {
 			layers = new ArrayList<TileLayer>();
 			frames.put(direction, layers);
 		}
@@ -152,19 +157,22 @@ public class Animation {
 
 	public Set<Double> getAnglesWithValue() {
 		final Set<Double> anglesWithValue = new TreeSet<Double>();
-		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
-			if(entry.getValue() != null && !entry.getValue().isEmpty()) {
+		for (final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
+			if (entry.getValue() != null && !entry.getValue().isEmpty()) {
 				anglesWithValue.add(entry.getKey());
 			}
 		}
 		return anglesWithValue;
 	}
-	
+
 	public void overrideFrameNames() {
-		for(final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
-			final String prefix = name + '.' + entry.getKey()  + '.';
+		if (!shouldOverrideFrameNames) {
+			return;
+		}
+		for (final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
+			final String prefix = name + '.' + entry.getKey() + '.';
 			int index = 0;
-			for(final TileLayer frame : entry.getValue()) {
+			for (final TileLayer frame : entry.getValue()) {
 				frame.setName(prefix + index);
 				index++;
 			}
@@ -172,7 +180,7 @@ public class Animation {
 	}
 
 	public static Animation[] getDefaultAnimations() {
-		return new Animation[] {
+		return new Animation[]{
 			new Animation(STAND),
 			new Animation(WALK),
 			new Animation(RUN),
