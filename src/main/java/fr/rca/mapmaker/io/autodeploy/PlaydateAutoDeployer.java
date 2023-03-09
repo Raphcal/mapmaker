@@ -1,8 +1,10 @@
 package fr.rca.mapmaker.io.autodeploy;
 
 import com.google.gson.Gson;
+import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.playdate.AnimationNamesAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.CodeDataHandler;
+import fr.rca.mapmaker.io.playdate.FontHandler;
 import fr.rca.mapmaker.io.playdate.Headers;
 import fr.rca.mapmaker.io.playdate.InstancesHandler;
 import fr.rca.mapmaker.io.playdate.Names;
@@ -98,6 +100,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		generateFile(generatedSourcesDir, new AnimationNamesAsHeaderHandler(), project.getAnimationNames(), configuration);
 
 		final SpriteAsCodeHandler spriteAsCodeHandler = new SpriteAsCodeHandler(project.getAnimationNames());
+		final FontHandler fontHandler = new FontHandler(project.getAnimationNames());
 
 		final List<Sprite> sprites = PlaydateFormat.spritesForProject(project);
 		for(int index = 0; index < sprites.size(); index++) {
@@ -118,6 +121,11 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		generateFile(generatedSourcesDir, new SpriteDefinitionsAsHeaderHandler(), sprites, configuration);
 		generateFile(generatedSourcesDir, new SpriteDefinitionsAsCodeHandler(), sprites, configuration);
 
+		final List<Sprite> fonts = PlaydateFormat.fontsForProject(project);
+		for(Sprite font : fonts) {
+			generateFile(resourceDir, fontHandler, font, configuration);
+		}
+
 		generateFile(generatedSourcesDir, new SpriteVariablesAsHeaderHandler(), PlaydateFormat.variablesForSprites(project), configuration);
 	}
 
@@ -129,6 +137,13 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 					.withConfiguration(configuration)
 					.withGeneratedDate(generatedDate)
 					.write(data, outputStream);
+		}
+	}
+
+	private <T> void generateFile(final File generatedSourcesDir, DataHandler<T> handler, final T data, PlaydateExportConfiguration configuration) throws IOException {
+		File file = new File(generatedSourcesDir, handler.fileNameFor(data));
+		try (final BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+			handler.write(data, outputStream);
 		}
 	}
 

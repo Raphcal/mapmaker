@@ -16,6 +16,7 @@ import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import fr.rca.mapmaker.model.sprite.SpriteType;
 import fr.rca.mapmaker.util.Dithering;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -213,7 +214,13 @@ public class PlaydateFormat extends AbstractFormat {
 
 	public static List<Sprite> spritesForProject(Project project) {
 		return project.getSprites().stream()
-				.filter(sprite -> !sprite.isEmpty())
+				.filter(sprite -> sprite.getType() != SpriteType.FONT.ordinal() && !sprite.isEmpty())
+				.collect(Collectors.toList());
+	}
+
+	public static List<Sprite> fontsForProject(Project project) {
+		return project.getSprites().stream()
+				.filter(sprite -> sprite.getType() == SpriteType.FONT.ordinal() && !sprite.isEmpty())
 				.collect(Collectors.toList());
 	}
 
