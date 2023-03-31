@@ -214,13 +214,13 @@ public class PlaydateFormat extends AbstractFormat {
 
 	public static List<Sprite> spritesForProject(Project project) {
 		return project.getSprites().stream()
-				.filter(sprite -> sprite.getType() != SpriteType.FONT.ordinal() && !sprite.isEmpty())
+				.filter(sprite -> sprite.isExportable() && sprite.getType() != SpriteType.FONT.ordinal() && !sprite.isEmpty())
 				.collect(Collectors.toList());
 	}
 
 	public static List<Sprite> fontsForProject(Project project) {
 		return project.getSprites().stream()
-				.filter(sprite -> sprite.getType() == SpriteType.FONT.ordinal() && !sprite.isEmpty())
+				.filter(sprite -> sprite.isExportable() && sprite.getType() == SpriteType.FONT.ordinal() && !sprite.isEmpty())
 				.collect(Collectors.toList());
 	}
 
