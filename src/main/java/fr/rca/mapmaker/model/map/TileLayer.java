@@ -839,7 +839,8 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * Inverse la couche horizontalement.
 	 */
 	public void flipHorizontally() {
-		final int[] mirror = new int[this.tiles.length];
+		final int[] mirror = new int[width * height];
+		Arrays.fill(mirror, -1);
 
 		int index = 0;
 		for (int y = 0; y < height; y++) {
@@ -857,13 +858,12 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * Inverse la couche verticalement.
 	 */
 	public void flipVertically() {
-		final int[] mirror = new int[this.tiles.length];
-
-		int index = 0;
-		for (int y = 1; y <= height; y++) {
-			for (int x = 0; x < width; x++) {
-				mirror[index] = getTile(x, height - y);
-				index++;
+		final int[] mirror = new int[width * height];
+		Arrays.fill(mirror, -1);
+		for (int y = 0; y < height; y++) {
+			final int lineSize = Math.min(width, tiles.length - y * width);
+			if (lineSize > 0) {
+				System.arraycopy(tiles, y * width, mirror, (height - y - 1) * width, lineSize);
 			}
 		}
 
