@@ -498,6 +498,7 @@ public class MapEditor extends javax.swing.JFrame {
 
         mapListScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         mapListScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        mapListScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 
         mapList.setBackground(new java.awt.Color(223, 230, 238));
         mapList.setModel(project);

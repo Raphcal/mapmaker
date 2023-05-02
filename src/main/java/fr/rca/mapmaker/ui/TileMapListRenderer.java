@@ -3,6 +3,8 @@ package fr.rca.mapmaker.ui;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
+import fr.rca.mapmaker.model.sprite.Direction;
+import fr.rca.mapmaker.model.sprite.Instance;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -10,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -66,6 +69,7 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 
 		final Point origin = new Point((clipBounds.width - width) / 2, (clipBounds.height - height) / 2);
 
+		// Ratio de l'image (1:1 si carré, 2:1 si rectangulaire, etc).
 		float ratio = (float) tilesX / tileCount;
 
 		DropShadows.drawShadow(new Rectangle(
@@ -98,7 +102,23 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 				}
 			}
 		}
-		
+		final int paletteTileSize = palette.getTileSize();
+		final double zoom = (double)tileSize / paletteTileSize;
+		for (Instance instance : map.getSpriteInstances()) {
+			final int x = instance.getX();
+			final int y = instance.getY();
+			if (x <= tilesX * paletteTileSize && y <= tilesY * paletteTileSize) {
+				final BufferedImage image = instance.getImage();
+				final Point topLeft = new Point(origin.x + (int) (x * zoom), origin.y + (int) (y * zoom));
+				final int targetWidth = Math.min((int) (image.getWidth() * zoom), tilesX * tileSize - (int) (x * zoom));
+				final int targetHeight = Math.min((int) (image.getHeight() * zoom), tilesY * tileSize - (int) (y * zoom));
+				if (instance.getDirection() == Direction.RIGHT) {
+					g.drawImage(image, topLeft.x, topLeft.y, topLeft.x + targetWidth, topLeft.y + targetHeight, 0, 0, (int) (targetWidth / zoom), (int) (targetHeight / zoom), null);
+				} else {
+					g.drawImage(image, topLeft.x, topLeft.y, topLeft.x + targetWidth, topLeft.y + targetHeight, image.getWidth(), 0, image.getWidth() - (int) (targetWidth / zoom), (int) (targetHeight / zoom), null);
+				}
+			}
+		}
 
 		g.dispose();
 	}
