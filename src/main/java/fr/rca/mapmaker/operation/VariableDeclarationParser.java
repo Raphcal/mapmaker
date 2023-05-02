@@ -1,6 +1,5 @@
 package fr.rca.mapmaker.operation;
 
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.project.Project;
 import java.util.ArrayList;
@@ -47,10 +46,10 @@ public class VariableDeclarationParser {
 		}
 
 		final OperationParser parser = new OperationParser();
-		final List<MapAndInstances> maps = project.getMaps();
+		final List<TileMap> maps = project.getMaps();
 		for (int index = 0; index < maps.size(); index++) {
 			// Création d'une constante contenant l'indice de la carte pour chaque carte.
-			final TileMap tileMap = maps.get(index).getTileMap();
+			final TileMap tileMap = maps.get(index);
 			final String name = Optional.ofNullable(tileMap.getName()).map(String::toLowerCase).orElse("map" + index);
 			parser.putInstruction("maps." + name, new Constant(index));
 			parser.putInstruction("maps." + name + ".width", new Constant(tileMap.getWidth() * tileMap.getPalette().getTileSize()));

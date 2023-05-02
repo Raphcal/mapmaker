@@ -19,21 +19,21 @@ import javax.swing.ListCellRenderer;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class TileMapListRenderer extends JComponent implements ListCellRenderer {
-	
+
 	private static final int THUMBNAIL_SIZE = 72;
-	
+
 	private static final int HORIZONTAL_PADDING = 16;
 	private static final int VERTICAL_PADDING = 10;
-	
+
 	private TileMap map;
 	private boolean selected;
-	
+
 	private final Color selectionColor = new Color(180, 198, 221);
 
 	public TileMapListRenderer() {
 		final Dimension size = new Dimension(HORIZONTAL_PADDING + THUMBNAIL_SIZE + HORIZONTAL_PADDING,
 				VERTICAL_PADDING + THUMBNAIL_SIZE + VERTICAL_PADDING);
-		
+
 		setSize(size);
 		setPreferredSize(size);
 	}
@@ -41,74 +41,74 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 	@Override
 	protected void paintComponent(Graphics g) {
 		final Rectangle clipBounds = g.getClipBounds();
-		
-		if(selected) {
+
+		if (selected) {
 			g.setColor(selectionColor);
 			g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 		}
-		
+
 		final Palette palette = map.getPalette();
-		
+
 		final int tileSize;
 		if (map.getWidth() < map.getHeight()) {
 			tileSize = (int) Math.ceil(THUMBNAIL_SIZE / (double) map.getWidth());
 		} else {
 			tileSize = (int) Math.ceil(THUMBNAIL_SIZE / (double) map.getHeight());
 		}
-		
+
 		final int tileCount = THUMBNAIL_SIZE / tileSize;
 
 		final int tilesX = Math.min(map.getWidth(), tileCount);
 		final int tilesY = Math.min(map.getHeight(), tileCount);
-		
+
 		final int width = tilesX * tileSize;
 		final int height = tilesY * tileSize;
-		
+
 		final Point origin = new Point((clipBounds.width - width) / 2, (clipBounds.height - height) / 2);
-		
-		float ratio = (float)tilesX / tileCount;
-		
+
+		float ratio = (float) tilesX / tileCount;
+
 		DropShadows.drawShadow(new Rectangle(
 				origin.x - (int) (7.0f * ratio), origin.y - (int) (4.0f * ratio),
 				width + (int) (14.0f * ratio), height + (int) (14.0f * ratio)), (Graphics2D) g);
-		
-		if(map.getBackgroundColor() != null) {
+
+		if (map.getBackgroundColor() != null) {
 			g.setColor(map.getBackgroundColor());
-		
-		} else if(selected) {
+
+		} else if (selected) {
 			g.setColor(selectionColor);
-		
+
 		} else {
 			g.setColor(getBackground());
 		}
-			
+
 		g.fillRect(origin.x, origin.y, width, height);
-		
-		for(final Layer layer : map.getLayers()) {
-			if(layer.isVisible()) {
+
+		for (final Layer layer : map.getLayers()) {
+			if (layer.isVisible()) {
 				final int maxX = Math.min(tilesX, layer.getWidth());
 				final int maxY = Math.min(tilesY, layer.getHeight());
-				
-				for(int y = 0; y < maxY; y++) {
+
+				for (int y = 0; y < maxY; y++) {
 					for (int x = 0; x < maxX; x++) {
 						palette.paintTile(g, layer.getTile(x, y),
-							origin.x + x * tileSize,
-							origin.y + y * tileSize, tileSize);
+								origin.x + x * tileSize,
+								origin.y + y * tileSize, tileSize);
 					}
 				}
 			}
 		}
 		
+
 		g.dispose();
 	}
-	
+
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		this.selected = isSelected;
 		this.map = (TileMap) value;
-		
+
 		return this;
 	}
-	
-	
+
 }

@@ -9,6 +9,7 @@ import fr.rca.mapmaker.model.palette.HasColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Instance;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.beans.PropertyChangeListener;
@@ -20,6 +21,8 @@ import java.util.List;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -27,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
+@Getter
 public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListeners, ListModel, HasColorPalette {
 
 	/**
@@ -77,7 +81,10 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	/**
 	 * Liste des couches de la grille.
 	 */
-	private final List<Layer> layers = new ArrayList<Layer>();
+	private final ArrayList<Layer> layers = new ArrayList<>();
+
+	@Setter
+	private List<Instance> spriteInstances;
 
 	/**
 	 * Couleur de fond.
@@ -85,17 +92,12 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	private Color backgroundColor;
 
 	private final SizeChangeListener sizeChangeListener;
-	private final List<LayerChangeListener> layerChangeListeners = new ArrayList<LayerChangeListener>();
-	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
-	private final List<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
+	private final ArrayList<LayerChangeListener> layerChangeListeners = new ArrayList<>();
+	private final ArrayList<SizeChangeListener> sizeChangeListeners = new ArrayList<>();
+	private final ArrayList<ListDataListener> listDataListeners = new ArrayList<>();
 
 	public TileMap() {
-		sizeChangeListener = new SizeChangeListener() {
-			@Override
-			public void sizeChanged(Object source, Dimension oldSize, Dimension newSize) {
-				updateSize();
-			}
-		};
+		sizeChangeListener = (source, oldSize, newSize) -> updateSize();
 	}
 
 	public TileMap(int width, int height, Color backgroundColor) {
@@ -121,10 +123,6 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 		this.parent = parent;
 	}
 
-	public Integer getIndex() {
-		return index;
-	}
-
 	public void setIndex(Integer index) {
 		final Integer oldIndex = this.index;
 		this.index = index;
@@ -144,10 +142,6 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 		propertyChangeSupport.firePropertyChange("name", oldName, name);
 	}
 
-	public String getFileName() {
-		return fileName;
-	}
-
 	public void setFileName(String fileName) {
 		final String oldFileName = this.fileName;
 		this.fileName = fileName;
@@ -155,19 +149,11 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 		propertyChangeSupport.firePropertyChange("fileName", oldFileName, fileName);
 	}
 
-	public int getWidth() {
-		return width;
-	}
-
 	public void setWidth(int width) {
 		final int oldWidth = this.width;
 		this.width = width;
 
 		propertyChangeSupport.firePropertyChange("width", oldWidth, width);
-	}
-
-	public int getHeight() {
-		return height;
 	}
 
 	public void setHeight(int height) {
@@ -184,10 +170,6 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 
 	public void setColorPalette(ColorPalette colorPalette) {
 		this.colorPalette = colorPalette;
-	}
-
-	public Palette getPalette() {
-		return palette;
 	}
 
 	public void setPalette(Palette palette) {
@@ -211,18 +193,11 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	}
 
 	public void refresh() {
-	}
-
-	public List<Layer> getLayers() {
-		return layers;
+		// Vide mais les sous-classes l'implémentent.
 	}
 
 	public int getLayerIndex(Layer layer) {
 		return layers.indexOf(layer);
-	}
-
-	public Color getBackgroundColor() {
-		return backgroundColor;
 	}
 
 	public void setBackgroundColor(Color backgroundColor) {
@@ -246,7 +221,7 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	}
 
 	private void updateSize() {
-		if (layers.size() > 0) {
+		if (!layers.isEmpty()) {
 			final Dimension oldDimension = new Dimension(width, height);
 
 			width = 0;

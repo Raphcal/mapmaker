@@ -124,8 +124,8 @@ public class SpriteTool extends MouseAdapter implements Tool {
 			final int mouseX = (int) ((double) e.getX() / zoom);
 			final int mouseY = (int) ((double) e.getY() / zoom);
 
-			final int width = sprite.getWidth();
-			final int height = sprite.getHeight();
+			final int width = sprite.getWidth() / 2;
+			final int height = sprite.getHeight() / 2;
 
 			final int x = (mouseX / width) * width;
 			final int y = (mouseY / height) * height;

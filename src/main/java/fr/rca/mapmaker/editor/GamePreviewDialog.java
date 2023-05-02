@@ -1,6 +1,5 @@
 package fr.rca.mapmaker.editor;
 
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
@@ -66,9 +65,9 @@ public class GamePreviewDialog extends javax.swing.JDialog {
 			return;
 		}
 		final List<Instance> instances = project.getMaps().stream()
-				.filter(mapAndInstances -> mapAndInstances.getTileMap() == previewGrid.getTileMap())
+				.filter(mapAndInstances -> mapAndInstances == previewGrid.getTileMap())
 				.findAny()
-				.map(MapAndInstances::getSpriteInstances)
+				.map(TileMap::getSpriteInstances)
 				.orElse(null);
 		if (instances == null) {
 			return;

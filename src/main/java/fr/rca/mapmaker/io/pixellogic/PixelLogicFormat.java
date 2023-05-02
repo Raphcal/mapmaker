@@ -33,7 +33,7 @@ public class PixelLogicFormat extends AbstractFormat {
 		try {
 			final FileOutputStream outputStream = new FileOutputStream(file);
 			
-			final TileMap tileMap = project.getMaps().get(0).getTileMap();
+			final TileMap tileMap = project.getMaps().get(0);
 			final Layer layer = tileMap.getLayers().get(0);
 
 			// Ecriture de la grille

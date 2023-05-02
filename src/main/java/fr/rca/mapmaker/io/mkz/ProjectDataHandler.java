@@ -5,7 +5,6 @@ import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.common.Streams;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.Packer;
 import fr.rca.mapmaker.model.map.PackerFactory;
 import fr.rca.mapmaker.model.project.Project;
@@ -66,14 +65,14 @@ public class ProjectDataHandler implements DataHandler<Project> {
 		}
 		
 		// Cartes
-		final List<MapAndInstances> maps = t.getMaps();
+		final List<TileMap> maps = t.getMaps();
 		
 		final DataHandler<TileMap> tileMapHandler = format.getHandler(TileMap.class);
 		final DataHandler<Instance> instanceHandler = format.getHandler(Instance.class);
 		
 		for(int index = 0; index < maps.size(); index++) {
-            final MapAndInstances mapAndInstances = maps.get(index);
-			final TileMap map = mapAndInstances.getTileMap();
+            final TileMap mapAndInstances = maps.get(index);
+			final TileMap map = mapAndInstances;
 			final List<Instance> instances = new ArrayList<Instance>(mapAndInstances.getSpriteInstances());
 			Collections.sort(instances, new Comparator<Instance>() {
 

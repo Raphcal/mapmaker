@@ -7,7 +7,6 @@ import fr.rca.mapmaker.io.mkz.MKZFormat;
 import fr.rca.mapmaker.model.map.Packer;
 import fr.rca.mapmaker.model.map.PackerFactory;
 import fr.rca.mapmaker.model.map.TileMap;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
@@ -170,17 +169,17 @@ public abstract class AutoDeployer extends FileFilter {
 		}
 	}
 	
-	static void deployMaps(List<MapAndInstances> maps, Project project, File folder) throws IOException {
+	static void deployMaps(List<TileMap> maps, Project project, File folder) throws IOException {
 		deployMaps(maps, project, folder, null);
 	}
 	
-	static void deployMaps(List<MapAndInstances> maps, Project project, File folder, List<String> files) throws IOException {
+	static void deployMaps(List<TileMap> maps, Project project, File folder, List<String> files) throws IOException {
 		final DataHandler<TileMap> tileMapHandler = FORMAT.getHandler(TileMap.class);
 		final DataHandler<Instance> instanceHandler = FORMAT.getHandler(Instance.class);
 		
 		for(int index = 0; index < maps.size(); index++) {
-            final MapAndInstances mapAndInstances = maps.get(index);
-			final TileMap map = mapAndInstances.getTileMap();
+            final TileMap mapAndInstances = maps.get(index);
+			final TileMap map = mapAndInstances;
 			final String baseName = getBaseName(map);
 			
 			if(baseName != null) {

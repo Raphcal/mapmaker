@@ -5,7 +5,6 @@ import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.mkz.BufferedImageDataHandler;
 import fr.rca.mapmaker.io.mkz.InstanceDataHandler;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -89,11 +88,11 @@ public class PlaydateFormat extends AbstractFormat {
 			final TileMapAsHeaderHandler tileMapAsHeaderHandler = new TileMapAsHeaderHandler();
 			final TileMapAsCodeHandler tileMapAsCodeHandler = new TileMapAsCodeHandler();
 
-			final List<MapAndInstances> maps = project.getMaps();
+			final List<TileMap> maps = project.getMaps();
 			for(int index = 0; index < maps.size(); index++) {
 				outputStream.putNextEntry(new ZipEntry("map" + index + ".data"));
-				final MapAndInstances mapAndInstances = maps.get(index);
-				final TileMap tileMap = mapAndInstances.getTileMap();
+				final TileMap mapAndInstances = maps.get(index);
+				final TileMap tileMap = mapAndInstances;
 				write(tileMap, outputStream);
 
 				if (WRITE_MAP_AS_CODE && Names.normalizeName(tileMap, Names::toSnakeCase) != null) {

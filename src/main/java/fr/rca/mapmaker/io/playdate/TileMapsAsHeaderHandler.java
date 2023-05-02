@@ -1,6 +1,6 @@
 package fr.rca.mapmaker.io.playdate;
 
-import fr.rca.mapmaker.model.map.MapAndInstances;
+import fr.rca.mapmaker.model.map.TileMap;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
  *
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */
-public class TileMapsAsHeaderHandler extends CodeDataHandler<List<MapAndInstances>> {
+public class TileMapsAsHeaderHandler extends CodeDataHandler<List<TileMap>> {
 
 	@Override
-	public void write(List<MapAndInstances> t, OutputStream outputStream) throws IOException {
+	public void write(List<TileMap> t, OutputStream outputStream) throws IOException {
 		outputStream.write((generateHeader(t)
 				+ "#ifndef maps_h\n"
 				+ "#define maps_h\n"
@@ -26,7 +26,6 @@ public class TileMapsAsHeaderHandler extends CodeDataHandler<List<MapAndInstance
 				+ "\n"
 				+ "typedef enum {\n"
 				+ t.stream()
-						.map(MapAndInstances::getTileMap)
 						.map(map -> "    MapName" + Names.normalizeName(map, Names::toPascalCase) + ",\n")
 						.collect(Collectors.joining())
 				+ "} MapName;\n"
@@ -38,7 +37,7 @@ public class TileMapsAsHeaderHandler extends CodeDataHandler<List<MapAndInstance
 	}
 
 	@Override
-	public String fileNameFor(List<MapAndInstances> t) {
+	public String fileNameFor(List<TileMap> t) {
 		return "maps.h";
 	}
 }

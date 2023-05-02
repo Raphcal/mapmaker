@@ -3,7 +3,6 @@ package fr.rca.mapmaker.io.png;
 import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.SupportedOperation;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.ImagePalette;
 import fr.rca.mapmaker.model.project.Project;
@@ -37,10 +36,10 @@ public class PNGImageFormat extends AbstractFormat {
 		final String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
 		final File folder = file.getParentFile();
 		
-		final List<MapAndInstances> tileMaps = project.getMaps();
+		final List<TileMap> tileMaps = project.getMaps();
 		
 		for(int index = 0; index < tileMaps.size(); index++) {
-			final TileMap tileMap = tileMaps.get(index).getTileMap();
+			final TileMap tileMap = tileMaps.get(index);
 			
 			final Color backgroundColor = tileMap.getBackgroundColor();
 			

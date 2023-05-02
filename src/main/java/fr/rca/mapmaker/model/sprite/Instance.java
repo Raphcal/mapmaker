@@ -1,6 +1,5 @@
 package fr.rca.mapmaker.model.sprite;
 
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.ColorPalette;
@@ -263,9 +262,9 @@ public class Instance extends JComponent {
 		if (project == null) {
 			return null;
 		}
-		for (final MapAndInstances mapAndInstances : project.getMaps()) {
+		for (final TileMap mapAndInstances : project.getMaps()) {
 			if (mapAndInstances.getSpriteInstances().contains(this)) {
-				return mapAndInstances.getTileMap();
+				return mapAndInstances;
 			}
 		}
 		return null;

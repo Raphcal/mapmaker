@@ -22,7 +22,6 @@ import fr.rca.mapmaker.io.playdate.SpriteVariablesAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.TileMapHandler;
 import fr.rca.mapmaker.io.playdate.TileMapsAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.TileMapsAsHeaderHandler;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
@@ -82,10 +81,10 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		final TileMapHandler tileMapHandler = new TileMapHandler();
 		final InstancesHandler instancesHandler = new InstancesHandler();
 
-		final List<MapAndInstances> maps = project.getMaps();
+		final List<TileMap> maps = project.getMaps();
 		for(int index = 0; index < maps.size(); index++) {
-			final MapAndInstances mapAndInstances = maps.get(index);
-			final TileMap tileMap = mapAndInstances.getTileMap();
+			final TileMap mapAndInstances = maps.get(index);
+			final TileMap tileMap = mapAndInstances;
 
 			try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 					new FileOutputStream(

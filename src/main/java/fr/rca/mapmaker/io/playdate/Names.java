@@ -1,6 +1,5 @@
 package fr.rca.mapmaker.io.playdate;
 
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
@@ -41,9 +40,9 @@ public final class Names {
 			Palette palette = tileMap.getPalette();
 			if (palette instanceof PaletteReference) {
 				Project project = ((PaletteReference) palette).getProject();
-				final List<MapAndInstances> maps = project.getMaps();
+				final List<TileMap> maps = project.getMaps();
 				for (int index = 0; index < maps.size(); index++) {
-					if (tileMap == maps.get(index).getTileMap()) {
+					if (tileMap == maps.get(index)) {
 						return Integer.toString(index);
 					}
 				}

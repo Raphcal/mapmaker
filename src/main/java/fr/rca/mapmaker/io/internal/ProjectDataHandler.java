@@ -6,7 +6,6 @@ import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.Format;
 import fr.rca.mapmaker.io.HasVersion;
 import fr.rca.mapmaker.io.common.Streams;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
@@ -45,12 +44,12 @@ public class ProjectDataHandler implements DataHandler<Project>, HasVersion {
 		}
 		
 		// Cartes
-		final List<MapAndInstances> maps = t.getMaps();
+		final List<TileMap> maps = t.getMaps();
 		
 		final DataHandler<TileMap> tileMapHandler = format.getHandler(TileMap.class);
 		Streams.write(maps.size(), outputStream);
-		for(final MapAndInstances map : maps) {
-			tileMapHandler.write(map.getTileMap(), outputStream);
+		for(final TileMap map : maps) {
+			tileMapHandler.write(map, outputStream);
 		}
 		
 		if(version >= InternalFormat.VERSION_3) {

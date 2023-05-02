@@ -9,7 +9,6 @@ import fr.rca.mapmaker.io.ProgressTracker;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.internal.InternalFormat;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.ScrollRate;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
@@ -130,8 +129,8 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			final DataHandler<TileMap> tileMapHandler = getHandler(TileMap.class);
 			final DataHandler<Instance> instanceHandler = getHandler(Instance.class);
 			progressTracker.stepHaveSubsteps(project.getMaps().size());
-			for (final MapAndInstances mapAndInstances : project.getMaps()) {
-				final TileMap tileMap = mapAndInstances.getTileMap();
+			for (final TileMap mapAndInstances : project.getMaps()) {
+				final TileMap tileMap = mapAndInstances;
 
 				final Map<String, Object> map = new HashMap<>();
 				final String mapName = String.format(MAP_FILE_FORMAT, tileMap.getIndex());

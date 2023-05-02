@@ -4,7 +4,6 @@ import fr.rca.mapmaker.model.palette.PaletteComboBoxModel;
 import fr.rca.mapmaker.model.map.PaletteMap;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.palette.AbstractEditablePalette;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
@@ -53,7 +52,7 @@ public class Project implements ListModel, HasColorPalette {
 	/**
 	 * Liste de toutes les cartes.
 	 */
-	private final List<MapAndInstances> maps = new ArrayList<>();
+	private final List<TileMap> maps = new ArrayList<>();
 
 	/**
 	 * Liste des sprites.
@@ -190,7 +189,7 @@ public class Project implements ListModel, HasColorPalette {
 			return null;
 		}
 
-		return maps.get(selectedIndex).getTileMap();
+		return maps.get(selectedIndex);
 	}
 
 	public TileMap getCurrentPaletteMap() {
@@ -227,7 +226,7 @@ public class Project implements ListModel, HasColorPalette {
 		return spritePaletteMap;
 	}
 
-	public List<MapAndInstances> getMaps() {
+	public List<TileMap> getMaps() {
 		return maps;
 	}
 
@@ -277,7 +276,7 @@ public class Project implements ListModel, HasColorPalette {
 
 	public List<List<Instance>> getAllInstances() {
 		final ArrayList<List<Instance>> allInstances = new ArrayList<>();
-		for (final MapAndInstances map : maps) {
+		for (final TileMap map : maps) {
 			allInstances.add(map.getSpriteInstances());
 		}
 		return allInstances;
@@ -285,7 +284,7 @@ public class Project implements ListModel, HasColorPalette {
 
 	@Override
 	public TileMap getElementAt(int index) {
-		return maps.get(index).getTileMap();
+		return maps.get(index);
 	}
 
 	@Override
@@ -312,6 +311,7 @@ public class Project implements ListModel, HasColorPalette {
 
 	public void addMap(TileMap map, List<Instance> instances) {
 		map.setParent(this);
+		map.setSpriteInstances(instances);
 
 		if (map.getIndex() == null) {
 			map.setIndex(nextMap++);
@@ -320,7 +320,7 @@ public class Project implements ListModel, HasColorPalette {
 		}
 
 		final int index = maps.size();
-		maps.add(new MapAndInstances(map, instances));
+		maps.add(map);
 
 		fireIntervalAdded(index, index);
 	}
@@ -333,8 +333,8 @@ public class Project implements ListModel, HasColorPalette {
 	}
 
 	public void swapMaps(int first, int second) {
-		final MapAndInstances firstMap = maps.get(first);
-		final MapAndInstances secondMap = maps.get(second);
+		final TileMap firstMap = maps.get(first);
+		final TileMap secondMap = maps.get(second);
 
 		maps.set(second, firstMap);
 		maps.set(first, secondMap);

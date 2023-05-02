@@ -30,7 +30,6 @@ import fr.rca.mapmaker.io.autodeploy.MeltedIceAutoDeployer;
 import fr.rca.mapmaker.io.autodeploy.PlaydateAutoDeployer;
 import fr.rca.mapmaker.io.autodeploy.PuzzleSuitAutoDeployer;
 import fr.rca.mapmaker.io.internal.InternalFormat;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.SpanningTileLayer;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
@@ -1921,8 +1920,8 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 	 * @param shift Nombre de tuiles insérées.
 	 */
 	private void shiftTiles(Palette palette, int from, int shift) {
-		for (final MapAndInstances mapAndInstances : project.getMaps()) {
-			final TileMap map = mapAndInstances.getTileMap();
+		for (final TileMap mapAndInstances : project.getMaps()) {
+			final TileMap map = mapAndInstances;
 			if (map.getPalette().equals(palette)) {
 				shiftTiles(map, from, shift);
 			}

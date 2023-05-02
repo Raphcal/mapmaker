@@ -4,7 +4,6 @@ import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.AbstractFormat;
 import fr.rca.mapmaker.io.SupportedOperation;
 import fr.rca.mapmaker.model.map.Layer;
-import fr.rca.mapmaker.model.map.MapAndInstances;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.PaletteReference;
@@ -38,9 +37,9 @@ public class PuzzleLevelFormat extends AbstractFormat {
 	public void saveProject(Project project, File file) {
 		final String baseName = getBaseName(file);
 
-		final List<MapAndInstances> maps = project.getMaps();
+		final List<TileMap> maps = project.getMaps();
 		for(int i = 0; i < maps.size(); i++) {
-			final TileMap map = maps.get(i).getTileMap();
+			final TileMap map = maps.get(i);
 			final String mapName = baseName + (i + 1);
 
 			final File mapFile = new File(file.getParentFile(), mapName + EXTENSION);
