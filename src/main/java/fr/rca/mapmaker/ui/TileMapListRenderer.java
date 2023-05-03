@@ -114,13 +114,24 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 			if (x <= tilesX * paletteTileSize && y <= tilesY * paletteTileSize) {
 				final BufferedImage image = instance.getImage();
 				final Point topLeft = new Point(origin.x + (int) (x * zoom), origin.y + (int) (y * zoom));
-				final int targetWidth = Math.min((int) (image.getWidth() * zoom), tilesX * tileSize - (int) (x * zoom));
-				final int targetHeight = Math.min((int) (image.getHeight() * zoom), tilesY * tileSize - (int) (y * zoom));
-				if (instance.getDirection() == Direction.RIGHT) {
-					g.drawImage(image, topLeft.x, topLeft.y, topLeft.x + targetWidth, topLeft.y + targetHeight, 0, 0, (int) (targetWidth / zoom), (int) (targetHeight / zoom), null);
-				} else {
-					g.drawImage(image, topLeft.x, topLeft.y, topLeft.x + targetWidth, topLeft.y + targetHeight, image.getWidth(), 0, image.getWidth() - (int) (targetWidth / zoom), (int) (targetHeight / zoom), null);
+				final Dimension targetSize = new Dimension(
+						Math.min((int) (image.getWidth() * zoom), tilesX * tileSize - (int) (x * zoom)),
+						Math.min((int) (image.getHeight() * zoom), tilesY * tileSize - (int) (y * zoom))
+				);
+
+				final Point sourceTopLeft = new Point(0, 0);
+				final Point sourceBottomRight = new Point((int) (targetSize.width / zoom), (int) (targetSize.height / zoom));
+
+				if (instance.getDirection() == Direction.LEFT) {
+					sourceTopLeft.x = image.getWidth();
+					sourceBottomRight.x = image.getWidth() - sourceBottomRight.x;
 				}
+				else if (instance.getDirection() == Direction.UP) {
+					sourceTopLeft.y = image.getHeight();
+					sourceBottomRight.y = image.getHeight() - sourceBottomRight.y;
+				}
+
+				g.drawImage(image, topLeft.x, topLeft.y, topLeft.x + targetSize.width, topLeft.y + targetSize.height, sourceTopLeft.x, sourceTopLeft.y, sourceBottomRight.x, sourceBottomRight.y, null);
 			}
 		}
 

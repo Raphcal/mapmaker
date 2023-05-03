@@ -13,7 +13,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.SwingWorker;
@@ -193,11 +192,17 @@ public class Instance extends JComponent {
 			updateBounds(dimension);
 		}
 
-		if (direction == Direction.RIGHT) {
-			g.drawImage(image, 0, 0, dimension.width, dimension.height, null);
-		} else {
-			g.drawImage(image, dimension.width, 0, -dimension.width, dimension.height, null);
+		final Point topLeft = new Point(0, 0);
+		if (direction == Direction.LEFT) {
+			topLeft.x = dimension.width;
+			dimension.width = -dimension.width;
 		}
+		else if (direction == Direction.UP) {
+			topLeft.y = dimension.height;
+			dimension.height = -dimension.height;
+		}
+
+		g.drawImage(image, topLeft.x, topLeft.y, dimension.width, dimension.height, null);
 	}
 
 	/**

@@ -2,6 +2,7 @@ package fr.rca.mapmaker.operation;
 
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Direction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,11 +21,11 @@ public class VariableDeclarationParser {
 	private static final Map<String, Double> DIRECTIONS;
 
 	static {
-		final Map<String, Double> map = new HashMap<String, Double>();
-		map.put("leftdirection", 0.0);
-		map.put("rightdirection", 1.0);
-		map.put("updirection", 2.0);
-		map.put("downdirection", 2.0);
+		final Map<String, Double> map = new HashMap<>();
+		map.put("leftdirection", (double) Direction.LEFT.ordinal());
+		map.put("rightdirection", (double) Direction.RIGHT.ordinal());
+		map.put("updirection", (double) Direction.UP.ordinal());
+		map.put("downdirection", (double) Direction.DOWN.ordinal());
 
 		DIRECTIONS = map;
 	}
