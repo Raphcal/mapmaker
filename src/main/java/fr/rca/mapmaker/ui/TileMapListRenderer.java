@@ -28,15 +28,16 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 	private static final int HORIZONTAL_PADDING = 16;
 	private static final int VERTICAL_PADDING = 10;
 
+	private static final Dimension size = new Dimension(
+			HORIZONTAL_PADDING + THUMBNAIL_SIZE + HORIZONTAL_PADDING,
+			VERTICAL_PADDING + THUMBNAIL_SIZE + VERTICAL_PADDING);
+
 	private TileMap map;
 	private boolean selected;
 
 	private final Color selectionColor = new Color(180, 198, 221);
 
 	public TileMapListRenderer() {
-		final Dimension size = new Dimension(HORIZONTAL_PADDING + THUMBNAIL_SIZE + HORIZONTAL_PADDING,
-				VERTICAL_PADDING + THUMBNAIL_SIZE + VERTICAL_PADDING);
-
 		setSize(size);
 		setPreferredSize(size);
 	}
@@ -52,17 +53,20 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 
 		final Palette palette = map.getPalette();
 
+		final int availableWidth = clipBounds.width - HORIZONTAL_PADDING - HORIZONTAL_PADDING;
+		final int availableHeight = clipBounds.height - VERTICAL_PADDING - VERTICAL_PADDING;
+
 		final int tileSize;
 		if (map.getWidth() < map.getHeight()) {
-			tileSize = (int) Math.ceil(THUMBNAIL_SIZE / (double) map.getWidth());
+			tileSize = (int) Math.ceil(availableWidth / (double) map.getWidth());
 		} else {
-			tileSize = (int) Math.ceil(THUMBNAIL_SIZE / (double) map.getHeight());
+			tileSize = (int) Math.ceil(availableHeight / (double) map.getHeight());
 		}
 
-		final int tileCount = THUMBNAIL_SIZE / tileSize;
+		final int tileCount = availableWidth / tileSize;
 
 		final int tilesX = Math.min(map.getWidth(), tileCount);
-		final int tilesY = Math.min(map.getHeight(), tileCount);
+		final int tilesY = Math.min(map.getHeight(), availableHeight / tileSize);
 
 		final int width = tilesX * tileSize;
 		final int height = tilesY * tileSize;
