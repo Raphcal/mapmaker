@@ -100,8 +100,16 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="nameTextField" alignment="0" min="-2" pref="67" max="-2" attributes="0"/>
+                  <Component id="heightTextField" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
+                  <Component id="widthTextField" alignment="0" min="-2" pref="65" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="zoomTextField" min="-2" pref="46" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="zoomPercentLabel" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="selectionToggleButton" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -143,6 +151,7 @@
                           <Component id="copyButton" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="undoButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="redoButton" min="-2" max="-2" attributes="0"/>
                           <Component id="pasteButton" min="-2" max="-2" attributes="0"/>
@@ -154,37 +163,29 @@
                       <Component id="replaceColorToggleButton" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="previousLayerButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="nextLayerButton" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="zoomTextField" min="-2" pref="49" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                      <Component id="zoomPercentLabel" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="widthTextField" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="treeToggleButton" min="-2" pref="32" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="nextStepTreeButton" min="-2" pref="32" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="heightTextField" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
                       <Component id="hitboxToggleButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="attackHitboxToggleButton" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="applyFunctionButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="resizeButton" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="nameTextField" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="treeToggleButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Component id="nextStepTreeButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="previousLayerButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Component id="nextLayerButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="gridScrollPane" pref="492" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="gridScrollPane" pref="479" max="32767" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="2" attributes="0">
                   <Component id="alphaPaletteGrid" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Component id="paletteGrid" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -200,7 +201,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="gridScrollPane" alignment="0" max="32767" attributes="0"/>
           <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="paletteGrid" min="-2" max="-2" attributes="0"/>
@@ -218,7 +219,7 @@
                           <Component id="magicWandToggleButton" min="-2" max="-2" attributes="0"/>
                           <Component id="selectionToggleButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="penToggleButton" min="-2" max="-2" attributes="0"/>
                           <Component id="bucketFillToggleButton" min="-2" max="-2" attributes="0"/>
@@ -430,6 +431,9 @@
           <Image iconType="3" name="/resources/tool_selection.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="S&#xe9;lection"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(selectionToggleButton, new SelectionTool(drawGrid));"/>
@@ -444,6 +448,9 @@
           <Image iconType="3" name="/resources/tool_magic_wand.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Baguette magique"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(magicWandToggleButton, new MagicWandSelectionTool(drawGrid));"/>
@@ -458,6 +465,9 @@
           <Image iconType="3" name="/resources/tool_pen.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Stylo"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="final PenTool penTool = new PenTool(drawGrid, memento);&#xa;penTool.setPaletteMaps(alphaPaletteMap, colorPaletteMap);&#xa;wireTool(penToggleButton, penTool);&#xa;penToggleButton.setSelected(true);"/>
@@ -472,6 +482,9 @@
           <Image iconType="3" name="/resources/tool_bucket_fill.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Pot de peinture"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(bucketFillToggleButton, new BucketFillTool(drawGrid));"/>
@@ -486,6 +499,9 @@
           <Image iconType="3" name="/resources/tool_line.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Trait"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(lineToggleButton, new LineTool(drawGrid, drawLayer, drawGrid.getOverlay()));"/>
@@ -500,6 +516,9 @@
           <Image iconType="3" name="/resources/tool_circle.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Cercle"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(circleToggleButton, new CircleStrokeTool(drawGrid, drawLayer, drawGrid.getOverlay()));"/>
@@ -514,6 +533,9 @@
           <Image iconType="3" name="/resources/tool_rectangle.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Rectangle"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(rectangleToggleButton, new RectangleStrokeTool(drawGrid));"/>
@@ -528,6 +550,9 @@
           <Image iconType="3" name="/resources/tool_rectangle_fill.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Rectangle plein"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(rectangleFillToggleButton, new RectangleFillTool(drawGrid));"/>
@@ -542,6 +567,9 @@
           <Image iconType="3" name="/resources/tool_ellipse.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Ellipse"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(ellipseToggleButton, new EllipseStrokeTool(drawGrid));"/>
@@ -556,6 +584,9 @@
           <Image iconType="3" name="/resources/tool_ellipse_fill.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Ellipse pleine"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(ellipseFillToggleButton, new EllipseFillTool(drawGrid));"/>
@@ -570,6 +601,9 @@
           <Image iconType="3" name="/resources/tool_color_picker.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Pipette"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(colorPickerToggleButton, new ColorPickerTool(alphaPaletteMap, colorPaletteMap, drawGrid));"/>
@@ -742,6 +776,9 @@
           <Image iconType="3" name="/resources/tool_dither.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Tramage"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(ditherToggleButton, new DitherRectangleTool(drawGrid));"/>
@@ -756,6 +793,9 @@
           <Image iconType="3" name="/resources/tool_replace_color.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Remplacement de couleur"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(replaceColorToggleButton, new ReplaceColorTool(drawGrid));"/>
@@ -768,6 +808,9 @@
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/resources/tool_tree.png"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -812,6 +855,9 @@
           <Image iconType="3" name="/resources/tool_hitbox.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Hitbox"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="hitboxTool = new HitboxTool(drawGrid);&#xa;wireTool(hitboxToggleButton, hitboxTool);&#xa;listenToPluginChanges(hitboxToggleButton, hitboxTool);"/>
@@ -840,6 +886,9 @@
           <Image iconType="3" name="/resources/tool_bucket_fill.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Couvrir"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(coatToggleButton, new CoatTool(drawGrid));"/>
@@ -868,6 +917,9 @@
           <Image iconType="3" name="/resources/tool_hitbox2.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Hitbox d&apos;attaque"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[32, 32]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="secondaryHitboxTool = new SecondaryHitboxTool(drawGrid);&#xa;wireTool(attackHitboxToggleButton, secondaryHitboxTool);&#xa;listenToPluginChanges(attackHitboxToggleButton, secondaryHitboxTool);"/>

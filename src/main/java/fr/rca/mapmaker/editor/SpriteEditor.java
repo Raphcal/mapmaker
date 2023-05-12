@@ -9,6 +9,7 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.GridList;
 import fr.rca.mapmaker.util.CleanEdge;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -176,6 +177,7 @@ public class SpriteEditor extends javax.swing.JDialog {
         pasteButton = new javax.swing.JButton();
         scrollCheckBox = new javax.swing.JCheckBox();
         playButton = new javax.swing.JButton();
+        autoResizeButton = new javax.swing.JButton();
 
         setTitle("Sprite");
 
@@ -343,6 +345,14 @@ public class SpriteEditor extends javax.swing.JDialog {
             }
         });
 
+        autoResizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_resize.png"))); // NOI18N
+        autoResizeButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        autoResizeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autoResizeButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -356,6 +366,8 @@ public class SpriteEditor extends javax.swing.JDialog {
                         .addComponent(pasteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(autoRotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(autoResizeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cancelButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -440,12 +452,14 @@ public class SpriteEditor extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton)
-                    .addComponent(okButton)
-                    .addComponent(autoRotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(copyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pasteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cancelButton)
+                        .addComponent(okButton)
+                        .addComponent(autoRotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(copyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pasteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(autoResizeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -587,6 +601,57 @@ public class SpriteEditor extends javax.swing.JDialog {
         animationPreview.restart();
     }//GEN-LAST:event_playButtonActionPerformed
 
+    private void autoResizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoResizeButtonActionPerformed
+        final String answer = JOptionPane.showInputDialog("Agrandissement à appliquer en pourcentage ? (début: 1, fin: 100, étapes: 3)");
+		int[] resize = new int[0];
+		try {
+			resize = Arrays.stream(answer.split(", *"))
+					.mapToInt(Integer::parseInt)
+					.toArray();
+		} catch(NumberFormatException e) {
+			// Ignoré.
+		}
+		if (resize.length != 3) {
+			return;
+		}
+
+		final double from = (resize[0] / 100.0);
+		final double to = (resize[1] / 100.0);
+		final double step = (to - from) / resize[2];
+
+		final ArrayList<TileLayer> frames = new ArrayList<>(getCurrentAnimation());
+		final ArrayList<TileLayer> newFrames = new ArrayList<>();
+		for(double value = from; value - to < 0.01; value += step) {
+			for(final TileLayer frame : frames) {
+				final TileLayer resizedFrame = new TileLayer(frame);
+				CleanEdge.builder()
+						.palette(sprite.getPalette())
+						.scaleRate(value)
+						.slope(true)
+						.cleanUpSmallDetails(true)
+						.build()
+						.shade(resizedFrame);
+				Dimension oldDimension = resizedFrame.getDimension();
+				Dimension newDimension = new Dimension(oldDimension);
+				if (resizedFrame.getWidth() < frame.getWidth()) {
+					newDimension.width = frame.getWidth();
+				}
+				if (resizedFrame.getHeight() < frame.getHeight()) {
+					newDimension.height = frame.getHeight();
+				}
+				if (!oldDimension.equals(newDimension)) {
+					resizedFrame.resize(newDimension.width, newDimension.height);
+					resizedFrame.translate(
+							(newDimension.width - oldDimension.width) / 2,
+							(newDimension.height - oldDimension.height) / 2);
+				}
+				newFrames.add(resizedFrame);
+			}
+		}
+		tileLayerList.removeAll();
+		tileLayerList.addAll(newFrames);
+    }//GEN-LAST:event_autoResizeButtonActionPerformed
+
 	private void animationChanged() {
 		final int oldFrequency = getCurrentFrequency();
 		final boolean oldLooping = isAnimationLooping();
@@ -626,6 +691,7 @@ public class SpriteEditor extends javax.swing.JDialog {
     private javax.swing.DefaultComboBoxModel<Animation> animationComboBoxModel;
     private javax.swing.JLabel animationLabel;
     private fr.rca.mapmaker.ui.AnimatedGrid<TileLayer> animationPreview;
+    private javax.swing.JButton autoResizeButton;
     private javax.swing.JButton autoRotateButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton copyButton;

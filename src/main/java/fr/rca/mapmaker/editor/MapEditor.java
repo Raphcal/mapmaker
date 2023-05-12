@@ -239,6 +239,7 @@ public class MapEditor extends javax.swing.JFrame {
         gitManager = new fr.rca.mapmaker.team.git.GitManager();
         clipboard = new fr.rca.mapmaker.model.map.TileLayer();
         mapScrollPane = new javax.swing.JScrollPane();
+        mapScrollPane.putClientProperty("JScrollPane.useSmoothScrolling", false);
         mapBackgroundPanel = new JPanel(new LayerLayout(LayerLayout.Disposition.TOP_LEFT));
         spriteLayerPanel = new javax.swing.JPanel();
         mapGrid = new fr.rca.mapmaker.ui.Grid();
@@ -497,7 +498,6 @@ public class MapEditor extends javax.swing.JFrame {
         mapScrollPane.setViewportView(mapBackgroundPanel);
 
         mapListScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        mapListScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         mapListScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 
         mapList.setBackground(new java.awt.Color(223, 230, 238));
