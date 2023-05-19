@@ -56,13 +56,16 @@ public class TileMapListRenderer extends JComponent implements ListCellRenderer 
 		final int availableWidth = clipBounds.width - HORIZONTAL_PADDING - HORIZONTAL_PADDING;
 		final int availableHeight = clipBounds.height - VERTICAL_PADDING - VERTICAL_PADDING;
 
-		final int tileSize;
+		int tileSize;
 		if (map.getWidth() < map.getHeight()) {
 			tileSize = (int) Math.ceil(availableWidth / (double) map.getWidth());
 		} else {
 			tileSize = (int) Math.ceil(availableHeight / (double) map.getHeight());
 		}
 
+		if (tileSize <= 0) {
+			tileSize = 1;
+		}
 		final int tileCount = availableWidth / tileSize;
 
 		final int tilesX = Math.min(map.getWidth(), tileCount);

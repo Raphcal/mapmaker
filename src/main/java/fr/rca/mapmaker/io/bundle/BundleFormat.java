@@ -283,7 +283,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 				final List<Instance> instances = readInstances(file, (String) map.get(INSTANCES), project, instanceHandler);
 				progressTracker.subStepDidEnd();
 
-				project.addMap(tileMap, instances);
+				project.addMap(tileMap, instances, false);
 			}
 			if (version >= InternalFormat.VERSION_7 && projectInfo.containsKey(NEXT_MAP)) {
 				project.setNextMap((Integer) projectInfo.get(NEXT_MAP));

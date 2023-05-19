@@ -31,75 +31,75 @@ public class TileMapDataHandler implements DataHandler<TileMap>, HasVersion {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	
+
 	@Override
 	public void write(TileMap t, OutputStream outputStream) throws IOException {
-		if(version >= InternalFormat.VERSION_7) {
+		if (version >= InternalFormat.VERSION_7) {
 			Streams.write(t.getIndex(), outputStream);
 		}
-		
-		if(version >= InternalFormat.VERSION_6) {
+
+		if (version >= InternalFormat.VERSION_6) {
 			Streams.writeNullable(t.getName(), outputStream);
 		}
-		
+
 		// Fond
 		final DataHandler<Color> colorHandler = format.getHandler(Color.class);
 		Color backgroundColor = t.getBackgroundColor();
-		if(backgroundColor == null) {
+		if (backgroundColor == null) {
 			// TODO: Plutôt faire un booléen ou équivalent
 			backgroundColor = new Color(255, 255, 255);
 		}
 		colorHandler.write(backgroundColor, outputStream);
-		
+
 		// Palette
 		final DataHandler<Palette> paletteHandler = format.getHandler(Palette.class);
 		paletteHandler.write(t.getPalette(), outputStream);
-		
+
 		// Layers
 		final DataHandler<TileLayer> layerHandler = format.getHandler(TileLayer.class);
-		
+
 		final List<Layer> layers = t.getLayers();
 		Streams.write(layers.size(), outputStream);
-		
-		for(final Layer layer : layers) {
-			layerHandler.write((TileLayer)layer, outputStream);
+
+		for (final Layer layer : layers) {
+			layerHandler.write((TileLayer) layer, outputStream);
 		}
 	}
 
 	@Override
 	public TileMap read(InputStream inputStream) throws IOException {
 		final TileMap tileMap = new TileMap();
-		
+
 		// Index
-		if(version >= InternalFormat.VERSION_7) {
+		if (version >= InternalFormat.VERSION_7) {
 			tileMap.setIndex(Streams.readInt(inputStream));
 		}
-		
+
 		// Nom
-		if(version >= InternalFormat.VERSION_6) {
+		if (version >= InternalFormat.VERSION_6) {
 			tileMap.setName(Streams.readNullableString(inputStream));
 		}
-		
+
 		// Fond
 		final DataHandler<Color> colorHandler = format.getHandler(Color.class);
 		tileMap.setBackgroundColor(colorHandler.read(inputStream));
-		
+
 		// Palette
 		final DataHandler<Palette> paletteHandler = format.getHandler(Palette.class);
 		tileMap.setPalette(paletteHandler.read(inputStream));
-		
+
 		// Layers
 		final DataHandler<TileLayer> layerHandler = format.getHandler(TileLayer.class);
-		
+
 		final int layerCount = Streams.readInt(inputStream);
-		for(int index = 0; index < layerCount; index++) {
+		for (int index = 0; index < layerCount; index++) {
 			final TileLayer layer = layerHandler.read(inputStream);
 //			layer.setParent(tileMap);
-			
+
 			tileMap.add(layer);
 		}
-		
+
 		return tileMap;
 	}
-	
+
 }

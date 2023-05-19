@@ -306,10 +306,10 @@ public class Project implements ListModel, HasColorPalette {
 	}
 
 	public void addMap(TileMap map) {
-		addMap(map, new ArrayList<Instance>());
+		addMap(map, new ArrayList<Instance>(), false);
 	}
 
-	public void addMap(TileMap map, List<Instance> instances) {
+	public void addMap(TileMap map, List<Instance> instances, boolean addAfterSelectedMap) {
 		map.setParent(this);
 		map.setSpriteInstances(instances);
 
@@ -319,9 +319,14 @@ public class Project implements ListModel, HasColorPalette {
 			nextMap = map.getIndex() + 1;
 		}
 
-		final int index = maps.size();
-		maps.add(map);
-
+		final int index;
+		if (addAfterSelectedMap && selectedIndex >= 0 && selectedIndex < maps.size()) {
+			index = selectedIndex + 1;
+			maps.add(selectedIndex, map);
+		} else {
+			index = maps.size();
+			maps.add(map);
+		}
 		fireIntervalAdded(index, index);
 	}
 

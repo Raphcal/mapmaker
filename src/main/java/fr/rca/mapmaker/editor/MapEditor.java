@@ -60,6 +60,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -1189,7 +1190,9 @@ private void addMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 	dialog.setVisible(true);
 
 	if (dialog.hasBeenConfirmed()) {
-		project.addMap(dialog.getTileMap());
+		TileMap tileMap = dialog.getTileMap();
+		resizeMapLayers(tileMap);
+		project.addMap(tileMap, new ArrayList<>(), true);
 	}
 }//GEN-LAST:event_addMapButtonActionPerformed
 
@@ -1213,23 +1216,29 @@ private void editMapMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//G
 		selectedTileMap.setIndex(editedTileMap.getIndex());
 		selectedTileMap.setBackgroundColor(editedTileMap.getBackgroundColor());
 		selectedTileMap.setPalette(editedTileMap.getPalette());
+		selectedTileMap.setWidth(editedTileMap.getWidth());
+		selectedTileMap.setHeight(editedTileMap.getHeight());
 
-		final float width = editedTileMap.getWidth();
-		final float height = editedTileMap.getHeight();
-
-		for (final Layer layer : selectedTileMap.getLayers()) {
-			if (layer instanceof TileLayer) {
-				final int correctedWidth = (int) Math.ceil(width * Math.max(layer.getScrollRate().getX(), 1.0f));
-				final int correctedHeight = (int) Math.ceil(height * Math.max(layer.getScrollRate().getY(), 1.0f));
-
-				((TileLayer) layer).resize(correctedWidth, correctedHeight);
-			}
-		}
+		resizeMapLayers(selectedTileMap);
 
 		project.currentPaletteChanged();
 		repaintMapGrid();
 	}
 }//GEN-LAST:event_editMapMenuItemActionPerformed
+
+	private void resizeMapLayers(final TileMap mapToResize) {
+		final float width = mapToResize.getWidth();
+		final float height = mapToResize.getHeight();
+
+		for (final Layer layer : mapToResize.getLayers()) {
+			if (layer instanceof TileLayer) {
+				final int correctedWidth = (int) Math.ceil(width * Math.max(layer.getScrollRate().getX(), 1.0f));
+				final int correctedHeight = (int) Math.ceil(height * Math.max(layer.getScrollRate().getY(), 1.0f));
+				
+				((TileLayer) layer).resize(correctedWidth, correctedHeight);
+			}
+		}
+	}
 
 private void mayShowMapPopup(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mayShowMapPopup
 	if (evt.isPopupTrigger()) {

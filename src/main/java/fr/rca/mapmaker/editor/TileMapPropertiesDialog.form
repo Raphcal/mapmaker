@@ -190,7 +190,7 @@
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="widthTextField">
       <BindingProperties>
-        <BindingProperty name="text" source="tileMap" sourcePath="${width}" target="widthTextField" targetPath="text" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="value" source="tileMap" sourcePath="${width}" target="widthTextField" targetPath="value" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -199,7 +199,7 @@
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="heightTextField">
       <BindingProperties>
-        <BindingProperty name="text" source="tileMap" sourcePath="${height}" target="heightTextField" targetPath="text" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="value" source="tileMap" sourcePath="${height}" target="heightTextField" targetPath="value" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
