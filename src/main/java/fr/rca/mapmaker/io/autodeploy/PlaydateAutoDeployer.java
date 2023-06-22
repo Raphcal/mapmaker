@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
 /**
@@ -90,7 +91,9 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 					new FileOutputStream(
 					new File(resourceDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data")))) {
 				tileMapHandler.write(tileMap, outputStream);
-				instancesHandler.write(mapAndInstances.getSpriteInstances(), outputStream);
+				instancesHandler.write(mapAndInstances.getSpriteInstances().stream()
+						.filter(instance -> instance.getSprite().isExportable())
+						.collect(Collectors.toList()), outputStream);
 			}
 		}
 		generateFile(generatedSourcesDir, new TileMapsAsHeaderHandler(), maps, configuration);
