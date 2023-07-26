@@ -25,6 +25,7 @@ import lombok.Data;
 @Data
 public class TileLayer implements DataLayer, HasSizeChangeListeners, HasPropertyChangeListeners, HasLayerPlugin {
 	public static final int EMPTY_TILE = -1;
+	public static final int ERASE_TILE = -2;
 
 	/**
 	 * Carte parente.
@@ -581,7 +582,7 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 				int tile = layer.tiles[y * layer.width + x];
 
 				if (tile != EMPTY_TILE) {
-					if (tile == -2) {
+					if (tile == ERASE_TILE) {
 						tile = EMPTY_TILE;
 					}
 

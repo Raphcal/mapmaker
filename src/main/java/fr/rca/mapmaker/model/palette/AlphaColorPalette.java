@@ -9,7 +9,15 @@ public class AlphaColorPalette extends ColorPalette {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AlphaColorPalette.class);
 
+	/**
+	 * Niveaux de transparence du plus visible au moins visible.
+	 */
 	private static final int[] ALPHAS = {255, 224, 192, 160, 128, 96, 64, 32};
+
+	/**
+	 * Multiplicateur utilisé pour stocker le numéro de la tuile et la quantité
+	 * de transparence dans un int.
+	 */
 	private static final int MASK = 1000;
 
 	private int selectedAlpha = 0;
