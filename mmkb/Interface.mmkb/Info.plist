@@ -33,6 +33,10 @@
 		<string>sprite9.spr</string>
 		<string>sprite10.spr</string>
 		<string>sprite11.spr</string>
+		<string>sprite12.spr</string>
+		<string>sprite13.spr</string>
+		<string>sprite14.spr</string>
+		<string>sprite15.spr</string>
 	</array>
 	<key>animation-names</key>
 	<array>

@@ -140,10 +140,7 @@
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="rotateButton" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                              <Component id="diagonalFIllToggleButton" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="diagonalFillToggleButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -259,7 +256,7 @@
                           <Group type="102" attributes="0">
                               <Component id="rotateButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                              <Component id="diagonalFIllToggleButton" min="-2" max="-2" attributes="0"/>
+                              <Component id="diagonalFillToggleButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -946,7 +943,7 @@
         </BindingProperty>
       </BindingProperties>
     </Component>
-    <Component class="javax.swing.JToggleButton" name="diagonalFIllToggleButton">
+    <Component class="javax.swing.JToggleButton" name="diagonalFillToggleButton">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
           <ComponentRef name="toolButtonGroup"/>
@@ -960,7 +957,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(diagonalFIllToggleButton, new FillDiagonalLines(drawGrid));"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="wireTool(diagonalFillToggleButton, new FillDiagonalLines(drawGrid, diagonalFillToggleButton));"/>
       </AuxValues>
     </Component>
   </SubComponents>

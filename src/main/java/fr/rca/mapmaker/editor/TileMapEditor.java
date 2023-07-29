@@ -270,7 +270,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         resizeButton = new javax.swing.JButton();
         attackHitboxToggleButton = new javax.swing.JToggleButton();
         nameTextField = new javax.swing.JTextField();
-        diagonalFIllToggleButton = new javax.swing.JToggleButton();
+        diagonalFillToggleButton = new javax.swing.JToggleButton();
 
         drawMap.setBackgroundColor(new java.awt.Color(0, 153, 153));
         drawMap.setHeight(32);
@@ -608,11 +608,11 @@ public class TileMapEditor extends javax.swing.JDialog {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, drawLayer, org.jdesktop.beansbinding.ELProperty.create("${name}"), nameTextField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        toolButtonGroup.add(diagonalFIllToggleButton);
-        diagonalFIllToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_diagonal_fill.png"))); // NOI18N
-        diagonalFIllToggleButton.setToolTipText("Remplissage par lignes");
-        diagonalFIllToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
-        wireTool(diagonalFIllToggleButton, new FillDiagonalLines(drawGrid));
+        toolButtonGroup.add(diagonalFillToggleButton);
+        diagonalFillToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_diagonal_fill.png"))); // NOI18N
+        diagonalFillToggleButton.setToolTipText("Remplissage par lignes");
+        diagonalFillToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        wireTool(diagonalFillToggleButton, new FillDiagonalLines(drawGrid, diagonalFillToggleButton));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -652,9 +652,7 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addComponent(coatToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(rotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, 0)
-                                .addComponent(diagonalFIllToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(diagonalFillToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(horizontalMirrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
@@ -750,7 +748,7 @@ public class TileMapEditor extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(rotateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addComponent(diagonalFIllToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(diagonalFillToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(hitboxToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1033,7 +1031,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private fr.rca.mapmaker.model.map.PaletteMap colorPaletteMap;
     private javax.swing.JToggleButton colorPickerToggleButton;
     private javax.swing.JButton copyButton;
-    private javax.swing.JToggleButton diagonalFIllToggleButton;
+    private javax.swing.JToggleButton diagonalFillToggleButton;
     private javax.swing.JToggleButton ditherToggleButton;
     private fr.rca.mapmaker.ui.Grid drawGrid;
     private fr.rca.mapmaker.model.map.TileLayer drawLayer;

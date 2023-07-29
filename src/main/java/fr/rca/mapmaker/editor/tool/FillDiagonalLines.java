@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.AbstractButton;
+import javax.swing.Icon;
 import javax.swing.SwingWorker;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,10 +26,13 @@ import lombok.Data;
 public class FillDiagonalLines extends MouseAdapter implements Tool {
 
 	private final Grid grid;
+	private final AbstractButton button;
 	private LineOrientation orientation = LineOrientation.DIAGONAL_ASCENDING;
 
-	public FillDiagonalLines(Grid grid) {
+	public FillDiagonalLines(Grid grid, AbstractButton button) {
 		this.grid = grid;
+		this.button = button;
+		this.button.setIcon(orientation.getIcon());
 	}
 
 	public LineOrientation getOrientation() {
@@ -40,6 +45,7 @@ public class FillDiagonalLines extends MouseAdapter implements Tool {
 			// Changement d'orientation.
 			// TODO: Changer l'icône en fonction de l'orientation.
 			this.orientation = LineOrientation.values()[(orientation.ordinal() + 1) % LineOrientation.values().length];
+			this.button.setIcon(orientation.getIcon());
 			return;
 		}
 
@@ -137,32 +143,41 @@ public class FillDiagonalLines extends MouseAdapter implements Tool {
 		// Pas d'action.
 	}
 
+	@AllArgsConstructor
 	public static enum LineOrientation {
-		DIAGONAL_ASCENDING {
+		DIAGONAL_ASCENDING ("tool_diagonal_fill.png") {
 			@Override
 			boolean shouldPaintAtLocation(PaintLocation location, int spacing) {
 				return (location.x + location.y) % (spacing + 1) == 0;
 			}
 		},
-		HORIZONTAL {
+		HORIZONTAL ("tool_horizontal_fill.png") {
 			@Override
 			boolean shouldPaintAtLocation(PaintLocation location, int spacing) {
 				return location.y % (spacing + 1) == 0;
 			}
 		},
-		DIAGONAL_DESCENDING {
+		DIAGONAL_DESCENDING ("tool_diagonal2_fill.png") {
 			@Override
 			boolean shouldPaintAtLocation(PaintLocation location, int spacing) {
 				final int modulo = spacing + 1;
 				return (location.x - location.y + modulo) % modulo == 0;
 			}
 		},
-		VERTICAL {
+		VERTICAL ("tool_vertical_fill.png") {
 			@Override
 			boolean shouldPaintAtLocation(PaintLocation location, int spacing) {
 				return location.x % (spacing + 1) == 0;
 			}
+		},
+		GRID ("tool_grid_fill.png") {
+			@Override
+			boolean shouldPaintAtLocation(PaintLocation location, int spacing) {
+				return location.x % (spacing + 1) == 0 && location.y % (spacing + 1) == 0;
+			}
 		};
+
+		private final String iconFileName;
 
 		abstract boolean shouldPaintAtLocation(PaintLocation location, int spacing);
 
@@ -170,6 +185,10 @@ public class FillDiagonalLines extends MouseAdapter implements Tool {
 			return shouldPaintAtLocation(location, spacing)
 					? target
 					: TileLayer.ERASE_TILE;
+		}
+
+		Icon getIcon() {
+			return new javax.swing.ImageIcon(getClass().getResource("/resources/" + iconFileName));
 		}
 	}
 
