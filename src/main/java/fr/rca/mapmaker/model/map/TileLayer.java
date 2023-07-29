@@ -312,11 +312,11 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	public void setTiles(Shape shape, int tile) {
 		final Rectangle bounds = shape.getBounds();
 
-		final int minX = Math.max(0, bounds.x);
-		final int minY = Math.max(0, bounds.y);
+		final int minX = Math.min(Math.max(0, bounds.x), width - 1);
+		final int minY = Math.min(Math.max(0, bounds.y), height - 1);
 
-		final int maxX = Math.min(width, (int) bounds.getMaxX());
-		final int maxY = Math.min(height, (int) bounds.getMaxY());
+		final int maxX = Math.max(Math.min(width, (int) bounds.getMaxX()), 0);
+		final int maxY = Math.max(Math.min(height, (int) bounds.getMaxY()), 0);
 
 		for (int y = minY; y < maxY; y++) {
 			for (int x = minX; x < maxX; x++) {

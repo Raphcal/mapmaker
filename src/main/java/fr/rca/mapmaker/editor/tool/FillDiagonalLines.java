@@ -48,6 +48,7 @@ public class FillDiagonalLines extends MouseAdapter implements Tool {
 			this.button.setIcon(orientation.getIcon());
 			return;
 		}
+		final boolean bold = (e.getModifiersEx() & MouseEvent.ALT_DOWN_MASK) != 0;
 
 		final TileLayer drawingLayer = (TileLayer) grid.getActiveLayer();
 		final TileLayer previewLayer = grid.getOverlay();
@@ -91,7 +92,7 @@ public class FillDiagonalLines extends MouseAdapter implements Tool {
 
 				while (!locations.isEmpty()) {
 					final PaintLocation location = locations.remove(locations.size() - 1);
-					setTile(data, location, orientation.tileAtLocation(location, spacing, target));
+					setTile(data, location, orientation.tileAtLocation(location, spacing, bold, target));
 
 					for (PaintOrigin origin : location.origin.getOthers()) {
 						final PaintLocation nextLocation = origin.translate(location);
@@ -151,7 +152,7 @@ public class FillDiagonalLines extends MouseAdapter implements Tool {
 				return (location.x + location.y) % (spacing + 1) == 0;
 			}
 		},
-		HORIZONTAL ("tool_horizontal_fill.png") {
+		HORIZONTAL ("tool_horizontal_fill.png", PaintOrigin.DOWN) {
 			@Override
 			boolean shouldPaintAtLocation(PaintLocation location, int spacing) {
 				return location.y % (spacing + 1) == 0;
@@ -178,11 +179,21 @@ public class FillDiagonalLines extends MouseAdapter implements Tool {
 		};
 
 		private final String iconFileName;
+		private final PaintOrigin boldDirection;
+
+		private LineOrientation(String iconFileName) {
+			this.iconFileName = iconFileName;
+			this.boldDirection = PaintOrigin.LEFT;
+		}
 
 		abstract boolean shouldPaintAtLocation(PaintLocation location, int spacing);
 
-		int tileAtLocation(PaintLocation location, int spacing, int target) {
-			return shouldPaintAtLocation(location, spacing)
+		boolean shouldPaintAtLocation(PaintLocation location, int spacing, boolean bold) {
+			return shouldPaintAtLocation(location, spacing) || (bold && shouldPaintAtLocation(boldDirection.translate(location), spacing));
+		}
+
+		int tileAtLocation(PaintLocation location, int spacing, boolean bold, int target) {
+			return shouldPaintAtLocation(location, spacing, bold)
 					? target
 					: TileLayer.ERASE_TILE;
 		}

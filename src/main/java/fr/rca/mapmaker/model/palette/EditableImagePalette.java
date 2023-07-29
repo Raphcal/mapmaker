@@ -57,6 +57,9 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 
 	@Override
 	public String getFunction(int index) {
+		if (index < 0 || index >= sources.size()) {
+			return null;
+		}
 		final FunctionLayerPlugin plugin = sources.get(index).getPlugin(FunctionLayerPlugin.class);
 		if (plugin != null) {
 			return plugin.getFunction();
