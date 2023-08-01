@@ -22,11 +22,15 @@ import fr.rca.mapmaker.io.playdate.SpriteVariablesAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.TileMapHandler;
 import fr.rca.mapmaker.io.playdate.TileMapsAsCodeHandler;
 import fr.rca.mapmaker.io.playdate.TileMapsAsHeaderHandler;
+import fr.rca.mapmaker.model.map.Layer;
+import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import fr.rca.mapmaker.ui.ImageRenderer;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -35,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
@@ -67,10 +72,12 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		final List<Palette> palettes = PlaydateFormat.palettesForProject(project);
 
 		for(final Palette palette : palettes) {
-			try (final BufferedOutputStream outputStream = new BufferedOutputStream(
-					new FileOutputStream(
-					new File(resourceDir, "palette-" + Names.normalizeName(palette, Names::toLowerCase) + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
-				ImageIO.write(PlaydateFormat.renderPalette((EditableImagePalette) palette), "png", outputStream);
+			if (configuration.getFlattenLayers() == null || !configuration.getFlattenLayers()) {
+				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
+						new FileOutputStream(
+						new File(resourceDir, "palette-" + Names.normalizeName(palette, Names::toLowerCase) + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
+					ImageIO.write(PlaydateFormat.renderPalette((EditableImagePalette) palette), "png", outputStream);
+				}
 			}
 
 			generateFile(generatedSourcesDir, new PaletteAsHeaderHandler(), palette, configuration);
@@ -94,6 +101,24 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 				instancesHandler.write(mapAndInstances.getSpriteInstances().stream()
 						.filter(instance -> instance.getSprite().isExportable())
 						.collect(Collectors.toList()), outputStream);
+			}
+
+			if (configuration.getFlattenLayers() != null && configuration.getFlattenLayers()) {
+				final ImageRenderer renderer = new ImageRenderer();
+				final Palette palette = tileMap.getPalette();
+				final ArrayList<Layer> layers = tileMap.getLayers();
+				for (int layerIndex = 0; layerIndex < layers.size(); layerIndex++) {
+					final Layer layer = layers.get(layerIndex);
+					Rectangle size = TileMapHandler.getLayerSize(layer);
+					if (size.width == 0 || size.height == 0) {
+						continue;
+					}
+					try (final BufferedOutputStream outputStream = new BufferedOutputStream(
+						new FileOutputStream(
+						new File(resourceDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + "-layer-" + layerIndex + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
+						ImageIO.write(renderer.renderImage((TileLayer) layer, palette, size, palette.getTileSize()), "png", outputStream);
+					}
+				}
 			}
 		}
 		generateFile(generatedSourcesDir, new TileMapsAsHeaderHandler(), maps, configuration);

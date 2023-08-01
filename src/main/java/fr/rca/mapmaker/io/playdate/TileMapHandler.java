@@ -43,6 +43,7 @@ public class TileMapHandler implements DataHandler<TileMap> {
 		Streams.write((short) palettes.indexOf(palette), outputStream);
 
 		final List<Layer> layers = new ArrayList<>(t.getLayers());
+		// TODO: Faire une entrée dans la configuration pour paramétrer l'écriture de l'eau.
 		final Rectangle waterArea = getWaterArea(layers);
 		// Origine en haut à gauche pour simplifier le code.
 		Streams.write(waterArea.x, outputStream);
@@ -73,7 +74,7 @@ public class TileMapHandler implements DataHandler<TileMap> {
 		throw new UnsupportedOperationException("Not supported.");
 	}
 
-	private Rectangle getLayerSize(Layer layer) {
+	public static Rectangle getLayerSize(Layer layer) {
 		Point topLeft = new Point(layer.getWidth(), layer.getHeight());
 		Point bottomRight = new Point();
 		final int count = layer.getWidth() * layer.getHeight();
