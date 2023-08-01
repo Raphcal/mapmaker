@@ -98,7 +98,16 @@ public class InternalFormat extends AbstractFormat {
 	 */
 	public static final int VERSION_15 = 15;
 
-	public static final int LAST_VERSION = VERSION_15;
+	/**
+	 * Version 16. Depuis le 01/08/2023.
+	 * <p/>
+	 * Ajoute les fonctionnalités suivantes :<ul>
+	 * <li>Flag <code>exportable</code> sur les TileMap pour choisir quoi exporter.</li>
+	 * </ul>
+	 */
+	public static final int VERSION_16 = 16;
+
+	public static final int LAST_VERSION = VERSION_16;
 	public static final String HEADER_LAST_VERSION = "MM" + LAST_VERSION;
 
 	public InternalFormat() {

@@ -64,6 +64,10 @@ public class TileMapDataHandler implements DataHandler<TileMap>, HasVersion {
 		for (final Layer layer : layers) {
 			layerHandler.write((TileLayer) layer, outputStream);
 		}
+
+		if (version >= InternalFormat.VERSION_16) {
+			Streams.write(t.isExportable(), outputStream);
+		}
 	}
 
 	@Override
@@ -97,6 +101,12 @@ public class TileMapDataHandler implements DataHandler<TileMap>, HasVersion {
 //			layer.setParent(tileMap);
 
 			tileMap.add(layer);
+		}
+
+		if (version >= InternalFormat.VERSION_16) {
+			tileMap.setExportable(Streams.readBoolean(inputStream));
+		} else {
+			tileMap.setExportable(true);
 		}
 
 		return tileMap;

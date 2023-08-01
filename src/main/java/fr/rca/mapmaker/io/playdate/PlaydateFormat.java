@@ -88,7 +88,7 @@ public class PlaydateFormat extends AbstractFormat {
 			final TileMapAsHeaderHandler tileMapAsHeaderHandler = new TileMapAsHeaderHandler();
 			final TileMapAsCodeHandler tileMapAsCodeHandler = new TileMapAsCodeHandler();
 
-			final List<TileMap> maps = project.getMaps();
+			final List<TileMap> maps = mapsForProject(project);
 			for(int index = 0; index < maps.size(); index++) {
 				outputStream.putNextEntry(new ZipEntry("map" + index + ".data"));
 				final TileMap mapAndInstances = maps.get(index);
@@ -203,6 +203,12 @@ public class PlaydateFormat extends AbstractFormat {
 
 		graphics.dispose();
 		return image;
+	}
+
+	public static List<TileMap> mapsForProject(Project project) {
+		return project.getMaps().stream()
+				.filter(map -> map.isExportable())
+				.collect(Collectors.toList());
 	}
 
 	public static List<Palette> palettesForProject(Project project) {

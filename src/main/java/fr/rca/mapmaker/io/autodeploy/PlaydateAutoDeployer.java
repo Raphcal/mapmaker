@@ -89,7 +89,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		final TileMapHandler tileMapHandler = new TileMapHandler();
 		final InstancesHandler instancesHandler = new InstancesHandler();
 
-		final List<TileMap> maps = project.getMaps();
+		final List<TileMap> maps = PlaydateFormat.mapsForProject(project);
 		for(int index = 0; index < maps.size(); index++) {
 			final TileMap mapAndInstances = maps.get(index);
 			final TileMap tileMap = mapAndInstances;
@@ -104,6 +104,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 			}
 
 			if (configuration.getFlattenLayers() != null && configuration.getFlattenLayers()) {
+				// Exporte chaque couches séparement dans un PNG chacun.
 				final ImageRenderer renderer = new ImageRenderer();
 				final Palette palette = tileMap.getPalette();
 				final ArrayList<Layer> layers = tileMap.getLayers();
@@ -115,14 +116,14 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 					}
 					try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 						new FileOutputStream(
-						new File(resourceDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + "-layer-" + layerIndex + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
+						new File(resourceDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + "-layer-" + layerIndex + ".png")))) {
 						ImageIO.write(renderer.renderImage((TileLayer) layer, palette, size, palette.getTileSize()), "png", outputStream);
 					}
 				}
 			}
 		}
-		generateFile(generatedSourcesDir, new TileMapsAsHeaderHandler(), maps, configuration);
-		generateFile(generatedSourcesDir, new TileMapsAsCodeHandler(), maps, configuration);
+		generateFile(generatedSourcesDir, new TileMapsAsHeaderHandler().withConfiguration(configuration), maps, configuration);
+		generateFile(generatedSourcesDir, new TileMapsAsCodeHandler(resourceDir).withConfiguration(configuration), maps, configuration);
 
 		generateFile(generatedSourcesDir, new AnimationNamesAsHeaderHandler(), project.getAnimationNames(), configuration);
 

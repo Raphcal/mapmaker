@@ -64,6 +64,12 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	private int height;
 
 	/**
+	 * Indique si cette carte doit être inclue dans les exports (ne concerne
+	 * que les exports qui supportent cette fonctionnalité).
+	 */
+	private boolean exportable;
+
+	/**
 	 * Palette de couleur utilisée pour afficher la palette de la grille.
 	 */
 	private ColorPalette colorPalette;
@@ -161,6 +167,13 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 		this.height = height;
 
 		propertyChangeSupport.firePropertyChange("height", oldHeight, height);
+	}
+
+	public void setExportable(boolean exportable) {
+		final boolean oldExportable = this.exportable;
+		this.exportable = exportable;
+
+		propertyChangeSupport.firePropertyChange("exportable", oldExportable, exportable);
 	}
 
 	@Override

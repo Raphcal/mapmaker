@@ -1218,6 +1218,7 @@ private void editMapMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//G
 		selectedTileMap.setPalette(editedTileMap.getPalette());
 		selectedTileMap.setWidth(editedTileMap.getWidth());
 		selectedTileMap.setHeight(editedTileMap.getHeight());
+		selectedTileMap.setExportable(editedTileMap.isExportable());
 
 		resizeMapLayers(selectedTileMap);
 

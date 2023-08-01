@@ -37,6 +37,8 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
 		this.fileNameTextField.setVisible(false);
 		pack();
 
+		tileMap.setExportable(true);
+
 		// Fond blanc
 		tileMap.setBackgroundColor(Color.WHITE);
 
@@ -55,6 +57,7 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
 		this.tileMap.setIndex(tileMap.getIndex());
 		this.tileMap.setWidth(tileMap.getWidth());
 		this.tileMap.setHeight(tileMap.getHeight());
+		this.tileMap.setExportable(tileMap.isExportable());
 		this.tileMap.setBackgroundColor(tileMap.getBackgroundColor());
 		this.tileMap.addAll(tileMap.getLayers());
 		this.tileMap.setPalette(tileMap.getPalette());
@@ -107,6 +110,7 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
         nameTextField = new javax.swing.JTextField();
         fileNameTextField = new javax.swing.JTextField();
         fileNameLabel = new javax.swing.JLabel();
+        exportableCheckBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -167,25 +171,28 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
 
         fileNameLabel.setText(LANGUAGE.getString("dialog.map.file")); // NOI18N
 
+        exportableCheckBox.setText("Exportable");
+        exportableCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportableCheckBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(exportableCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(backgroundColorLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(backgroundColorField, javax.swing.GroupLayout.PREFERRED_SIZE, 37, Short.MAX_VALUE)
+                        .addComponent(backgroundColorField, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(removeBackgroundColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(okButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(paletteLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -199,7 +206,12 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
                             .addComponent(heightTextField)
                             .addComponent(widthTextField)
                             .addComponent(paletteComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(nameTextField))))
+                            .addComponent(nameTextField)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(okButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -230,6 +242,8 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
                     .addComponent(backgroundColorLabel)
                     .addComponent(backgroundColorField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removeBackgroundColorButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(exportableCheckBox)
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -266,7 +280,12 @@ private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 		tileMap.setBackgroundColor(null);
 	}//GEN-LAST:event_removeBackgroundColorButtonActionPerformed
 
+    private void exportableCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportableCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_exportableCheckBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox exportableCheckBox;
     private javax.swing.JLabel fileNameLabel;
     private javax.swing.JTextField fileNameTextField;
     private javax.swing.JLabel nameLabel;

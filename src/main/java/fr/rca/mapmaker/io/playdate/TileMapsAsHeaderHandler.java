@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -32,8 +33,13 @@ public class TileMapsAsHeaderHandler extends CodeDataHandler<List<TileMap>> {
 				+ "\n"
 				+ "extern const int kMapNameCount;\n"
 				+ "extern const char * _Nonnull kMapNameFileNames[" + t.size() + "];\n"
-				+ "\n"
-				+ "#endif /* maps_h */\n").getBytes(StandardCharsets.UTF_8));
+				+ "\n").getBytes(StandardCharsets.UTF_8));
+
+		if (Optional.ofNullable(configuration).map(PlaydateExportConfiguration::getFlattenLayers).orElse(false)) {
+			outputStream.write("LCDBitmap * _Nullable loadMapLayer(MapName mapName, unsigned int layer);\n\n".getBytes(StandardCharsets.UTF_8));
+		}
+
+		outputStream.write("#endif /* maps_h */\n".getBytes(StandardCharsets.UTF_8));
 	}
 
 	@Override
