@@ -39,7 +39,7 @@ public class TileMapsAsCodeHandler extends CodeDataHandler<List<TileMap>> {
 				+ "};\n").getBytes(StandardCharsets.UTF_8));
 
 		if (flattenLayers) {
-			outputStream.write(("LCDBitmap * _Nullable loadMapLayer(MapName mapName, int layer) {\n"
+			outputStream.write(("LCDBitmap * _Nullable loadMapLayer(MapName mapName, unsigned int layer) {\n"
 					+ "    switch (mapName * 100 + layer) {\n"
 					+ IntStream.range(0, t.size())
 						.mapToObj(mapIndex -> {

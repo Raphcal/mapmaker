@@ -25,6 +25,8 @@ public class TileMapsAsHeaderHandler extends CodeDataHandler<List<TileMap>> {
 				+ "#define _Nullable\n"
 				+ "#endif\n"
 				+ "\n"
+				+ "#include \"pd_api.h\"\n"
+				+ "\n"
 				+ "typedef enum {\n"
 				+ t.stream()
 						.map(map -> "    MapName" + Names.normalizeName(map, Names::toPascalCase) + ",\n")

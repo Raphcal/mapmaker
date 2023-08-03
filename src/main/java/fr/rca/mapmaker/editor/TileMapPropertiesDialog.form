@@ -270,6 +270,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Exportable"/>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="selected" source="tileMap" sourcePath="${exportable}" target="exportableCheckBox" targetPath="selected" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportableCheckBoxActionPerformed"/>
       </Events>

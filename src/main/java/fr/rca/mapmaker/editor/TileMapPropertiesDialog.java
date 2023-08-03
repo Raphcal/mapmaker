@@ -172,6 +172,10 @@ public class TileMapPropertiesDialog extends javax.swing.JDialog {
         fileNameLabel.setText(LANGUAGE.getString("dialog.map.file")); // NOI18N
 
         exportableCheckBox.setText("Exportable");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tileMap, org.jdesktop.beansbinding.ELProperty.create("${exportable}"), exportableCheckBox, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
         exportableCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exportableCheckBoxActionPerformed(evt);
