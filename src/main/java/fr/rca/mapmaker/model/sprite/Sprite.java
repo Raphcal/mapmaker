@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 @Setter
 public class Sprite {
+	private static final double[] FAVORITE_DIRECTIONS = {0.0, 3.14, 4.71, 1.57};
 
 	private long id;
 	private String name;
@@ -155,24 +156,43 @@ public class Sprite {
 
 	@Nullable
 	public TileLayer getDefaultLayer(List<String> animationNames) {
-		final double[] favoriteDirections = {0.0, 3.14, 4.71, 1.57};
+		return getDefaultLayer(animationNames, null);
+	}
+
+	@Nullable
+	public TileLayer getDefaultLayer(List<String> animationNames, String preferredAnimationName) {
+		Animation preferredAnimation = findByName(preferredAnimationName);
+		if (preferredAnimation != null) {
+			final TileLayer layer = getDefaultLayer(preferredAnimation);
+			if (layer != null) {
+				return layer;
+			}
+		}
 
 		for (final String animationName : animationNames) {
 			final Animation animation = findByName(animationName);
-			if (animation != null) {
-				for (final double direction : favoriteDirections) {
-					final List<TileLayer> layers = animation.getFrames(direction);
-					if (layers != null && !layers.isEmpty()) {
-						for (TileLayer layer : layers) {
-							if (!layer.isEmpty()) {
-								return layer;
-							}
+			final TileLayer layer = getDefaultLayer(animation);
+			if (layer != null) {
+				return layer;
+			}
+		}
+
+		return null;
+	}
+
+	private TileLayer getDefaultLayer(final Animation animation) {
+		if (animation != null) {
+			for (final double direction : FAVORITE_DIRECTIONS) {
+				final List<TileLayer> layers = animation.getFrames(direction);
+				if (layers != null && !layers.isEmpty()) {
+					for (TileLayer layer : layers) {
+						if (!layer.isEmpty()) {
+							return layer;
 						}
 					}
 				}
 			}
 		}
-
 		return null;
 	}
 

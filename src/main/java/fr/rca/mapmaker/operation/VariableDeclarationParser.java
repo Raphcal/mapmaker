@@ -65,7 +65,8 @@ public class VariableDeclarationParser {
 				final String left = line.substring(0, affectationIndex).trim().toLowerCase();
 				final String right = line.substring(affectationIndex + 1).trim().toLowerCase();
 
-				if ("sprite.direction".equals(left)) {
+				switch (left) {
+				case "sprite.direction":
 					final Double direction = DIRECTIONS.get(right);
 
 					if (direction != null) {
@@ -75,23 +76,35 @@ public class VariableDeclarationParser {
 					} else {
 						LOGGER.warn("Direction incorrecte : '" + right + "'.");
 					}
+					break;
 
-				} else if (left.startsWith("sprite.variables")) {
-					final int leftQuoteIndex = left.indexOf('"');
-					final int rightQuoteIndex = left.lastIndexOf('"');
+				case "sprite.animation":
+					int index = project.getAnimationNames().indexOf(right);
+					if (index >= 0) {
+						instructions.add(new Constant(index));
+						instructions.add(new SpriteAnimation());
+					} else {
+						LOGGER.warn("Bad animation name: {}", right);
+					}
+					break;
 
-					final String variableName = left.substring(leftQuoteIndex + 1, rightQuoteIndex);
-					Operation rightOperation = parser.parseOperation(right.toLowerCase());
-					instructions.addAll(rightOperation.getInstructions());
-					instructions.add(new SpriteVariable(variableName));
-
-				} else if ("sprite.hitbox.top".equals(left)) {
+				case "sprite.hitbox.top":
 					Operation rightOperation = parser.parseOperation(right.toLowerCase());
 					instructions.addAll(rightOperation.getInstructions());
 					instructions.add(new SpriteHitboxTop());
+					break;
 
-				} else {
-					// Ligne ignorée.
+				default:
+					if (left.startsWith("sprite.variables")) {
+						final int leftQuoteIndex = left.indexOf('"');
+						final int rightQuoteIndex = left.lastIndexOf('"');
+
+						final String variableName = left.substring(leftQuoteIndex + 1, rightQuoteIndex);
+						rightOperation = parser.parseOperation(right.toLowerCase());
+						instructions.addAll(rightOperation.getInstructions());
+						instructions.add(new SpriteVariable(variableName));
+					}
+					break;
 				}
 			}
 		}

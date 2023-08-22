@@ -23,7 +23,8 @@ public enum ByteCode {
 	ZOOM('z'),
 	SPRITE_VARIABLE('v'),
 	SPRITE_DIRECTION('d'),
-	SPRITE_HITBOX_TOP('h');
+	SPRITE_ANIMATION('a'),
+	SPRITE_HITBOX_TOP('h'),;
 	
 	private final byte b;
 

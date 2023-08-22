@@ -56,6 +56,8 @@ public class Instance extends JComponent {
 	private double zoom = 1.0;
 
 	private Direction direction = Direction.RIGHT;
+	private String animationName;
+	private String oldAnimationName;
 
 	private final Map<String, Double> variables = new LinkedHashMap<String, Double>();
 
@@ -107,7 +109,8 @@ public class Instance extends JComponent {
 		final TileLayer defaultLayer;
 		if (sprite != null) {
 			updateBounds();
-			defaultLayer = sprite.getDefaultLayer(project.getAnimationNames());
+			defaultLayer = sprite.getDefaultLayer(project.getAnimationNames(), animationName);
+			oldAnimationName = animationName;
 		} else {
 			defaultLayer = null;
 		}
@@ -190,6 +193,10 @@ public class Instance extends JComponent {
 
 		if (!getPreferredSize().equals(dimension)) {
 			updateBounds(dimension);
+		}
+
+		if (animationName != null && !animationName.equals(oldAnimationName)) {
+			updateSprite();
 		}
 
 		final Point topLeft = new Point(0, 0);
@@ -282,6 +289,7 @@ public class Instance extends JComponent {
 
 	public void setScript(String script) {
 		this.script = script;
+		// Repaint appelle getDimension qui va mettre à jour les variables.
 		repaint();
 	}
 
