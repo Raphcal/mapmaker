@@ -73,6 +73,6 @@ public class FontHandler implements DataHandler<Sprite> {
 
 	@Override
 	public String fileNameFor(Sprite t) {
-		return Names.normalizeName(t, Names::toLowerCase) + ".fnt";
+		return "font-" + Names.normalizeName(t, Names::toLowerCase) + ".fnt";
 	}
 }
