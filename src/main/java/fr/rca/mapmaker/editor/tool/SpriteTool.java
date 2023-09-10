@@ -207,31 +207,38 @@ public class SpriteTool extends MouseAdapter implements Tool {
 	}
 
 	private JPopupMenu createPopupMenu(final Instance instance) {
-		final JMenuItem inspectMenuItem = new JMenuItem(LANGUAGE.getString("inspector.inspect"));
-		inspectMenuItem.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				inspector.setInstance(instance);
-				inspector.setVisible(true);
-			}
-		});
-
-		final JMenuItem removeMenuItem = new JMenuItem(LANGUAGE.getString("popupmenu.instance.remove"));
-		removeMenuItem.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				project.getInstances().remove(instance);
-				instance.setComponentPopupMenu(null);
-				unregisterInsance(instance);
-				spriteLayer.repaint(instance.getBounds());
-			}
-		});
-
 		final JPopupMenu popupMenu = new JPopupMenu();
-		popupMenu.add(inspectMenuItem);
-		popupMenu.add(removeMenuItem);
+		addMenuItem(popupMenu, "inspector.inspect", actionEvent-> {
+			inspector.setInstance(instance);
+			inspector.setVisible(true);
+		});
+		addMenuItem(popupMenu, "popupmenu.instance.remove", actionEvent -> {
+			if (inspector.getInstance() == instance) {
+				inspector.setVisible(false);
+			}
+			project.getInstances().remove(instance);
+			instance.setComponentPopupMenu(null);
+			unregisterInsance(instance);
+			spriteLayer.repaint(instance.getBounds());
+		});
+		addMenuItem(popupMenu, "popupmenu.instance.movetofront", actionEvent -> {
+			instances.remove(instance);
+			instances.add(0, instance);
+			spriteLayer.remove(instance);
+			spriteLayer.add(instance, 0);
+		});
+		addMenuItem(popupMenu, "popupmenu.instance.movetoback", actionEvent -> {
+			instances.remove(instance);
+			instances.add(instance);
+			spriteLayer.remove(instance);
+			spriteLayer.add(instance, -1);
+		});
 		return popupMenu;
+	}
+
+	private static void addMenuItem(JPopupMenu popupMenu, String labelKey, ActionListener actionListener) {
+		final JMenuItem menuItem = new JMenuItem(LANGUAGE.getString(labelKey));
+		menuItem.addActionListener(actionListener);
+		popupMenu.add(menuItem);
 	}
 }
