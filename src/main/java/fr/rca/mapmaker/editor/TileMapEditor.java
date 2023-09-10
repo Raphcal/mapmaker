@@ -853,6 +853,14 @@ public class TileMapEditor extends javax.swing.JDialog {
 		setLayerIndex(layerIndex + 1);
     }//GEN-LAST:event_nextLayerButtonActionPerformed
 
+	public static void copy(TileLayer source) {
+		clipboardData = new TileLayer(source);
+	}
+
+	public static void copy(LayerPlugin source) {
+		pluginClipboardData = LayerPlugins.copyOf(source);
+	}
+
     private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
 		final boolean oldClipboardFull = isClipboardFull();
 
@@ -863,9 +871,9 @@ public class TileMapEditor extends javax.swing.JDialog {
 			} else {
 				source = drawGrid.getOverlay();
 			}
-			clipboardData = new TileLayer(source);
+			copy(source);
 		} else {
-			pluginClipboardData = LayerPlugins.copyOf(drawLayer.getPlugin(currentPlugin.getClass()));
+			copy(drawLayer.getPlugin(currentPlugin.getClass()));
 		}
 
 		firePropertyChange("clipboardFull", oldClipboardFull, isClipboardFull());

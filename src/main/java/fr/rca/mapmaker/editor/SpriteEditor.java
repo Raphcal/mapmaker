@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -576,12 +577,15 @@ public class SpriteEditor extends javax.swing.JDialog {
 		}
     }//GEN-LAST:event_autoRotateButtonActionPerformed
 
-    private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
+	public static void copy(Collection<TileLayer> layers) {
 		PASTEBOARD.clear();
-		
-		for(final TileLayer layer : tileLayerList.getSelection()) {
+		for (final TileLayer layer : layers) {
 			PASTEBOARD.add(new TileLayer(layer));
 		}
+	}
+
+    private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
+		copy(tileLayerList.getSelection());
     }//GEN-LAST:event_copyButtonActionPerformed
 
     private void pasteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pasteButtonActionPerformed

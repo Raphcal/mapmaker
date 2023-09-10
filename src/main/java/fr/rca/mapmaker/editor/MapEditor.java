@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -312,8 +313,9 @@ public class MapEditor extends javax.swing.JFrame {
         javax.swing.JMenuItem pasteMenuItem = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator copyPasteSeparator = new javax.swing.JPopupMenu.Separator();
         javax.swing.JMenuItem managePalettesMenuItem = new javax.swing.JMenuItem();
-        javax.swing.JMenuItem multipleEditMenuItem = new javax.swing.JMenuItem();
+        final javax.swing.JMenuItem renderTextMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem generateTilesMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem multipleEditMenuItem = new javax.swing.JMenuItem();
         toolMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem trajectoryPreviewMenuItem = new javax.swing.JMenuItem();
         autoDeployMenu = new javax.swing.JMenu();
@@ -1059,13 +1061,13 @@ public class MapEditor extends javax.swing.JFrame {
         });
         editMenu.add(managePalettesMenuItem);
 
-        multipleEditMenuItem.setText(LANGUAGE.getString("menu.edit.multipleedit")); // NOI18N
-        multipleEditMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        renderTextMenuItem.setText(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("resources/language").getString("menu.edit.rendertext"), new Object[] {})); // NOI18N
+        renderTextMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                multipleEditMenuItemActionPerformed(evt);
+                renderTextMenuItemActionPerformed(evt);
             }
         });
-        editMenu.add(multipleEditMenuItem);
+        editMenu.add(renderTextMenuItem);
 
         generateTilesMenuItem.setText(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("resources/language").getString("menu.edit.generatetile"), new Object[] {})); // NOI18N
         generateTilesMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -1074,6 +1076,14 @@ public class MapEditor extends javax.swing.JFrame {
             }
         });
         editMenu.add(generateTilesMenuItem);
+
+        multipleEditMenuItem.setText(LANGUAGE.getString("menu.edit.multipleedit")); // NOI18N
+        multipleEditMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                multipleEditMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(multipleEditMenuItem);
 
         menuBar.add(editMenu);
 
@@ -1920,6 +1930,13 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 		GenerateTileDialog generateTileDialog = new GenerateTileDialog(this, project);
 		generateTileDialog.setVisible(true);
     }//GEN-LAST:event_generateTilesMenuItemActionPerformed
+
+    private void renderTextMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renderTextMenuItemActionPerformed
+		final TextEditor textEditor = new TextEditor(this);
+		textEditor.setProject(project);
+		textEditor.pack();
+		textEditor.setVisible(true);
+    }//GEN-LAST:event_renderTextMenuItemActionPerformed
 
 	/**
 	 * Modifie le numéro des tuiles de toutes les cartes après l'insertion de
