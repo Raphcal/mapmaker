@@ -2,17 +2,20 @@ package fr.rca.mapmaker.model.palette;
 
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
+import fr.rca.mapmaker.util.CanBeDirty;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Classe abstraite simplifiant la création d'une palette éditable.
  *
  * @author Raphaël Calabro <raph_kun at yahoo.fr>
  */
-public abstract class AbstractEditablePalette<T> implements EditablePalette, HasSizeChangeListeners {
+public abstract class AbstractEditablePalette<T> implements EditablePalette, HasSizeChangeListeners, CanBeDirty {
 
 	protected String name;
 
@@ -24,6 +27,12 @@ public abstract class AbstractEditablePalette<T> implements EditablePalette, Has
 	private int selectedTile;
 
 	private final List<SizeChangeListener> sizeChangeListeners = new ArrayList<SizeChangeListener>();
+
+	/**
+	 * <code>true</code> si modifiée depuis le dernier enregistrement.
+	 */
+	@Getter @Setter
+	private boolean dirty;
 
 	@Override
 	public void setName(String name) {

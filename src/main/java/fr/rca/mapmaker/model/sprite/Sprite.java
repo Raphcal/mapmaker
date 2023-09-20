@@ -5,6 +5,7 @@ import fr.rca.mapmaker.event.EventBus;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
+import fr.rca.mapmaker.util.CanBeDirty;
 import fr.rca.mapmaker.util.Random;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @Getter
 @Setter
-public class Sprite {
+public class Sprite implements CanBeDirty {
 	private static final double[] FAVORITE_DIRECTIONS = {0.0, 3.14, 4.71, 1.57};
 
 	private long id;
@@ -59,6 +60,11 @@ public class Sprite {
 	 * Doit définir une méthode <code>Load(<i>sprite</i>)</code>.
 	 */
 	private String loadScript;
+
+	/**
+	 * <code>true</code> si modifié depuis le dernier enregistrement.
+	 */
+	private boolean dirty;
 
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -207,6 +213,21 @@ public class Sprite {
 		propertyChangeSupport.firePropertyChange("palette", oldPalette, palette);
 	}
 
+	public void setName(String name) {
+		this.name = name;
+		setDirty(true);
+	}
+
+	public void setLoadScript(String loadScript) {
+		this.loadScript = loadScript;
+		setDirty(true);
+	}
+
+	public void setScriptFile(String scriptFile) {
+		this.scriptFile = scriptFile;
+		setDirty(true);
+	}
+
 	public void setWidth(int width) {
 		final int oldWidth = this.width;
 		this.width = width;
@@ -224,6 +245,7 @@ public class Sprite {
 	public void setExportable(boolean exportable) {
 		final boolean oldExportable = this.exportable;
 		this.exportable = exportable;
+		setDirty(true);
 
 		propertyChangeSupport.firePropertyChange("exportable", oldExportable, exportable);
 
@@ -235,6 +257,7 @@ public class Sprite {
 	public void setGlobal(boolean global) {
 		final boolean oldGlobal = this.global;
 		this.global = global;
+		setDirty(true);
 
 		propertyChangeSupport.firePropertyChange("global", oldGlobal, global);
 
@@ -244,7 +267,18 @@ public class Sprite {
 	}
 
 	public void setType(int type) {
+		final int oldType = this.type;
 		this.type = type;
+		propertyChangeSupport.firePropertyChange("type", oldType, type);
+
+		setDirty(dirty);
+	}
+
+	@Override
+	public void setDirty(boolean dirty) {
+		final boolean oldDirty = this.dirty;
+		this.dirty = dirty;
+		propertyChangeSupport.firePropertyChange("dirty", oldDirty, dirty);
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener pl) {

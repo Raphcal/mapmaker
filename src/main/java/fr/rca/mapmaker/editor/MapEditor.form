@@ -68,6 +68,7 @@
     <Component class="fr.rca.mapmaker.editor.undo.LayerMemento" name="layerMemento">
       <BindingProperties>
         <BindingProperty name="layers" source="project" sourcePath="${currentMap.layers}" target="layerMemento" targetPath="layers" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="tileMap" source="project" sourcePath="${currentMap}" target="layerMemento" targetPath="tileMap" updateStrategy="0" immediately="false"/>
       </BindingProperties>
     </Component>
     <Component class="fr.rca.mapmaker.editor.tool.SpriteTool" name="spriteTool">

@@ -5,6 +5,7 @@ import java.util.ArrayDeque;
 
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.LayerChangeListener;
+import fr.rca.mapmaker.model.map.TileMap;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
@@ -24,7 +25,10 @@ public class LayerMemento implements Memento {
 
 	private Change[] transactionObjects;
 
+	private TileMap tileMap;
+
 	public LayerMemento() {
+		// Vide.
 	}
 
 	public LayerMemento(final TileLayer... layers) {
@@ -139,6 +143,14 @@ public class LayerMemento implements Memento {
 		}
 	}
 
+	public TileMap getTileMap() {
+		return tileMap;
+	}
+
+	public void setTileMap(TileMap tileMap) {
+		this.tileMap = tileMap;
+	}
+
 	public void addPropertyChangeListener(PropertyChangeListener pl) {
 		propertyChangeSupport.addPropertyChangeListener(pl);
 	}
@@ -170,6 +182,10 @@ public class LayerMemento implements Memento {
 		if (oldRedoable != redoable) {
 			propertyChangeSupport.firePropertyChange("redoable", oldRedoable, redoable);
 		}
+
+		if (tileMap != null) {
+			tileMap.setDirty(true);
+		}
 	}
 
 	private void clearRedoStack() {
@@ -191,6 +207,9 @@ public class LayerMemento implements Memento {
 		final boolean undoable = isUndoable();
 		if (oldUndoable != undoable) {
 			propertyChangeSupport.firePropertyChange("undoable", oldUndoable, undoable);
+		}
+		if (tileMap != null) {
+			tileMap.setDirty(true);
 		}
 	}
 }

@@ -109,6 +109,7 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				refreshSource(index);
+				setDirty(true);
 			}
 		});
 		editor.setVisible(true);
@@ -137,5 +138,6 @@ public class EditableImagePalette extends AbstractEditablePalette<TileLayer> imp
 		addSources(sources.stream()
 				.map(TileLayer::new)
 				.collect(Collectors.toList()));
+		setDirty(true);
 	}
 }

@@ -64,7 +64,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -362,6 +361,8 @@ public class MapEditor extends javax.swing.JFrame {
         }
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentMap.layers}"), layerMemento, org.jdesktop.beansbinding.BeanProperty.create("layers"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, project, org.jdesktop.beansbinding.ELProperty.create("${currentMap}"), layerMemento, org.jdesktop.beansbinding.BeanProperty.create("tileMap"));
         bindingGroup.addBinding(binding);
 
         spriteTool.setSpriteLayer(spriteLayerPanel);
@@ -1201,6 +1202,7 @@ private void addMapButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
 	if (dialog.hasBeenConfirmed()) {
 		TileMap tileMap = dialog.getTileMap();
+		tileMap.setDirty(true);
 		resizeMapLayers(tileMap);
 		project.addMap(tileMap, new ArrayList<>(), true);
 	}
@@ -1229,6 +1231,7 @@ private void editMapMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//G
 		selectedTileMap.setWidth(editedTileMap.getWidth());
 		selectedTileMap.setHeight(editedTileMap.getHeight());
 		selectedTileMap.setExportable(editedTileMap.isExportable());
+		selectedTileMap.setDirty(true);
 
 		resizeMapLayers(selectedTileMap);
 

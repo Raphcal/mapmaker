@@ -520,6 +520,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 		animationPreview.stop();
 		
 		editedSprite.merge(sprite);
+		editedSprite.setDirty(true);
 		
 		fireActionPerformed();
     }//GEN-LAST:event_okButtonActionPerformed

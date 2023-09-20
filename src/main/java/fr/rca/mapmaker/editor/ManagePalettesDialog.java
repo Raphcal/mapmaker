@@ -288,13 +288,17 @@ private void addPaletteButtonActionPerformed(java.awt.event.ActionEvent evt) {//
 		final EditablePalette palette;
 
 		if (newPaletteDialog.getPaletteType() == NewPaletteDialog.TYPE_IMAGE_PALETTE) {
-			palette = new EditableImagePalette(tileSize, 4);
-
-		} else if (newPaletteDialog.getPaletteType() == NewPaletteDialog.TYPE_COLOR_PALETTE) {
-			palette = new EditableColorPalette();
-			((EditableColorPalette) palette).setTileSize(tileSize);
-
-		} else {
+			final EditableImagePalette editableImagePalette = new EditableImagePalette(tileSize, 4);
+			editableImagePalette.setDirty(true);
+			palette = editableImagePalette;
+		}
+		else if (newPaletteDialog.getPaletteType() == NewPaletteDialog.TYPE_COLOR_PALETTE) {
+			final EditableColorPalette editableColorPalette = new EditableColorPalette();
+			editableColorPalette.setTileSize(tileSize);
+			editableColorPalette.setDirty(true);
+			palette = editableColorPalette;
+		}
+		else {
 			throw new IllegalArgumentException("Type de palette invalide : " + newPaletteDialog.getPaletteType());
 		}
 

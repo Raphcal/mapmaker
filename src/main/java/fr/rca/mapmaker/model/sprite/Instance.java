@@ -6,6 +6,7 @@ import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.operation.VariableDeclarationParser;
 import fr.rca.mapmaker.ui.ImageRenderer;
+import fr.rca.mapmaker.util.CanBeDirty;
 import fr.rca.mapmaker.util.CleanEdge;
 import fr.rca.mapmaker.util.Random;
 import java.awt.Dimension;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class Instance extends JComponent {
+public class Instance extends JComponent implements CanBeDirty {
 
 	private static final int TILE_SIZE = 1;
 
@@ -71,7 +72,13 @@ public class Instance extends JComponent {
 
 	private SwingWorker<Void, Void> worker;
 
+	/**
+	 * <code>true</code> si modifiée depuis le dernier enregistrement.
+	 */
+	private boolean dirty;
+
 	public Instance() {
+		// Vide.
 	}
 
 	public Instance(int index, Project project, Point location) {
@@ -235,6 +242,7 @@ public class Instance extends JComponent {
 		final String oldCenterInfo = getCenterInfo();
 
 		this.point = point;
+		setDirty(dirty);
 
 		firePropertyChange("pointInfo", oldPointInfo, getPointInfo());
 		firePropertyChange("centerInfo", oldCenterInfo, getCenterInfo());
@@ -289,6 +297,7 @@ public class Instance extends JComponent {
 
 	public void setScript(String script) {
 		this.script = script;
+		setDirty(dirty);
 		// Repaint appelle getDimension qui va mettre à jour les variables.
 		repaint();
 	}

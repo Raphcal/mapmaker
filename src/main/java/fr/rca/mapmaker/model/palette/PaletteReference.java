@@ -5,7 +5,6 @@ import fr.rca.mapmaker.model.SizeChangeListener;
 import fr.rca.mapmaker.model.project.Project;
 import java.awt.Graphics;
 import java.util.List;
-import javax.swing.JFrame;
 
 /**
  *

@@ -10,6 +10,7 @@ import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.palette.PaletteReference;
 import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Instance;
+import fr.rca.mapmaker.util.CanBeDirty;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.beans.PropertyChangeListener;
@@ -31,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 @Getter
-public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListeners, ListModel, HasColorPalette {
+public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListeners, ListModel, HasColorPalette, CanBeDirty {
 
 	/**
 	 * Gestion des événements de changement des propriétés.
@@ -96,6 +97,11 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 	 * Couleur de fond.
 	 */
 	private Color backgroundColor;
+
+	/**
+	 * <code>true</code> si modifiée depuis le dernier enregistrement.
+	 */
+	private boolean dirty;
 
 	private final SizeChangeListener sizeChangeListener;
 	private final ArrayList<LayerChangeListener> layerChangeListeners = new ArrayList<>();
@@ -203,6 +209,13 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 			final Dimension dimension = new Dimension(width, height);
 			fireSizeChanged(dimension, dimension);
 		}
+	}
+
+	@Override
+	public void setDirty(boolean dirty) {
+		final boolean oldDirty = this.dirty;
+		this.dirty = dirty;
+		propertyChangeSupport.firePropertyChange("dirty", oldDirty, dirty);
 	}
 
 	public void refresh() {

@@ -2,17 +2,21 @@ package fr.rca.mapmaker.model.palette;
 
 import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.SizeChangeListener;
+import fr.rca.mapmaker.util.CanBeDirty;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javax.swing.JColorChooser;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
-public class EditableColorPalette extends ColorPalette implements EditablePalette, HasSizeChangeListeners {
+@Getter
+public class EditableColorPalette extends ColorPalette implements EditablePalette, HasSizeChangeListeners, CanBeDirty {
 
 	private static final ResourceBundle language = ResourceBundle.getBundle("resources/language");
 	private String name;
@@ -24,7 +28,13 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 	
 	private int length;
 	private int tileSize;
-	
+
+	/**
+	 * <code>true</code> si modifiée depuis le dernier enregistrement.
+	 */
+	@Setter
+	private boolean dirty;
+
 	public EditableColorPalette() {
 		this(16, COLUMN_LENGTH);
 	}
@@ -59,7 +69,8 @@ public class EditableColorPalette extends ColorPalette implements EditablePalett
 	
 		if(newColor != null) {
 			setColor(index, newColor);
-			
+			setDirty(dirty);
+
 			if(index >= length - COLUMN_LENGTH) {
 				final Dimension oldSize = new Dimension(COLUMN_LENGTH, length / COLUMN_LENGTH);
 

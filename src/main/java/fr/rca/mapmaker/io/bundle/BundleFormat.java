@@ -23,15 +23,18 @@ import fr.rca.mapmaker.model.project.Project;
 import fr.rca.mapmaker.model.sprite.Animation;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
+import fr.rca.mapmaker.util.CanBeDirty;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,12 +44,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Raphaël Calabro (raphael.calabro@netapsys.fr)
  */
 public class BundleFormat extends AbstractFormat implements HasProgress {
+	private static final Logger LOGGER = LoggerFactory.getLogger(BundleFormat.class);
 
 	private static final String EXTENSION = ".mmkb";
 
@@ -153,7 +160,10 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			progressTracker.stepDidEnd("sprites");
 
 			// Scripts
-			final ArrayList<String> scriptNames = new ArrayList<>(project.getScripts().keySet());
+			// NOTE: Pourquoi réécrire les scripts s'ils ne sont pas modifiés par l'application ?
+			final List<String> scriptNames = project.getScripts().keySet().stream()
+					.sorted()
+					.collect(Collectors.toList());
 			progressTracker.stepHaveSubsteps(scriptNames.size());
 			for (int index = 0; index < scriptNames.size(); index++) {
 				final String script = project.getScripts().get(scriptNames.get(index));
@@ -191,7 +201,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	private void write(String value, File parent, String name, Set<File> files) throws IOException {
 		final File file = new File(parent, name);
 		files.remove(file);
-		try (FileOutputStream outputStream = new FileOutputStream(file)) {
+		try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
 			outputStream.write(value.getBytes(StandardCharsets.UTF_8));
 		}
 	}
@@ -201,10 +211,16 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			final String name = String.format(format, index);
 			final File file = new File(parent, name);
 			files.remove(file);
-			try (FileOutputStream outputStream = new FileOutputStream(file)) {
-				handler.write(objects.get(index), outputStream);
-				infoEntries.add(name);
+			final T object = objects.get(index);
+			final CanBeDirty canBeDirty = CanBeDirty.wrap(object);
+			LOGGER.debug("{} {} {}", object.getClass().getSimpleName(), object.toString(), (canBeDirty.isDirty() ? "is dirty" : "has not changed"));
+			if (canBeDirty.isDirty()) {
+				try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+					handler.write(object, outputStream);
+					canBeDirty.setDirty(false);
+				}
 			}
+			infoEntries.add(name);
 		}
 	}
 
@@ -212,19 +228,23 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		// Carte
 		final File file = new File(parent, mapName);
 		files.remove(file);
-		try (FileOutputStream mapOutputStream = new FileOutputStream(file)) {
-			tileMapHandler.write(tileMap, mapOutputStream);
-			map.put(MAP, mapName);
+		LOGGER.debug("TileMap {} {}", tileMap.getName(), (tileMap.isDirty() ? "is dirty" : "has not changed"));
+		if (tileMap.isDirty()) {
+			try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+				tileMapHandler.write(tileMap, outputStream);
+				tileMap.setDirty(false);
+			}
 		}
+		map.put(MAP, mapName);
 	}
 
 	private void writeInstances(final List<Instance> instances, File parent, Set<File> files, final String instancesName, final DataHandler<Instance> instanceHandler, final Map<String, Object> map) throws FileNotFoundException, IOException {
 		final File file = new File(parent, instancesName);
 		files.remove(file);
-		try (FileOutputStream instancesOutputStream = new FileOutputStream(file)) {
-			Streams.write(instances.size(), instancesOutputStream);
+		try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+			Streams.write(instances.size(), outputStream);
 			for (Instance instance : instances) {
-				instanceHandler.write(instance, instancesOutputStream);
+				instanceHandler.write(instance, outputStream);
 			}
 			map.put(INSTANCES, instancesName);
 		}
@@ -309,7 +329,13 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			final List<String> spriteFiles = (List<String>) projectInfo.get(SPRITES);
 			progressTracker.stepHaveSubsteps(spriteFiles.size());
 			for (final String sprite : spriteFiles) {
-				sprites.add(read(file, sprite, spriteHandler));
+				Sprite aSprite;
+				try {
+					aSprite = read(file, sprite, spriteHandler);
+				} catch (FileNotFoundException e) {
+					aSprite = new Sprite();
+				}
+				sprites.add(aSprite);
 				progressTracker.subStepDidEnd();
 			}
 
@@ -325,13 +351,13 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 	}
 
 	private Map<String, Object> readProjectInfo(File parent) throws IOException, FileNotFoundException {
-		try (FileInputStream inputStream = new FileInputStream(new File(parent, INFO_FILE))) {
+		try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(new File(parent, INFO_FILE)))) {
 			return Plists.read(inputStream);
 		}
 	}
 
 	private <T> T read(File parent, String name, DataHandler<T> handler) throws FileNotFoundException, IOException {
-		try (FileInputStream inputStream = new FileInputStream(new File(parent, name))) {
+		try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(new File(parent, name)))) {
 			return handler.read(inputStream);
 		}
 	}
@@ -352,7 +378,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		final File file = new File(parent, name);
 
 		if (file.exists()) {
-			try (FileInputStream inputStream = new FileInputStream(file)) {
+			try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
 				final int size = Streams.readInt(inputStream);
 				for (int index = 0; index < size; index++) {
 					final Instance instance = handler.read(inputStream);
@@ -371,16 +397,11 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			return null;
 		}
 
-		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		try (FileInputStream inputStream = new FileInputStream(file)) {
-			final byte[] buffer = new byte[4096];
-			int read = inputStream.read(buffer);
-			while (read > 0) {
-				outputStream.write(buffer, 0, read);
-				read = inputStream.read(buffer);
-			}
+		final byte[] data;
+		try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
+			data = inputStream.readAllBytes();
 		}
-		return outputStream.toString("UTF-8");
+		return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(data)).toString();
 	}
 
 	private static boolean isOwnFile(File dir, String fileName) {
