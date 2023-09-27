@@ -19,7 +19,7 @@ public class DropShadows extends JComponent {
 		float stepX = (float)r.width * 2.0f / steps;
 		float stepY = (float)r.height * 2.0f / steps;
 		
-		final Color color = new Color(0, 0, 0, 4.0f / steps);
+		final Color color = new Color(0, 0, 0, Math.min(4.0f / steps, 1.0f));
 		g.setColor(color);
 		
 		float x = (float) r.x;
