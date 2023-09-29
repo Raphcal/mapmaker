@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>version</key>
-	<integer>15</integer>
+	<integer>16</integer>
 	<key>next-map</key>
 	<integer>1</integer>
 	<key>palettes</key>
@@ -37,6 +37,10 @@
 		<string>sprite13.spr</string>
 		<string>sprite14.spr</string>
 		<string>sprite15.spr</string>
+		<string>sprite16.spr</string>
+		<string>sprite17.spr</string>
+		<string>sprite18.spr</string>
+		<string>sprite19.spr</string>
 	</array>
 	<key>animation-names</key>
 	<array>

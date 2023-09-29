@@ -299,6 +299,12 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 		updateSize();
 	}
 
+	public void clear() {
+		this.elements.clear();
+		repaint();
+		updateSize();
+	}
+
 	public void removeSelectedElement() {
 		if (!selection.isEmpty()) {
 			Collections.sort(selection, new Comparator<Integer>() {

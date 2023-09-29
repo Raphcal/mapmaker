@@ -581,7 +581,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         });
 
         toolButtonGroup.add(coatToggleButton);
-        coatToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_bucket_fill.png"))); // NOI18N
+        coatToggleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tool_coat.png"))); // NOI18N
         coatToggleButton.setToolTipText("Couvrir");
         coatToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(coatToggleButton, new CoatTool(drawGrid));

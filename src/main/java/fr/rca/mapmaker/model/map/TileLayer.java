@@ -916,6 +916,8 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 
 		System.arraycopy(this.tiles, 0, rotated, 0, this.tiles.length);
 
+		// FIXME : Faire la rotation en une seule fois !!!
+		times = times % 4;
 		for (int iteration = 0; iteration < times; iteration++) {
 			System.arraycopy(rotated, 0, source, 0, this.tiles.length);
 
