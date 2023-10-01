@@ -1716,6 +1716,7 @@ private void redoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 							imagePalette.refreshSource(paletteMap.getTileFromPoint(new Point(origin.x + column, origin.y + row)));
 						}
 					}
+					imagePalette.setDirty(true);
 				}
 			});
 			editor.setVisible(true);
