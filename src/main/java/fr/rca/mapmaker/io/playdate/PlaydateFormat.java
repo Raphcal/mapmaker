@@ -18,6 +18,7 @@ import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.model.sprite.SpriteType;
 import fr.rca.mapmaker.util.Dithering;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -166,9 +167,9 @@ public class PlaydateFormat extends AbstractFormat {
 		final int spriteWidth = sprite.getWidth();
 		final int spriteHeight = sprite.getHeight();
 
-		final int tileCountPerLine = (int) Math.ceil(Math.sqrt(frameCount));
+		final Dimension grid = getGridSize(frameCount);
 
-		final BufferedImage image = new BufferedImage(tileCountPerLine * spriteWidth, tileCountPerLine * spriteHeight, BufferedImage.TYPE_INT_ARGB);
+		final BufferedImage image = new BufferedImage(grid.width * spriteWidth, grid.height * spriteHeight, BufferedImage.TYPE_INT_ARGB);
 		final Graphics2D graphics = image.createGraphics();
 		graphics.setBackground(new Color(0, 0, 0, 0));
 
@@ -190,8 +191,8 @@ public class PlaydateFormat extends AbstractFormat {
 					if (dither) {
 						frame = Dithering.dither(frame, palette);
 					}
-					int originY = (frameIndex / tileCountPerLine) * spriteHeight;
-					int originX = (frameIndex % tileCountPerLine) * spriteWidth;
+					int originY = (frameIndex / grid.width) * spriteHeight;
+					int originX = (frameIndex % grid.width) * spriteWidth;
 					for (int y = 0; y < frame.getHeight(); y++) {
 						for(int x = 0; x < frame.getWidth(); x++) {
 							palette.paintTile(graphics, frame.getTile(x, y), originX + x, originY + y, 1);
@@ -203,6 +204,22 @@ public class PlaydateFormat extends AbstractFormat {
 
 		graphics.dispose();
 		return image;
+	}
+
+	private static Dimension getGridSize(int count) {
+		if (count == 1) {
+			return new Dimension(1, 1);
+		}
+		final double root = Math.sqrt(count);
+		final int integerValue = (int) root;
+		final double floatingValue = root - integerValue;
+		if (floatingValue == 0.0) {
+			return new Dimension(integerValue, integerValue);
+		} else if ((count % integerValue) == 0) {
+			return new Dimension(count / integerValue, integerValue);
+		} else {
+			return new Dimension(count, 1);
+		}
 	}
 
 	public static List<TileMap> mapsForProject(Project project) {
