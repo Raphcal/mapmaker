@@ -108,6 +108,7 @@ public class Project implements ListModel, HasColorPalette {
 		sprites.clear();
 		animationNames.clear();
 		scripts.clear();
+		spritePaletteMap = null;
 
 		// Animations
 		animationNames.addAll(project.getAnimationNames());

@@ -20,7 +20,7 @@ public abstract class AbstractEditablePalette<T> implements EditablePalette, Has
 	protected String name;
 
 	protected final List<BufferedImage> tiles = new ArrayList<>();
-	protected final List<T> sources = new ArrayList<>();
+	protected List<T> sources = new ArrayList<>();
 
 	protected int tileSize;
 	protected int columns;

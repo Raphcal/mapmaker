@@ -190,6 +190,7 @@ public class SpriteEditor extends javax.swing.JDialog {
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${width}"), widthTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"), "gridList.gridWidth");
         bindingGroup.addBinding(binding);
 
+        tileLayerList.setMaximumSize(new java.awt.Dimension(1024, 32767));
         tileLayerList.setOrientation(fr.rca.mapmaker.ui.Orientation.HORIZONTAL);
         tileLayerList.setPalette(sprite.getPalette());
 
