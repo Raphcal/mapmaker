@@ -286,7 +286,11 @@ public class Grid extends AbstractLayerPainter {
 			}
 
 			if (layer.isVisible()) {
-				paintLayer(layer, palette, clipBounds, tileSize, viewPoint, g);
+				if (tileSize > 0) {
+					paintLayer(layer, palette, clipBounds, tileSize, viewPoint, g);
+				} else {
+					paintLayer(layer, palette, clipBounds, getZoomedTileSize(), viewPoint, g);
+				}
 			}
 		}
 
@@ -367,8 +371,8 @@ public class Grid extends AbstractLayerPainter {
 		firePropertyChange("tileMapHeight", height, overlay.getHeight());
 		overlay.resize(width, height);
 
-		final int tileSize = getTileSize();
-		final Dimension dimension = new Dimension(width * tileSize, height * tileSize);
+		final double tileSize = getZoomedTileSize();
+		final Dimension dimension = new Dimension((int) (width * tileSize), (int) (height * tileSize));
 		if (constraint != null) {
 			dimension.width = Math.min(dimension.width, constraint.width);
 			dimension.height = Math.min(dimension.height, constraint.height);

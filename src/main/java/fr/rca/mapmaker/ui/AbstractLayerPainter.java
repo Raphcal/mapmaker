@@ -77,7 +77,7 @@ public abstract class AbstractLayerPainter extends JComponent {
 			}
 		}
 	}
-	
+
 	// FIXME: Ne fonctionne pas correctement
 	protected void paintLayer(final Layer layer, Palette palette, final Rectangle clipBounds,
 			final double tileSize, final double padding, Point viewpoint, Graphics g) {
@@ -105,9 +105,22 @@ public abstract class AbstractLayerPainter extends JComponent {
 		final double spaceY = tileSize + padding + padding;
 		
 		// Affichage de la couche
-		for(double y = startY; y < maxY; y++) {
-			for(double x = startX; x < maxX; x++) {
-				palette.paintTile(g, layer.getTile((int) x, (int) y), (int) (originX + x * spaceX), (int) (originY + y * spaceY), (int) tileSize);
+		if (tileSize >= 1.0) {
+			for(double y = startY; y < maxY; y++) {
+				for(double x = startX; x < maxX; x++) {
+					palette.paintTile(g, layer.getTile((int) x, (int) y), (int) (originX + x * spaceX), (int) (originY + y * spaceY), (int) tileSize);
+				}
+			}
+		} else {
+			double nextTileSize = 1.0;
+			for(double y = startY; y < maxY; y++) {
+				for(double x = startX; x < maxX; x++) {
+					nextTileSize += tileSize;
+					if (nextTileSize >= 1.0) {
+						palette.paintTile(g, layer.getTile((int) x, (int) y), (int) (originX + x * spaceX), (int) (originY + y * spaceY), 1);
+						nextTileSize -= 1;
+					}
+				}
 			}
 		}
 	}

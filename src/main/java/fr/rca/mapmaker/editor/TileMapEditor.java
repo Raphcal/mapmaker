@@ -93,6 +93,12 @@ public class TileMapEditor extends javax.swing.JDialog {
 	}
 
 	public void setLayerAndPalette(DataLayer layer, ColorPalette palette) {
+		if (layer.getWidth() > 200 || layer.getHeight() > 200) {
+			previewGrid.setZoom(200.0 / Math.max(layer.getWidth(), layer.getHeight()));
+		} else {
+			previewGrid.setZoom(1.0);
+		}
+
 		editedLayer = layer;
 		drawLayer.restoreData(layer);
 		memento.clear();
@@ -155,6 +161,12 @@ public class TileMapEditor extends javax.swing.JDialog {
 		}
 
 		final DataLayer layer = tiles[layerIndex];
+
+		if (layer.getWidth() > 200 || layer.getHeight() > 200) {
+			previewGrid.setZoom(200.0 / Math.max(layer.getWidth(), layer.getHeight()));
+		} else {
+			previewGrid.setZoom(1.0);
+		}
 
 		drawLayer.restoreData(layer);
 		memento.clear();
