@@ -953,7 +953,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_applyFunctionButtonActionPerformed
 
     private void resizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resizeButtonActionPerformed
-		final String newSize = JOptionPane.showInputDialog(this, "Redimensionner à quelle taille (format : largeur x hauteur [x1 pour cleanEdge]) ?");
+		final String newSize = JOptionPane.showInputDialog(this, "Redimensionner à quelle taille (format : largeur x hauteur [x1 pour cleanEdge, x2 pour centrer]) ?");
 		if (newSize == null) {
 			return;
 		}
@@ -964,7 +964,15 @@ public class TileMapEditor extends javax.swing.JDialog {
 			JOptionPane.showMessageDialog(this, "Mauvais format, attendu 'largeur x hauteur' mais reçu : " + newSize);
 			return;
 		}
-		if (parts.length == 3 && parts[2] == 1) {
+		if (parts.length == 3 && parts[2] == 2) {
+			final int oldWidth = drawLayer.getWidth();
+			final int oldHeight = drawLayer.getHeight();
+			final int width = parts[0];
+			final int height = parts[1];
+			drawGrid.getOverlay().resize(width, height);
+			drawLayer.resize(width, height);
+			drawLayer.translate((width - oldWidth) / 2, (height - oldHeight) / 2);
+		} else if (parts.length == 3 && parts[2] == 1) {
 			CleanEdge.builder()
 				.palette((ColorPalette) drawMap.getPalette())
 				.slope(true)
