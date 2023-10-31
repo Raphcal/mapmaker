@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.editor.tool;
 
 import fr.rca.mapmaker.model.HasPropertyChangeListeners;
+import fr.rca.mapmaker.model.HasSizeChangeListeners;
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.Layer;
 import fr.rca.mapmaker.model.map.TileLayer;
@@ -8,6 +9,7 @@ import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.ui.Grid;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.Collections;
 import lombok.Getter;
@@ -28,28 +30,49 @@ public abstract class AbstractHitboxTool<T extends HitboxLayerPlugin> extends Ab
 
 	private T hitboxPlugin;
 
+	private Layer currentLayer;
+
 	public AbstractHitboxTool(Grid grid) {
 		super(grid);
-		this.hitboxLayer = new TileLayer(grid.getTileMapWidth(), grid.getTileMapHeight());
-
-		// TODO: Faire un HitboxLayer qui se base sur HitboxLayerPlugin ?
-		grid.getTileMap().addSizeChangeListener(
-				(Object source, Dimension oldSize, Dimension newSize) -> hitboxLayer.resize(newSize.width, newSize.height));
 
 		final Layer layer = grid.getActiveLayer();
-		if (layer instanceof HasPropertyChangeListeners) {
-			listenToLayerChanges((HasPropertyChangeListeners) layer);
-		}
+		this.hitboxLayer = new TileLayer(layer.getDimension().width, layer.getDimension().height);
+
+		grid.addPropertyChangeListener("activeLayer", event -> listenToLayerChanges((Layer) event.getNewValue()));
+
+		listenToLayerChanges(layer);
 	}
 
 	public abstract String getPluginName();
 	public abstract int getHitboxColor();
 
-	private void listenToLayerChanges(HasPropertyChangeListeners layer) {
-		layer.addPropertyChangeListener("plugin-" + getPluginName(), (event) -> {
-			hitboxPlugin = (T) event.getNewValue();
-			redrawHitbox();
-		});
+	private void listenToLayerChanges(Layer layer) {
+		final String hitboxPluginName = "plugin-" + getPluginName();
+		if (currentLayer != null) {
+			if (layer instanceof HasSizeChangeListeners) {
+				((HasSizeChangeListeners) currentLayer).removeSizeChangeListener(this::onLayerSizeChange);
+			}
+			if (layer instanceof HasPropertyChangeListeners) {
+				((HasPropertyChangeListeners) currentLayer).removePropertyChangeListener(hitboxPluginName, this::onHitboxPluginChange);
+			}
+		}
+		if (layer instanceof HasSizeChangeListeners) {
+			((HasSizeChangeListeners) layer).addSizeChangeListener(this::onLayerSizeChange);
+		}
+		if (layer instanceof HasPropertyChangeListeners) {
+			((HasPropertyChangeListeners) layer).addPropertyChangeListener(hitboxPluginName, this::onHitboxPluginChange);
+		}
+		this.currentLayer = layer;
+	}
+
+	private void onHitboxPluginChange(PropertyChangeEvent event) {
+		hitboxPlugin = (T) event.getNewValue();
+		redrawHitbox();
+	}
+
+	private void onLayerSizeChange(Object source, Dimension oldSize, Dimension newSize) {
+		hitboxLayer.resize(newSize.width, newSize.height);
+		redrawHitbox();
 	}
 
 	@Override

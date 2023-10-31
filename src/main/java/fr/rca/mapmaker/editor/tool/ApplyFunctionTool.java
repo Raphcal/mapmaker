@@ -20,6 +20,9 @@ public class ApplyFunctionTool {
 	}
 
 	public static void execute(DataLayer layer, String function) {
+		if (function == null) {
+			return;
+		}
 		final int separatorIndex = function.lastIndexOf(SEPARATOR);
 		final String suffix;
 		if (separatorIndex >= 0) {

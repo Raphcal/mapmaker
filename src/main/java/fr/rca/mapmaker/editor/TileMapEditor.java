@@ -27,6 +27,7 @@ import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.LayerPlugin;
 import fr.rca.mapmaker.model.map.LayerPlugins;
 import fr.rca.mapmaker.model.map.PaletteMap;
+import fr.rca.mapmaker.model.map.SecondaryHitboxLayerPlugin;
 import fr.rca.mapmaker.model.map.TileLayer;
 import fr.rca.mapmaker.model.palette.AlphaColorPalette;
 import fr.rca.mapmaker.model.palette.ColorPalette;
@@ -34,6 +35,7 @@ import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.ui.Function;
 import fr.rca.mapmaker.util.CleanEdge;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -972,6 +974,20 @@ public class TileMapEditor extends javax.swing.JDialog {
 			drawGrid.getOverlay().resize(width, height);
 			drawLayer.resize(width, height);
 			drawLayer.translate((width - oldWidth) / 2, (height - oldHeight) / 2);
+			HitboxLayerPlugin hitboxLayerPlugin = drawLayer.getPlugin(HitboxLayerPlugin.class);
+			if (hitboxLayerPlugin != null && hitboxLayerPlugin.getHitbox() != null) {
+				Rectangle hitbox = new Rectangle(hitboxLayerPlugin.getHitbox());
+				hitbox.x += (width - oldWidth) / 2;
+				hitbox.y += (height - oldHeight) / 2;
+				drawLayer.setPlugin(new HitboxLayerPlugin(hitbox));
+			}
+			hitboxLayerPlugin = drawLayer.getPlugin(SecondaryHitboxLayerPlugin.class);
+			if (hitboxLayerPlugin != null && hitboxLayerPlugin.getHitbox() != null) {
+				Rectangle hitbox = new Rectangle(hitboxLayerPlugin.getHitbox());
+				hitbox.x += (width - oldWidth) / 2;
+				hitbox.y += (height - oldHeight) / 2;
+				drawLayer.setPlugin(new SecondaryHitboxLayerPlugin(hitbox));
+			}
 		} else if (parts.length == 3 && parts[2] == 1) {
 			CleanEdge.builder()
 				.palette((ColorPalette) drawMap.getPalette())

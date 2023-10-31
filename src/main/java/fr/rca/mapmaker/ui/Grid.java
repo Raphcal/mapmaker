@@ -136,6 +136,7 @@ public class Grid extends AbstractLayerPainter {
 	}
 
 	public void setTileMap(TileMap tileMap) {
+		Layer oldActiveLayer = getActiveLayer();
 		if (this.tileMap != null) {
 			// Suppression des listeners
 			this.tileMap.removeLayerChangeListener(layerChangeListener);
@@ -155,14 +156,14 @@ public class Grid extends AbstractLayerPainter {
 		if (tileMap != null) {
 			tileMap.addLayerChangeListener(layerChangeListener);
 		}
-
 		if (tileMap instanceof HasSelectionListeners) {
 			((HasSelectionListeners) tileMap).addSelectionListener(selectionListener);
 		}
-
 		if (tileMap instanceof HasSizeChangeListeners) {
 			((HasSizeChangeListeners) tileMap).addSizeChangeListener(sizeChangeListener);
 		}
+
+		firePropertyChange("activeLayer", oldActiveLayer, getActiveLayer());
 
 		updateSize();
 		repaint();
@@ -468,14 +469,15 @@ public class Grid extends AbstractLayerPainter {
 	}
 
 	public void setActiveLayer(int index) {
+		final Layer oldActiveLayer = getActiveLayer();
 		if (index < 0) {
 			index = 0;
-
 		} else if (index >= tileMap.getLayers().size()) {
 			index = tileMap.getLayers().size() - 1;
 		}
 
 		this.activeLayer = index;
+		firePropertyChange("activeLayer", oldActiveLayer, getActiveLayer());
 	}
 
 	public int getActiveLayerIndex() {
@@ -483,7 +485,7 @@ public class Grid extends AbstractLayerPainter {
 	}
 
 	public Layer getActiveLayer() {
-		if (activeLayer >= 0 && activeLayer < tileMap.getSize()) {
+		if (tileMap != null && activeLayer >= 0 && activeLayer < tileMap.getSize()) {
 			return tileMap.getLayers().get(activeLayer);
 		} else {
 			return null;
