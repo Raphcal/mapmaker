@@ -316,7 +316,9 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 			});
 
 			for (final int selected : selection) {
-				this.elements.remove(selected);
+				if (selected >= 0 && selected < this.elements.size()) {
+					this.elements.remove(selected);
+				}
 			}
 
 			repaint();
@@ -378,13 +380,13 @@ public abstract class AbstractOrientableList<E> extends JComponent implements Or
 		// Maps
 		final int firstMap = Math.max((orientation.getStart(clipBounds) - padding) / (orientation.getSize(this) + padding), 0);
 		final int lastMap = Math.min(
-				firstMap + orientation.getLength(clipBounds) / (orientation.getSize(this) + padding),
-				elements.size() - 1);
+				firstMap + (int) Math.ceil((double) orientation.getLength(clipBounds) / (orientation.getSize(this) + padding)) + 1,
+				elements.size());
 
 		final int width = getElementWidth();
 		final int height = getElementHeight();
 
-		for (int index = firstMap; index <= lastMap; index++) {
+		for (int index = firstMap; index < lastMap; index++) {
 			// Selection
 			if (selection.contains(index)) {
 				g.setColor(SystemColor.textHighlight);

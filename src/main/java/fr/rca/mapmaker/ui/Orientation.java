@@ -67,7 +67,7 @@ public enum Orientation {
 			final int width = orientable.getElementWidth();
 			final int height = width;
 			return new Dimension(
-					Math.min(padding + orientable.getNumberOfElements() * (width + padding), 1024),
+					padding + orientable.getNumberOfElements() * (width + padding),
 					padding + height + padding);
 		}
 

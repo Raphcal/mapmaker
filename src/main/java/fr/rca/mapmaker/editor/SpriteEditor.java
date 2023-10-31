@@ -1,4 +1,3 @@
-
 package fr.rca.mapmaker.editor;
 
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
@@ -25,16 +24,17 @@ import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
+import javax.swing.JViewport;
 
 /**
  *
  * @author Raphaël Calabro (rcalabro@ideia.fr)
  */
 public class SpriteEditor extends javax.swing.JDialog {
+
 	private static final ResourceBundle LANGUAGE = ResourceBundle.getBundle("resources/language");
 	private final static List<TileLayer> PASTEBOARD = new ArrayList<TileLayer>();
-	
+
 	private final List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 
 	private Sprite editedSprite;
@@ -42,11 +42,19 @@ public class SpriteEditor extends javax.swing.JDialog {
 
 	/**
 	 * Creates new form SpriteDialog
+	 *
 	 * @param parent Fenêtre parente
 	 */
 	public SpriteEditor(java.awt.Frame parent) {
 		super(parent, true);
 		initComponents();
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+		final Dimension preferredSize = super.getPreferredSize();
+		preferredSize.width = Math.min(preferredSize.width, 1024);
+		return preferredSize;
 	}
 
 	public void setSprite(Sprite sprite, List<String> animationNames) {
@@ -67,81 +75,81 @@ public class SpriteEditor extends javax.swing.JDialog {
 
 	private void updateAnimation() {
 		final Animation animation = (Animation) animationComboBoxModel.getSelectedItem();
-		if(animation != null) {
+		if (animation != null) {
 			final String name = animation.getName();
-			
-			if(editedSprite != null && !sprite.contains(animation) && editedSprite.contains(animation)) {
+
+			if (editedSprite != null && !sprite.contains(animation) && editedSprite.contains(animation)) {
 				sprite.getAnimations().add(editedSprite.get(name).copy());
 			}
-			
+
 			currentAnimation = sprite.get(name);
-			
+
 		} else {
 			currentAnimation = null;
 		}
 	}
 
 	public List<TileLayer> getCurrentAnimation() {
-		if(currentAnimation != null) {
+		if (currentAnimation != null) {
 			return currentAnimation.getOrCreateFrames(directionChooser.getDirection());
-			
+
 		} else {
 			return Collections.<TileLayer>emptyList();
 		}
 	}
-	
+
 	public int getCurrentFrequency() {
-		if(currentAnimation != null) {
+		if (currentAnimation != null) {
 			return currentAnimation.getFrequency();
-			
+
 		} else {
 			return 24;
 		}
 	}
-	
+
 	public void setCurrentFrequency(int frequency) {
 		final int oldFrequency = getCurrentFrequency();
-		
-		if(currentAnimation != null) {
+
+		if (currentAnimation != null) {
 			currentAnimation.setFrequency(frequency);
 		}
-		
+
 		firePropertyChange("currentFrequency", oldFrequency, getCurrentFrequency());
 	}
-	
+
 	public boolean isAnimationLooping() {
-		if(currentAnimation != null) {
+		if (currentAnimation != null) {
 			return currentAnimation.isLooping();
 		} else {
 			return false;
 		}
 	}
-	
+
 	public void setAnimationLooping(boolean looping) {
-		if(currentAnimation != null) {
+		if (currentAnimation != null) {
 			final boolean oldLooping = currentAnimation.isLooping();
 			currentAnimation.setLooping(looping);
 			firePropertyChange("animationLooping", oldLooping, looping);
 		}
 	}
-	
+
 	public boolean isAnimationScrolling() {
-		if(currentAnimation != null) {
+		if (currentAnimation != null) {
 			animationPreview.setScroll(currentAnimation.isScrolling());
 			return currentAnimation.isScrolling();
 		} else {
 			return false;
 		}
 	}
-	
+
 	public void setAnimationScrolling(boolean scrolling) {
-		if(currentAnimation != null) {
+		if (currentAnimation != null) {
 			final boolean oldScrolling = currentAnimation.isScrolling();
 			currentAnimation.setScrolling(scrolling);
 			firePropertyChange("animationScrolling", oldScrolling, scrolling);
 		}
 	}
-	
+
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -190,7 +198,9 @@ public class SpriteEditor extends javax.swing.JDialog {
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${width}"), widthTextField, org.jdesktop.beansbinding.BeanProperty.create("text_ON_ACTION_OR_FOCUS_LOST"), "gridList.gridWidth");
         bindingGroup.addBinding(binding);
 
-        tileLayerList.setMaximumSize(new java.awt.Dimension(1024, 32767));
+        gridScrollPane.setDoubleBuffered(true);
+        gridScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+
         tileLayerList.setOrientation(fr.rca.mapmaker.ui.Orientation.HORIZONTAL);
         tileLayerList.setPalette(sprite.getPalette());
 
@@ -466,29 +476,29 @@ public class SpriteEditor extends javax.swing.JDialog {
 
     private void tileLayerListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tileLayerListActionPerformed
 		final List<TileLayer> layers = new ArrayList<TileLayer>(tileLayerList.getElements());
-		
-		if(GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
+
+		if (GridList.ADD_COMMAND.equals(evt.getActionCommand())) {
 			layers.add(new TileLayer(sprite.getWidth(), sprite.getHeight(), Arrays.asList(
 					new HitboxLayerPlugin(),
 					new SecondaryHitboxLayerPlugin()
 			)));
 		}
 		final int index = evt.getID();
-		
+
 		final TileMapEditor editor = new TileMapEditor(null);
 		editor.setLayers(layers, index, sprite.getPalette());
 		editor.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(layers.size() > tileLayerList.getElements().size()) {
+				if (layers.size() > tileLayerList.getElements().size()) {
 					tileLayerList.add(layers.get(index));
 				} else {
 					tileLayerList.updateElement(index);
 				}
-				
+
 				directionChooser.setAnglesWithValue(currentAnimation.getAnglesWithValue());
-				
+
 				final Animation animation = (Animation) animationComboBoxModel.getSelectedItem();
 				animationComboBoxModel.setSelectedItem(null);
 				animationComboBoxModel.setSelectedItem(animation);
@@ -506,26 +516,26 @@ public class SpriteEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_directionChooserActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        setVisible(false);
+		setVisible(false);
 		animationPreview.stop();
-		
+
 		editedSprite.merge(sprite);
 		editedSprite.setDirty(true);
-		
+
 		fireActionPerformed();
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void tileLayerListKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tileLayerListKeyPressed
-		if(evt.getKeyCode() == KeyEvent.VK_DELETE || evt.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+		if (evt.getKeyCode() == KeyEvent.VK_DELETE || evt.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 			tileLayerList.removeSelectedElement();
 			directionChooser.setAnglesWithValue(currentAnimation.getAnglesWithValue());
 		}
-		
-		if((evt.getModifiersEx() & (KeyEvent.CTRL_DOWN_MASK | KeyEvent.META_DOWN_MASK)) != 0) {
-			if(evt.getExtendedKeyCode() == KeyEvent.VK_C) {
+
+		if ((evt.getModifiersEx() & (KeyEvent.CTRL_DOWN_MASK | KeyEvent.META_DOWN_MASK)) != 0) {
+			if (evt.getExtendedKeyCode() == KeyEvent.VK_C) {
 				copyButtonActionPerformed(null);
-				
-			} else if(evt.getExtendedKeyCode() == KeyEvent.VK_P) {
+
+			} else if (evt.getExtendedKeyCode() == KeyEvent.VK_P) {
 				pasteButtonActionPerformed(null);
 			}
 		}
@@ -562,17 +572,17 @@ public class SpriteEditor extends javax.swing.JDialog {
     }//GEN-LAST:event_pasteButtonActionPerformed
 
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
-        animationPreview.restart();
+		animationPreview.restart();
     }//GEN-LAST:event_playButtonActionPerformed
 
     private void transformButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transformButtonActionPerformed
-		TransformSpriteDialog dialog = new TransformSpriteDialog((Frame)getParent(), true);
+		TransformSpriteDialog dialog = new TransformSpriteDialog((Frame) getParent(), true);
 		dialog.setVisible(true);
 		if (dialog.isConfirm()) {
 			final ArrayList<TileLayer> frames = new ArrayList<>(getCurrentAnimation());
 			final ArrayList<TileLayer> newFrames = new ArrayList<>();
 			for (int index = 0; index < dialog.getFrames(); index++) {
-				for(final TileLayer frame : frames) {
+				for (final TileLayer frame : frames) {
 					final double scale = (dialog.getScaleFrom() + index * (dialog.getScaleTo() - dialog.getScaleFrom()) / (dialog.getFrames() - 1)) / 100.0;
 					final double rotation = dialog.getRotateFrom() + index * (dialog.getRotateTo() - dialog.getRotateFrom()) / (dialog.getFrames() - 1);
 
@@ -591,8 +601,8 @@ public class SpriteEditor extends javax.swing.JDialog {
 							// Agrandissement avant rotation pour avoir un meilleur résultat.
 							resizedFrame.scale(scale);
 						}
-						if (((int)rotation) % 90 == 0) {
-							resizedFrame.rotate90(((int)rotation) / 90);
+						if (((int) rotation) % 90 == 0) {
+							resizedFrame.rotate90(((int) rotation) / 90);
 						} else {
 							resizedFrame.rotate(Math.toRadians(rotation));
 						}
@@ -627,36 +637,36 @@ public class SpriteEditor extends javax.swing.JDialog {
 		final int oldFrequency = getCurrentFrequency();
 		final boolean oldLooping = isAnimationLooping();
 		final boolean oldScrolling = isAnimationScrolling();
-		
+
 		updateAnimation();
-		
+
 		final List<TileLayer> tiles = getCurrentAnimation();
 		tileLayerList.setElements(tiles);
 		animationPreview.setFrames(tiles);
-		
-		if(currentAnimation != null) {
+
+		if (currentAnimation != null) {
 			directionChooser.setAnglesWithValue(currentAnimation.getAnglesWithValue());
 		}
-		
+
 		firePropertyChange("currentFrequency", oldFrequency, getCurrentFrequency());
 		firePropertyChange("animationLooping", oldLooping, isAnimationLooping());
 		firePropertyChange("animationScrolling", oldScrolling, isAnimationScrolling());
 	}
-	
+
 	public void addActionListener(ActionListener listener) {
 		actionListeners.add(listener);
 	}
-	
+
 	public void removeActionListener(ActionListener listener) {
 		actionListeners.remove(listener);
 	}
-	
+
 	protected void fireActionPerformed() {
-		for(final ActionListener listener : actionListeners) {
+		for (final ActionListener listener : actionListeners) {
 			listener.actionPerformed(new ActionEvent(this, 0, "SPRITE_EDITED"));
 		}
 	}
-	
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<Animation> animationComboBox;
     private javax.swing.DefaultComboBoxModel<Animation> animationComboBoxModel;

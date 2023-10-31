@@ -182,14 +182,17 @@
       </BindingProperties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="gridScrollPane">
+      <Properties>
+        <Property name="doubleBuffered" type="boolean" value="true"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="gridScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);"/>
+      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
         <Container class="fr.rca.mapmaker.ui.TileLayerList" name="tileLayerList">
           <Properties>
-            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[1024, 32767]"/>
-            </Property>
             <Property name="orientation" type="fr.rca.mapmaker.ui.Orientation" editor="org.netbeans.modules.form.editors.EnumEditor">
               <Value id="HORIZONTAL"/>
             </Property>
