@@ -507,10 +507,16 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	 * @param offsetY Décalage vertical.
 	 */
 	public void translate(int offsetX, int offsetY) {
+		if (offsetX == 0 && offsetY == 0) {
+			// Rien à faire.
+			return;
+		}
 		translate(this.tiles, this.width, this.height, offsetX, offsetY);
 	}
 
 	public void copyAndTranslate(TileLayer layer, int offsetX, int offsetY) {
+		// Effectue le déplacement même si offsetX et offsetY valent 0 car il y
+		// a une copie des tuiles données.
 		translate(layer.tiles, layer.width, layer.height, offsetX, offsetY);
 	}
 

@@ -967,13 +967,35 @@ public class TileMapEditor extends javax.swing.JDialog {
 			return;
 		}
 		if (parts.length == 3 && parts[2] == 2) {
+			// Mode 2 = rédimensionnement sans étirer.
 			final int oldWidth = drawLayer.getWidth();
 			final int oldHeight = drawLayer.getHeight();
 			final int width = parts[0];
 			final int height = parts[1];
+			final int translateX = (width - oldWidth) / 2;
+			final int translateY = (height - oldHeight) / 2;
+
+			// Déplacement avant redimensionnement pour ne pas couper les données au rétrécissement.
+			if (translateX <= 0 && translateY <= 0) {
+				drawLayer.translate(translateX, translateY);
+			} else if (translateX < 0) {
+				drawLayer.translate(translateX, 0);
+			} else if (translateY < 0) {
+				drawLayer.translate(0, translateY);
+			}
+
 			drawGrid.getOverlay().resize(width, height);
 			drawLayer.resize(width, height);
-			drawLayer.translate((width - oldWidth) / 2, (height - oldHeight) / 2);
+
+			// Déplacement après redimensionnement pour ne pas couper les données avant l'agrandissement.
+			if (translateX >= 0 && translateY >= 0) {
+				drawLayer.translate(translateX, translateY);
+			} else if (translateX > 0) {
+				drawLayer.translate(translateX, 0);
+			} else if (translateY > 0) {
+				drawLayer.translate(0, translateY);
+			}
+
 			HitboxLayerPlugin hitboxLayerPlugin = drawLayer.getPlugin(HitboxLayerPlugin.class);
 			if (hitboxLayerPlugin != null && hitboxLayerPlugin.getHitbox() != null) {
 				Rectangle hitbox = new Rectangle(hitboxLayerPlugin.getHitbox());
@@ -989,6 +1011,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 				drawLayer.setPlugin(new SecondaryHitboxLayerPlugin(hitbox));
 			}
 		} else if (parts.length == 3 && parts[2] == 1) {
+			// Mode 1 = étirement en utilisant CleanEdge.
 			CleanEdge.builder()
 				.palette((ColorPalette) drawMap.getPalette())
 				.slope(true)
