@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -147,18 +148,24 @@ public class PlaydateFormat extends AbstractFormat {
 	}
 
 	public static BufferedImage renderSprite(Sprite sprite, List<String> animationNames) {
-		return renderSprite(sprite, animationNames, false);
+		return renderSprite(sprite, animationNames, false, true);
 	}
 
 	public static BufferedImage renderSprite(Sprite sprite, List<String> animationNames, boolean dither) {
-		final int frameCount = (int) animationNames.stream()
+		return renderSprite(sprite, animationNames, dither, true);
+	}
+
+	public static BufferedImage renderSprite(Sprite sprite, List<String> animationNames, boolean dither, boolean distinct) {
+		Stream<TileLayer> frameStream = animationNames.stream()
 				.map(sprite::findByName)
 				.filter(Objects::nonNull)
 				.flatMap(animation -> animation.getAnglesWithValue().stream()
 					.map(animation::getFrames))
-				.flatMap(List::stream)
-				.distinct()
-				.count();
+				.flatMap(List::stream);
+
+		final int frameCount = distinct
+				? (int)frameStream.distinct().count()
+				: (int)frameStream.count();
 
 		if (frameCount == 0) {
 			return null;
@@ -176,6 +183,7 @@ public class PlaydateFormat extends AbstractFormat {
 		final ColorPalette palette = sprite.getPalette();
 
 		final HashMap<TileLayer, Integer> indexForTile = new HashMap<>(frameCount);
+		int total = 0;
 		for (final String animationName : animationNames) {
 			final Animation animation = sprite.findByName(animationName);
 			if (animation == null) {
@@ -184,18 +192,19 @@ public class PlaydateFormat extends AbstractFormat {
 			for (double angle : animation.getAnglesWithValue()) {
 				for (TileLayer frame : animation.getFrames(angle)) {
 					Integer frameIndex = indexForTile.get(frame);
-					if (frameIndex == null) {
-						frameIndex = indexForTile.size();
+					if (frameIndex == null || !distinct) {
+						frameIndex = distinct ? indexForTile.size() : total++;
 						indexForTile.put(frame, frameIndex);
-					}
-					if (dither) {
-						frame = Dithering.dither(frame, palette);
-					}
-					int originY = (frameIndex / grid.width) * spriteHeight;
-					int originX = (frameIndex % grid.width) * spriteWidth;
-					for (int y = 0; y < frame.getHeight(); y++) {
-						for(int x = 0; x < frame.getWidth(); x++) {
-							palette.paintTile(graphics, frame.getTile(x, y), originX + x, originY + y, 1);
+
+						if (dither) {
+							frame = Dithering.dither(frame, palette);
+						}
+						int originY = (frameIndex / grid.width) * spriteHeight;
+						int originX = (frameIndex % grid.width) * spriteWidth;
+						for (int y = 0; y < frame.getHeight(); y++) {
+							for(int x = 0; x < frame.getWidth(); x++) {
+								palette.paintTile(graphics, frame.getTile(x, y), originX + x, originY + y, 1);
+							}
 						}
 					}
 				}

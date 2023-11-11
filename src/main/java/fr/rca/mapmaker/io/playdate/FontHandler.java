@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import javax.imageio.ImageIO;
 import org.slf4j.Logger;
@@ -32,7 +31,7 @@ public class FontHandler implements DataHandler<Sprite> {
 
 	@Override
 	public void write(Sprite t, OutputStream outputStream) throws IOException {
-		final BufferedImage image = PlaydateFormat.renderSprite(t, animationNames);
+		final BufferedImage image = PlaydateFormat.renderSprite(t, animationNames, false, false);
 		final BufferOutputStream buffer = new BufferOutputStream();
 		ImageIO.write(image, "png", buffer);
 		final String data = Base64.getEncoder().encodeToString(buffer.getBuffer().array());
@@ -43,7 +42,6 @@ public class FontHandler implements DataHandler<Sprite> {
 		outputStream.write(("height=" + t.getHeight() + "\n\n").getBytes(StandardCharsets.UTF_8));
 		outputStream.write(("tracking=0\n\n").getBytes(StandardCharsets.UTF_8));
 
-		final HashMap<TileLayer, Integer> indexForTile = new HashMap<>();
 		for (final String animationName : animationNames) {
 			final Animation animation = t.findByName(animationName);
 			if (animation == null) {
@@ -51,14 +49,6 @@ public class FontHandler implements DataHandler<Sprite> {
 			}
 			for (double angle : animation.getAnglesWithValue()) {
 				for (TileLayer frame : animation.getFrames(angle)) {
-					Integer frameIndex = indexForTile.get(frame);
-					if (frameIndex == null) {
-						frameIndex = indexForTile.size();
-						indexForTile.put(frame, frameIndex);
-					} else {
-						LOGGER.warn("Using the same frame for 2 differents characters is unsupported");
-					}
-					final String frameName = frame.getName();
 					outputStream.write((frame.getName() + '\t' + frame.getWidth() + "\n").getBytes(StandardCharsets.UTF_8));
 				}
 			}
