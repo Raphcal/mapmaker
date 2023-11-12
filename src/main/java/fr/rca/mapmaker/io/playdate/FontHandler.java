@@ -49,7 +49,13 @@ public class FontHandler implements DataHandler<Sprite> {
 			}
 			for (double angle : animation.getAnglesWithValue()) {
 				for (TileLayer frame : animation.getFrames(angle)) {
-					outputStream.write((frame.getName() + '\t' + frame.getWidth() + "\n").getBytes(StandardCharsets.UTF_8));
+					String name = frame.getName();
+					if ("\\a".equals(name)) {
+						name = "\u0007";
+					} else if ("\\b".equals(name)) {
+						name = "\u0008";
+					}
+					outputStream.write((name + '\t' + frame.getWidth() + "\n").getBytes(StandardCharsets.UTF_8));
 				}
 			}
 		}
