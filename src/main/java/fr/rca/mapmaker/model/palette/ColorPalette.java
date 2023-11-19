@@ -2,9 +2,10 @@ package fr.rca.mapmaker.model.palette;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Iterator;
 import java.util.stream.IntStream;
 
-public class ColorPalette implements Palette {
+public class ColorPalette implements Palette, Iterable<Color> {
 
 	private Color[] colors;
 	private Color[] inverses;
@@ -26,6 +27,23 @@ public class ColorPalette implements Palette {
 	@Override
 	public boolean isEditable() {
 		return false;
+	}
+
+	@Override
+	public Iterator<Color> iterator() {
+		return new Iterator<Color>() {
+			private int index = 0;
+
+			@Override
+			public boolean hasNext() {
+				return index < colors.length;
+			}
+
+			@Override
+			public Color next() {
+				return getColor(index++);
+			}
+		};
 	}
 
 	private void inverse(int index) {

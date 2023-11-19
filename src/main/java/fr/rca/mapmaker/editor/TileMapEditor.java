@@ -21,6 +21,7 @@ import fr.rca.mapmaker.editor.tool.ReplaceColorTool;
 import fr.rca.mapmaker.editor.tool.SecondaryHitboxTool;
 import fr.rca.mapmaker.editor.tool.SelectionTool;
 import fr.rca.mapmaker.editor.tool.Tool;
+import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.model.map.DataLayer;
 import fr.rca.mapmaker.model.map.FunctionLayerPlugin;
 import fr.rca.mapmaker.model.map.HitboxLayerPlugin;
@@ -34,18 +35,26 @@ import fr.rca.mapmaker.model.palette.ColorPalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.ui.Function;
 import fr.rca.mapmaker.util.CleanEdge;
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -55,6 +64,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 
 	private static final int PALETTE_WIDTH = 8;
 
+	private static final JFileChooser importFileChooser = new JFileChooser();
 	private static TileLayer clipboardData;
 	private static LayerPlugin pluginClipboardData;
 
@@ -150,6 +160,10 @@ public class TileMapEditor extends javax.swing.JDialog {
 		colorPaletteMap.setPalette(palette);
 
 		alphaPaletteGrid.setVisible(palette instanceof AlphaColorPalette);
+	}
+
+	public ColorPalette getPalette() {
+		return (ColorPalette)colorPaletteMap.getPalette();
 	}
 
 	public void setLayerIndex(int layerIndex) {
@@ -285,6 +299,7 @@ public class TileMapEditor extends javax.swing.JDialog {
         attackHitboxToggleButton = new javax.swing.JToggleButton();
         nameTextField = new javax.swing.JTextField();
         diagonalFillToggleButton = new javax.swing.JToggleButton();
+        importButton = new javax.swing.JButton();
 
         drawMap.setBackgroundColor(new java.awt.Color(0, 153, 153));
         drawMap.setHeight(32);
@@ -628,14 +643,21 @@ public class TileMapEditor extends javax.swing.JDialog {
         diagonalFillToggleButton.setPreferredSize(new java.awt.Dimension(32, 32));
         wireTool(diagonalFillToggleButton, new FillDiagonalLines(drawGrid, diagonalFillToggleButton));
 
+        importButton.setText("Import");
+        importButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(nameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
                     .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
@@ -698,7 +720,8 @@ public class TileMapEditor extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(previousLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(nextLayerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(importButton, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gridScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -728,7 +751,8 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(okButton)
                         .addGap(0, 0, 0)
-                        .addComponent(cancelButton))
+                        .addComponent(cancelButton)
+                        .addGap(8, 8, 8))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(magicWandToggleButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -800,8 +824,9 @@ public class TileMapEditor extends javax.swing.JDialog {
                         .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(8, 8, 8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(importButton)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         bindingGroup.bind();
@@ -1025,6 +1050,35 @@ public class TileMapEditor extends javax.swing.JDialog {
 		drawGrid.getOverlay().resize(parts[0], parts[1]);
     }//GEN-LAST:event_resizeButtonActionPerformed
 
+    private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importButtonActionPerformed
+		importFileChooser.setMultiSelectionEnabled(false);
+		importFileChooser.setFileFilter(new FileNameExtensionFilter("Image BMP, PNG ou JPG", "bmp", "png", "jpg", "jpeg"));
+		if (importFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			final File file = importFileChooser.getSelectedFile();
+			try {
+				final BufferedImage image = ImageIO.read(file);
+				final int width = image.getWidth();
+				final int height = image.getHeight();
+
+				final HashMap<Color, Integer> colorMap = new HashMap<>();
+
+				final int size = width * height;
+				int[] tiles = new int[size];
+				for (int index = 0; index < size; index++) {
+					final int x = index % width;
+					final int y = index / width;
+					final Color color = new Color(image.getRGB(x, y));
+					final Integer tile = colorMap.computeIfAbsent(color, this::findClosestColorIndex);
+					tiles[index] = tile != null ? tile : -1;
+				}
+				drawLayer.restoreData(tiles, width, height);
+				drawGrid.getOverlay().resize(width, height);
+			} catch (IOException e) {
+				Exceptions.showStackTrace(e, this);
+			}
+		}
+    }//GEN-LAST:event_importButtonActionPerformed
+
 	public static int toInt(String value) {
 		try {
 			return Integer.valueOf(value);
@@ -1087,6 +1141,48 @@ public class TileMapEditor extends javax.swing.JDialog {
 		}
 	}
 
+	private int findClosestColorIndex(Color targetColor) {
+		final ColorPalette palette = getPalette();
+        int closest = 0;
+        double minDistance = getColorDistance(targetColor, palette.getColor(closest));
+
+        for (int index = 1; index < palette.size(); index++) {
+			Color color = palette.getColor(index);
+			if (color.equals(targetColor)) {
+				return index;
+			}
+            double distance = getColorDistance(targetColor, color);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closest = index;
+            }
+        }
+
+        return closest;
+    }
+
+    private double getColorDistance(Color c1, Color c2) {
+		float[] hsb1 = Color.RGBtoHSB(c1.getRed(), c1.getGreen(), c1.getBlue(), null);
+		float[] hsb2 = Color.RGBtoHSB(c2.getRed(), c2.getGreen(), c2.getBlue(), null);
+
+		// Convertir en espace HSL
+		float hueDistance = Math.abs(hsb1[0] - hsb2[0]);
+		float saturationDistance = Math.abs(hsb1[1] - hsb2[1]);
+		float brightnessDistance = Math.abs(hsb1[2] - hsb2[2]);
+
+		// Prendre en compte la circularité de la teinte
+		if (hueDistance > 0.5f) {
+			hueDistance = 1.0f - hueDistance;
+		}
+
+		// Calculer la distance totale dans l'espace HSL
+		double distance = Math.sqrt(hueDistance * hueDistance +
+									saturationDistance * saturationDistance +
+									brightnessDistance * brightnessDistance);
+
+		return distance;
+	}
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private fr.rca.mapmaker.model.palette.ColorPalette alphaPalette;
     private fr.rca.mapmaker.ui.Grid alphaPaletteGrid;
@@ -1113,6 +1209,7 @@ public class TileMapEditor extends javax.swing.JDialog {
     private javax.swing.JTextField heightTextField;
     private javax.swing.JToggleButton hitboxToggleButton;
     private javax.swing.JButton horizontalMirrorButton;
+    private javax.swing.JButton importButton;
     private javax.swing.JToggleButton lineToggleButton;
     private javax.swing.JToggleButton magicWandToggleButton;
     private fr.rca.mapmaker.editor.undo.LayerMemento memento;
