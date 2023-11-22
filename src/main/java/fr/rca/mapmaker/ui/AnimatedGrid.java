@@ -23,7 +23,7 @@ import javax.swing.Timer;
 public class AnimatedGrid<L extends DataLayer> extends JComponent {
 	
 	private static final double ONE_SECOND = 1000.0;
-    private static final double MAX_SIZE = 200.0;
+    private static final double MAX_SIZE = 400.0;
 	
 	private int index;
 	private List<L> frames = Collections.<L>emptyList();
