@@ -20,6 +20,7 @@ public class SpriteDefinitionsAsHeaderHandler extends CodeDataHandler<List<Sprit
 				+ "#define spritenames_h\n"
 				+ "\n"
 				+ "#include \"pd_api.h\"\n"
+				+ "#include \"../lib/melice.h\"\n"
 				+ "\n"
 				+ "typedef struct melspritedefinition MELSpriteDefinition;\n"
 				+ "\n"
