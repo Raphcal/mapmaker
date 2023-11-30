@@ -14,6 +14,7 @@ import fr.rca.mapmaker.io.shmup.ShmupFormat;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -51,7 +52,7 @@ public final class Formats {
 		return FORMATS.values();
 	}
 	
-	public static Format getFormat(String name) {
+	public static @Nullable Format getFormat(String name) {
 		final int extensionStart = name.lastIndexOf('.');
 		if(extensionStart > -1) {
 			final String extension = name.substring(name.lastIndexOf('.'));

@@ -2,12 +2,19 @@ package fr.rca.mapmaker;
 
 import fr.rca.mapmaker.editor.MapEditor;
 import fr.rca.mapmaker.exception.Exceptions;
+import fr.rca.mapmaker.io.Format;
+import fr.rca.mapmaker.io.autodeploy.AutoDeployer;
+import fr.rca.mapmaker.io.autodeploy.MeltedIceAutoDeployer;
+import fr.rca.mapmaker.io.autodeploy.PlaydateAutoDeployer;
+import fr.rca.mapmaker.io.autodeploy.PuzzleSuitAutoDeployer;
+import fr.rca.mapmaker.io.common.Formats;
 import fr.rca.mapmaker.preferences.PreferencesManager;
 import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -39,7 +46,13 @@ public class MapMaker {
 	 * @param args Liste des arguments de l'application.
 	 */
 	public static void main(final String[] args) {
-		
+		if (args.length > 0 && "autodeploy".equals(args[0])) {
+			String[] copy = new String[args.length - 1];
+			System.arraycopy(args, 1, copy, 0, args.length - 1);
+			autoDeploy(copy);
+			return;
+		}
+
 		// Style Mac OS X
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 		System.setProperty("apple.awt.brushMetalLook", "true");
@@ -184,6 +197,51 @@ public class MapMaker {
 			setOpenFileHandlerMethod.invoke(parent, proxy);
 		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
 			LOGGER.debug("Unable to set macOS open action", ex);
+		}
+	}
+
+	private static void printAutoDeployUsage() {
+		System.out.println("Usage: autodeploy <playdate|meltedice|puzzlesuit> <project file> [target folder]");
+	}
+
+	private static void autoDeploy(String[] args) {
+		if (args.length < 2 || args.length > 3) {
+			printAutoDeployUsage();
+			return;
+		}
+		final AutoDeployer deployer;
+		switch (args[0].toLowerCase()) {
+			case "playdate":
+				deployer = new PlaydateAutoDeployer();
+				break;
+			case "meltedice":
+				deployer = new MeltedIceAutoDeployer();
+				break;
+			case "puzzlesuit":
+				deployer = new PuzzleSuitAutoDeployer();
+				break;
+			default:
+				printAutoDeployUsage();
+				return;
+		}
+		final File projectFile = new File(args[1]);
+		final Format format = Formats.getFormat(projectFile.getName());
+		if (!projectFile.exists() || format == null) {
+			System.err.println("File '" + projectFile + "' is not supported or does not exists.");
+			return;
+		}
+		final File outputFolder = new File(args.length == 3 ? args[2] : "./");
+		if (!outputFolder.exists()) {
+			outputFolder.mkdirs();
+		}
+		if (!outputFolder.isDirectory()) {
+			System.err.println("Output '" + outputFolder + "' is not a directory.");
+			return;
+		}
+		try {
+			deployer.deployProjectInFolder(format.openProject(projectFile), outputFolder);
+		} catch (IOException ex) {
+			System.err.println("Unable to deploy: " + ex.getClass().getSimpleName() + ' ' + ex.getMessage());
 		}
 	}
 }

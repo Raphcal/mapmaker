@@ -59,6 +59,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 	public void deployProjectInFolder(Project project, File root) throws IOException {
 		final File resourceDir = new File(root, "Source");
 		final File generatedSourcesDir = new File(root, "gen");
+		resourceDir.mkdir();
 		generatedSourcesDir.mkdir();
 
 		PlaydateExportConfiguration configuration = new PlaydateExportConfiguration();
