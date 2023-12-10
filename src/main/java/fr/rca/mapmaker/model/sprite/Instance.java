@@ -323,8 +323,7 @@ public class Instance extends JComponent implements CanBeDirty {
 			return new Dimension(32, 32);
 		}
 
-		variables.clear();
-		VariableDeclarationParser.parse(script, project).execute(this);
+		runScript();
 
 		final Double variableWidth = variables.get("width");
 		final Double variableHeight = variables.get("height");
@@ -333,6 +332,11 @@ public class Instance extends JComponent implements CanBeDirty {
 		final int height = (int) (zoom * (variableHeight == null ? sprite.getHeight() : variableHeight));
 
 		return new Dimension(width, height);
+	}
+
+	public void runScript() {
+		variables.clear();
+		VariableDeclarationParser.parse(script, project).execute(this);
 	}
 
 }

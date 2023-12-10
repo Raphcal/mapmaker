@@ -8,6 +8,8 @@ import fr.rca.mapmaker.io.autodeploy.MeltedIceAutoDeployer;
 import fr.rca.mapmaker.io.autodeploy.PlaydateAutoDeployer;
 import fr.rca.mapmaker.io.autodeploy.PuzzleSuitAutoDeployer;
 import fr.rca.mapmaker.io.common.Formats;
+import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.preferences.PreferencesManager;
 import java.awt.Desktop;
 import java.awt.EventQueue;
@@ -239,7 +241,11 @@ public class MapMaker {
 			return;
 		}
 		try {
-			deployer.deployProjectInFolder(format.openProject(projectFile), outputFolder);
+			final Project project = format.openProject(projectFile);
+			project.getAllInstances().stream()
+					.flatMap(List::stream)
+					.forEach(Instance::runScript);
+			deployer.deployProjectInFolder(project, outputFolder);
 		} catch (IOException ex) {
 			System.err.println("Unable to deploy: " + ex.getClass().getSimpleName() + ' ' + ex.getMessage());
 		}
