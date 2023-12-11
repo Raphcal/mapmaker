@@ -270,6 +270,8 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			setVersion(version != null ? version : InternalFormat.VERSION_4);
 			progressTracker.stepDidEnd("version");
 
+			final boolean oldVersion = version == null || version < InternalFormat.LAST_VERSION;
+
 			// Animation names
 			List<String> animationNames = (List<String>) projectInfo.get(ANIMATION_NAMES);
 			if (animationNames != null) {
@@ -282,7 +284,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			final List<String> palettes = (List<String>) projectInfo.get(PALETTES);
 			progressTracker.stepHaveSubsteps(palettes.size());
 			for (final String palette : palettes) {
-				project.addPalette(read(file, palette, paletteHandler));
+				project.addPalette(read(file, palette, paletteHandler, oldVersion));
 				progressTracker.subStepDidEnd();
 			}
 			progressTracker.stepDidEnd("palettes");
@@ -296,7 +298,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 
 			for (final Map<String, Object> map : maps) {
 				// Map
-				final TileMap tileMap = read(file, (String) map.get(MAP), tileMapHandler);
+				final TileMap tileMap = read(file, (String) map.get(MAP), tileMapHandler, oldVersion);
 				progressTracker.subStepDidEnd();
 
 				// Instances
@@ -331,7 +333,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			for (final String sprite : spriteFiles) {
 				Sprite aSprite;
 				try {
-					aSprite = read(file, sprite, spriteHandler);
+					aSprite = read(file, sprite, spriteHandler, oldVersion);
 				} catch (FileNotFoundException e) {
 					aSprite = new Sprite();
 				}
@@ -356,9 +358,11 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		}
 	}
 
-	private <T> T read(File parent, String name, DataHandler<T> handler) throws FileNotFoundException, IOException {
+	private <T> T read(File parent, String name, DataHandler<T> handler, boolean dirty) throws FileNotFoundException, IOException {
 		try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(new File(parent, name)))) {
-			return handler.read(inputStream);
+			final T t = handler.read(inputStream);
+			CanBeDirty.wrap(t).setDirty(dirty);
+			return t;
 		}
 	}
 
