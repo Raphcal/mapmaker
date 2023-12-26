@@ -79,6 +79,7 @@ public class Project implements ListModel, HasColorPalette {
 
 		final EditableImagePalette emptyPalette = new EditableImagePalette(32, 4);
 		emptyPalette.setName("Palette 1");
+		emptyPalette.setDirty(true);
 		project.addPalette(emptyPalette);
 
 		final TileLayer emptyTileLayer = new TileLayer(20, 15);
@@ -89,6 +90,7 @@ public class Project implements ListModel, HasColorPalette {
 		emptyTileMap.setPalette(new PaletteReference(project, 0));
 		emptyTileMap.setBackgroundColor(Color.WHITE);
 		emptyTileMap.add(emptyTileLayer);
+		emptyTileMap.setDirty(true);
 		project.addMap(emptyTileMap);
 
 		return project;

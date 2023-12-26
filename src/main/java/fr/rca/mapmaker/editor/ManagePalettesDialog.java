@@ -14,6 +14,7 @@ import fr.rca.mapmaker.model.palette.PaletteComboBoxModel;
 import fr.rca.mapmaker.model.palette.EditableColorPalette;
 import fr.rca.mapmaker.model.palette.EditablePalette;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.util.CanBeDirty;
 import java.awt.Frame;
 import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
@@ -303,6 +304,7 @@ private void addPaletteButtonActionPerformed(java.awt.event.ActionEvent evt) {//
 		}
 
 		palette.setName(newPaletteDialog.getPaletteName());
+		CanBeDirty.wrap(palette).setDirty(true);
 		model.addElement(palette);
 	}
 }//GEN-LAST:event_addPaletteButtonActionPerformed
