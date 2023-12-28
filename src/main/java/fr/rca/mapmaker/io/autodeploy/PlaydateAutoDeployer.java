@@ -41,6 +41,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
@@ -70,10 +71,15 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 			}
 		}
 
+		final boolean flattenLayers = Optional.ofNullable(configuration)
+				.map(PlaydateExportConfiguration::getMaps)
+				.map(PlaydateExportConfiguration.Maps::getFlattenLayers)
+				.orElse(false);
+
 		final List<Palette> palettes = PlaydateFormat.palettesForProject(project);
 
 		for(final Palette palette : palettes) {
-			if (configuration.getFlattenLayers() == null || !configuration.getFlattenLayers()) {
+			if (!flattenLayers) {
 				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 						new FileOutputStream(
 						new File(resourceDir, "palette-" + Names.normalizeName(palette, Names::toLowerCase) + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
@@ -87,7 +93,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		generateFile(generatedSourcesDir, new PaletteNamesAsHeaderHandler(), palettes, configuration);
 		generateFile(generatedSourcesDir, new PaletteNamesAsCodeHandler(), palettes, configuration);
 
-		final TileMapHandler tileMapHandler = new TileMapHandler();
+		final TileMapHandler tileMapHandler = new TileMapHandler().withConfiguration(configuration);
 		final InstancesHandler instancesHandler = new InstancesHandler();
 
 		final List<TileMap> maps = PlaydateFormat.mapsForProject(project);
@@ -104,7 +110,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 						.collect(Collectors.toList()), outputStream);
 			}
 
-			if (configuration.getFlattenLayers() != null && configuration.getFlattenLayers()) {
+			if (flattenLayers) {
 				// Exporte chaque couches séparement dans un PNG chacun.
 				final ImageRenderer renderer = new ImageRenderer();
 				final Palette palette = tileMap.getPalette();

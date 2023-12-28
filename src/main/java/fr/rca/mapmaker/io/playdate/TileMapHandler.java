@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Écrit une carte dans un fichier binaire avec toutes ses couches de tuiles.
@@ -28,11 +29,21 @@ public class TileMapHandler implements DataHandler<TileMap> {
 	 */
 	public static final String WATER_LAYER_NAME = "water";
 
+	protected PlaydateExportConfiguration configuration;
+
 	@Override
 	public void write(TileMap t, OutputStream outputStream) throws IOException {
 		Palette palette = t.getPalette();
 		if (!(palette instanceof PaletteReference)) {
 			throw new UnsupportedOperationException("TileMap palette should be a reference to allow palette index export");
+		}
+
+		final boolean writeMapTileSize = Optional.ofNullable(configuration)
+				.map(PlaydateExportConfiguration::getMaps)
+				.map(PlaydateExportConfiguration.Maps::getWriteTileSize)
+				.orElse(false);
+		if (writeMapTileSize) {
+			Streams.write(palette.getTileSize(), outputStream);
 		}
 
 		Streams.write(t.getWidth() * palette.getTileSize(), outputStream);
@@ -72,6 +83,11 @@ public class TileMapHandler implements DataHandler<TileMap> {
 	@Override
 	public TileMap read(InputStream inputStream) throws IOException {
 		throw new UnsupportedOperationException("Not supported.");
+	}
+
+	public TileMapHandler withConfiguration(PlaydateExportConfiguration configuration) {
+		this.configuration = configuration;
+		return this;
 	}
 
 	public static Rectangle getLayerSize(Layer layer) {

@@ -24,7 +24,10 @@ public class TileMapsAsCodeHandler extends CodeDataHandler<List<TileMap>> {
 
 	@Override
 	public void write(List<TileMap> t, OutputStream outputStream) throws IOException {
-		final boolean flattenLayers = Optional.ofNullable(configuration).map(PlaydateExportConfiguration::getFlattenLayers).orElse(false);
+		final boolean flattenLayers = Optional.ofNullable(configuration)
+				.map(PlaydateExportConfiguration::getMaps)
+				.map(PlaydateExportConfiguration.Maps::getFlattenLayers)
+				.orElse(false);
 
 		outputStream.write((generateHeader(t)
 				+ "#include \"maps.h\"\n"

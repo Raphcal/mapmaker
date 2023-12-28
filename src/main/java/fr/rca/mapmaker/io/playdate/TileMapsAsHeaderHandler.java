@@ -37,7 +37,11 @@ public class TileMapsAsHeaderHandler extends CodeDataHandler<List<TileMap>> {
 				+ "extern const char * _Nonnull kMapNameFileNames[" + t.size() + "];\n"
 				+ "\n").getBytes(StandardCharsets.UTF_8));
 
-		if (Optional.ofNullable(configuration).map(PlaydateExportConfiguration::getFlattenLayers).orElse(false)) {
+		final boolean flattenLayers = Optional.ofNullable(configuration)
+				.map(PlaydateExportConfiguration::getMaps)
+				.map(PlaydateExportConfiguration.Maps::getFlattenLayers)
+				.orElse(false);
+		if (flattenLayers) {
 			outputStream.write("LCDBitmap * _Nullable loadMapLayer(MapName mapName, unsigned int layer);\n\n".getBytes(StandardCharsets.UTF_8));
 		}
 
