@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.io.autodeploy;
 
 import fr.rca.mapmaker.editor.ProgressDialog;
+import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.common.Streams;
 import fr.rca.mapmaker.io.mkz.MKZFormat;
@@ -89,7 +90,11 @@ public abstract class AutoDeployer extends FileFilter {
 		ProgressDialog.showFor(parent, new SwingWorker<Void, Integer>() {
 			@Override
 			protected Void doInBackground() throws Exception {
-				deployProjectInFolder(project, destination);
+				try {
+					deployProjectInFolder(project, destination);
+				} catch (IOException e) {
+					Exceptions.showStackTrace(e, parent);
+				}
 				return null;
 			}
 		}, null);
