@@ -417,33 +417,34 @@ public class TileMap implements HasSizeChangeListeners, HasPropertyChangeListene
 		for (final SizeChangeListener listener : sizeChangeListeners) {
 			listener.sizeChanged(this, oldSize, newSize);
 		}
+		setDirty(true);
 	}
 
 	protected void fireIntervalAdded(int index) {
-
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, index, index);
 
 		for (final ListDataListener listener : listDataListeners) {
 			listener.intervalAdded(event);
 		}
+		setDirty(true);
 	}
 
 	protected void fireIntervalRemoved(int index) {
-
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index, index);
 
 		for (final ListDataListener listener : listDataListeners) {
 			listener.intervalRemoved(event);
 		}
+		setDirty(true);
 	}
 
 	protected void fireContentChanged(int from, int to) {
-
 		final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, from, to);
 
 		for (final ListDataListener listener : listDataListeners) {
 			listener.contentsChanged(event);
 		}
+		setDirty(true);
 	}
 
 	@Override
