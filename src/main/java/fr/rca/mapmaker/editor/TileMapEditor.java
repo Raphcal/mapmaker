@@ -912,6 +912,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 			}
 			copy(source);
 		} else {
+			// Copie la hitbox
 			copy(drawLayer.getPlugin(currentPlugin.getClass()));
 		}
 
@@ -926,6 +927,7 @@ public class TileMapEditor extends javax.swing.JDialog {
 			drawGrid.addMouseListener(pasteSelectionTool);
 			drawGrid.addMouseMotionListener(pasteSelectionTool);
 		} else {
+			// Colle la hitbox
 			drawLayer.setPlugin(LayerPlugins.copyOf(pluginClipboardData));
 		}
     }//GEN-LAST:event_pasteButtonActionPerformed
