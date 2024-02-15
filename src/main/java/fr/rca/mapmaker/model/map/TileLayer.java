@@ -417,12 +417,36 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 	}
 
 	/**
+	 * Détermine si au moins une tuile existe dans le rectangle donné.
+	 * @param rectangle Rectangle à vérifier.
+	 * @return <code>true</code> si le rectangle donné est vide,
+	 * <code>false</code> sinon.
+	 */
+	public boolean isEmpty(Rectangle rectangle) {
+		final int endX = Math.min(rectangle.x + rectangle.width, width);
+		final int endY = Math.min(rectangle.y + rectangle.height, height);
+		for (int y = rectangle.y; y < endY; y++) {
+			final int rowStart = y * width;
+			for (int x = rectangle.x; x < endX; x++) {
+				if (tiles[rowStart + x] != EMPTY_TILE) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Redimensionne la couche à la taille donnée.
 	 *
 	 * @param width Nouvelle largeur.
 	 * @param height Nouvelle hauteur.
 	 */
 	public void resize(int width, int height) {
+		if (width == this.width && height == this.height) {
+			// Rien à faire.
+			return;
+		}
 		final int[] resizedTiles = new int[width * height];
 		Arrays.fill(resizedTiles, EMPTY_TILE);
 
@@ -528,8 +552,8 @@ public class TileLayer implements DataLayer, HasSizeChangeListeners, HasProperty
 		final int sourceY = Math.max(0, -offsetY);
 		final int destinationX = Math.max(0, offsetX);
 		final int destinationY = Math.max(0, offsetY);
-		final int copyWidth = Math.min(this.width - Math.abs(offsetX), width);
-		final int copyHeight = Math.min(this.height - Math.abs(offsetY), height);
+		final int copyWidth = Math.min(this.width - destinationX, width - sourceX);
+		final int copyHeight = Math.min(this.height - destinationY, height - sourceY);
 
 		for (int j = 0; j < copyHeight; j++) {
 			System.arraycopy(
