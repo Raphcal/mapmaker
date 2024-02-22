@@ -1,6 +1,7 @@
 package fr.rca.mapmaker.io.autodeploy;
 
 import com.google.gson.Gson;
+import fr.rca.mapmaker.exception.Exceptions;
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.playdate.AnimationNamesAsHeaderHandler;
 import fr.rca.mapmaker.io.playdate.CodeDataHandler;
@@ -68,6 +69,8 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		if (configFile.canRead()) {
 			try (InputStreamReader reader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8)) {
  				configuration = new Gson().fromJson(reader, PlaydateExportConfiguration.class);
+			} catch (Exception e) {
+				Exceptions.showStackTrace(e, null);
 			}
 		}
 
