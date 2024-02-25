@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -16,6 +17,10 @@ public class SpriteDefinitionsAsCodeHandler extends CodeDataHandler<List<Sprite>
 	@Override
 	public void write(List<Sprite> t, OutputStream outputStream) throws IOException {
 		final SpriteAsHeaderHandler spriteAsHeaderHandler = new SpriteAsHeaderHandler();
+		final boolean createDirectories = Optional.ofNullable(configuration)
+				.map(PlaydateExportConfiguration::getCreateDirectories)
+				.orElse(false);
+		final String prefix = createDirectories ? "sprites/" : "";
 
 		outputStream.write((generateHeader(t)
 				+ "#include \"spritenames.h\"\n"
@@ -44,7 +49,7 @@ public class SpriteDefinitionsAsCodeHandler extends CodeDataHandler<List<Sprite>
 				+ "    switch (self) {\n"
 				+ t.stream()
 						.map(sprite -> "    case SpriteName" + Names.normalizeName(sprite, Names::toPascalCase) + ":\n" +
-										"        table = playdate->graphics->loadBitmapTable(\"sprite-" + Names.normalizeName(sprite, Names::toSnakeCase) + "\", &error);\n" +
+										"        table = playdate->graphics->loadBitmapTable(\"" + prefix + "sprite-" + Names.normalizeName(sprite, Names::toSnakeCase) + "\", &error);\n" +
 										"        break;\n")
 						.collect(Collectors.joining())
 				+ "    default:\n"

@@ -15,6 +15,12 @@ public class PlaydateExportConfiguration {
 	 */
 	private Boolean enableDithering;
 
+	/**
+	 * Exporte les sprites dans un dossier "sprites" et les cartes dans un
+	 * dossier "maps".
+	 */
+	private Boolean createDirectories;
+
 	@Data
 	public static class SpriteNames {
 		private SpriteNamesGetDefinitionType getDefinitionType = SpriteNamesGetDefinitionType.struct;

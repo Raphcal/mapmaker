@@ -28,6 +28,11 @@ public class TileMapsAsCodeHandler extends CodeDataHandler<List<TileMap>> {
 				.map(PlaydateExportConfiguration::getMaps)
 				.map(PlaydateExportConfiguration.Maps::getFlattenLayers)
 				.orElse(false);
+		final boolean createDirectories = Optional.ofNullable(configuration)
+				.map(PlaydateExportConfiguration::getCreateDirectories)
+				.orElse(false);
+
+		final String prefix = createDirectories ? "maps/" : "";
 
 		outputStream.write((generateHeader(t)
 				+ "#include \"maps.h\"\n"
@@ -37,20 +42,22 @@ public class TileMapsAsCodeHandler extends CodeDataHandler<List<TileMap>> {
 				+ "\n"
 				+ "const char * _Nonnull kMapNameFileNames[" + t.size() + "] = {\n"
 				+ t.stream()
-						.map(tileMap -> "    \"map-" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data\",\n")
+						.map(tileMap -> "    \"" + prefix + "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data\",\n")
 						.collect(Collectors.joining())
 				+ "};\n").getBytes(StandardCharsets.UTF_8));
 
 		if (flattenLayers) {
+			final File mapDir = createDirectories ? new File(resourceDir, "maps") : resourceDir;
+
 			outputStream.write(("LCDBitmap * _Nullable loadMapLayer(MapName mapName, unsigned int layer) {\n"
 					+ "    switch (mapName * 100 + layer) {\n"
 					+ IntStream.range(0, t.size())
 						.mapToObj(mapIndex -> {
 								final TileMap tileMap = t.get(mapIndex);
 								return IntStream.range(0, tileMap.getLayers().size())
-										.filter(layerIndex -> new File(resourceDir, getLayerFileName(tileMap, layerIndex) + ".png").canRead())
+										.filter(layerIndex -> new File(mapDir, getLayerFileName(tileMap, layerIndex) + ".png").canRead())
 										.mapToObj(layerIndex -> "        case " + (mapIndex * 100 + layerIndex) + ":\n"
-												+ "            return LCDBitmapLoadOrError(\"" + getLayerFileName(tileMap, layerIndex) + "\");\n");
+												+ "            return LCDBitmapLoadOrError(\"" + prefix + getLayerFileName(tileMap, layerIndex) + "\");\n");
 						})
 						.flatMap(stream -> stream)
 						.collect(Collectors.joining())

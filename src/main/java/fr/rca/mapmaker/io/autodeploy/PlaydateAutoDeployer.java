@@ -79,13 +79,22 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 				.map(PlaydateExportConfiguration.Maps::getFlattenLayers)
 				.orElse(false);
 
+		final boolean createDirectories = Optional.ofNullable(configuration)
+				.map(PlaydateExportConfiguration::getCreateDirectories)
+				.orElse(false);
+
 		final List<Palette> palettes = PlaydateFormat.palettesForProject(project);
+
+		final File mapDir = createDirectories
+				? new File(resourceDir, "maps")
+				: resourceDir;
+		mapDir.mkdirs();
 
 		for(final Palette palette : palettes) {
 			if (!flattenLayers) {
 				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 						new FileOutputStream(
-						new File(resourceDir, "palette-" + Names.normalizeName(palette, Names::toLowerCase) + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
+						new File(mapDir, "palette-" + Names.normalizeName(palette, Names::toLowerCase) + "-table-" + palette.getTileSize() + '-' + palette.getTileSize() + ".png")))) {
 					ImageIO.write(PlaydateFormat.renderPalette((EditableImagePalette) palette), "png", outputStream);
 				}
 			}
@@ -106,7 +115,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 
 			try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 					new FileOutputStream(
-					new File(resourceDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data")))) {
+					new File(mapDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data")))) {
 				tileMapHandler.write(tileMap, outputStream);
 				instancesHandler.write(mapAndInstances.getSpriteInstances().stream()
 						.filter(instance -> instance.getSprite().isExportable())
@@ -126,7 +135,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 					}
 					try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 						new FileOutputStream(
-						new File(resourceDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + "-layer-" + layerIndex + ".png")))) {
+						new File(mapDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + "-layer-" + layerIndex + ".png")))) {
 						ImageIO.write(renderer.renderImage((TileLayer) layer, palette, size, palette.getTileSize()), "png", outputStream);
 					}
 				}
@@ -140,6 +149,11 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		final SpriteAsCodeHandler spriteAsCodeHandler = new SpriteAsCodeHandler(project.getAnimationNames());
 		final FontHandler fontHandler = new FontHandler(project.getAnimationNames());
 
+		final File spriteDir = createDirectories
+				? new File(resourceDir, "sprites")
+				: resourceDir;
+		spriteDir.mkdirs();
+
 		final List<Sprite> sprites = PlaydateFormat.spritesForProject(project);
 		for(int index = 0; index < sprites.size(); index++) {
 			final Sprite sprite = sprites.get(index);
@@ -147,7 +161,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 			if (spriteImage != null) {
 				try (final BufferedOutputStream outputStream = new BufferedOutputStream(
 						new FileOutputStream(
-						new File(resourceDir, "sprite-" + Names.normalizeName(sprite, Names::toSnakeCase) + "-table-" + sprite.getWidth() + '-' + sprite.getHeight() + ".png")))) {
+						new File(spriteDir, "sprite-" + Names.normalizeName(sprite, Names::toSnakeCase) + "-table-" + sprite.getWidth() + '-' + sprite.getHeight() + ".png")))) {
 					ImageIO.write(spriteImage, "png", outputStream);
 				}
 
@@ -159,9 +173,14 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		generateFile(generatedSourcesDir, new SpriteDefinitionsAsHeaderHandler(), sprites, configuration);
 		generateFile(generatedSourcesDir, new SpriteDefinitionsAsCodeHandler(), sprites, configuration);
 
+		final File fontDir = createDirectories
+				? new File(resourceDir, "fonts")
+				: resourceDir;
+		fontDir.mkdirs();
+
 		final List<Sprite> fonts = PlaydateFormat.fontsForProject(project);
 		for(Sprite font : fonts) {
-			generateFile(resourceDir, fontHandler, font, configuration);
+			generateFile(fontDir, fontHandler, font, configuration);
 		}
 
 		generateFile(generatedSourcesDir, new SpriteVariablesAsHeaderHandler(), PlaydateFormat.variablesForSprites(project), configuration);

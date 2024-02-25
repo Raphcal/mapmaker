@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,6 +34,11 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 
 	@Override
 	public void write(Sprite t, OutputStream outputStream) throws IOException {
+		final boolean createDirectories = Optional.ofNullable(configuration)
+				.map(PlaydateExportConfiguration::getCreateDirectories)
+				.orElse(false);
+		final String prefix = createDirectories ? "sprites/" : "";
+
 		final String pascalCasedName = Names.normalizeName(t, Names::toPascalCase);
 		final boolean hasScriptFile = t.getScriptFile() != null && !t.getScriptFile().trim().isEmpty();
 		outputStream.write((generateHeader(t)
@@ -82,7 +88,7 @@ public class SpriteAsCodeHandler extends CodeDataHandler<Sprite> {
 				+ "        return;\n"
 				+ "    }\n"
 				+ "    const char *error = NULL;\n"
-				+ "    sprite" + pascalCasedName + ".palette = playdate->graphics->loadBitmapTable(\"sprite-" + Names.normalizeName(t, Names::toSnakeCase) + "\", &error);\n"
+				+ "    sprite" + pascalCasedName + ".palette = playdate->graphics->loadBitmapTable(\"" + prefix + "sprite-" + Names.normalizeName(t, Names::toSnakeCase) + "\", &error);\n"
 				+ "    if (error) {\n"
 				+ "        playdate->system->error(\"Unable to load bitmap table of sprite " + pascalCasedName + ": %s\", error);\n"
 				+ "    }\n"
