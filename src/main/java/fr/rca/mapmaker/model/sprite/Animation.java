@@ -43,6 +43,7 @@ public class Animation {
 	private Map<Double, List<TileLayer>> frames;
 	private boolean looping;
 	private boolean scrolling;
+	private boolean easing;
 
 	private boolean shouldOverrideFrameNames;
 
@@ -67,6 +68,7 @@ public class Animation {
 		copy.frequency = frequency;
 		copy.looping = looping;
 		copy.scrolling = scrolling;
+		copy.easing = easing;
 
 		for (final Map.Entry<Double, List<TileLayer>> entry : frames.entrySet()) {
 			final List<TileLayer> layersCopy = new ArrayList<TileLayer>();
@@ -98,24 +100,8 @@ public class Animation {
 		return !((this.name == null) ? (other.name != null) : !this.name.equals(other.name));
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getDisplayName() {
 		return LANGUAGE.getString("animation." + name);
-	}
-
-	public int getFrequency() {
-		return frequency;
-	}
-
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
 	}
 
 	public Map<Double, List<TileLayer>> getFrames() {
@@ -137,22 +123,6 @@ public class Animation {
 
 	public void setFrames(double direction, List<TileLayer> frames) {
 		this.frames.put(direction, frames);
-	}
-
-	public boolean isLooping() {
-		return looping;
-	}
-
-	public void setLooping(boolean looping) {
-		this.looping = looping;
-	}
-
-	public boolean isScrolling() {
-		return scrolling;
-	}
-
-	public void setScrolling(boolean scrolling) {
-		this.scrolling = scrolling;
 	}
 
 	public Set<Double> getAnglesWithValue() {

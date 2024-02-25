@@ -109,6 +109,20 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 
 		setVersion(InternalFormat.LAST_VERSION);
 
+		Integer oldVersion = null;
+		if (file.isDirectory()) {
+			try {
+				final Map<String, Object> projectInfo = readProjectInfo(file);
+
+				// Version
+				final Integer version = (Integer) projectInfo.get(VERSION);
+				oldVersion = version != null ? version : InternalFormat.VERSION_4;
+			} catch (IOException e) {
+				LOGGER.error("Erreur lors de la lecture de la précédente version", e);
+			}
+		}
+		final boolean forceDirty = oldVersion == null || oldVersion != InternalFormat.LAST_VERSION;
+
 		file.mkdir();
 		final HashSet<File> files = new HashSet<File>(Arrays.asList(file.listFiles(BundleFormat::isOwnFile)));
 
@@ -129,7 +143,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 
 		try {
 			// Palettes
-			write(project.getPalettes(), file, files, PALETTE_FILE_FORMAT, palettes, getHandler(Palette.class));
+			write(project.getPalettes(), file, files, PALETTE_FILE_FORMAT, palettes, getHandler(Palette.class), forceDirty);
 			progressTracker.stepDidEnd("palettes");
 
 			// Cartes
@@ -143,7 +157,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 				final String mapName = String.format(MAP_FILE_FORMAT, tileMap.getIndex());
 				final String instancesName = String.format(INSTANCES_FILE_FORMAT, tileMap.getIndex());
 
-				writeMap(tileMap, file, files, mapName, tileMapHandler, map);
+				writeMap(tileMap, file, files, mapName, tileMapHandler, map, forceDirty);
 				progressTracker.subStepDidEnd();
 
 				// Instances
@@ -156,7 +170,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			progressTracker.stepDidEnd("instances");
 
 			// Sprites
-			write(project.getSprites(), file, files, SPRITE_FILE_FORMAT, sprites, getHandler(Sprite.class));
+			write(project.getSprites(), file, files, SPRITE_FILE_FORMAT, sprites, getHandler(Sprite.class), forceDirty);
 			progressTracker.stepDidEnd("sprites");
 
 			// Scripts
@@ -206,7 +220,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		}
 	}
 
-	private <T> void write(List<T> objects, File parent, Set<File> files, String format, final List<String> infoEntries, DataHandler<T> handler) throws IOException {
+	private <T> void write(List<T> objects, File parent, Set<File> files, String format, List<String> infoEntries, DataHandler<T> handler, boolean forceDirty) throws IOException {
 		for (int index = 0; index < objects.size(); index++) {
 			final String name = String.format(format, index);
 			final File file = new File(parent, name);
@@ -214,7 +228,7 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 			final T object = objects.get(index);
 			final CanBeDirty canBeDirty = CanBeDirty.wrap(object);
 			LOGGER.debug("{} {} {}", object.getClass().getSimpleName(), object.toString(), (canBeDirty.isDirty() ? "is dirty" : "has not changed"));
-			if (canBeDirty.isDirty()) {
+			if (forceDirty || canBeDirty.isDirty()) {
 				try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
 					handler.write(object, outputStream);
 					canBeDirty.setDirty(false);
@@ -224,12 +238,12 @@ public class BundleFormat extends AbstractFormat implements HasProgress {
 		}
 	}
 
-	private void writeMap(TileMap tileMap, File parent, Set<File> files, final String mapName, final DataHandler<TileMap> tileMapHandler, final Map<String, Object> map) throws IOException, FileNotFoundException {
+	private void writeMap(TileMap tileMap, File parent, Set<File> files, final String mapName, final DataHandler<TileMap> tileMapHandler, final Map<String, Object> map, boolean forceDirty) throws IOException, FileNotFoundException {
 		// Carte
 		final File file = new File(parent, mapName);
 		files.remove(file);
 		LOGGER.debug("TileMap {} {}", tileMap.getName(), (tileMap.isDirty() ? "is dirty" : "has not changed"));
-		if (tileMap.isDirty()) {
+		if (forceDirty || tileMap.isDirty()) {
 			try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
 				tileMapHandler.write(tileMap, outputStream);
 				tileMap.setDirty(false);

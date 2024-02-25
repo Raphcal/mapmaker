@@ -56,14 +56,22 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="animationComboBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="frequencyTextField" alignment="0" min="-2" pref="52" max="-2" attributes="0"/>
-                          <Component id="widthTextField" alignment="0" min="-2" pref="52" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="animationComboBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="widthTextField" alignment="0" min="-2" pref="52" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="sizeByLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="heightTextField" min="-2" pref="46" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="frequencyTextField" min="-2" pref="52" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="sizeByLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="heightTextField" min="-2" pref="46" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
@@ -134,6 +142,7 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="frequencyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="frequencyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="directionChooser" alignment="1" min="-2" pref="100" max="-2" attributes="0"/>
@@ -275,6 +284,7 @@
         <Property name="zoom" type="double" value="4.0"/>
       </Properties>
       <BindingProperties>
+        <BindingProperty name="easing" source="Form" sourcePath="${animationEasing}" target="animationPreview" targetPath="easing" updateStrategy="0" immediately="false"/>
         <BindingProperty name="frameHeight" source="sprite" sourcePath="${height}" target="animationPreview" targetPath="frameHeight" updateStrategy="0" immediately="false"/>
         <BindingProperty name="frameWidth" source="sprite" sourcePath="${width}" target="animationPreview" targetPath="frameWidth" updateStrategy="0" immediately="false"/>
         <BindingProperty name="frequency" source="Form" sourcePath="${currentFrequency}" target="animationPreview" targetPath="frequency" updateStrategy="0" immediately="false"/>
@@ -413,6 +423,16 @@
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="jCheckBox1">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="resources/language.properties" key="sprite.animation.speed.easing" replaceFormat="java.text.MessageFormat.format(java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;), {arguments})"/>
+        </Property>
+      </Properties>
+      <BindingProperties>
+        <BindingProperty name="selected" source="Form" sourcePath="${animationEasing}" target="jCheckBox1" targetPath="selected" updateStrategy="0" immediately="false"/>
+      </BindingProperties>
     </Component>
   </SubComponents>
 </Form>

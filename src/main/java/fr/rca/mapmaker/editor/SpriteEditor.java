@@ -150,6 +150,22 @@ public class SpriteEditor extends javax.swing.JDialog {
 		}
 	}
 
+	public boolean isAnimationEasing() {
+		if (currentAnimation != null) {
+			return currentAnimation.isEasing();
+		} else {
+			return false;
+		}
+	}
+
+	public void setAnimationEasing(boolean easing) {
+		if (currentAnimation != null) {
+			final boolean oldEasing = currentAnimation.isEasing();
+			currentAnimation.setEasing(easing);
+			firePropertyChange("animationEasing", oldEasing, easing);
+		}
+	}
+
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -187,6 +203,7 @@ public class SpriteEditor extends javax.swing.JDialog {
         scrollCheckBox = new javax.swing.JCheckBox();
         playButton = new javax.swing.JButton();
         final javax.swing.JButton transformButton = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setTitle("Sprite");
 
@@ -278,6 +295,8 @@ public class SpriteEditor extends javax.swing.JDialog {
 
         animationPreview.setZoom(4.0);
 
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${animationEasing}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("easing"));
+        bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${height}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("frameHeight"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, sprite, org.jdesktop.beansbinding.ELProperty.create("${width}"), animationPreview, org.jdesktop.beansbinding.BeanProperty.create("frameWidth"));
@@ -357,6 +376,11 @@ public class SpriteEditor extends javax.swing.JDialog {
             }
         });
 
+        jCheckBox1.setText(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("resources/language").getString("sprite.animation.speed.easing"), new Object[] {})); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${animationEasing}"), jCheckBox1, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -382,13 +406,18 @@ public class SpriteEditor extends javax.swing.JDialog {
                             .addComponent(sizeLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(frequencyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sizeByLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(animationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sizeByLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(frequencyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jCheckBox1)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -444,7 +473,8 @@ public class SpriteEditor extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(frequencyLabel)
-                            .addComponent(frequencyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(frequencyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jCheckBox1)))
                     .addComponent(directionChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -637,6 +667,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 		final int oldFrequency = getCurrentFrequency();
 		final boolean oldLooping = isAnimationLooping();
 		final boolean oldScrolling = isAnimationScrolling();
+		final boolean oldEasing = isAnimationEasing();
 
 		updateAnimation();
 
@@ -651,6 +682,7 @@ public class SpriteEditor extends javax.swing.JDialog {
 		firePropertyChange("currentFrequency", oldFrequency, getCurrentFrequency());
 		firePropertyChange("animationLooping", oldLooping, isAnimationLooping());
 		firePropertyChange("animationScrolling", oldScrolling, isAnimationScrolling());
+		firePropertyChange("animationEasing", oldEasing, isAnimationEasing());
 	}
 
 	public void addActionListener(ActionListener listener) {
@@ -680,6 +712,7 @@ public class SpriteEditor extends javax.swing.JDialog {
     private javax.swing.JTextField frequencyTextField;
     private javax.swing.JScrollPane gridScrollPane;
     private javax.swing.JTextField heightTextField;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox loopCheckBox;
     private javax.swing.JButton okButton;
     private javax.swing.JButton pasteButton;

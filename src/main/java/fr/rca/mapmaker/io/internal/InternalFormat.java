@@ -107,7 +107,17 @@ public class InternalFormat extends AbstractFormat {
 	 */
 	public static final int VERSION_16 = 16;
 
-	public static final int LAST_VERSION = VERSION_16;
+	/**
+	 * Version 17. Depuis le 25/02/2024.
+	 * <p/>
+	 * Ajoute les fonctionnalités suivantes :<ul>
+	 * <li>Flag <code>easing</code> sur les animations pour utiliser une
+	 * fonction d'easing dans l'animation.</li>
+	 * </ul>
+	 */
+	public static final int VERSION_17 = 17;
+
+	public static final int LAST_VERSION = VERSION_17;
 	public static final String HEADER_LAST_VERSION = "MM" + LAST_VERSION;
 
 	public InternalFormat() {
