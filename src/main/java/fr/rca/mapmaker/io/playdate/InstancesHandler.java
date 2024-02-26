@@ -2,6 +2,7 @@ package fr.rca.mapmaker.io.playdate;
 
 import fr.rca.mapmaker.io.DataHandler;
 import fr.rca.mapmaker.io.common.Streams;
+import fr.rca.mapmaker.io.playdate.PlaydateExportConfiguration.InstancesOrder;
 import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import java.awt.Point;
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -20,6 +22,7 @@ import java.util.Set;
  * @author Raphaël Calabro (raphael.calabro.external2@banque-france.fr)
  */
 public class InstancesHandler implements DataHandler<List<Instance>> {
+	protected PlaydateExportConfiguration configuration;
 
 	@Override
 	public void write(List<Instance> t, OutputStream outputStream) throws IOException {
@@ -37,7 +40,17 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 		final HashMap<Sprite, Integer> indexBySprite = new HashMap<>();
 
 		ArrayList<Instance> instances = new ArrayList<>(t);
-		instances.sort((lhs, rhs) -> Integer.compare(lhs.getX(), rhs.getX()));
+
+		InstancesOrder order = Optional.ofNullable(configuration)
+				.map(PlaydateExportConfiguration::getInstances)
+				.map(PlaydateExportConfiguration.Instances::getOrder)
+				.orElse(InstancesOrder.x);
+
+		if (order == InstancesOrder.x) {
+			instances.sort((lhs, rhs) -> Integer.compare(lhs.getX(), rhs.getX()));
+		} else if (order == InstancesOrder.zIndex) {
+			Collections.reverse(instances);
+		}
 		for (Instance instance : instances) {
 			final Point point = instance.getPoint();
 			final Sprite sprite = instance.getSprite();
@@ -62,5 +75,9 @@ public class InstancesHandler implements DataHandler<List<Instance>> {
 	public List<Instance> read(InputStream inputStream) throws IOException {
 		throw new UnsupportedOperationException("Not supported.");
 	}
-	
+
+	public InstancesHandler withConfiguration(PlaydateExportConfiguration configuration) {
+		this.configuration = configuration;
+		return this;
+	}
 }

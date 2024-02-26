@@ -10,6 +10,7 @@ import lombok.Data;
 public class PlaydateExportConfiguration {
 	private SpriteNames spriteNames = new SpriteNames();
 	private Maps maps = new Maps();
+	private Instances instances = new Instances();
 	/**
 	 * Active le dithering des couleurs des sprites (mais pas top actuellement).
 	 */
@@ -40,8 +41,18 @@ public class PlaydateExportConfiguration {
 		private Boolean writeTileSize;
 	}
 
+	@Data
+	public static class Instances {
+		private InstancesOrder order;
+	}
+
 	public static enum SpriteNamesGetDefinitionType {
 		struct,
 		pointer;
+	}
+
+	public static enum InstancesOrder {
+		x,
+		zIndex;
 	}
 }

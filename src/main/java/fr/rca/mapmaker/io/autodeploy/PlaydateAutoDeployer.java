@@ -29,6 +29,7 @@ import fr.rca.mapmaker.model.map.TileMap;
 import fr.rca.mapmaker.model.palette.EditableImagePalette;
 import fr.rca.mapmaker.model.palette.Palette;
 import fr.rca.mapmaker.model.project.Project;
+import fr.rca.mapmaker.model.sprite.Instance;
 import fr.rca.mapmaker.model.sprite.Sprite;
 import fr.rca.mapmaker.ui.ImageRenderer;
 import java.awt.Rectangle;
@@ -111,7 +112,7 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 		generateFile(generatedSourcesDir, new PaletteNamesAsCodeHandler(), palettes, configuration);
 
 		final TileMapHandler tileMapHandler = new TileMapHandler().withConfiguration(configuration);
-		final InstancesHandler instancesHandler = new InstancesHandler();
+		final InstancesHandler instancesHandler = new InstancesHandler().withConfiguration(configuration);
 
 		final List<TileMap> maps = PlaydateFormat.mapsForProject(project);
 		for(int index = 0; index < maps.size(); index++) {
@@ -122,9 +123,10 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 					new FileOutputStream(
 					new File(mapDir, "map-" + Names.normalizeName(tileMap, Names::toLowerCase) + ".data")))) {
 				tileMapHandler.write(tileMap, outputStream);
-				instancesHandler.write(mapAndInstances.getSpriteInstances().stream()
+				final List<Instance> instances = mapAndInstances.getSpriteInstances().stream()
 						.filter(instance -> instance.getSprite().isExportable())
-						.collect(Collectors.toList()), outputStream);
+						.collect(Collectors.toList());
+				instancesHandler.write(instances, outputStream);
 			}
 
 			if (flattenLayers) {
