@@ -226,6 +226,7 @@ public class MapMaker {
 				printAutoDeployUsage();
 				return;
 		}
+		deployer.setHeadless(true);
 		final File projectFile = new File(args[1]);
 		final Format format = Formats.getFormat(projectFile.getName());
 		if (!projectFile.exists() || format == null) {

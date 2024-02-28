@@ -70,7 +70,12 @@ public class PlaydateAutoDeployer extends AutoDeployer {
 			try (InputStreamReader reader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8)) {
  				configuration = new Gson().fromJson(reader, PlaydateExportConfiguration.class);
 			} catch (Exception e) {
-				Exceptions.showStackTrace(e, null);
+				if (!isHeadless()) {
+					Exceptions.showStackTrace(e, null);
+					return;
+				} else {
+					throw new IOException("Unable to read mmkconfig", e);
+				}
 			}
 		}
 
