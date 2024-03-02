@@ -45,7 +45,7 @@ public class AnimationDataHandler implements DataHandler<Animation>, HasVersion 
 		if (version >= InternalFormat.VERSION_9) {
 			Streams.write(t.isScrolling(), outputStream);
 		}
-		if (version >= InternalFormat.VERSION_17) {
+		if (version == InternalFormat.VERSION_17) {
 			Streams.write(t.isEasing(), outputStream);
 		}
 
@@ -102,7 +102,7 @@ public class AnimationDataHandler implements DataHandler<Animation>, HasVersion 
 		if (version >= InternalFormat.VERSION_9) {
 			animation.setScrolling(Streams.readBoolean(inputStream));
 		}
-		if (version >= InternalFormat.VERSION_17) {
+		if (version == InternalFormat.VERSION_17) {
 			animation.setEasing(Streams.readBoolean(inputStream));
 		}
 

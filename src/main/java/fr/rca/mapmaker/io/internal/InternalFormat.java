@@ -115,9 +115,10 @@ public class InternalFormat extends AbstractFormat {
 	 * fonction d'easing dans l'animation.</li>
 	 * </ul>
 	 */
+	@Deprecated
 	public static final int VERSION_17 = 17;
 
-	public static final int LAST_VERSION = VERSION_17;
+	public static final int LAST_VERSION = VERSION_16;
 	public static final String HEADER_LAST_VERSION = "MM" + LAST_VERSION;
 
 	public InternalFormat() {
