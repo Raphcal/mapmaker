@@ -51,8 +51,12 @@ public abstract class AbstractEditablePalette<T> implements EditablePalette, Has
 	@Override
 	public void removeTile(int index) {
 		if (index >= 0 && index < sources.size()) {
-			sources.set(index, createEmptySource());
+			final T empty = createEmptySource();
+			CanBeDirty.wrap(empty).setDirty(true);
+			sources.set(index, empty);
 			refreshSource(index);
+
+			setDirty(true);
 		}
 	}
 
@@ -156,6 +160,7 @@ public abstract class AbstractEditablePalette<T> implements EditablePalette, Has
 		for (final SizeChangeListener listener : sizeChangeListeners) {
 			listener.sizeChanged(this, oldSize, newSize);
 		}
+		setDirty(true);
 	}
 
 	public void add(BufferedImage tile) {
